@@ -12,8 +12,3 @@ export function platform(): Platform {
   return 'web';
 }
 
-/** Ouvre un lien dans le navigateur du système (Android : lien externe ; Linux : plugin Tauri limité aux releases du dépôt). */
-export async function openExternal(url: string): Promise<void> {
-  if (platform() === 'linux') { const { openUrl } = await import('@tauri-apps/plugin-opener'); await openUrl(url); }
-  else window.open(url, '_blank', 'noopener');
-}

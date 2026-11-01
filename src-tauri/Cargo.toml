@@ -1,6 +1,6 @@
 [package]
 name = "academik"
-version = "0.3.3"
+version = "0.3.4"
 description = "Apprendre en jouant, du lycée à la recherche, en construisant sa propre IA — hors ligne"
 authors = ["academik"]
 license = "Apache-2.0"
@@ -12,7 +12,8 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 tauri = { version = "2", features = [] }
-tauri-plugin-opener = "2"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
+sha2 = "0.10"
 
 [profile.release]
 opt-level = "s"

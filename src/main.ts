@@ -29,7 +29,7 @@ async function main() {
     updates.applyWeb = () => { void update(true); };
   }
   else void dropStaleServiceWorker();
-  setTimeout(() => { void updates.checkAll(); }, 3000);
+  setTimeout(() => { void updates.checkAll(); void updates.autoPrepare(); }, 3000);
   setInterval(() => { void updates.checkAll(); }, 30 * 60 * 1000);
 }
 void main();

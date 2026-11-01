@@ -11,11 +11,18 @@ const read = (p: string) => readFileSync(p, 'utf8');
 const lesson = read('src/ui/Lesson.svelte'), css = read('src/app.css'), app = read('src/ui/App.svelte'), rules = read('src/ui/Consignes.svelte'), menu = read('src/ui/LogoMenu.svelte');
 
 describe('E8 · les formules ne restent jamais en texte brut', () => {
-  it('tout texte de carte affiché passe par md() (seule exception : une option sans formule, en police de code)', () => {
-    const raw = [...lesson.matchAll(/\{t\(/g)].map(m => lesson.slice(m.index! - 6, m.index! + 12));
-    expect(raw.filter(x => !x.startsWith('<code>{t(c)'))).toEqual([]);   // seule exception : la branche « pas de formule » de rich()
+  it('tout texte de carte affiché passe par md() : aucune interpolation brute', () => { expect([...lesson.matchAll(/\{t\(/g)].length).toBe(0); });
+  it('toutes les options d\u2019une carte ont le même rendu (E12) : même composant, jamais de police de code par défaut', () => {
+    expect(lesson).toMatch(/<span class="opt">\{@html md\(t\(c\)\)\}<\/span>/); expect(lesson).not.toMatch(/<code>\{t\(c\)\}<\/code>/); expect(lesson).not.toContain('rich(');
   });
-  it('une option avec formule ou code est mise en forme', () => { expect(lesson).toMatch(/rich\(t\(c\)\)[\s\S]{0,80}md\(t\(c\)\)/); });
+  it('dans une même carte : soit toutes les options sont du code balisé, soit aucune (pas de mélange de styles)', () => {
+    const bad: string[] = [];
+    for (const f of readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'))) for (const c of parse(read(`content/niveaux/${f}`)).cartes) {
+      if (!c.choix) continue; const code = c.choix.map((o: { fr: string }) => /^`[^`]*`$/.test(o.fr.trim()));
+      if (code.some(Boolean) && !code.every(Boolean)) bad.push(`${f} ${c.id}`);
+    }
+    expect(bad).toEqual([]);
+  });
   it('les $ des textes de contenu sont équilibrés (sinon une formule resterait brute)', () => {
     const bad: string[] = [];
     for (const f of readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'))) {
@@ -62,4 +69,20 @@ describe('E11 · l\u2019état « mise à jour disponible » survit au redémarra
   it('la mise à jour trouvée est mémorisée puis relue', () => { expect(upd).toContain("'academik.appUpdate'"); expect(upd).toContain('revalidate('); expect(upd).toMatch(/app = \$state<AppUpdate \| null>\(cachedApp\(\)\)/); });
   it('« en attente d\u2019une version plus récente » est mémorisé aussi', () => { expect(upd).toContain("'academik.updateStatus'"); });
   it('le site ne montre pas de bannière de téléchargement (le service worker s\u2019en charge)', () => { expect(upd).toMatch(/platform\(\) !== 'web'/); });
+});
+
+describe('E13 · les mises à jour se font DANS l\u2019app, automatiquement, sans renvoi vers GitHub', () => {
+  const banner = read('src/ui/UpdateBanner.svelte'), upd = read('src/lib/updates.svelte.ts');
+  it('aucun lien, aucune ouverture de navigateur dans le parcours de mise à jour', () => {
+    for (const code of [banner, upd, read('src/lib/installer.ts'), read('src/lib/platform.ts')]) { expect(code).not.toContain('openExternal'); expect(code).not.toMatch(/window\.open|<a [^>]*href/); }
+    expect(read('package.json')).not.toContain('plugin-opener');
+  });
+  it('le téléchargement démarre tout seul dès qu\u2019une mise à jour est connue', () => { expect(upd).toMatch(/set\(APP, JSON\.stringify\(a\)\); void this\.autoPrepare\(\)/); expect(read('src/main.ts')).toContain('updates.autoPrepare()'); });
+  it('installation / rechargement automatiques seulement sur la carte, jamais en pleine leçon', () => { const app = read('src/ui/App.svelte'); expect(app).toMatch(/if \(view\.k !== 'map'\) return;/); expect(app).toContain('updates.applyWeb'); expect(app).toContain('updates.installNow()'); });
+  it('le code natif vérifie lui aussi l\u2019empreinte et limite le lien aux releases du dépôt', () => {
+    const java = read('android/app/src/main/java/app/academik/learn/UpdaterPlugin.java'), rust = read('src-tauri/src/main.rs');
+    for (const code of [java, rust]) { expect(code).toContain('https://github.com/raantss18/academik/releases/download/'); expect(code).toMatch(/SHA-256|Sha256/); expect(code).toContain('empreinte incorrecte'); }
+    expect(read('android/app/src/main/AndroidManifest.xml')).toContain('REQUEST_INSTALL_PACKAGES');
+    expect(read('android/app/src/main/java/app/academik/learn/MainActivity.java')).toContain('registerPlugin(UpdaterPlugin.class)');
+  });
 });

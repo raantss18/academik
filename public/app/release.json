@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 6,
-  "version": "0.3.3",
+  "build": 7,
+  "version": "0.3.4",
   "notes": {
-   "fr": "La nouvelle version de l'application est maintenant annoncée même après avoir fermé et rouvert l'app, avec les nouveautés des versions que tu as sautées. Les niveaux des modules 4 et 5 arrivent tout seuls.",
-   "en": "The new app version is now announced even after closing and reopening the app, with what's new in the versions you skipped. Levels for modules 4 and 5 arrive by themselves."
+   "fr": "Les mises à jour de l'application se téléchargent et s'installent maintenant toutes seules, dans l'app, sans passer par GitHub. Les réponses ont toutes la même présentation.",
+   "en": "App updates now download and install by themselves, inside the app, without going through GitHub. All answers now look the same."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.3/academik-0.3.3.apk",
-    "sha256": "594abcc85ee60d8da49428d93012da3206578363a821c0c5e6eed447addfd924",
-    "bytes": 3710854
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.4/academik-0.3.4.apk",
+    "sha256": "b6f0646b154544bfc8213a8e53bc77a3f85d2bf8aa25f1429415935c3c2a8d39",
+    "bytes": 3714859
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.3/academik-0.3.3-x86_64.AppImage",
-    "sha256": "37a909353d6e2c825848998308b47d59cdf3a99854f9a57fad05f6db218bd245",
-    "bytes": 108423672
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.4/academik-0.3.4-x86_64.AppImage",
+    "sha256": "05c63aa6323256a9ea04235a00b419d5cf50bd084366558db54e1fbae8d151da",
+    "bytes": 108771832
    }
   }
  },
  "history": [
+  {
+   "build": 6,
+   "version": "0.3.3",
+   "notes": {
+    "fr": "La nouvelle version de l'application est maintenant annoncée même après avoir fermé et rouvert l'app, avec les nouveautés des versions que tu as sautées. Les niveaux des modules 4 et 5 arrivent tout seuls.",
+    "en": "The new app version is now announced even after closing and reopening the app, with what's new in the versions you skipped. Levels for modules 4 and 5 arrive by themselves."
+   }
+  },
   {
    "build": 5,
    "version": "0.3.2",

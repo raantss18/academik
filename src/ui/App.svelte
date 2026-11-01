@@ -6,6 +6,7 @@
   import { resume } from '../lib/resume';
   import { onMount } from 'svelte';
   import { platform } from '../lib/platform';
+  import { updates } from '../lib/updates.svelte';
 
   type View = { k: 'map' } | { k: 'rules' } | { k: 'lesson'; id: string };
   let run = $state(0);
@@ -25,6 +26,16 @@
   }
   // Android : le bouton retour est géré ici (Capacitor ne l'intercepte pas seul : sans cela l'app se fermerait).
   onMount(() => { if (platform() === 'android') void import('@capacitor/app').then(({ App }) => { void App.addListener('backButton', () => { if (!goBack()) void App.exitApp(); }); }); });
+  // Mises à jour AUTOMATIQUES, seulement quand l'élève est sur la carte (jamais en pleine leçon) :
+  //  site : rechargement vers la nouvelle version ; Linux : installation puis redémarrage ; Android : l'installateur système s'ouvre pour une mise à jour importante.
+  let opened = false;
+  $effect(() => {
+    if (view.k !== 'map') return;
+    const web = updates.needRefresh, linux = updates.installer?.kind === 'linux' && updates.flow.phase === 'ready', must = updates.installer?.kind === 'android' && updates.app?.mandatory && updates.flow.phase === 'ready' && !opened;
+    if (!web && !linux && !must) return;
+    const id = setTimeout(() => { if (web) updates.applyWeb?.(); else { opened = true; void updates.installNow(); } }, 2500);
+    return () => clearTimeout(id);
+  });
   function onpop() {
     if (ignore > 0) { ignore--; return; }
     if (view.k === 'lesson' && lesson?.back()) { history.pushState({ academik: 1 }, ''); return; }   // carte précédente, on garde la garde
