@@ -9,13 +9,15 @@
   import { levelScore, stars } from '../engine/score';
   import { scoredItems, type Level } from '../lib/level';
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
+  import { resume, clampIndex } from '../lib/resume';
 
-  let { level, onexit, onreplay }: { level: Level; onexit: () => void; onreplay: () => void } = $props();
+  let { level, onexit, onreplay, startAt = 0 }: { level: Level; onexit: () => void; onreplay: () => void; startAt?: number } = $props();
 
   // `level` ne change pas pendant une leçon (le parent recrée le composant avec {#key}) : lecture initiale voulue.
   /* svelte-ignore state_referenced_locally */
   const run = crypto.randomUUID().slice(0, 6);
-  let idx = $state(0), step = $state(0), selected = $state<number | null>(null), text = $state(''), chosen = $state<number[]>([]);
+  /* svelte-ignore state_referenced_locally */
+  let idx = $state(clampIndex(startAt, level.cartes.length)), step = $state(0), selected = $state<number | null>(null), text = $state(''), chosen = $state<number[]>([]);
   let hints = $state(0), showHint = $state(false), result = $state<null | { ok: boolean; credit: number }>(null), earned = $state(0);
   let finished = $state(false);
   /* svelte-ignore state_referenced_locally */
@@ -44,10 +46,23 @@
     progress.add({ level: level.id, item: card.id, credit, hints, xp });
     earned += xp; result = { ok, credit };
   }
-  function next() {
-    if (idx + 1 >= total) { finished = true; return; }
-    idx++; step = 0; selected = null; text = ''; chosen = []; hints = 0; showHint = false; result = null;
+  // État de chaque carte déjà vue : « Précédent » la remet comme elle était (réponse, correction, étape).
+  interface Snap { step: number; selected: number | null; text: string; chosen: number[]; hints: number; showHint: boolean; result: null | { ok: boolean; credit: number } }
+  const snaps: Record<number, Snap> = {};
+  function goto(i: number) {
+    snaps[idx] = { step, selected, text, chosen: [...chosen], hints, showHint, result };
+    idx = i; const s = snaps[i];
+    step = s?.step ?? 0; selected = s?.selected ?? null; text = s?.text ?? ''; chosen = s ? [...s.chosen] : []; hints = s?.hints ?? 0; showHint = s?.showHint ?? false; result = s?.result ?? null;
+    resume.set(level.id, i); window.scrollTo(0, 0);
   }
+  function next() {
+    if (idx + 1 >= total) { resume.clear(level.id); finished = true; return; }
+    goto(idx + 1);
+  }
+  function prev() { if (idx > 0) goto(idx - 1); }
+  /** Bouton retour du téléphone : revient à la carte précédente (renvoie false au début : l'appelant quitte la leçon). */
+  export function back(): boolean { if (!finished && idx > 0) { prev(); return true; } return false; }
+  function replay() { resume.clear(level.id); onreplay(); }
   const rightText = $derived(card.type === 'saisie' ? card.reponses![0] : card.type === 'parsons' ? card.lignes!.join('\n') : card.choix?.find(c => c.juste) ? i18n.t(card.choix!.find(c => c.juste)) : '');
   const score = $derived(levelScore(scoredItems(level), progress.best(level.id)));
   function key(e: KeyboardEvent) { if (e.key === 'Enter' && card.type === 'saisie' && !result && canCheck) check(); }
@@ -107,6 +122,7 @@
     </article>
 
     <footer class="foot">
+      {#if idx > 0}<button class="btn prev" onclick={prev}>← {ui('prev')}</button>{/if}
       {#if card.type === 'exemple' && step + 1 < card.etapes!.length}
         <button class="btn primary" onclick={() => step++}>{ui('next_step')}</button>
       {:else if hasAnswer && !result}
@@ -123,7 +139,7 @@
       <p class="stars" aria-label={`${stars(score)} / 3`}>{'★'.repeat(stars(score))}<span class="off">{'★'.repeat(3 - stars(score))}</span></p>
       <p>{score + 1e-9 >= UNLOCK_THRESHOLD ? ui('unlocked') : ui('need')}</p>
       <div class="ia"><strong>{ui('your_ai')}</strong> — {t(level.ia)}</div>
-      <div class="foot"><button class="btn" onclick={onreplay}>{ui('replay')}</button><button class="btn primary" onclick={onexit}>{ui('back')}</button></div>
+      <div class="foot"><button class="btn" onclick={replay}>{ui('replay')}</button><button class="btn primary" onclick={onexit}>{ui('back')}</button></div>
     </section>
   {/if}
 </div>
@@ -144,6 +160,7 @@
   .fb { margin-top: 16px; padding: 12px 16px; border-radius: 16px; background: var(--c-accent-soft); border: 1px solid var(--c-accent); }
   .fb.good { background: var(--c-primary-soft); border-color: var(--c-primary); } .fb p { margin: 6px 0 0; } .small { font-size: .9rem; }
   .foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; position: sticky; bottom: 0; padding: 10px 0 calc(var(--sab) + 10px); background: linear-gradient(transparent, var(--c-bg) 30%); }
+  .prev { margin-right: auto; }
   .end { text-align: center; } .end .foot { justify-content: center; position: static; background: none; }
   .big { font-size: 3rem; font-weight: 800; margin: 0; } .off { opacity: .25; } .ia { background: var(--c-surface-2); border-radius: 16px; padding: 12px 16px; margin: 14px 0; text-align: left; }
 </style>

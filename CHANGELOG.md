@@ -2,6 +2,19 @@
 
 ## [Non publié]
 
+## [0.3.2] — 2026-11-01
+
+### Message fr
+Tu reprends maintenant une leçon là où tu l'avais laissée, et « Continuer » te mène au niveau suivant dès que tu as 50 %. Un bouton « Précédent » (et le bouton retour du téléphone) te ramène à la carte d'avant.
+
+### Message en
+You now resume a lesson where you left it, and “Continue” takes you to the next level once you reach 50%. A “Previous” button (and the phone's back button) takes you back to the previous card.
+
+### Corrections / Fixes
+- « Continuer » ramenait à la même leçon tant qu'elle n'était pas à 100 % : il passe maintenant au niveau suivant dès le seuil de 50 %. / “Continue” kept returning to the same lesson until 100%: it now moves on at the 50% threshold.
+- Reprise d'une leçon quittée en cours de route (carte mémorisée). / Resuming a lesson left half-way (card remembered).
+- Bouton « Précédent » avec la correction déjà vue ; bouton retour du téléphone. / “Previous” button keeping the correction already seen; phone back button.
+
 ## [0.3.1] — 2026-11-01
 
 ### Message fr
