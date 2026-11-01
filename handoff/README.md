@@ -1,5 +1,7 @@
 # Protocole Claude Code ↔ Codex (ChatGPT)
 
+> Outil et règles de quota : **`docs/CODEX.md`** (`node scripts/codex.mjs status|start|check|merge`).
+
 1. Claude écrit `handoff/tasks/T-XXX.md` (gabarit ci-dessous), statut **DRAFT**, puis **READY** quand c'est prêt.
 2. Codex ne travaille **que** sur une tâche READY, dans le worktree `../academik-codex`, branche `codex/T-XXX`,
    en ne modifiant **que** les « fichiers autorisés ». Il écrit son compte rendu dans `handoff/results/T-XXX.md`.
@@ -23,6 +25,7 @@ la réponse dans `handoff/results/T-XXX.md`.
 # T-XXX — <titre>
 Statut : DRAFT | READY | DONE | REJECTED
 Propriétaire : codex
+Autorisés : content/niveaux/3.*.yaml, handoff/results/T-XXX.md   <- globs, obligatoire (contrôle automatique)
 ## Objectif
 ## Entrées (à lire)
 ## Fichiers autorisés (seuls fichiers modifiables)

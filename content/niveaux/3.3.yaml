@@ -1,0 +1,97 @@
+id: '3.3'
+module: 3
+duree_min: 14
+titre: { fr: 'Dichotomie', en: 'Binary search' }
+ia: { fr: 'Kintana retrouve un identifiant dans une liste triée sans tout parcourir.', en: 'Kintana finds an ID in a sorted list without scanning every item.' }
+sources:
+  - { titre: 'Python — bisect', url: 'https://docs.python.org/3/library/bisect.html', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Dans `[2, 5, 8, 11, 14]`, tu compares la cible $11$ à la valeur centrale $8$. Où peux-tu continuer ?'
+    en: 'In `[2, 5, 8, 11, 14]`, you compare target $11$ with middle value $8$. Where can you continue?'
+    choix:
+      - { fr: 'À gauche du milieu.', en: 'To the left of the middle.' }
+      - { fr: 'À droite du milieu.', en: 'To the right of the middle.', juste: true }
+      - { fr: 'Il faut examiner les deux côtés.', en: 'Both sides must be examined.' }
+    verif: "a = [2, 5, 8, 11, 14]\nassert a == sorted(a)\nprint(a.index(11) > len(a)//2)"
+    sortie: 'True'
+    explication: { fr: 'La liste est triée et $11>8$ : tous les éléments de gauche sont trop petits.', en: 'The list is sorted and $11>8$: all items on the left are too small.' }
+  - id: c2
+    type: idee
+    fr: 'La dichotomie exige un tableau trié selon le même ordre que la recherche, avec accès direct aux indices. Maintiens une fenêtre $[lo,hi)$, borne droite exclue ; si la valeur centrale est trop petite, pose `lo = mid + 1`, sinon `hi = mid`. À la fin, `lo` est la première position où insérer la cible : il reste à vérifier sa présence.'
+    en: 'Binary search requires an array sorted by the same ordering as the search, with direct indexed access. Maintain a window $[lo,hi)$ with an exclusive upper bound; if the middle value is too small, set `lo = mid + 1`, otherwise `hi = mid`. At the end, `lo` is the first position where the target can be inserted: you must still check whether it is present.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Chercher la première place de 8', en: 'Finding the first position for 8' }
+    etapes:
+      - { code: 'a, x = [2, 5, 8, 8, 14], 8', fr: 'Deux occurrences : nous voulons la première.', en: 'There are two occurrences: we want the first.' }
+      - { code: 'lo, hi = 0, len(a)', fr: 'La fenêtre contient initialement toute la liste.', en: 'Initially the window contains the entire list.' }
+      - code: "while lo < hi:\n    mid = (lo + hi) // 2\n    if a[mid] < x:\n        lo = mid + 1\n    else:\n        hi = mid"
+        fr: 'Les fenêtres deviennent $[0,2)$ puis $[2,2)$ ; aucune tranche de liste n’est copiée.'
+        en: 'The windows become $[0,2)$ then $[2,2)$; no list slice is copied.'
+      - { code: 'print(lo)', fr: 'La position obtenue est $2$, comme avec `bisect_left(a, x)`.', en: 'The resulting position is $2$, as with `bisect_left(a, x)`.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour la fenêtre $[2,9)$, calcule `mid = (lo + hi) // 2`.'
+    en: 'For window $[2,9)$, compute `mid = (lo + hi) // 2`.'
+    reponses: ['5']
+    verif: 'print((2 + 9) // 2)'
+    explication: { fr: 'La division entière donne $11\mathbin{//}2=5$.', en: 'Integer division gives $11\mathbin{//}2=5$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans `[1, 4, 7, 10]`, quelle position renvoie `bisect_left` pour $6$ ?'
+    en: 'In `[1, 4, 7, 10]`, what position does `bisect_left` return for $6$?'
+    reponses: ['2']
+    verif: "from bisect import bisect_left\nprint(bisect_left([1, 4, 7, 10], 6))"
+    explication: { fr: '$6$ s’insère avant $7$, à l’indice $2$, même si $6$ est absent.', en: '$6$ belongs before $7$, at index $2$, even though $6$ is absent.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans `[3, 3, 3, 9]`, quelle position renvoie `bisect_left` pour $3$ ?'
+    en: 'In `[3, 3, 3, 9]`, what position does `bisect_left` return for $3$?'
+    reponses: ['0']
+    verif: "from bisect import bisect_left\nprint(bisect_left([3, 3, 3, 9], 3))"
+    explication: { fr: 'Une égalité déplace la borne droite : on obtient la première occurrence.', en: 'An equality moves the upper bound left: this finds the first occurrence.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Après `i = bisect_left(a, x)`, quelle condition teste la présence sans dépasser les limites, même si `a` est vide ?'
+    en: 'After `i = bisect_left(a, x)`, which condition checks membership without an out-of-bounds access, even if `a` is empty?'
+    choix:
+      - { fr: '`a[i] == x`', en: '`a[i] == x`' }
+      - { fr: '`i < len(a) and a[i] == x`', en: '`i < len(a) and a[i] == x`', juste: true }
+      - { fr: '`i == len(a)`', en: '`i == len(a)`' }
+    verif: "from bisect import bisect_left\nfor a in ([], [1], [1, 3, 3]):\n    for x in range(5):\n        i = bisect_left(a, x)\n        assert (i < len(a) and a[i] == x) == (x in a)\nprint('ok')"
+    sortie: 'ok'
+    explication: { fr: '`and` ne lit `a[i]` que si l’indice existe ; l’égalité confirme ensuite la présence.', en: '`and` reads `a[i]` only if the index exists; equality then confirms membership.' }
+  - id: c8
+    type: piege
+    fr: 'Trouver une position coûte $O(\log n)$ comparaisons ; insérer dans une liste Python peut décaler $n$ éléments et coûte $O(n)$ au pire.'
+    en: 'Finding a position costs $O(\log n)$ comparisons; insertion into a Python list may shift $n$ items and costs $O(n)$ in the worst case.'
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans `[2, 4, 6]`, quelle position d’insertion renvoie `bisect_left` pour $9$ ?'
+    en: 'In `[2, 4, 6]`, what insertion position does `bisect_left` return for $9$?'
+    reponses: ['3']
+    verif: "from bisect import bisect_left\nprint(bisect_left([2, 4, 6], 9))"
+    explication: { fr: 'La position est la longueur de la liste : on insérerait à la fin, sans pouvoir lire `a[3]` avant insertion.', en: 'The position equals the list length: insertion would be at the end, but `a[3]` cannot be read before insertion.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Exécute mentalement la boucle de l’exemple avec `a = [1, 3, 5, 7, 9, 11, 13, 15]` et `x = 6`. Combien de fois évalue-t-elle `a[mid] < x` ?'
+    en: 'Challenge. Trace the example loop with `a = [1, 3, 5, 7, 9, 11, 13, 15]` and `x = 6`. How many times does it evaluate `a[mid] < x`?'
+    reponses: ['3']
+    verif: "a, x = [1, 3, 5, 7, 9, 11, 13, 15], 6\nlo, hi, count = 0, len(a), 0\nwhile lo < hi:\n    mid = (lo+hi)//2\n    count += 1\n    if a[mid] < x: lo = mid+1\n    else: hi = mid\nassert lo == 3\nprint(count)"
+    indice: { fr: 'Note chaque fenêtre et son milieu ; arrête quand les bornes se rejoignent.', en: 'Write down each window and midpoint; stop when the bounds meet.' }
+    explication: { fr: 'Les indices testés sont $4$, $2$, $3$ ; la position finale est $3$, mais $6$ est absent.', en: 'The tested indices are $4$, $2$, $3$; the final position is $3$, but $6$ is absent.' }
+  - id: c11
+    type: retenir
+    fr: 'Liste triée, fenêtre qui rétrécit, puis test de présence : Kintana recherche avec $O(\log n)$ comparaisons au pire.'
+    en: 'Sorted list, shrinking window, then a membership check: Kintana searches with $O(\log n)$ worst-case comparisons.'
