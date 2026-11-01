@@ -15,10 +15,13 @@
     "verify": "npm test && npm run check && npm run build && node scripts/check-offline.mjs dist"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
     "@fontsource-variable/hanken-grotesk": "^5.3.0",
     "ts-fsrs": "^6.0.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
     "@types/node": "^26.6.6",
     "svelte": "^5.57.3",

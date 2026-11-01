@@ -16,7 +16,7 @@
 <div class="wrap">
   <header class="hud">
     <div class="brand">acad<span>e</span>mik</div>
-    <span class="chip">🔥 {progress.streak} {ui('streak')}</span>
+    <span class="chip">🔥 {progress.streak} {progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>
     <span class="chip">⭐ {progress.xp} {ui('xp')}</span>
     <button class="chip" onclick={() => i18n.set(fr ? 'en' : 'fr')} aria-label="Langue / Language">{fr ? 'EN' : 'FR'}</button>
     <button class="chip" onclick={onrules}>{fr ? 'Consignes' : 'Rules'}</button>
