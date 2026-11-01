@@ -7,8 +7,14 @@
   import { onMount } from 'svelte';
   import { platform } from '../lib/platform';
   import { updates } from '../lib/updates.svelte';
+  import { progress } from '../lib/progress.svelte';
+  import { dueCards, reviewLevel } from '../lib/review';
+  import { ui } from '../lib/i18n.svelte';
+  import type { Level } from '../lib/level';
 
-  type View = { k: 'map' } | { k: 'rules' } | { k: 'lesson'; id: string };
+  type View = { k: 'map' } | { k: 'rules' } | { k: 'lesson'; id: string } | { k: 'review' };
+  let revLevel = $state<Level | null>(null);
+  async function startReview() { const cards = await dueCards(progress.events, content.levels); if (!cards.length) return; revLevel = reviewLevel(cards, { fr: ui('review_title'), en: ui('review_title') }); run++; enter({ k: 'review' }); }
   let run = $state(0);
   let view = $state<View>({ k: 'map' });
   let lesson: Lesson | undefined = $state(), map: Map | undefined = $state();
@@ -20,7 +26,7 @@
   function leave() { view = { k: 'map' }; if (guards > 0) { guards--; ignore++; history.back(); } }
   /** Retour d'un cran : carte précédente dans une leçon, puis la carte du parcours ; false = on est déjà à l'accueil. */
   function goBack(): boolean {
-    if (view.k === 'lesson') { if (!lesson?.back()) leave(); return true; }
+    if (view.k === 'lesson' || view.k === 'review') { if (!lesson?.back()) leave(); return true; }
     if (view.k === 'rules') { leave(); return true; }
     return !!map?.back();   // sur la ville : ferme d'abord la fiche du niveau
   }
@@ -38,7 +44,7 @@
   });
   function onpop() {
     if (ignore > 0) { ignore--; return; }
-    if (view.k === 'lesson' && lesson?.back()) { history.pushState({ academik: 1 }, ''); return; }   // carte précédente, on garde la garde
+    if ((view.k === 'lesson' || view.k === 'review') && lesson?.back()) { history.pushState({ academik: 1 }, ''); return; }   // carte précédente, on garde la garde
     if (guards > 0) { guards--; view = { k: 'map' }; }
   }
 </script>
@@ -47,8 +53,10 @@
 
 {#if view.k === 'lesson' && content.levels[view.id]}
   {#key `${view.id}/${run}`}<Lesson bind:this={lesson} level={content.levels[view.id]} startAt={resume.get(view.id, content.levels[view.id].cartes.length)} onexit={leave} onreplay={() => run++} />{/key}
+{:else if view.k === 'review' && revLevel}
+  {#key `review/${run}`}<Lesson bind:this={lesson} level={revLevel} onexit={leave} onreplay={() => run++} />{/key}
 {:else if view.k === 'rules'}
   <Consignes onexit={leave} />
 {:else}
-  <Map bind:this={map} onplay={id => enter({ k: 'lesson', id })} onrules={() => enter({ k: 'rules' })} />
+  <Map bind:this={map} onplay={id => enter({ k: 'lesson', id })} onrules={() => enter({ k: 'rules' })} onreview={startReview} />
 {/if}

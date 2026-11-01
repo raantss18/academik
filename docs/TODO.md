@@ -34,7 +34,8 @@
 - ✅ Présentation : formules KaTeX, code coloré, encadrés, exemple à ligne surlignée ; menu du logo (réglages, à propos, synchro, langue, thème) ; icône « e » rouge ; marges de la barre d'état
 - ✅ **Carte « ville qui s'allume » à l'accueil** (E9) ; ⏳ ensuite : zoom/pincement, animation « le quartier s'allume » après une réussite
 - ⏳ Lecteur de leçon v2 : deux volets (texte | atelier) sur tablette/bureau, fil d'Ariane, précédent/suivant (`docs/REFERENCES-PRESENTATION.md`)
-- ⏳ Révisions espacées **à l'écran** (FSRS est prêt, pas branché) ; difficulté adaptative (Elo) ; réparation de prérequis (2 min)
+- ✅ **Révisions espacées à l'écran** (0.3.7) : FSRS rejoué depuis le journal (rien à synchroniser), 10 cartes max, jamais le jour même, réponse jamais montrée, sans XP ; bouton « Révision du jour · n » sur l'accueil ; ⏳ réglage de la rétention cible, rappel (notification)
+- ⏳ Difficulté adaptative (Elo) ; réparation de prérequis (2 min)
 - ⏳ Éditeur Python exécutable (Pyodide en Web Worker, délai limite, tests par exercice) ; terminal simulé (modules 1 et 14) ; cartes interactives (curseur, glisser, ordonner)
 - ⏳ Figures d'intuition (SVG générés, sans équation dans l'image)
 - ⏳ Comptes et **synchronisation** : écran de connexion, RxDB + `replication-supabase` (schéma `academik` déjà en ligne, voir D-019) ; test d'accès `supabase/tests/academik_rls.sql` à exécuter

@@ -20,6 +20,8 @@ const UI: Record<string, Text> = {
   challenge: { fr: 'Défi', en: 'Challenge' }, today: { fr: 'Aujourd’hui', en: 'Today' }, boss: { fr: 'Boss', en: 'Boss' }, guest: { fr: 'Mode invité : tout reste sur cet appareil.', en: 'Guest mode: everything stays on this device.' },
   retry_later: { fr: 'Tu pourras retenter en rejouant le niveau : on garde ton meilleur score.', en: 'You can try again by replaying the level: your best score is kept.' }, prev: { fr: 'Précédent', en: 'Previous' }, resume: { fr: 'reprendre', en: 'resume' }, card: { fr: 'carte', en: 'card' },
   k_retenir: { fr: 'À retenir', en: 'Key takeaway' }, k_piege: { fr: 'Piège', en: 'Pitfall' }, k_plus: { fr: 'Pour aller plus loin', en: 'Going further' }, k_exemple: { fr: 'Par exemple', en: 'For example' },
+  review: { fr: 'Révisions', en: 'Reviews' }, review_n: { fr: 'à réviser', en: 'due' }, review_later: { fr: 'Cette question reviendra bientôt : on la repose aux bons moments pour que tu t’en souviennes.', en: 'This question will come back soon: we ask it again at the right times so you remember it.' },
+  review_done: { fr: 'Séance terminée : tes réponses programment les prochaines révisions.', en: 'Session done: your answers schedule the next reviews.' }, review_title: { fr: 'Révision du jour', en: 'Today’s review' },
   order_hint: { fr: 'Touche les lignes dans le bon ordre.', en: 'Tap the lines in the right order.' }, minutes: { fr: 'min', en: 'min' },
 };
 export const ui = (k: string) => i18n.t(UI[k]);

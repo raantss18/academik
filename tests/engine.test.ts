@@ -3,6 +3,7 @@ import { bestCredits, levelScore, stars } from '../src/engine/score';
 import { unlockedLevels, UNLOCK_THRESHOLD, emptyLevels } from '../src/engine/unlock';
 import { mergeJournals, totalXp, xpFor, streak } from '../src/engine/journal';
 import { createSrs, gradeFrom, Rating } from '../src/engine/srs';
+import { schedule, dueNow } from '../src/engine/reviews';
 import { update, nextQuestion, pRight } from '../src/engine/elo';
 import type { AnswerEvent, ScoredItem } from '../src/engine/types';
 
@@ -104,4 +105,25 @@ describe('Elo', () => {
     const qs = [{ id: 'facile', b: -3, n: 0 }, { id: 'juste', b: -1.1, n: 0 }, { id: 'dur', b: 3, n: 0 }];
     expect(pRight(0, -1.1)).toBeCloseTo(.75, 1); expect(nextQuestion(qs, 0)!.id).toBe('juste');
   });
+});
+
+describe('révisions espacées (journal → échéances)', () => {
+  const ev = (id: string, item: string, credit: number, t: number, level = '1.1'): AnswerEvent => ({ id, t, dev: 'd', level, item, credit, hints: 0, xp: 0 });
+  const day = 86400000, t0 = Date.UTC(2026, 0, 1);
+  it('une carte réussie revient plus tard qu’une carte ratée', async () => {
+    const items = await schedule([ev('a', 'ok', 1, t0), ev('b', 'ko', 0, t0)]);
+    const d = (k: string) => items.find(i => i.item === k)!.dueAt;
+    expect(d('ko')).toBeLessThan(d('ok'));
+  });
+  it('rejouer le journal donne toujours le même résultat, quel que soit l’ordre de lecture', async () => {
+    const E = [ev('a', 'x', 1, t0), ev('b', 'x', 1, t0 + 2 * day), ev('c', 'y', 0, t0 + day)];
+    expect(await schedule(E)).toEqual(await schedule([...E].reverse()));
+  });
+  it('rien le jour même, puis les plus en retard d’abord, limités à une séance', async () => {
+    const items = await schedule([ev('a', 'x', 0, t0), ev('b', 'y', 0, t0 - 3 * day), ev('c', 'z', 1, t0 - 60 * day)]);
+    expect(dueNow(items, t0 + 60 * 1000).map(i => i.item)).not.toContain('x');
+    const due = dueNow(items, t0 + 400 * day); expect(due.length).toBe(3); expect(due[0].item).toBe('z');
+    expect(dueNow(items, t0 + 400 * day, 2).length).toBe(2);
+  });
+  it('une carte de deux niveaux différents reste deux cartes', async () => { expect((await schedule([ev('a', 'c1', 1, t0, '1.1'), ev('b', 'c1', 1, t0, '1.2')])).length).toBe(2); });
 });
