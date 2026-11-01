@@ -9,13 +9,16 @@
   import { levelScore, stars } from '../engine/score';
   import { scoredItems, type Level } from '../lib/level';
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
+  import { resume, clampIndex } from '../lib/resume';
+  import LogoMenu from './LogoMenu.svelte';
 
-  let { level, onexit, onreplay }: { level: Level; onexit: () => void; onreplay: () => void } = $props();
+  let { level, onexit, onreplay, startAt = 0 }: { level: Level; onexit: () => void; onreplay: () => void; startAt?: number } = $props();
 
   // `level` ne change pas pendant une leçon (le parent recrée le composant avec {#key}) : lecture initiale voulue.
   /* svelte-ignore state_referenced_locally */
   const run = crypto.randomUUID().slice(0, 6);
-  let idx = $state(0), step = $state(0), selected = $state<number | null>(null), text = $state(''), chosen = $state<number[]>([]);
+  /* svelte-ignore state_referenced_locally */
+  let idx = $state(clampIndex(startAt, level.cartes.length)), step = $state(0), selected = $state<number | null>(null), text = $state(''), chosen = $state<number[]>([]);
   let hints = $state(0), showHint = $state(false), result = $state<null | { ok: boolean; credit: number }>(null), earned = $state(0);
   let finished = $state(false);
   /* svelte-ignore state_referenced_locally */
@@ -32,6 +35,8 @@
   const hasAnswer = $derived(card.type === 'qcm' || card.type === 'tentative' || card.type === 'saisie' || card.type === 'parsons');
   const canCheck = $derived(card.type === 'saisie' ? text.trim().length > 0 : card.type === 'parsons' ? chosen.length === (card.lignes?.length ?? 0) : selected !== null);
 
+  /** Une option qui contient une formule ($…$) ou du code entre accents graves est mise en forme ; sinon elle reste en police de code. */
+  const rich = (x: string) => /\$|`/.test(x);
   const norm = (s: string) => s.trim().replace(/\s+/g, ' ').toLowerCase();
   function check() {
     let ok = false;
@@ -44,11 +49,23 @@
     progress.add({ level: level.id, item: card.id, credit, hints, xp });
     earned += xp; result = { ok, credit };
   }
-  function next() {
-    if (idx + 1 >= total) { finished = true; return; }
-    idx++; step = 0; selected = null; text = ''; chosen = []; hints = 0; showHint = false; result = null;
+  // État de chaque carte déjà vue : « Précédent » la remet comme elle était (réponse, correction, étape).
+  interface Snap { step: number; selected: number | null; text: string; chosen: number[]; hints: number; showHint: boolean; result: null | { ok: boolean; credit: number } }
+  const snaps: Record<number, Snap> = {};
+  function goto(i: number) {
+    snaps[idx] = { step, selected, text, chosen: [...chosen], hints, showHint, result };
+    idx = i; const s = snaps[i];
+    step = s?.step ?? 0; selected = s?.selected ?? null; text = s?.text ?? ''; chosen = s ? [...s.chosen] : []; hints = s?.hints ?? 0; showHint = s?.showHint ?? false; result = s?.result ?? null;
+    resume.set(level.id, i); window.scrollTo(0, 0);
   }
-  const rightText = $derived(card.type === 'saisie' ? card.reponses![0] : card.type === 'parsons' ? card.lignes!.join('\n') : card.choix?.find(c => c.juste) ? i18n.t(card.choix!.find(c => c.juste)) : '');
+  function next() {
+    if (idx + 1 >= total) { resume.clear(level.id); finished = true; return; }
+    goto(idx + 1);
+  }
+  function prev() { if (idx > 0) goto(idx - 1); }
+  /** Bouton retour du téléphone : revient à la carte précédente (renvoie false au début : l'appelant quitte la leçon). */
+  export function back(): boolean { if (!finished && idx > 0) { prev(); return true; } return false; }
+  function replay() { resume.clear(level.id); onreplay(); }
   const score = $derived(levelScore(scoredItems(level), progress.best(level.id)));
   function key(e: KeyboardEvent) { if (e.key === 'Enter' && card.type === 'saisie' && !result && canCheck) check(); }
 </script>
@@ -56,7 +73,8 @@
 <div class="wrap">
   {#if !finished}
     <header class="top">
-      <button class="x" onclick={onexit} aria-label={ui('leave')}>✕</button>
+      <button class="x" onclick={() => { if (!back()) onexit(); }} aria-label={ui('prev')} title={ui('prev')}>←</button>
+      <LogoMenu compact onhome={onexit} />
       <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax={total} aria-valuenow={idx}><div style="width:{(idx / total) * 100}%"></div></div>
       <span class="muted">{idx + 1}/{total}</span>
     </header>
@@ -64,7 +82,7 @@
     <article class="card" aria-live="polite" use:typeset={[idx, step, !!result, showHint, i18n.lang]}>
       {#if card.defi}<p class="tag">{ui('challenge')}</p>{/if}
       {#if card.type === 'exemple'}
-        <h2>{t(card.titre)}</h2>
+        <h2>{@html md(t(card.titre))}</h2>
         <div class="ex">
           {#if exLines.length}<pre class="code"><code>{#each exLines as ln}<span class="ln" class:cur={ln.k === step}>{@html highlight(ln.code, card.lang ?? 'python')}</span>{'\n'}{/each}</code></pre>{/if}
           <ol class="steps">
@@ -80,7 +98,7 @@
       {#if card.type === 'qcm' || card.type === 'tentative'}
         <div class="choices" role="radiogroup">
           {#each choices as { c, i }}
-            <button class="choice" class:sel={selected === i} class:ok={result && c.juste} class:bad={result && selected === i && !c.juste} role="radio" aria-checked={selected === i} disabled={!!result} onclick={() => (selected = i)}><code>{t(c)}</code></button>
+            <button class="choice" class:sel={selected === i} class:ok={result?.ok && selected === i} class:bad={result && selected === i && !c.juste} role="radio" aria-checked={selected === i} disabled={!!result} onclick={() => (selected = i)}>{#if rich(t(c))}<span class="opt">{@html md(t(c))}</span>{:else}<code>{t(c)}</code>{/if}</button>
           {/each}
         </div>
       {:else if card.type === 'saisie'}
@@ -95,13 +113,17 @@
         </div>
       {/if}
 
-      {#if showHint && card.indice}<p class="hint">💡 {t(card.indice)}</p>{/if}
+      {#if showHint && card.indice}<p class="hint">💡 {@html md(t(card.indice))}</p>{/if}
 
       {#if result}
         <div class="fb" class:good={result.ok} role="status">
           <strong>{result.ok ? ui('right') : ui('notyet')}</strong>{result.ok && earned ? ` +${earned} ${ui('xp')}` : ''}
-          {#if !result.ok}<div class="small">{ui('answer')} : <pre><code>{rightText}</code></pre></div>{/if}
-          <p>{@html md(t(card.explication))}</p>
+          {#if result.ok}
+            <p>{@html md(t(card.explication))}</p>
+          {:else}
+            {#if card.indice}<p>💡 {@html md(t(card.indice))}</p>{/if}
+            <p class="muted">{ui('retry_later')}</p>
+          {/if}
         </div>
       {/if}
     </article>
@@ -118,12 +140,12 @@
     </footer>
   {:else}
     <section class="card end">
-      <h1>{t(level.titre)}</h1>
+      <h1>{@html md(t(level.titre))}</h1>
       <p class="big">{Math.round(score * 100)} %</p>
       <p class="stars" aria-label={`${stars(score)} / 3`}>{'★'.repeat(stars(score))}<span class="off">{'★'.repeat(3 - stars(score))}</span></p>
       <p>{score + 1e-9 >= UNLOCK_THRESHOLD ? ui('unlocked') : ui('need')}</p>
-      <div class="ia"><strong>{ui('your_ai')}</strong> — {t(level.ia)}</div>
-      <div class="foot"><button class="btn" onclick={onreplay}>{ui('replay')}</button><button class="btn primary" onclick={onexit}>{ui('back')}</button></div>
+      <div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(t(level.ia))}</div>
+      <div class="foot"><button class="btn" onclick={replay}>{ui('replay')}</button><button class="btn primary" onclick={onexit}>{ui('back')}</button></div>
     </section>
   {/if}
 </div>
@@ -133,6 +155,7 @@
   .x { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--c-border); background: var(--c-surface); cursor: pointer; }
   .bar { flex: 1; height: 10px; background: var(--c-surface-2); border-radius: 99px; overflow: hidden; }
   .bar div { height: 100%; background: var(--c-primary); transition: width .3s; }
+  .opt :global(p) { margin: 0; } .opt { font-size: 1.05rem; }
   .q { font-size: 1.1rem; margin-top: 0; max-width: 62ch; } .tag { color: var(--c-accent); font-weight: 800; text-transform: uppercase; font-size: .8rem; letter-spacing: .6px; margin: 0 0 6px; }
   .ex { display: grid; gap: 12px; } .steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; } .steps li { color: var(--c-text-muted); } .steps li.cur { color: var(--c-text); font-weight: 600; } .steps :global(p) { margin: 0; }
   .choices, .lines { display: grid; gap: 10px; margin-top: 14px; }
@@ -144,6 +167,7 @@
   .fb { margin-top: 16px; padding: 12px 16px; border-radius: 16px; background: var(--c-accent-soft); border: 1px solid var(--c-accent); }
   .fb.good { background: var(--c-primary-soft); border-color: var(--c-primary); } .fb p { margin: 6px 0 0; } .small { font-size: .9rem; }
   .foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; position: sticky; bottom: 0; padding: 10px 0 calc(var(--sab) + 10px); background: linear-gradient(transparent, var(--c-bg) 30%); }
+  .prev { margin-right: auto; }
   .end { text-align: center; } .end .foot { justify-content: center; position: static; background: none; }
-  .big { font-size: 3rem; font-weight: 800; margin: 0; } .off { opacity: .25; } .ia { background: var(--c-surface-2); border-radius: 16px; padding: 12px 16px; margin: 14px 0; text-align: left; }
+  .end h1 :global(p), .ia :global(p) { margin: 0; } .big { font-size: 3rem; font-weight: 800; margin: 0; } .off { opacity: .25; } .ia { background: var(--c-surface-2); border-radius: 16px; padding: 12px 16px; margin: 14px 0; text-align: left; }
 </style>

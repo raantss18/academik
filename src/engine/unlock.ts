@@ -17,3 +17,12 @@ export function unlockedLevels(order: readonly string[], scores: Readonly<Record
 
 /** Niveaux sans contenu : à ignorer pour le déblocage tant que le cursus n'est pas entièrement écrit. */
 export const emptyLevels = (order: readonly string[], hasContent: (id: string) => boolean): Set<string> => new Set(order.filter(id => !hasContent(id)));
+
+/**
+ * Niveau proposé par « Continuer » : le premier niveau ouvert, avec contenu, dont le score n'a pas encore atteint le seuil
+ * (donc on passe au suivant dès 50 %) ; sinon le premier pas encore maîtrisé (< 100 %), pour gagner des étoiles.
+ */
+export function nextLevel(order: readonly string[], scores: Readonly<Record<string, number>>, open: ReadonlySet<string>, hasContent: (id: string) => boolean, threshold = UNLOCK_THRESHOLD): string | undefined {
+  const playable = order.filter(id => hasContent(id) && open.has(id));
+  return playable.find(id => (scores[id] ?? 0) + 1e-9 < threshold) ?? playable.find(id => (scores[id] ?? 0) < 1) ?? playable[0];
+}

@@ -25,6 +25,17 @@ const msg = lang => (section.match(new RegExp(`### Message ${lang}\\s+([\\s\\S]*
 const notes = { fr: msg('fr'), en: msg('en') };
 if (!notes.fr || !notes.en) { console.error('CHANGELOG.md : « ### Message fr » et « ### Message en » requis'); process.exit(1); }
 
+// Garde-fou (E10) : un paquet ne doit jamais être plus ancien que le code qu'il prétend contenir.
+import { statSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+const SRC = ['src', 'content', 'public', 'index.html', 'vite.config.ts', 'build.json', 'capacitor.config.json', 'android/app/src', 'android/app/build.gradle', 'src-tauri/src', 'src-tauri/tauri.conf.json', 'src-tauri/Cargo.toml', 'package.json', 'scripts/build-content.mjs', 'scripts/trim-fonts.mjs'];
+const sources = execFileSync('git', ['ls-files', '-co', '--exclude-standard', ...SRC], { encoding: 'utf8' }).split('\n').filter(f => f && !f.startsWith('public/app/') && !f.startsWith('public/content/') && existsSync(f));
+const newest = Math.max(...sources.map(f => statSync(f).mtimeMs));
+for (const f of [`academik-${version}.apk`, `academik-${version}-x86_64.AppImage`]) {
+  const p = `release-out/${f}`;
+  if (existsSync(p) && statSync(p).mtimeMs < newest) { console.error(`✗ ${f} est plus ancien que le code (${sources.find(s => statSync(s).mtimeMs === newest)}). Reconstruire : scripts/build-release.sh`); process.exit(1); }
+}
+
 const asset = (file, name) => { const p = `release-out/${file}`; if (!existsSync(p)) return undefined; const b = readFileSync(p); return { url: `https://github.com/raantss18/academik/releases/download/v${version}/${file}`, sha256: createHash('sha256').update(b).digest('hex'), bytes: b.length }; };
 const assets = { android: asset(`academik-${version}.apk`), linux: asset(`academik-${version}-x86_64.AppImage`) };
 for (const k of Object.keys(assets)) if (!assets[k]) delete assets[k];

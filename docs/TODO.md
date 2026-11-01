@@ -3,12 +3,30 @@
 > Source unique du « qui fait quoi, où on en est ». Mis à jour à chaque tâche. Légende : ✅ fait · 🔄 en cours · ⏳ à faire · ⛔ bloqué · ❓ décision d'Antsa.
 > Dernière mise à jour : 1er nov. 2026 (v0.3.1 publiée). Règles : `CONSIGNES.md` ; décisions : `DECISIONS.md` ; Codex : `docs/CODEX.md`.
 
+## 0. Corrections signalées par Antsa (journal)
+> **Processus (obligatoire)** : dès qu'Antsa signale une erreur → (1) l'inscrire ici **avant** de corriger ; (2) corriger la **cause**, pas seulement le symptôme ;
+> (3) chercher la **même classe d'erreur** ailleurs dans l'app et le contenu ; (4) ajouter un test dans `tests/invariants.test.ts` qui l'interdit ;
+> (5) publier et cocher. Une erreur ne doit jamais revenir.
+
+| # | Signalée | Symptôme | Cause racine | Correction (classe d'erreur traitée) | Garde-fou | Version |
+| --- | --- | --- | --- | --- | --- | --- |
+| E1 | 1 nov. | boutons du haut inutilisables, cachés par la barre d'état du téléphone | l'app dessine bord à bord (WebView ≥ 140) et ignorait la hauteur des barres système | marges `--sat/--sab` sur tous les conteneurs (Capacitor puis `env()`) | `invariants` E1 | 0.3.1 |
+| E2 | 1 nov. | réglages / à propos / synchronisation en haut à droite | ne suivait pas COMIMa | tout dans le menu du logo (+ langue, thème, mises à jour) | `invariants` E5 | 0.3.1 |
+| E3 | 1 nov. | l'icône est une étoile avec un diagramme | mauvais logo | le « e » rouge partout (icône, favicon, démarrage, en-tête) ; script `scripts/make-icons.py` | — | 0.3.1 |
+| E4 | 1 nov. | « Bientôt » partout | contenu absent + modules vides affichés ligne à ligne | modules sans contenu regroupés ; modules 0 et 3 livrés ; 4 et 5 en cours ; un niveau vide ne bloque plus la suite | `navigation` | 0.3.0 |
+| E5 | 1 nov. | une leçon quittée recommence au début ; « Continuer » ramène à la même leçon | aucune mémoire de position ; « Continuer » visait le premier niveau < 100 % | reprise de la carte ; `nextLevel` passe au suivant dès 50 % | `navigation`, `invariants` E5/E6 | 0.3.2 |
+| E6 | 1 nov. | pas de retour à la page précédente ; retour ≠ accueil ; le bouton retour d'Android ferme l'app | pas de navigation arrière ; plugin Capacitor App absent | bouton ← + logo → Accueil ; retour d'Android géré | `invariants` E5/E6 | 0.3.2 |
+| E7 | 1 nov. | la bonne réponse est montrée quand c'est faux | non conforme au principe COMIMa | jamais de réponse ni d'explication en cas d'erreur (indice seulement) ; la bonne option n'est plus surlignée | `invariants` E7 | 0.3.2 |
+| E8 | 1 nov. | LaTeX non rendu dans les choix multiples | les options étaient affichées comme du code brut | options, indices et titres passent par `md()` ; test des `$` équilibrés dans tout le contenu | `invariants` E8 | 0.3.2 |
+| E10 | 1 nov. (constatée par Claude) | paquets APK/AppImage livrés en retard sur le code (2 fois) | construction manuelle en plusieurs commandes, sans contrôle | `scripts/build-release.sh` (une seule commande) ; `release.mjs` refuse des paquets plus anciens que les sources | `release.mjs` | 0.3.2 |
+| E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | 🔄 intégration en cours (voir § 1) | — | à venir |
+
 ## 1. Application et site
 - ✅ Squelette Svelte, moteur (déblocage 50 %, étoiles, XP, série, journal en ajout seul, FSRS, Elo), stockage à la COMIMa (migrations, sauvegarde, profils)
 - ✅ Hors ligne : site installable (PWA), APK signé (Capacitor), AppImage (Tauri) ; audit « hors ligne » automatique
 - ✅ Mises à jour séparées : contenu automatique (SHA-256, atomique, compatibilité **par niveau**) et application signée (`release.json` Ed25519)
 - ✅ Présentation : formules KaTeX, code coloré, encadrés, exemple à ligne surlignée ; menu du logo (réglages, à propos, synchro, langue, thème) ; icône « e » rouge ; marges de la barre d'état
-- ⏳ **Carte « ville qui s'allume » dans l'app** (aujourd'hui : liste) : porter `prototypes/carte-ville/`, données réelles, n'afficher que les quartiers proches
+- 🔄 **Carte « ville qui s'allume » à l'accueil** (E9 ; aujourd'hui : liste) : porter `prototypes/carte-ville/`, données réelles, n'afficher que les quartiers proches
 - ⏳ Lecteur de leçon v2 : deux volets (texte | atelier) sur tablette/bureau, fil d'Ariane, précédent/suivant (`docs/REFERENCES-PRESENTATION.md`)
 - ⏳ Révisions espacées **à l'écran** (FSRS est prêt, pas branché) ; difficulté adaptative (Elo) ; réparation de prérequis (2 min)
 - ⏳ Éditeur Python exécutable (Pyodide en Web Worker, délai limite, tests par exercice) ; terminal simulé (modules 1 et 14) ; cartes interactives (curseur, glisser, ordonner)

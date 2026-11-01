@@ -5,6 +5,7 @@ Généré par `node scripts/licenses.mjs`. Le code d'academik est sous Apache-2.
 | Paquet | Version | Licence |
 | --- | --- | --- |
 | @capacitor/android | 8.6.0 | MIT |
+| @capacitor/app | 8.1.2 | MIT |
 | @capacitor/core | 8.6.0 | MIT |
 | @fontsource-variable/hanken-grotesk | 5.3.0 | OFL-1.1 |
 | @noble/ed25519 | 3.2.0 | MIT |

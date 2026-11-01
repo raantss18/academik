@@ -6,13 +6,15 @@
   import UpdateBanner from './UpdateBanner.svelte';
   import LogoMenu from './LogoMenu.svelte';
   import { levelScore, stars } from '../engine/score';
-  import { unlockedLevels } from '../engine/unlock';
+  import { unlockedLevels, nextLevel } from '../engine/unlock';
+  import { resume } from '../lib/resume';
 
   let { onplay, onrules }: { onplay: (id: string) => void; onrules: () => void } = $props();
 
   const scores = $derived(Object.fromEntries(content.order.map(id => [id, content.levels[id] ? levelScore(scoredItems(content.levels[id]), progress.best(id)) : 0])));
   const open = $derived(unlockedLevels(content.order, scores, undefined, undefined, content.empty));
-  const current = $derived(content.order.find(id => content.levels[id] && open.has(id) && scores[id] < 1) ?? content.order.find(id => content.levels[id]));
+  const current = $derived(nextLevel(content.order, scores, open, id => !!content.levels[id]));
+  const where = $derived(current && content.levels[current] ? resume.get(current, content.levels[current].cartes.length) : 0);
   const fr = $derived(i18n.lang === 'fr');
   const ready = $derived(content.modules.filter(m => m.niveaux.some(n => content.levels[n.id])));
   const upcoming = $derived(content.modules.filter(m => !m.niveaux.some(n => content.levels[n.id])));
@@ -26,7 +28,7 @@
   </header>
 
   <UpdateBanner />
-  {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}</button>{/if}
+  {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}{where > 0 ? ` (${ui('card')} ${where + 1}/${content.levels[current].cartes.length})` : ''}</button>{/if}
   <p class="muted small">{ui('guest')}</p>
 
   {#each ready as m}

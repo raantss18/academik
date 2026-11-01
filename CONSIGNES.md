@@ -36,7 +36,9 @@ Public : l'auteur (Antsa), les étudiants L1–M1, les lycéens COMIMa (module 0
    Pyodide et les gros modules en chargement paresseux.
 10. **Présentation des cours meilleure que celle d'OpenClassrooms** (exigence d'Antsa, 2 nov. 2026) : barre vérifiable dans
     `docs/QUALITE-COURS.md`, à respecter par tout niveau.
-11. **Ne jamais dire « fini » sans l'avoir fait tourner** (tests, navigateur, émulateur). `PROGRESS.md` dit la vérité.
+11. **Principes COMIMa dans l'app** (D-021, D-022) : une tentative par carte, la réponse n'est jamais montrée en cas d'erreur, retour ≠ accueil.
+12. **Une erreur signalée ne revient jamais** : l'inscrire dans `docs/TODO.md` (§ 0) avant de corriger, corriger la cause, chercher la même classe d'erreur ailleurs, ajouter le garde-fou dans `tests/invariants.test.ts`, puis publier (demande d'Antsa, 1er nov. 2026).
+13. **Ne jamais dire « fini » sans l'avoir fait tourner** (tests, navigateur, émulateur). `PROGRESS.md` dit la vérité.
 
 ## 3. Façon de travailler
 
