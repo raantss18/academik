@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 8,
-  "version": "0.3.5",
+  "build": 9,
+  "version": "0.3.6",
   "notes": {
-   "fr": "Les cours deviennent plus clairs : des schémas, des tableaux et des exemples concrets accompagnent la théorie, et chaque notation est expliquée avant d'être utilisée. Le niveau « Démontrer » est le premier à en profiter.",
-   "en": "Lessons get clearer: diagrams, tables and concrete examples now go with the theory, and every notation is explained before it is used. The “Proving” level is the first to benefit."
+   "fr": "L'accueil devient une ville qui s'allume : chaque quartier est un module, chaque bâtiment un niveau, et il s'éclaire à mesure que tu gagnes des étoiles. Touche un bâtiment pour jouer. La liste reste disponible d'un geste.",
+   "en": "Home is now a city that lights up: each district is a module, each building a level, and it brightens as you earn stars. Tap a building to play. The list is still one tap away."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.5/academik-0.3.5.apk",
-    "sha256": "0fbbb59bd76c0c1a1c1c673dc6b9f7805055201cbed6e6f10f5ec28610c03c6a",
-    "bytes": 3719919
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.6/academik-0.3.6.apk",
+    "sha256": "d3152f7a9224e8b3f7e57fc43e085e7c1d97e78ca7cb9cfc0dfb1eaa51287bd7",
+    "bytes": 3756489
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.5/academik-0.3.5-x86_64.AppImage",
-    "sha256": "58638a719e20f2245693e29ca212df87bd2e3c3632217772fc9f755d2831a328",
-    "bytes": 108780024
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.6/academik-0.3.6-x86_64.AppImage",
+    "sha256": "3b2657243ab8db15cb9879d85be3d1d0bb5143f537a5ff9a73aaec8062aa7a2f",
+    "bytes": 108808696
    }
   }
  },
  "history": [
+  {
+   "build": 8,
+   "version": "0.3.5",
+   "notes": {
+    "fr": "Les cours deviennent plus clairs : des schémas, des tableaux et des exemples concrets accompagnent la théorie, et chaque notation est expliquée avant d'être utilisée. Le niveau « Démontrer » est le premier à en profiter.",
+    "en": "Lessons get clearer: diagrams, tables and concrete examples now go with the theory, and every notation is explained before it is used. The “Proving” level is the first to benefit."
+   }
+  },
   {
    "build": 7,
    "version": "0.3.4",
