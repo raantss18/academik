@@ -1,0 +1,96 @@
+id: '4.1'
+module: 4
+duree_min: 12
+titre: { fr: 'Vecteurs', en: 'Vectors' }
+ia: { fr: 'Kintana représente un texte par un vecteur de comptage, première brique de la similarité.', en: 'Kintana represents a text as a count vector, the first building block of similarity.' }
+sources:
+  - { titre: 'Gilbert Strang — MIT 18.06, espaces vectoriels', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana compte les mots dans l’ordre (chat, lune). Pour « chat lune chat », quelle est la première coordonnée ?'
+    en: 'Kintana counts words in the order (chat, lune). For “chat lune chat”, what is the first coordinate?'
+    choix:
+      - { fr: '1', en: '1' }
+      - { fr: '2', en: '2', juste: true }
+      - { fr: '3', en: '3' }
+    verif: 'print("chat lune chat".split().count("chat"))'
+    sortie: '2'
+    explication: { fr: 'La première coordonnée compte uniquement « chat », présent deux fois.', en: 'The first coordinate counts only “chat”, which occurs twice.' }
+  - id: c2
+    type: idee
+    fr: 'Imagine une flèche : sa coordonnée horizontale indique le déplacement vers la droite, sa coordonnée verticale le déplacement vers le haut. Un vecteur de $\mathbb{R}^n$ est une liste ordonnée de $n$ nombres réels ; on additionne coordonnée par coordonnée. Pour un texte, chaque axe désigne un mot du même vocabulaire ordonné.'
+    en: 'Imagine an arrow: its horizontal coordinate gives the movement to the right, and its vertical coordinate the movement upward. A vector in $\mathbb{R}^n$ is an ordered list of $n$ real numbers; addition is coordinate by coordinate. For a text, each axis refers to a word in the same ordered vocabulary.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Réunir deux textes', en: 'Combining two texts' }
+    etapes:
+      - { code: 'u, v = (2, 1), (1, 3)', fr: 'Dans l’ordre (chat, lune), les textes ont pour vecteurs $u=(2,1)$ et $v=(1,3)$.', en: 'In the order (chat, lune), the texts have vectors $u=(2,1)$ and $v=(1,3)$.' }
+      - { code: 'total = tuple(a + b for a, b in zip(u, v))', fr: 'Assembler les textes revient à additionner leurs comptages.', en: 'Joining the texts adds their word counts.' }
+      - { code: 'print(total)', fr: 'On obtient $(3,4)$ : trois occurrences de chat, quatre de lune.', en: 'The result is $(3,4)$: three occurrences of chat and four of lune.' }
+    verif: 'print(tuple(a+b for a,b in zip((2,1),(1,3))))'
+    sortie: '(3, 4)'
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $u=(2,1)$ et $v=(1,3)$, donne la seconde coordonnée de $u+v$.'
+    en: 'For $u=(2,1)$ and $v=(1,3)$, give the second coordinate of $u+v$.'
+    reponses: ['4']
+    verif: 'print(tuple(a+b for a,b in zip((2,1),(1,3)))[1])'
+    explication: { fr: 'On additionne les secondes coordonnées : $1+3=4$.', en: 'Add the second coordinates: $1+3=4$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Multiplier un vecteur par $k$ multiplie toutes ses coordonnées par $k$. Quelle est la première coordonnée de $3(2,1)$ ?'
+    en: 'Multiplying a vector by $k$ multiplies every coordinate by $k$. What is the first coordinate of $3(2,1)$?'
+    reponses: ['6']
+    verif: 'print(tuple(3*a for a in (2,1))[0])'
+    explication: { fr: '$3(2,1)=(6,3)$ : la flèche garde son sens et triple de longueur.', en: '$3(2,1)=(6,3)$: the arrow keeps its direction and triples in length.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un déplacement va de $A=(1,4)$ à $B=(3,1)$. Sa coordonnée verticale est celle de $B-A$ : calcule-la.'
+    en: 'A displacement goes from $A=(1,4)$ to $B=(3,1)$. Its vertical coordinate is that of $B-A$: compute it.'
+    reponses: ['-3']
+    verif: 'print(tuple(b-a for a,b in zip((1,4),(3,1)))[1])'
+    explication: { fr: '$1-4=-3$ : on descend de trois unités ; un vecteur peut avoir des coordonnées négatives.', en: '$1-4=-3$: we move down three units; vector coordinates can be negative.' }
+  - id: c7
+    type: piege
+    fr: 'Même taille ne signifie pas mêmes axes : $(2,1)$ dans (chat, lune) devient $(1,2)$ dans (lune, chat).'
+    en: 'Equal size does not mean matching axes: $(2,1)$ in (chat, lune) becomes $(1,2)$ in (lune, chat).'
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le vecteur $(5,2)$ utilise (lune, chat). Réécris-le dans (chat, lune) : quelle est sa première coordonnée ?'
+    en: 'The vector $(5,2)$ uses (lune, chat). Rewrite it in (chat, lune): what is its first coordinate?'
+    reponses: ['2']
+    verif: 'counts = dict(zip(("lune", "chat"), (5, 2))); print(counts["chat"])'
+    explication: { fr: 'La première position doit compter chat, donc vaut $2$, quelle que soit la position initiale.', en: 'The first position must count chat, so it is $2$, regardless of its original position.' }
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Une combinaison linéaire additionne des multiples de vecteurs. Quelle est la seconde coordonnée de $2u+v$, avec $u=(1,2)$ et $v=(3,-1)$ ?'
+    en: 'A linear combination adds scalar multiples of vectors. What is the second coordinate of $2u+v$, where $u=(1,2)$ and $v=(3,-1)$?'
+    reponses: ['3']
+    verif: 'print(tuple(2*a+b for a,b in zip((1,2),(3,-1)))[1])'
+    explication: { fr: '$2u+v=(5,3)$, car la seconde coordonnée vaut $2\times2-1=3$.', en: '$2u+v=(5,3)$, since the second coordinate is $2\times2-1=3$.' }
+  - id: c10
+    type: plus
+    fr: 'Pour aller plus loin : une base permet de décrire chaque vecteur de façon unique par ses coordonnées ; source : MIT 18.06, espaces vectoriels (lien dans les sources).'
+    en: 'Further exploration: a basis lets you describe every vector uniquely by its coordinates; source: MIT 18.06, vector spaces (link in the sources).'
+  - id: c11
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Deux textes ont les comptages $(2,1)$ et $(0,3)$. Tu les réunis puis divises chaque comptage par le nombre total de mots : donne la proportion de chat sous forme de fraction irréductible.'
+    en: 'Challenge. Two texts have counts $(2,1)$ and $(0,3)$. Combine them, then divide each count by the total number of words: give the proportion of chat as a reduced fraction.'
+    reponses: ['1/3']
+    verif: "from fractions import Fraction\nu = tuple(a+b for a,b in zip((2,1),(0,3)))\nprint(Fraction(u[0],sum(u)))"
+    indice: { fr: 'Additionne les vecteurs avant de compter tous les mots.', en: 'Add the vectors before counting all the words.' }
+    explication: { fr: 'Le total est $(2,4)$, soit six mots ; la proportion vaut $2/6=1/3$.', en: 'The total is $(2,4)$, or six words; the proportion is $2/6=1/3$.' }
+  - id: c12
+    type: retenir
+    fr: 'À retenir : garde des axes communs, puis additionne ou multiplie coordonnée par coordonnée pour transformer les comptages de Kintana.'
+    en: 'Remember: keep shared axes, then add or scale coordinate by coordinate to transform Kintana’s counts.'

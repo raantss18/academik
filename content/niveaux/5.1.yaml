@@ -1,0 +1,102 @@
+id: '5.1'
+module: 5
+duree_min: 12
+titre: { fr: 'Limites', en: 'Limits' }
+ia: { fr: 'Kintana distingue une valeur approchée de la limite de ses calculs.', en: 'Kintana distinguishes an approximate value from the limit of its computations.' }
+sources:
+  - { titre: 'MIT OCW — 18.01SC, Limits and Continuity', url: 'https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/part-a-definition-and-basic-rules/session-4-limits-and-continuity/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana produit $u_n=2+1/n$ pour $n\geq1$. Peut-il se rapprocher de $2$ sans jamais atteindre $2$ ?'
+    en: 'Kintana produces $u_n=2+1/n$ for $n\geq1$. Can it approach $2$ without ever reaching $2$?'
+    choix:
+      - { fr: 'Oui : la distance peut devenir aussi petite que souhaité.', en: 'Yes: the distance can become arbitrarily small.', juste: true }
+      - { fr: 'Non : une limite doit être atteinte.', en: 'No: a limit must be reached.' }
+      - { fr: 'Non : tous les termes doivent être égaux.', en: 'No: all terms must be equal.' }
+    explication: { fr: 'La distance est $1/n>0$, mais pour toute tolérance positive on peut choisir un rang assez grand.', en: 'The distance is $1/n>0$, but for any positive tolerance we can choose a sufficiently large index.' }
+  - id: c2
+    type: idee
+    fr: '$u_n\to\ell$ signifie que, pour toute tolérance $\varepsilon>0$, tous les termes après un certain rang vérifient $|u_n-\ell|<\varepsilon$. Pour une fonction, $\lim_{x\to a}f(x)=\ell$ décrit les valeurs lorsque $x$ approche $a$, avec $x\ne a$. La valeur $f(a)$ peut être différente, voire absente.'
+    en: '$u_n\to\ell$ means that, for every tolerance $\varepsilon>0$, all terms beyond some index satisfy $|u_n-\ell|<\varepsilon$. For a function, $\lim_{x\to a}f(x)=\ell$ describes values as $x$ approaches $a$, with $x\ne a$. The value $f(a)$ may differ or may not exist.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un trou que le calcul contourne', en: 'Computing around a hole' }
+    etapes:
+      - { fr: 'Pour $x\ne3$, pose $f(x)=(x^2-9)/(x-3)$.', en: 'For $x\ne3$, let $f(x)=(x^2-9)/(x-3)$.' }
+      - { fr: 'Factorise : $x^2-9=(x-3)(x+3)$, donc $f(x)=x+3$ hors de $3$.', en: 'Factor: $x^2-9=(x-3)(x+3)$, so $f(x)=x+3$ away from $3$.' }
+      - { fr: 'Quand $x\to3$, $x+3\to6$ ; la limite vaut $6$ même si $f(3)$ est indéfinie.', en: 'As $x\to3$, $x+3\to6$; the limit is $6$ even though $f(3)$ is undefined.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $u_n=2+1/n$, calcule $u_{10}$ (point ou virgule décimale).'
+    en: 'For $u_n=2+1/n$, compute $u_{10}$ (decimal point or comma).'
+    reponses: ['2.1', '2,1', '21/10']
+    verif: 'print(2+1/10)'
+    explication: { fr: '$u_{10}=2+0{,}1=2{,}1$ : ce terme est encore au-dessus de la limite.', en: '$u_{10}=2+0.1=2.1$: this term is still above the limit.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel est le plus petit entier $n\geq1$ tel que $|2+1/n-2|<0{,}01$ ?'
+    en: 'What is the smallest integer $n\geq1$ such that $|2+1/n-2|<0.01$?'
+    reponses: ['101']
+    verif: |
+      from fractions import Fraction
+      n = 1
+      while Fraction(1,n) >= Fraction(1,100):
+          n += 1
+      print(n)
+    explication: { fr: 'Il faut $1/n<1/100$, donc $n>100$ ; $100$ ne suffit pas pour une inégalité stricte.', en: 'We need $1/n<1/100$, hence $n>100$; $100$ does not satisfy the strict inequality.' }
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Une fonction vaut $-1$ pour $x<0$ et $1$ pour $x>0$. A-t-elle une limite réelle lorsque $x\to0$ des deux côtés ?'
+    en: 'A function equals $-1$ for $x<0$ and $1$ for $x>0$. Does it have a real two-sided limit as $x\to0$?'
+    choix:
+      - { fr: 'Oui, la moyenne des deux côtés.', en: 'Yes, the average of the two sides.' }
+      - { fr: 'Non : les limites à gauche et à droite diffèrent.', en: 'No: the left and right limits differ.', juste: true }
+      - { fr: 'Oui, quelle que soit la valeur au point.', en: 'Yes, whatever the value at the point.' }
+    explication: { fr: 'Une limite des deux côtés exige une même valeur à gauche et à droite ; fixer la valeur en zéro ne change rien.', en: 'A two-sided limit requires the same value from both sides; assigning a value at zero changes nothing.' }
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'La suite $v_n=(3n+2)/(n+1)$ vérifie $v_n=3-1/(n+1)$. Quelle est sa limite ?'
+    en: 'The sequence $v_n=(3n+2)/(n+1)$ satisfies $v_n=3-1/(n+1)$. What is its limit?'
+    reponses: ['3']
+    verif: |
+      from fractions import Fraction
+      # Rapport des coefficients dominants des polynômes de même degré.
+      print(Fraction(3,1))
+    explication: { fr: 'Le terme $1/(n+1)$ tend vers zéro ; il reste $3$. Le programme vérifie le rapport des coefficients dominants.', en: 'The term $1/(n+1)$ tends to zero, leaving $3$. The program checks the ratio of leading coefficients.' }
+  - id: c8
+    type: piege
+    fr: 'Quelques valeurs proches ne prouvent pas une limite : le raisonnement doit contrôler tous les termes assez loin, ou tous les points assez proches.'
+    en: 'A few nearby values do not prove a limit: the argument must control every sufficiently late term or every sufficiently nearby point.'
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'On sait que $\lim_{x\to3}f(x)=6$. Quelle condition supplémentaire rend $f$ continue en $3$ ?'
+    en: 'We know that $\lim_{x\to3}f(x)=6$. What additional condition makes $f$ continuous at $3$?'
+    choix:
+      - { fr: '$f(3)$ est définie et vaut $6$.', en: '$f(3)$ is defined and equals $6$.', juste: true }
+      - { fr: '$f(3)$ est indéfinie.', en: '$f(3)$ is undefined.' }
+      - { fr: '$f(3)$ est définie mais différente de la limite.', en: '$f(3)$ is defined but differs from the limit.' }
+    explication: { fr: 'La continuité au point signifie précisément que la limite y est égale à la valeur de la fonction.', en: 'Continuity at a point means precisely that the limit equals the function value there.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi : pour $x\ne4$, $g(x)=(x^2-16)/(x-4)$. Quelle valeur donner à $g(4)$ pour obtenir la continuité ?'
+    en: 'Challenge: for $x\ne4$, $g(x)=(x^2-16)/(x-4)$. What value should $g(4)$ have to make the function continuous?'
+    reponses: ['8']
+    verif: |
+      # Division exacte : (x²-a²)/(x-a) = x+a hors de a.
+      a = 4
+      print(a+a)
+    indice: { fr: 'Factorise une différence de carrés.', en: 'Factor a difference of squares.' }
+    explication: { fr: 'Hors de $4$, $g(x)=x+4$ ; sa limite en $4$ vaut $8$, valeur du prolongement continu.', en: 'Away from $4$, $g(x)=x+4$; its limit at $4$ is $8$, the value of the continuous extension.' }
+  - id: c11
+    type: retenir
+    fr: 'À retenir : une limite décrit une approche, la continuité la relie à la valeur au point ; Kintana peut ainsi raisonner sur une erreur qui tend vers zéro.'
+    en: 'Remember: a limit describes an approach, and continuity connects it to the value at the point; Kintana can use this to reason about an error tending to zero.'

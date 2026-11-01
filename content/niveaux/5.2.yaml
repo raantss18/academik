@@ -1,0 +1,108 @@
+id: '5.2'
+module: 5
+duree_min: 13
+titre: { fr: 'Dérivées', en: 'Derivatives' }
+ia: { fr: 'Kintana mesure comment son erreur varie quand un paramètre change.', en: 'Kintana measures how its error varies when a parameter changes.' }
+sources:
+  - { titre: 'MIT OCW — 18.01SC, Differentiation', url: 'https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Pour $f(x)=x^2$, quelle est la pente moyenne entre $x=2$ et $x=3$ ?'
+    en: 'For $f(x)=x^2$, what is the average slope between $x=2$ and $x=3$?'
+    choix:
+      - { fr: '$1$', en: '$1$' }
+      - { fr: '$5$', en: '$5$', juste: true }
+      - { fr: '$9$', en: '$9$' }
+    verif: 'print((3**2-2**2)//(3-2))'
+    sortie: '5'
+    explication: { fr: 'La pente moyenne est la variation de hauteur divisée par la variation horizontale : $(9-4)/(3-2)=5$.', en: 'Average slope is vertical change divided by horizontal change: $(9-4)/(3-2)=5$.' }
+  - id: c2
+    type: idee
+    fr: 'La dérivée est $f\prime(a)=\lim_{h\to0}(f(a+h)-f(a))/h$, si cette limite existe et est finie. Elle donne la pente de la tangente et $f(a+h)\approx f(a)+hf\prime(a)$ pour un petit $h$. Règles utiles : $(x^2)\prime=2x$, une constante a pour dérivée zéro, et on dérive les sommes terme à terme.'
+    en: 'The derivative is $f\prime(a)=\lim_{h\to0}(f(a+h)-f(a))/h$, when this limit exists and is finite. It gives the tangent slope and $f(a+h)\approx f(a)+hf\prime(a)$ for small $h$. Useful rules: $(x^2)\prime=2x$, a constant has derivative zero, and sums are differentiated term by term.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Dériver une erreur quadratique', en: 'Differentiating a squared error' }
+    etapes:
+      - { fr: 'Pose $E(w)=(w-3)^2=w^2-6w+9$.', en: 'Let $E(w)=(w-3)^2=w^2-6w+9$.' }
+      - { fr: 'Le quotient $[E(w+h)-E(w)]/h$ vaut $2w-6+h$ pour $h\ne0$.', en: 'The quotient $[E(w+h)-E(w)]/h$ equals $2w-6+h$ for $h\ne0$.' }
+      - { fr: 'À la limite, $E\prime(w)=2(w-3)$ ; en $w=1$, la pente vaut $-4$.', en: 'Taking the limit gives $E\prime(w)=2(w-3)$; at $w=1$, the slope is $-4$.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $f(x)=x^2$, calcule $f\prime(5)$.'
+    en: 'For $f(x)=x^2$, compute $f\prime(5)$.'
+    reponses: ['10']
+    verif: |
+      from fractions import Fraction
+      x, h = 5, Fraction(1,100)
+      print(((x+h)**2-(x-h)**2)/(2*h))
+    explication: { fr: '$f\prime(x)=2x$, donc $f\prime(5)=10$ ; la différence centrée est exacte pour ce polynôme quadratique.', en: '$f\prime(x)=2x$, so $f\prime(5)=10$; the centered difference is exact for this quadratic polynomial.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $E(w)=(w-3)^2$, calcule $E\prime(4)$.'
+    en: 'For $E(w)=(w-3)^2$, compute $E\prime(4)$.'
+    reponses: ['2']
+    verif: |
+      from fractions import Fraction
+      w, h = 4, Fraction(1,10)
+      E = lambda w: (w-3)**2
+      print((E(w+h)-E(w-h))/(2*h))
+    explication: { fr: '$E\prime(4)=2(4-3)=2$ ; près de $4$, augmenter le paramètre augmente son erreur.', en: '$E\prime(4)=2(4-3)=2$; near $4$, increasing the parameter increases its error.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Utilise la tangente à $f(x)=x^2$ en $2$ pour APPROCHER $f(2{,}1)$ (point ou virgule).'
+    en: 'Use the tangent to $f(x)=x^2$ at $2$ to APPROXIMATE $f(2.1)$ (decimal point or comma).'
+    reponses: ['4.4', '4,4', '22/5']
+    verif: |
+      from fractions import Fraction
+      print(2**2 + Fraction(1,10)*2*2)
+    explication: { fr: 'La tangente donne $4+0{,}1\times4=4{,}4$ ; la vraie valeur est $4{,}41$, car on néglige $h^2$.', en: 'The tangent gives $4+0.1\times4=4.4$; the true value is $4.41$, because we omit $h^2$.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $f(x)=|x|$, le quotient $[f(h)-f(0)]/h$ vaut $-1$ à gauche et $1$ à droite. Que conclus-tu ?'
+    en: 'For $f(x)=|x|$, the quotient $[f(h)-f(0)]/h$ is $-1$ on the left and $1$ on the right. What follows?'
+    choix:
+      - { fr: 'La fonction est dérivable en zéro.', en: 'The function is differentiable at zero.' }
+      - { fr: 'La dérivée est la moyenne des deux pentes.', en: 'The derivative is the average of the two slopes.' }
+      - { fr: 'La fonction est continue mais non dérivable en zéro.', en: 'The function is continuous but not differentiable at zero.', juste: true }
+    explication: { fr: 'La limite du quotient doit être la même des deux côtés ; la continuité seule ne suffit pas.', en: 'The quotient must have the same limit from both sides; continuity alone is insufficient.' }
+  - id: c8
+    type: piege
+    fr: 'Une dérivée nulle ne garantit pas un minimum : pour $f(x)=x^3$, $f\prime(0)=0$, mais la fonction prend des valeurs négatives à gauche et positives à droite.'
+    en: 'A zero derivative does not guarantee a minimum: for $f(x)=x^3$, $f\prime(0)=0$, but the function takes negative values on the left and positive values on the right.'
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Si $f(x)=3x^2-2x+7$, combien vaut $f\prime(2)$ ?'
+    en: 'If $f(x)=3x^2-2x+7$, what is $f\prime(2)$?'
+    reponses: ['10']
+    verif: |
+      from fractions import Fraction
+      f = lambda x: 3*x*x-2*x+7
+      h = Fraction(1,10)
+      print((f(2+h)-f(2-h))/(2*h))
+    explication: { fr: '$f\prime(x)=6x-2$, donc $f\prime(2)=12-2=10$ ; la constante disparaît.', en: '$f\prime(x)=6x-2$, so $f\prime(2)=12-2=10$; the constant disappears.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi : $L(w)=(2w-6)^2$. Calcule $L\prime(1)$ en développant avant de dériver.'
+    en: 'Challenge: $L(w)=(2w-6)^2$. Compute $L\prime(1)$ by expanding before differentiating.'
+    reponses: ['-16']
+    verif: |
+      from fractions import Fraction
+      L = lambda w: (2*w-6)**2
+      h = Fraction(1,100)
+      print((L(1+h)-L(1-h))/(2*h))
+    indice: { fr: 'Le carré développé commence par $4w^2$.', en: 'The expanded square starts with $4w^2$.' }
+    explication: { fr: '$L(w)=4w^2-24w+36$, donc $L\prime(w)=8w-24$ et $L\prime(1)=-16$.', en: '$L(w)=4w^2-24w+36$, so $L\prime(w)=8w-24$ and $L\prime(1)=-16$.' }
+  - id: c11
+    type: retenir
+    fr: 'À retenir : la dérivée est une pente locale obtenue par une limite ; son signe aide Kintana à choisir dans quel sens ajuster un paramètre.'
+    en: 'Remember: a derivative is a local slope obtained through a limit; its sign helps Kintana choose which way to adjust a parameter.'

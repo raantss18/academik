@@ -1,0 +1,96 @@
+id: '4.3'
+module: 4
+duree_min: 13
+titre: { fr: 'Matrices', en: 'Matrices' }
+ia: { fr: 'Kintana range les textes en lignes et calcule plusieurs scores en une opération matricielle.', en: 'Kintana stores texts as rows and computes several scores in one matrix operation.' }
+sources:
+  - { titre: 'Gilbert Strang — MIT 18.06, multiplication matricielle', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana range un texte par ligne et un mot du vocabulaire par colonne. Pour trois textes et deux mots, combien de cases faut-il ?'
+    en: 'Kintana stores one text per row and one vocabulary word per column. For three texts and two words, how many cells are needed?'
+    choix:
+      - { fr: '5', en: '5' }
+      - { fr: '6', en: '6', juste: true }
+      - { fr: '9', en: '9' }
+    verif: 'print(sum(len(row) for row in [[0,0] for _ in range(3)]))'
+    sortie: '6'
+    explication: { fr: 'Chaque texte a deux comptages : $3\times2=6$ cases.', en: 'Each text has two counts: $3\times2=6$ cells.' }
+  - id: c2
+    type: idee
+    fr: 'Une matrice $A$ à $m$ lignes et $n$ colonnes transforme un vecteur à $n$ coordonnées en un vecteur à $m$ coordonnées. Chaque coordonnée de $Ax$ est le produit scalaire d’une ligne de $A$ avec $x$. Géométriquement, les colonnes indiquent où vont les vecteurs des axes.'
+    en: 'A matrix $A$ with $m$ rows and $n$ columns transforms a vector with $n$ coordinates into one with $m$ coordinates. Each coordinate of $Ax$ is the dot product of a row of $A$ with $x$. Geometrically, the columns show where the axis vectors go.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Deux textes, une requête', en: 'Two texts, one query' }
+    etapes:
+      - { code: 'A, q = [[2, 1], [0, 3]], [1, 2]', fr: 'Les lignes de $A$ contiennent les textes ; la requête utilise les mêmes axes.', en: 'The rows of $A$ contain the texts; the query uses the same axes.' }
+      - { code: 'scores = [sum(a*b for a,b in zip(row,q)) for row in A]', fr: 'Chaque ligne donne un score : $2\times1+1\times2$, puis $0\times1+3\times2$.', en: 'Each row gives a score: $2\times1+1\times2$, then $0\times1+3\times2$.' }
+      - { code: 'print(scores)', fr: 'Résultat : $Aq=(4,6)$ ; ce sont des produits scalaires, pas encore des cosinus.', en: 'Result: $Aq=(4,6)$; these are dot products, not yet cosines.' }
+    verif: 'A,q=[[2,1],[0,3]],[1,2]; print([sum(a*b for a,b in zip(row,q)) for row in A])'
+    sortie: '[4, 6]'
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$ et $q=(1,2)$, quel est le second score de $Aq$ ?'
+    en: 'With $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$ and $q=(1,2)$, what is the second score of $Aq$?'
+    reponses: ['6']
+    verif: 'A,q=[[2,1],[0,3]],[1,2]; print(sum(a*b for a,b in zip(A[1],q)))'
+    explication: { fr: 'La seconde ligne donne $0\times1+3\times2=6$.', en: 'The second row gives $0\times1+3\times2=6$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$, calcule la première coordonnée de $A(0,1)$.'
+    en: 'For $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$, compute the first coordinate of $A(0,1)$.'
+    reponses: ['1']
+    verif: 'print(sum(a*b for a,b in zip((2,1),(0,1))))'
+    explication: { fr: '$A(0,1)=(1,3)$ : le second vecteur des axes devient la seconde colonne.', en: '$A(0,1)=(1,3)$: the second axis vector becomes the second column.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Transposer échange lignes et colonnes. Pour $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$, quel est le coefficient de $A^T$ en ligne 2, colonne 1 (indices à partir de 1) ?'
+    en: 'Transposing swaps rows and columns. For $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$, what is the entry of $A^T$ in row 2, column 1 (indices start at 1)?'
+    reponses: ['1']
+    verif: 'A=[[2,1],[0,3]]; AT=list(zip(*A)); print(AT[1][0])'
+    explication: { fr: 'Ce coefficient vient de la ligne 1, colonne 2 de $A$, donc vaut $1$.', en: 'This entry comes from row 1, column 2 of $A$, so it is $1$.' }
+  - id: c7
+    type: piege
+    fr: 'Dans $ABx$, on applique $B$ avant $A$ ; en général, échanger les matrices change le résultat.'
+    en: 'In $ABx$, apply $B$ before $A$; in general, swapping the matrices changes the result.'
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Soient $A=\begin{pmatrix}2&0\\0&1\end{pmatrix}$ et $B=\begin{pmatrix}0&1\\1&0\end{pmatrix}$. Quelle est la première coordonnée de $AB(1,3)$ ?'
+    en: 'Let $A=\begin{pmatrix}2&0\\0&1\end{pmatrix}$ and $B=\begin{pmatrix}0&1\\1&0\end{pmatrix}$. What is the first coordinate of $AB(1,3)$?'
+    reponses: ['6']
+    verif: "def mv(A,x): return [sum(a*b for a,b in zip(row,x)) for row in A]\nA,B=[[2,0],[0,1]],[[0,1],[1,0]]\nassert mv(B,mv(A,[1,3]))==[3,2]\nprint(mv(A,mv(B,[1,3]))[0])"
+    explication: { fr: '$B$ échange les coordonnées : $(3,1)$ ; $A$ double la première : $(6,1)$ ; dans l’autre ordre, on aurait $(3,2)$.', en: '$B$ swaps coordinates: $(3,1)$; $A$ doubles the first: $(6,1)$; the other order would give $(3,2)$.' }
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour multiplier $A$ de taille $2\times3$ par $B$ de taille $3\times4$, les dimensions intérieures coïncident. Combien de colonnes a $AB$ ?'
+    en: 'To multiply a $2\times3$ matrix $A$ by a $3\times4$ matrix $B$, the inner dimensions match. How many columns does $AB$ have?'
+    reponses: ['4']
+    verif: 'A=[[1]*3 for _ in range(2)]; B=[[1]*4 for _ in range(3)]; C=[[sum(a*b for a,b in zip(row,col)) for col in zip(*B)] for row in A]; print(len(C[0]))'
+    explication: { fr: '$AB$ a deux lignes et quatre colonnes : une case par couple ligne de $A$, colonne de $B$.', en: '$AB$ has two rows and four columns: one entry for each row of $A$ and column of $B$.' }
+  - id: c10
+    type: plus
+    fr: 'Pour aller plus loin : la matrice identité conserve chaque vecteur ; ses colonnes sont les vecteurs des axes (MIT 18.06, multiplication matricielle, sources).'
+    en: 'Further exploration: the identity matrix leaves every vector unchanged; its columns are the axis vectors (MIT 18.06, matrix multiplication, sources).'
+  - id: c11
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Les lignes de $D=\begin{pmatrix}1&2\\3&0\end{pmatrix}$ sont deux textes. Dans $DD^T$, donne le coefficient ligne 1, colonne 2 : il mesure leur produit scalaire.'
+    en: 'Challenge. The rows of $D=\begin{pmatrix}1&2\\3&0\end{pmatrix}$ are two texts. In $DD^T$, give the entry in row 1, column 2: it measures their dot product.'
+    reponses: ['3']
+    verif: 'D=[[1,2],[3,0]]; G=[[sum(a*b for a,b in zip(u,v)) for v in D] for u in D]; print(G[0][1])'
+    indice: { fr: 'La colonne 2 de $D^T$ est la ligne 2 de $D$.', en: 'Column 2 of $D^T$ is row 2 of $D$.' }
+    explication: { fr: '$1\times3+2\times0=3$ ; $DD^T$ rassemble les produits scalaires entre textes.', en: '$1\times3+2\times0=3$; $DD^T$ collects dot products between texts.' }
+  - id: c12
+    type: retenir
+    fr: 'À retenir : vérifie les dimensions, calcule ligne par colonne et respecte l’ordre des transformations de Kintana.'
+    en: 'Remember: check dimensions, compute row by column, and preserve the order of Kintana’s transformations.'

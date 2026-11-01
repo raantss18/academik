@@ -347,6 +347,176 @@
       "verifie": "2026-11-01",
       "mode": "lien",
       "note": "lien seulement ; aucun texte repris"
+    },
+    {
+      "id": "opendatastructures-org-ods-python-1-3-mathematic",
+      "titre": "Pat Morin — Open Data Structures, Mathematical Background",
+      "etablissement": "cité dans les niveaux 3.1",
+      "url": "https://opendatastructures.org/ods-python/1_3_Mathematical_Background.html",
+      "licence": "CC BY 2.5 CA ; explications et exercices originaux",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "docs-python-org-3-howto-sorting-html",
+      "titre": "Python — Sorting HOWTO",
+      "etablissement": "cité dans les niveaux 3.2",
+      "url": "https://docs.python.org/3/howto/sorting.html",
+      "licence": "PSF-2.0 ; exemples de la documentation également sous 0BSD",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "opendatastructures-org-ods-python-11-sorting-alg",
+      "titre": "Pat Morin — Open Data Structures, Sorting Algorithms",
+      "etablissement": "cité dans les niveaux 3.2",
+      "url": "https://opendatastructures.org/ods-python/11_Sorting_Algorithms.html",
+      "licence": "CC BY 2.5 CA ; exercices originaux",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "docs-python-org-3-library-bisect-html",
+      "titre": "Python — bisect",
+      "etablissement": "cité dans les niveaux 3.3",
+      "url": "https://docs.python.org/3/library/bisect.html",
+      "licence": "PSF-2.0 ; exemples de la documentation également sous 0BSD",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "opendatastructures-org-ods-python-5-hash-tables-",
+      "titre": "Pat Morin — Open Data Structures, Hash Tables",
+      "etablissement": "cité dans les niveaux 3.4",
+      "url": "https://opendatastructures.org/ods-python/5_Hash_Tables.html",
+      "licence": "CC BY 2.5 CA ; exercices originaux",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "docs-python-org-3-reference-datamodel-html-objec",
+      "titre": "Python — Data model, object.__hash__",
+      "etablissement": "cité dans les niveaux 3.4",
+      "url": "https://docs.python.org/3/reference/datamodel.html#object.__hash__",
+      "licence": "PSF-2.0 ; exemples de la documentation également sous 0BSD",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "opendatastructures-org-ods-python-12-3-graph-tra",
+      "titre": "Pat Morin — Open Data Structures, Graph Traversal",
+      "etablissement": "cité dans les niveaux 3.5",
+      "url": "https://opendatastructures.org/ods-python/12_3_Graph_Traversal.html",
+      "licence": "CC BY 2.5 CA ; exemples originaux",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "docs-python-org-3-library-collections-html-colle",
+      "titre": "Python — collections.deque",
+      "etablissement": "cité dans les niveaux 3.5",
+      "url": "https://docs.python.org/3/library/collections.html#collections.deque",
+      "licence": "PSF-2.0 ; exemples de la documentation également sous 0BSD",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-datastructures-html",
+      "titre": "Python — Data structures",
+      "etablissement": "cité dans les niveaux 3.boss",
+      "url": "https://docs.python.org/3/tutorial/datastructures.html",
+      "licence": "PSF-2.0 ; exemples de la documentation également sous 0BSD",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "opendatastructures-org-ods-python",
+      "titre": "Pat Morin — Open Data Structures",
+      "etablissement": "cité dans les niveaux 3.boss",
+      "url": "https://opendatastructures.org/ods-python/",
+      "licence": "CC BY 2.5 CA ; exercices originaux",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "scikit-learn-org-stable-modules-generated-sklear",
+      "titre": "scikit-learn — cosine_similarity",
+      "etablissement": "cité dans les niveaux 4.2",
+      "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html",
+      "licence": "BSD-3-Clause",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "numpy-org-doc-stable-reference-generated-numpy-l",
+      "titre": "NumPy — définition de la SVD (consultation uniquement)",
+      "etablissement": "cité dans les niveaux 4.5",
+      "url": "https://numpy.org/doc/stable/reference/generated/numpy.linalg.svd.html",
+      "licence": "BSD-3-Clause",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "ocw-mit-edu-courses-18-01sc-single-variable-calc",
+      "titre": "MIT OCW — 18.01SC, Limits and Continuity",
+      "etablissement": "cité dans les niveaux 5.1",
+      "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/part-a-definition-and-basic-rules/session-4-limits-and-continuity/",
+      "licence": "CC BY-NC-SA 4.0 ; éléments tiers exclus",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "ocw-mit-edu-courses-18-01sc-single-variable-calc",
+      "titre": "MIT OCW — 18.01SC, Differentiation",
+      "etablissement": "cité dans les niveaux 5.2",
+      "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/",
+      "licence": "CC BY-NC-SA 4.0 ; éléments tiers exclus",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "ocw-mit-edu-courses-18-02sc-multivariable-calcul",
+      "titre": "MIT OCW — 18.02SC, Partial Derivatives",
+      "etablissement": "cité dans les niveaux 5.3",
+      "url": "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/pages/2.-partial-derivatives/",
+      "licence": "CC BY-NC-SA 4.0 ; éléments tiers exclus",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "web-stanford-edu-boyd-cvxbook",
+      "titre": "Boyd et Vandenberghe — Convex Optimization, chapitre 3 (référence uniquement)",
+      "etablissement": "cité dans les niveaux 5.4",
+      "url": "https://web.stanford.edu/~boyd/cvxbook/",
+      "licence": "Copyright Cambridge University Press ; accès gratuit, aucune licence libre ; lien seulement",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "web-stanford-edu-boyd-cvxbook-bv-cvxslides-pdf",
+      "titre": "Boyd, Vandenberghe et Nobel — diapositives révisées en 2023 (référence uniquement)",
+      "etablissement": "cité dans les niveaux 5.4",
+      "url": "https://web.stanford.edu/~boyd/cvxbook/bv_cvxslides.pdf",
+      "licence": "Aucune licence libre indiquée ; lien seulement, aucun extrait repris",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
     }
   ]
 }
