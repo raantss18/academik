@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 7,
-  "version": "0.3.4",
+  "build": 8,
+  "version": "0.3.5",
   "notes": {
-   "fr": "Les mises à jour de l'application se téléchargent et s'installent maintenant toutes seules, dans l'app, sans passer par GitHub. Les réponses ont toutes la même présentation.",
-   "en": "App updates now download and install by themselves, inside the app, without going through GitHub. All answers now look the same."
+   "fr": "Les cours deviennent plus clairs : des schémas, des tableaux et des exemples concrets accompagnent la théorie, et chaque notation est expliquée avant d'être utilisée. Le niveau « Démontrer » est le premier à en profiter.",
+   "en": "Lessons get clearer: diagrams, tables and concrete examples now go with the theory, and every notation is explained before it is used. The “Proving” level is the first to benefit."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.4/academik-0.3.4.apk",
-    "sha256": "b6f0646b154544bfc8213a8e53bc77a3f85d2bf8aa25f1429415935c3c2a8d39",
-    "bytes": 3714859
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.5/academik-0.3.5.apk",
+    "sha256": "0fbbb59bd76c0c1a1c1c673dc6b9f7805055201cbed6e6f10f5ec28610c03c6a",
+    "bytes": 3719919
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.4/academik-0.3.4-x86_64.AppImage",
-    "sha256": "05c63aa6323256a9ea04235a00b419d5cf50bd084366558db54e1fbae8d151da",
-    "bytes": 108771832
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.5/academik-0.3.5-x86_64.AppImage",
+    "sha256": "58638a719e20f2245693e29ca212df87bd2e3c3632217772fc9f755d2831a328",
+    "bytes": 108780024
    }
   }
  },
  "history": [
+  {
+   "build": 7,
+   "version": "0.3.4",
+   "notes": {
+    "fr": "Les mises à jour de l'application se téléchargent et s'installent maintenant toutes seules, dans l'app, sans passer par GitHub. Les réponses ont toutes la même présentation.",
+    "en": "App updates now download and install by themselves, inside the app, without going through GitHub. All answers now look the same."
+   }
+  },
   {
    "build": 6,
    "version": "0.3.3",
