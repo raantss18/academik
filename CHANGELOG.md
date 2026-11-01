@@ -2,7 +2,7 @@
 
 ## [Non publié]
 
-## [0.2.0] — 2026-11-02
+## [0.2.0] — 2026-11-01
 
 ### Message fr
 Les niveaux se mettent maintenant à jour tout seuls, sans réinstaller l'app. Tu es prévenu quand une nouvelle version de l'application est disponible, avec ce qu'elle apporte.
