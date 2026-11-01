@@ -1,0 +1,104 @@
+id: '3.5'
+module: 3
+duree_min: 15
+titre: { fr: 'Graphes : parcours en largeur', en: 'Graphs: breadth-first search' }
+ia: { fr: 'Kintana explore les liens entre documents par distance croissante.', en: 'Kintana explores links between documents in increasing distance order.' }
+sources:
+  - { titre: 'Pat Morin — Open Data Structures, Graph Traversal', url: 'https://opendatastructures.org/ods-python/12_3_Graph_Traversal.html', licence: 'CC BY 2.5 CA ; exemples originaux' }
+  - { titre: 'Python — collections.deque', url: 'https://docs.python.org/3/library/collections.html#collections.deque', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Des liens orientés vont de A vers B, de A vers C et de B vers D. Quelle distance minimale, en nombre de liens, sépare A de D ?'
+    en: 'Directed links go from A to B, from A to C, and from B to D. What is the minimum distance, in links, from A to D?'
+    choix:
+      - { fr: '1', en: '1' }
+      - { fr: '2', en: '2', juste: true }
+      - { fr: '3', en: '3' }
+    verif: "from collections import deque\ng = {'A': ['B', 'C'], 'B': ['D'], 'C': [], 'D': []}\nd = {'A': 0}; q = deque(['A'])\nwhile q:\n    u = q.popleft()\n    for v in g[u]:\n        if v not in d:\n            d[v] = d[u]+1; q.append(v)\nprint(d['D'])"
+    sortie: '2'
+    explication: { fr: 'Le chemin A → B → D utilise deux liens ; aucun lien direct A → D n’existe.', en: 'Path A → B → D uses two links; there is no direct A → D link.' }
+  - id: c2
+    type: idee
+    fr: 'Un graphe relie des sommets par des arêtes ; ici les listes d’adjacence donnent les voisins accessibles dans le sens des liens. Le parcours en largeur (BFS) utilise une file : premier entré, premier sorti, et marque chaque sommet dès son ajout. Il trouve les distances minimales en nombre d’arêtes dans un graphe non pondéré, en temps $O(V+E)$ avec listes d’adjacence et opérations de file et de marquage de coût constant.'
+    en: 'A graph connects vertices by edges; here adjacency lists give neighbours reachable in the direction of the links. Breadth-first search (BFS) uses a first-in, first-out queue and marks each vertex when it is enqueued. It finds shortest distances measured in edges in an unweighted graph in $O(V+E)$ time with adjacency lists and constant-time queue and marking operations.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Explorer deux branches', en: 'Exploring two branches' }
+    etapes:
+      - code: "from collections import deque\ng = {'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': []}"
+        fr: 'Les deux branches rejoignent D ; suis l’ordre des voisins donné.'
+        en: 'Both branches reach D; follow the given neighbour order.'
+      - { code: "q = deque(['A']); distance = {'A': 0}", fr: 'A est découvert à distance zéro.', en: 'A is discovered at distance zero.' }
+      - code: "while q:\n    u = q.popleft()\n    for v in g[u]:\n        if v not in distance:\n            distance[v] = distance[u] + 1\n            q.append(v)"
+        fr: 'Après A, la file contient B puis C ; après B, C puis D ; C ne rajoute pas D.'
+        en: 'After A, the queue holds B then C; after B, C then D; C does not enqueue D again.'
+      - { code: "print(distance['D'])", fr: 'D est à distance $2$ ; ses deux chemins ne créent pas deux visites.', en: 'D is at distance $2$; its two paths do not create two visits.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'La file contient `[B, C]`. Tu retires B puis ajoutes D à droite. Combien de sommets attendent maintenant ?'
+    en: 'The queue contains `[B, C]`. You remove B and then append D on the right. How many vertices are waiting now?'
+    reponses: ['2']
+    verif: "from collections import deque\nq = deque(['B', 'C']); q.popleft(); q.append('D')\nprint(len(q))"
+    explication: { fr: 'La file est `[C, D]` : deux sommets, avec C traité avant D.', en: 'The queue is `[C, D]`: two vertices, with C processed before D.' }
+  - id: c5
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans l’exemple, dans quel ordre les sommets sortent-ils de la file ?'
+    en: 'In the example, in what order do vertices leave the queue?'
+    choix:
+      - { fr: 'A B D C', en: 'A B D C' }
+      - { fr: 'A D B C', en: 'A D B C' }
+      - { fr: 'A B C D', en: 'A B C D', juste: true }
+    verif: "from collections import deque\ng = {'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': []}\nq = deque(['A']); seen = {'A'}; order = []\nwhile q:\n    u = q.popleft(); order.append(u)\n    for v in g[u]:\n        if v not in seen:\n            seen.add(v); q.append(v)\nprint(' '.join(order))"
+    sortie: 'A B C D'
+    explication: { fr: 'B et C étaient dans la file avant D ; les sommets de distance $1$ passent avant ceux de distance $2$.', en: 'B and C entered the queue before D; vertices at distance $1$ precede those at distance $2$.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans le cycle orienté A → B → C → A, combien de sommets distincts le BFS depuis A ajoute-t-il à la file, A inclus ?'
+    en: 'In directed cycle A → B → C → A, how many distinct vertices does BFS from A enqueue, including A?'
+    reponses: ['3']
+    verif: "from collections import deque\ng = {'A': ['B'], 'B': ['C'], 'C': ['A']}\nq = deque(['A']); seen = {'A'}\nwhile q:\n    for v in g[q.popleft()]:\n        if v not in seen:\n            seen.add(v); q.append(v)\nprint(len(seen))"
+    explication: { fr: 'Le marquage empêche de réinsérer A ; chaque sommet entre une seule fois.', en: 'Marking prevents A from being enqueued again; each vertex enters once.' }
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans le graphe orienté A → B, B → C et D isolé, combien de sommets restent inaccessibles depuis A ?'
+    en: 'In the directed graph A → B, B → C with isolated D, how many vertices remain unreachable from A?'
+    reponses: ['1']
+    verif: "from collections import deque\ng = {'A': ['B'], 'B': ['C'], 'C': [], 'D': []}\nseen = {'A'}; q = deque(['A'])\nwhile q:\n    for v in g[q.popleft()]:\n        if v not in seen:\n            seen.add(v); q.append(v)\nprint(len(set(g)-seen))"
+    explication: { fr: 'D n’a aucun chemin depuis A ; il ne reçoit pas de distance dans ce parcours.', en: 'D has no path from A; it receives no distance in this traversal.' }
+  - id: c8
+    type: piege
+    fr: 'BFS minimise le nombre de liens, pas un coût variable : une arête coûteuse peut être plus chère que plusieurs arêtes bon marché.'
+    en: 'BFS minimizes the number of links, not a varying cost: one expensive edge may cost more than several cheap edges.'
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec A → D de coût $9$, A → B de coût $1$ et B → D de coût $1$, quel coût total a le chemin choisi en minimisant seulement le nombre de liens ?'
+    en: 'With A → D costing $9$, A → B costing $1$, and B → D costing $1$, what total cost does the path minimizing only the number of links have?'
+    choix:
+      - { fr: '2', en: '2' }
+      - { fr: '9', en: '9', juste: true }
+      - { fr: '11', en: '11' }
+    verif: "paths = [(1, 9), (2, 1+1)]\nprint(min(paths, key=lambda p: p[0])[1])"
+    sortie: '9'
+    explication: { fr: 'BFS choisit le lien direct, coût $9$ ; le chemin à deux liens coûte $2$, mais nécessite un autre critère.', en: 'BFS chooses the direct link, costing $9$; the two-link path costs $2$, but requires a different criterion.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Les liens orientés sont A → B, A → C, B → D, C → E, E → D, D → F et F → B. Quelle est la distance minimale de A à F ?'
+    en: 'Challenge. Directed links are A → B, A → C, B → D, C → E, E → D, D → F, and F → B. What is the minimum distance from A to F?'
+    reponses: ['3']
+    verif: "from collections import deque\ng = {'A': ['B', 'C'], 'B': ['D'], 'C': ['E'], 'D': ['F'], 'E': ['D'], 'F': ['B']}\nd = {'A': 0}; q = deque(['A'])\nwhile q:\n    u = q.popleft()\n    for v in g[u]:\n        if v not in d:\n            d[v] = d[u]+1; q.append(v)\nprint(d['F'])"
+    indice: { fr: 'Groupe les sommets par distance depuis A et marque-les dès leur découverte.', en: 'Group vertices by distance from A and mark them as soon as they are discovered.' }
+    explication: { fr: 'Les couches sont A ; B,C ; D,E ; F : A → B → D → F a trois liens, et le cycle ne change rien.', en: 'The layers are A; B,C; D,E; F: A → B → D → F has three links, and the cycle changes nothing.' }
+  - id: c11
+    type: retenir
+    fr: 'File FIFO, marquage à la découverte, distances par couches : Kintana explore les documents accessibles sans tourner dans les cycles.'
+    en: 'FIFO queue, marking on discovery, layered distances: Kintana explores reachable documents without looping around cycles.'

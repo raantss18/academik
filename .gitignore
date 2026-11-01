@@ -18,3 +18,4 @@ release-out/
 public/content/
 public/app/release.json.sig.tmp
 src/generated/
+handoff/runs/

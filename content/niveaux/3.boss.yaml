@@ -1,0 +1,104 @@
+id: '3.boss'
+module: 3
+duree_min: 15
+titre: { fr: 'L’index inversé', en: 'The inverted index' }
+ia: { fr: 'Kintana sait retrouver un document vite : index inversé, tri, recherche.', en: 'Kintana can find a document quickly: inverted indexing, sorting, and searching.' }
+sources:
+  - { titre: 'Python — Data structures', url: 'https://docs.python.org/3/tutorial/datastructures.html', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
+  - { titre: 'Python — bisect', url: 'https://docs.python.org/3/library/bisect.html', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
+  - { titre: 'Pat Morin — Open Data Structures', url: 'https://opendatastructures.org/ods-python/', licence: 'CC BY 2.5 CA ; exercices originaux' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana doit répondre souvent à « quels documents contiennent ce mot ? ». Quelle structure prépare directement cette recherche ?'
+    en: 'Kintana must often answer “which documents contain this word?” Which structure directly prepares this lookup?'
+    choix:
+      - { fr: 'Un dictionnaire mot → ensemble d’identifiants de documents.', en: 'A dictionary mapping each word to a set of document IDs.', juste: true }
+      - { fr: 'La seule longueur de chaque document.', en: 'Only the length of each document.' }
+      - { fr: 'Une liste de mots sans identifiants.', en: 'A list of words without IDs.' }
+    explication: { fr: 'Cet index inversé part du mot pour retrouver les documents qui le contiennent.', en: 'This inverted index starts from a word to retrieve the documents containing it.' }
+  - id: c2
+    type: idee
+    fr: 'Notre corpus est `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`, `4: ''eau riz sel''` : les mots sont déjà en minuscules et séparés par des espaces. Chaque entrée stocke un ensemble d’identifiants ; une requête « ET » intersecte deux ensembles. Construire cet index parcourt les $T$ occurrences en temps attendu $O(T)$ sous les hypothèses du hachage, puis on trie les résultats pour les afficher.'
+    en: 'Our corpus is `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`, `4: ''eau riz sel''`: words are already lowercase and space-separated. Each entry stores a set of IDs; an “AND” query intersects two sets. Building this index scans the $T$ occurrences in expected $O(T)$ time under the hashing assumptions, then results are sorted for display.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Construire puis interroger', en: 'Build, then query' }
+    etapes:
+      - { code: "docs = {1: 'riz eau riz', 2: 'eau sel', 3: 'riz sel', 4: 'eau riz sel'}\nindex = {}", fr: 'Les clés du corpus sont les identifiants des documents.', en: 'Corpus keys are document IDs.' }
+      - code: "for doc, text in docs.items():\n    for word in text.split():\n        index.setdefault(word, set()).add(doc)"
+        fr: '`setdefault` crée l’ensemble s’il manque ; `add` évite les identifiants répétés.'
+        en: '`setdefault` creates the set if missing; `add` avoids repeated IDs.'
+      - { code: "print(sorted(index['riz'] & index['eau']))", fr: 'Le résultat `[1, 4]` contient les documents ayant les deux mots.', en: 'The result `[1, 4]` contains documents with both words.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans ce corpus, combien d’occurrences de mots la construction parcourt-elle, répétitions incluses ?'
+    en: 'In this corpus, how many word occurrences does construction scan, including repetitions?'
+    reponses: ['10']
+    verif: "docs = ['riz eau riz', 'eau sel', 'riz sel', 'eau riz sel']\nprint(sum(len(text.split()) for text in docs))"
+    explication: { fr: 'Les longueurs sont $3,2,2,3$, soit $10$ occurrences ; l’ensemble retire les doublons seulement lors du stockage.', en: 'The lengths are $3,2,2,3$, giving $10$ occurrences; the set removes duplicates only when storing IDs.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Combien de documents distincts contient l’entrée `sel` de cet index ?'
+    en: 'How many distinct documents does the `sel` entry in this index contain?'
+    reponses: ['3']
+    verif: "docs = {1: 'riz eau riz', 2: 'eau sel', 3: 'riz sel', 4: 'eau riz sel'}\nprint(len({i for i, text in docs.items() if 'sel' in text.split()}))"
+    explication: { fr: '`sel` est présent dans les documents $2$, $3$ et $4$.', en: '`sel` occurs in documents $2$, $3$, and $4$.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'La liste triée des documents contenant `eau` est `[1, 2, 4]`. Quelle position donne `bisect_left` pour l’identifiant $3$ ?'
+    en: 'The sorted list of documents containing `eau` is `[1, 2, 4]`. What position does `bisect_left` give for ID $3$?'
+    reponses: ['2']
+    verif: "from bisect import bisect_left\nprint(bisect_left([1, 2, 4], 3))"
+    explication: { fr: 'La position $2$ contient $4$, pas $3$ : la position d’insertion ne prouve pas la présence.', en: 'Position $2$ contains $4$, not $3$: an insertion position does not prove membership.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour une requête dont un mot est absent, quelle expression renvoie un résultat vide sans erreur ?'
+    en: 'For a query with an absent word, which expression returns an empty result without an error?'
+    choix:
+      - { fr: '`index[''lune''] & index[''riz'']`', en: '`index[''lune''] & index[''riz'']`' }
+      - { fr: '`index.get(''lune'', set()) & index.get(''riz'', set())`', en: '`index.get(''lune'', set()) & index.get(''riz'', set())`', juste: true }
+      - { fr: '`index.get(''lune'', set()) | index[''riz'']`', en: '`index.get(''lune'', set()) | index[''riz'']`' }
+    verif: "index = {'riz': {1, 3, 4}}\nresult = index.get('lune', set()) & index.get('riz', set())\nassert result == set()\nprint(len(result))"
+    sortie: '0'
+    explication: { fr: '`get` fournit un ensemble vide pour le mot absent ; l’intersection avec cet ensemble reste vide.', en: '`get` supplies an empty set for the missing word; intersecting with it stays empty.' }
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Tu affiches les résultats `{4, 1, 3}` en ordre croissant. Quel identifiant apparaît en deuxième ?'
+    en: 'You display results `{4, 1, 3}` in ascending order. Which ID appears second?'
+    reponses: ['3']
+    verif: 'print(sorted({4, 1, 3})[1])'
+    explication: { fr: 'Le tri produit `[1, 3, 4]` ; il rend l’ordre d’affichage explicite.', en: 'Sorting produces `[1, 3, 4]`; it makes display order explicit.' }
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Les liens orientés entre documents sont 1 → 2, 1 → 3, 2 → 4, 3 → 4 et 4 → 1. À quelle distance minimale de 1 se trouve 4 ?'
+    en: 'Directed links between documents are 1 → 2, 1 → 3, 2 → 4, 3 → 4, and 4 → 1. What is the minimum distance from 1 to 4?'
+    reponses: ['2']
+    verif: "from collections import deque\ng = {1: [2, 3], 2: [4], 3: [4], 4: [1]}\nd = {1: 0}; q = deque([1])\nwhile q:\n    u = q.popleft()\n    for v in g[u]:\n        if v not in d:\n            d[v] = d[u]+1; q.append(v)\nprint(d[4])"
+    explication: { fr: 'BFS découvre $2$ et $3$ à distance $1$, puis $4$ à distance $2$, une seule fois malgré les deux chemins.', en: 'BFS discovers $2$ and $3$ at distance $1$, then $4$ at distance $2$, just once despite the two paths.' }
+  - id: c10
+    type: piege
+    fr: 'L’index accélère l’accès aux candidats, mais intersecter et afficher les résultats coûte encore du temps ; ces mots exacts ne constituent pas une recherche sémantique.'
+    en: 'The index speeds up access to candidates, but intersecting and displaying results still takes time; exact words do not provide semantic search.'
+  - id: c11
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Dans le corpus, garde les documents contenant `riz` ET `sel`, puis ceux accessibles depuis 1 en au plus un lien (1 inclus), avec les liens de la carte précédente. Quel unique identifiant reste ?'
+    en: 'Challenge. In the corpus, keep documents containing `riz` AND `sel`, then those reachable from 1 in at most one link (including 1), using the previous card’s links. Which single ID remains?'
+    reponses: ['3']
+    verif: "from collections import deque\ndocs = {1: 'riz eau riz', 2: 'eau sel', 3: 'riz sel', 4: 'eau riz sel'}\nindex = {}\nfor doc, text in docs.items():\n    for word in text.split():\n        index.setdefault(word, set()).add(doc)\ng = {1: [2, 3], 2: [4], 3: [4], 4: [1]}\nd = {1: 0}; q = deque([1])\nwhile q:\n    u = q.popleft()\n    for v in g[u]:\n        if v not in d:\n            d[v] = d[u]+1; q.append(v)\nresult = sorted(index['riz'] & index['sel'] & {v for v in d if d[v] <= 1})\nassert len(result) == 1\nprint(result[0])"
+    indice: { fr: 'Construis séparément l’ensemble des réponses textuelles et celui des documents proches, puis intersecte-les.', en: 'Build the set of text matches and the set of nearby documents separately, then intersect them.' }
+    explication: { fr: 'Le texte donne $\{3,4\}$ ; la distance donne $\{1,2,3\}$ ; leur intersection est $\{3\}$.', en: 'The text gives $\{3,4\}$; distance gives $\{1,2,3\}$; their intersection is $\{3\}$.' }
+  - id: c12
+    type: retenir
+    fr: 'Kintana sait retrouver un document vite : index inversé pour les mots, tri et dichotomie pour les listes, BFS pour les liens, complexité pour estimer le coût.'
+    en: 'Kintana can find a document quickly: an inverted index for words, sorting and binary search for lists, BFS for links, and complexity to estimate cost.'

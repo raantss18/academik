@@ -1,0 +1,95 @@
+id: '3.4'
+module: 3
+duree_min: 13
+titre: { fr: 'Hachage', en: 'Hashing' }
+ia: { fr: 'Kintana associe chaque mot aux identifiants de ses documents.', en: 'Kintana maps each word to its document IDs.' }
+sources:
+  - { titre: 'Pat Morin — Open Data Structures, Hash Tables', url: 'https://opendatastructures.org/ods-python/5_Hash_Tables.html', licence: 'CC BY 2.5 CA ; exercices originaux' }
+  - { titre: 'Python — Data model, object.__hash__', url: 'https://docs.python.org/3/reference/datamodel.html#object.__hash__', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Une table jouet utilise $h(k)=k\bmod5$. Que se passe-t-il pour les clés $7$ et $12$ ?'
+    en: 'A toy table uses $h(k)=k\bmod5$. What happens for keys $7$ and $12$?'
+    choix:
+      - { fr: 'Elles désignent forcément le même document.', en: 'They must refer to the same document.' }
+      - { fr: 'Elles arrivent toutes deux dans le seau 2.', en: 'They both land in bucket 2.', juste: true }
+      - { fr: 'Elles arrivent dans des seaux différents.', en: 'They land in different buckets.' }
+    verif: 'print((7 % 5, 12 % 5))'
+    sortie: '(2, 2)'
+    explication: { fr: 'Les restes sont égaux : c’est une collision, pas une égalité de clés.', en: 'The remainders match: this is a collision, not equality of keys.' }
+  - id: c2
+    type: idee
+    fr: 'Le hachage transforme une clé en un code qui aide à choisir où la ranger ; plusieurs clés peuvent entrer en collision. Avec le chaînage, chaque seau conserve les paires clé-valeur et la recherche compare les clés. Une recherche coûte $O(1)$ en espérance sous de bonnes hypothèses de répartition et de charge, mais $O(n)$ au pire ; on suppose ici hachage et comparaison des clés de coût constant.'
+    en: 'Hashing transforms a key into a code that helps choose where to store it; different keys may collide. With chaining, each bucket stores key-value pairs and lookup compares the keys. Lookup takes expected $O(1)$ time under suitable distribution and load assumptions, but $O(n)$ in the worst case; here hashing and comparing keys are assumed to take constant time.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Deux clés dans un même seau', en: 'Two keys in one bucket' }
+    etapes:
+      - { code: 'table = [[] for _ in range(5)]', fr: 'Crée cinq seaux indépendants ; ceci est un modèle pédagogique, pas l’implémentation de `dict`.', en: 'Create five independent buckets; this is a teaching model, not the implementation of `dict`.' }
+      - code: "for key, value in [(7, 'A'), (12, 'B')]:\n    table[key % 5].append((key, value))"
+        fr: 'Le seau $2$ contient maintenant les deux paires.'
+        en: 'Bucket $2$ now contains both pairs.'
+      - { code: "print(next(value for key, value in table[12 % 5] if key == 12))", fr: 'La comparaison de clés retrouve B sans confondre $7$ et $12$.', en: 'Comparing keys retrieves B without confusing $7$ and $12$.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec $h(k)=k\bmod7$, quel est le seau de la clé $24$ ?'
+    en: 'With $h(k)=k\bmod7$, which bucket receives key $24$?'
+    reponses: ['3']
+    verif: 'print(24 % 7)'
+    explication: { fr: '$24=3\times7+3$ : le reste est $3$.', en: '$24=3\times7+3$: the remainder is $3$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Insère les clés `[1, 6, 11, 3]` dans des seaux avec $h(k)=k\bmod5$. Combien de clés contient le seau $1$ ?'
+    en: 'Insert keys `[1, 6, 11, 3]` into buckets using $h(k)=k\bmod5$. How many keys does bucket $1$ contain?'
+    reponses: ['3']
+    verif: "table = [[] for _ in range(5)]\nfor k in [1, 6, 11, 3]: table[k % 5].append(k)\nprint(len(table[1]))"
+    explication: { fr: '$1$, $6$ et $11$ ont le même reste ; la clé $3$ est dans un autre seau.', en: '$1$, $6$, and $11$ share a remainder; key $3$ is in another bucket.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un dictionnaire contient `index = {''chat'': {2, 5}}`. Après `index[''chat''].add(2)`, combien d’identifiants contient cette entrée ?'
+    en: 'A dictionary contains `index = {''chat'': {2, 5}}`. After `index[''chat''].add(2)`, how many IDs does this entry contain?'
+    reponses: ['2']
+    verif: "index = {'chat': {2, 5}}\nindex['chat'].add(2)\nprint(len(index['chat']))"
+    explication: { fr: 'Un ensemble ne stocke chaque identifiant qu’une fois ; répéter un mot ne crée pas un nouveau document.', en: 'A set stores each ID only once; repeating a word does not create a new document.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pourquoi ne faut-il pas enregistrer `hash(''chat'')` comme identifiant durable d’un mot entre plusieurs exécutions Python ?'
+    en: 'Why should you avoid saving `hash(''chat'')` as a persistent word ID across Python runs?'
+    choix:
+      - { fr: 'Le hachage des chaînes peut varier entre les processus, et des collisions restent possibles.', en: 'String hashes may vary across processes, and collisions remain possible.', juste: true }
+      - { fr: 'Un hachage contient toujours le texte complet.', en: 'A hash always contains the complete text.' }
+      - { fr: 'Deux chaînes différentes ont toujours des hachages différents.', en: 'Different strings always have different hashes.' }
+    explication: { fr: 'Garde le mot comme clé ou attribue un identifiant explicite ; le hachage interne n’est pas une identité persistante.', en: 'Keep the word as a key or assign an explicit ID; the internal hash is not a persistent identity.' }
+  - id: c8
+    type: piege
+    fr: 'Une collision n’autorise pas à écraser une autre clé : compare les clés ; un hachage de table n’est pas non plus un chiffrement.'
+    en: 'A collision does not permit overwriting another key: compare keys; a table hash is not encryption either.'
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le seau contient les clés `[4, 9, 14, 19]` dans cet ordre. Une recherche séquentielle de $19$ compare combien de clés ?'
+    en: 'A bucket contains keys `[4, 9, 14, 19]` in that order. How many keys does a sequential lookup for $19$ compare?'
+    reponses: ['4']
+    verif: "count = 0\nfor k in [4, 9, 14, 19]:\n    count += 1\n    if k == 19: break\nprint(count)"
+    explication: { fr: 'Il faut atteindre la dernière clé ; concentrer les clés dans un seau rend la recherche linéaire.', en: 'The last key must be reached; concentrating keys in one bucket makes lookup linear.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Les documents sont `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`. Combien de documents distincts l’entrée du mot `riz` doit-elle contenir ?'
+    en: 'Challenge. The documents are `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`. How many distinct documents should the entry for word `riz` contain?'
+    reponses: ['2']
+    verif: "docs = {1: 'riz eau riz', 2: 'eau sel', 3: 'riz sel'}\nindex = {}\nfor doc, text in docs.items():\n    for word in text.split():\n        index.setdefault(word, set()).add(doc)\nprint(len(index['riz']))"
+    indice: { fr: 'Associe un ensemble d’identifiants à chaque mot.', en: 'Associate a set of IDs with each word.' }
+    explication: { fr: 'L’entrée contient les identifiants $1$ et $3$ ; les deux occurrences de `riz` dans le document $1$ ne comptent qu’une fois.', en: 'The entry contains IDs $1$ and $3$; the two occurrences of `riz` in document $1$ count only once.' }
+  - id: c11
+    type: retenir
+    fr: 'Hacher oriente la recherche, comparer les clés la confirme : Kintana peut construire un index mot → documents sans perdre les collisions.'
+    en: 'Hashing directs lookup, comparing keys confirms it: Kintana can build a word → documents index without losing colliding entries.'

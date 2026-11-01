@@ -1,0 +1,94 @@
+id: '3.1'
+module: 3
+duree_min: 12
+titre: { fr: 'Complexité', en: 'Complexity' }
+ia: { fr: 'Kintana estime comment le coût de recherche grandit avec ses documents.', en: 'Kintana estimates how search cost grows with its documents.' }
+sources:
+  - { titre: 'Pat Morin — Open Data Structures, Mathematical Background', url: 'https://opendatastructures.org/ods-python/1_3_Mathematical_Background.html', licence: 'CC BY 2.5 CA ; explications et exercices originaux' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un programme compare chacun des $10$ documents à chacun des $10$ documents, y compris lui-même. Combien de comparaisons fait-il ?'
+    en: 'A program compares each of $10$ documents with each of the $10$ documents, including itself. How many comparisons does it make?'
+    choix:
+      - { fr: '20', en: '20' }
+      - { fr: '100', en: '100', juste: true }
+      - { fr: '10', en: '10' }
+    verif: 'print(sum(1 for i in range(10) for j in range(10)))'
+    sortie: '100'
+    explication: { fr: 'Pour chaque document, tu fais dix comparaisons : $10\times10=100$.', en: 'For each document, you make ten comparisons: $10\times10=100$.' }
+  - id: c2
+    type: idee
+    fr: 'La complexité compte des opérations en fonction de la taille $n$, dans un modèle où chaque opération choisie coûte une unité. Dire $T(n)=O(f(n))$ signifie que des constantes $C>0$ et $n_0$ existent avec $T(n)\leq C f(n)$ pour tout $n\geq n_0$. Parcourir, diviser par deux et comparer toutes les paires donnent respectivement des croissances linéaire, logarithmique et quadratique.'
+    en: 'Complexity counts operations as a function of size $n$, in a model where each chosen operation costs one unit. Writing $T(n)=O(f(n))$ means that constants $C>0$ and $n_0$ exist with $T(n)\leq C f(n)$ for every $n\geq n_0$. Scanning, repeatedly halving, and comparing every pair give linear, logarithmic, and quadratic growth respectively.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Compter les divisions', en: 'Counting halvings' }
+    etapes:
+      - { code: 'n, tours = 8, 0', fr: 'Pars de huit candidats.', en: 'Start with eight candidates.' }
+      - code: "while n > 1:\n    n //= 2\n    tours += 1"
+        fr: 'Les tailles passent par $8,4,2,1$ : trois divisions.'
+        en: 'Sizes go through $8,4,2,1$: three halvings.'
+      - { code: 'print(tours)', fr: 'Le résultat est $3=\log_2 8$, car $2^3=8$.', en: 'The result is $3=\log_2 8$, because $2^3=8$.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un parcours lit chaque document une fois ; pour $37$ documents, combien de lectures ?'
+    en: 'A scan reads each document once; for $37$ documents, how many reads?'
+    reponses: ['37']
+    verif: 'print(sum(1 for _ in range(37)))'
+    explication: { fr: 'Une lecture par document donne $T(n)=n$.', en: 'One read per document gives $T(n)=n$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Combien de divisions exactes par deux font passer $64$ à $1$ ?'
+    en: 'How many exact halvings take $64$ down to $1$?'
+    reponses: ['6']
+    verif: "n, k = 64, 0\nwhile n > 1:\n    n //= 2\n    k += 1\nprint(k)"
+    explication: { fr: '$64,32,16,8,4,2,1$ : six transitions, donc $\log_2 64=6$.', en: '$64,32,16,8,4,2,1$: six transitions, so $\log_2 64=6$.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Si le coût exact est $n^2$, par quel facteur est-il multiplié quand $n$ passe de $20$ à $40$ ?'
+    en: 'If the exact cost is $n^2$, by what factor does it grow when $n$ goes from $20$ to $40$?'
+    reponses: ['4']
+    verif: 'print(40**2 // 20**2)'
+    explication: { fr: 'Doubler chaque dimension multiplie le coût par $2^2=4$.', en: 'Doubling each dimension multiplies the cost by $2^2=4$.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $n\geq1$, $3n+2\leq5n$. Quelle conclusion cette inégalité justifie-t-elle ?'
+    en: 'For $n\geq1$, $3n+2\leq5n$. Which conclusion does this inequality justify?'
+    choix:
+      - { fr: 'Le programme dure exactement cinq secondes.', en: 'The program takes exactly five seconds.' }
+      - { fr: '$3n+2=O(n)$', en: '$3n+2=O(n)$', juste: true }
+      - { fr: 'Le coût est indépendant de $n$.', en: 'The cost is independent of $n$.' }
+    explication: { fr: 'Prends $C=5$ et $n_0=1$ dans la définition : la borne est linéaire.', en: 'Take $C=5$ and $n_0=1$ in the definition: the bound is linear.' }
+  - id: c8
+    type: piege
+    fr: '$O(n)$ est une borne de croissance, pas une durée : les constantes et la machine comptent pour les petites entrées.'
+    en: '$O(n)$ is a growth bound, not a duration: constants and hardware matter for small inputs.'
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Deux boucles successives lisent respectivement $12$ puis $12$ éléments. Combien de lectures au total ?'
+    en: 'Two consecutive loops read $12$ and then $12$ items. How many reads in total?'
+    reponses: ['24']
+    verif: 'print(sum(1 for _ in range(12)) + sum(1 for _ in range(12)))'
+    explication: { fr: 'Des boucles successives additionnent leurs coûts : $12+12$, pas $12^2$.', en: 'Consecutive loops add their costs: $12+12$, not $12^2$.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Pour $32$ documents, A fait exactement $n^2$ opérations et B exactement $n\log_2 n$. Combien B économise-t-il par rapport à A ?'
+    en: 'Challenge. For $32$ documents, A performs exactly $n^2$ operations and B exactly $n\log_2 n$. How many operations does B save compared with A?'
+    reponses: ['864']
+    verif: "n, k, m = 32, 0, 32\nwhile m > 1:\n    m //= 2\n    k += 1\nprint(n*n - n*k)"
+    indice: { fr: 'Calcule séparément les deux coûts avant de soustraire.', en: 'Compute both costs separately before subtracting.' }
+    explication: { fr: 'A coûte $1024$, B coûte $32\times5=160$ : économie de $864$ opérations dans ce modèle.', en: 'A costs $1024$, B costs $32\times5=160$: a saving of $864$ operations in this model.' }
+  - id: c11
+    type: retenir
+    fr: 'Compte les opérations, précise ton modèle et compare les croissances : Kintana peut anticiper le coût de ses recherches.'
+    en: 'Count operations, state your model, and compare growth rates: Kintana can anticipate its search costs.'
