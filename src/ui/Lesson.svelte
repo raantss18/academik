@@ -35,6 +35,8 @@
   const hasAnswer = $derived(card.type === 'qcm' || card.type === 'tentative' || card.type === 'saisie' || card.type === 'parsons');
   const canCheck = $derived(card.type === 'saisie' ? text.trim().length > 0 : card.type === 'parsons' ? chosen.length === (card.lignes?.length ?? 0) : selected !== null);
 
+  /** Une option qui contient une formule ($…$) ou du code entre accents graves est mise en forme ; sinon elle reste en police de code. */
+  const rich = (x: string) => /\$|`/.test(x);
   const norm = (s: string) => s.trim().replace(/\s+/g, ' ').toLowerCase();
   function check() {
     let ok = false;
@@ -80,7 +82,7 @@
     <article class="card" aria-live="polite" use:typeset={[idx, step, !!result, showHint, i18n.lang]}>
       {#if card.defi}<p class="tag">{ui('challenge')}</p>{/if}
       {#if card.type === 'exemple'}
-        <h2>{t(card.titre)}</h2>
+        <h2>{@html md(t(card.titre))}</h2>
         <div class="ex">
           {#if exLines.length}<pre class="code"><code>{#each exLines as ln}<span class="ln" class:cur={ln.k === step}>{@html highlight(ln.code, card.lang ?? 'python')}</span>{'\n'}{/each}</code></pre>{/if}
           <ol class="steps">
@@ -96,7 +98,7 @@
       {#if card.type === 'qcm' || card.type === 'tentative'}
         <div class="choices" role="radiogroup">
           {#each choices as { c, i }}
-            <button class="choice" class:sel={selected === i} class:ok={result?.ok && selected === i} class:bad={result && selected === i && !c.juste} role="radio" aria-checked={selected === i} disabled={!!result} onclick={() => (selected = i)}><code>{t(c)}</code></button>
+            <button class="choice" class:sel={selected === i} class:ok={result?.ok && selected === i} class:bad={result && selected === i && !c.juste} role="radio" aria-checked={selected === i} disabled={!!result} onclick={() => (selected = i)}>{#if rich(t(c))}<span class="opt">{@html md(t(c))}</span>{:else}<code>{t(c)}</code>{/if}</button>
           {/each}
         </div>
       {:else if card.type === 'saisie'}
@@ -111,7 +113,7 @@
         </div>
       {/if}
 
-      {#if showHint && card.indice}<p class="hint">💡 {t(card.indice)}</p>{/if}
+      {#if showHint && card.indice}<p class="hint">💡 {@html md(t(card.indice))}</p>{/if}
 
       {#if result}
         <div class="fb" class:good={result.ok} role="status">
@@ -119,7 +121,7 @@
           {#if result.ok}
             <p>{@html md(t(card.explication))}</p>
           {:else}
-            {#if card.indice}<p>💡 {t(card.indice)}</p>{/if}
+            {#if card.indice}<p>💡 {@html md(t(card.indice))}</p>{/if}
             <p class="muted">{ui('retry_later')}</p>
           {/if}
         </div>
@@ -153,6 +155,7 @@
   .x { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--c-border); background: var(--c-surface); cursor: pointer; }
   .bar { flex: 1; height: 10px; background: var(--c-surface-2); border-radius: 99px; overflow: hidden; }
   .bar div { height: 100%; background: var(--c-primary); transition: width .3s; }
+  .opt :global(p) { margin: 0; } .opt { font-size: 1.05rem; }
   .q { font-size: 1.1rem; margin-top: 0; max-width: 62ch; } .tag { color: var(--c-accent); font-weight: 800; text-transform: uppercase; font-size: .8rem; letter-spacing: .6px; margin: 0 0 6px; }
   .ex { display: grid; gap: 12px; } .steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; } .steps li { color: var(--c-text-muted); } .steps li.cur { color: var(--c-text); font-weight: 600; } .steps :global(p) { margin: 0; }
   .choices, .lines { display: grid; gap: 10px; margin-top: 14px; }
