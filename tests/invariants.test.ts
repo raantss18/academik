@@ -11,11 +11,18 @@ const read = (p: string) => readFileSync(p, 'utf8');
 const lesson = read('src/ui/Lesson.svelte'), css = read('src/app.css'), app = read('src/ui/App.svelte'), rules = read('src/ui/Consignes.svelte'), menu = read('src/ui/LogoMenu.svelte');
 
 describe('E8 · les formules ne restent jamais en texte brut', () => {
-  it('tout texte de carte affiché passe par md() (seule exception : une option sans formule, en police de code)', () => {
-    const raw = [...lesson.matchAll(/\{t\(/g)].map(m => lesson.slice(m.index! - 6, m.index! + 12));
-    expect(raw.filter(x => !x.startsWith('<code>{t(c)'))).toEqual([]);   // seule exception : la branche « pas de formule » de rich()
+  it('tout texte de carte affiché passe par md() : aucune interpolation brute', () => { expect([...lesson.matchAll(/\{t\(/g)].length).toBe(0); });
+  it('toutes les options d\u2019une carte ont le même rendu (E12) : même composant, jamais de police de code par défaut', () => {
+    expect(lesson).toMatch(/<span class="opt">\{@html md\(t\(c\)\)\}<\/span>/); expect(lesson).not.toMatch(/<code>\{t\(c\)\}<\/code>/); expect(lesson).not.toContain('rich(');
   });
-  it('une option avec formule ou code est mise en forme', () => { expect(lesson).toMatch(/rich\(t\(c\)\)[\s\S]{0,80}md\(t\(c\)\)/); });
+  it('dans une même carte : soit toutes les options sont du code balisé, soit aucune (pas de mélange de styles)', () => {
+    const bad: string[] = [];
+    for (const f of readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'))) for (const c of parse(read(`content/niveaux/${f}`)).cartes) {
+      if (!c.choix) continue; const code = c.choix.map((o: { fr: string }) => /^`[^`]*`$/.test(o.fr.trim()));
+      if (code.some(Boolean) && !code.every(Boolean)) bad.push(`${f} ${c.id}`);
+    }
+    expect(bad).toEqual([]);
+  });
   it('les $ des textes de contenu sont équilibrés (sinon une formule resterait brute)', () => {
     const bad: string[] = [];
     for (const f of readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'))) {
