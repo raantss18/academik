@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as ed from '@noble/ed25519';
 import { sha256Hex, updateContent, choosePack, parseIndex, type Pack } from '../src/lib/content-pack';
 import { memoryPackStore } from '../src/lib/pack-store';
-import { checkAppUpdate, verifyRelease, RELEASE_URL_PREFIX } from '../src/lib/app-update';
+import { checkAppUpdate, verifyRelease, revalidate, RELEASE_URL_PREFIX } from '../src/lib/app-update';
 
 const enc = (s: string) => new TextEncoder().encode(s);
 /** Faux serveur : { chemin: texte } ; tout le reste = 404 ; `down` = réseau coupé. */
@@ -171,4 +171,16 @@ describe('mise à jour de l’application (release.json signé)', () => {
   it('verifyRelease : accepte le bon, refuse le reste', async () => {
     const s = await signed(REL()); expect(await verifyRelease(enc(s.body), s.sig, s.pubHex)).toBe(true); expect(await verifyRelease(enc(s.body + 'x'), s.sig, s.pubHex)).toBe(false);
   });
+});
+
+describe('mise à jour mémorisée entre deux lancements (E11)', () => {
+  const ok = { build: 5, version: '0.3.2', notes: [{ version: '0.3.2', notes: { fr: 'a', en: 'b' } }], asset: A('0.3.2'), mandatory: false };
+  it('une mise à jour valide est relue telle quelle', () => { expect(revalidate(JSON.parse(JSON.stringify(ok)), 4)).toEqual(ok); });
+  it('périmée (l\u2019app a été mise à jour entre-temps) : écartée', () => { expect(revalidate(ok, 5)).toBeNull(); expect(revalidate(ok, 9)).toBeNull(); });
+  it('lien hors des releases du dépôt, empreinte fausse ou forme abîmée : écartée', () => {
+    expect(revalidate({ ...ok, asset: { ...ok.asset, url: 'https://evil.example/a.apk' } }, 4)).toBeNull();
+    expect(revalidate({ ...ok, asset: { ...ok.asset, sha256: 'zz' } }, 4)).toBeNull();
+    for (const bad of [null, undefined, 'x', 42, {}, { ...ok, notes: [] }, { ...ok, build: 'x' }, { ...ok, notes: [{ version: 1 }] }]) expect(revalidate(bad, 4)).toBeNull();
+  });
+  it('sans archive (site) : acceptée seulement si asset est null', () => { expect(revalidate({ ...ok, asset: null }, 4)).not.toBeNull(); });
 });

@@ -7,7 +7,8 @@ const build = JSON.parse(readFileSync('build.json', 'utf8'));
 
 export default defineConfig({
   base: './',
-  define: { __APP_BUILD__: build.build, __APP_VERSION__: JSON.stringify(build.version) },
+  define: { __APP_BUILD__: Number(process.env.ACADEMIK_TEST_BUILD) || build.build,   // ACADEMIK_TEST_BUILD : essai de la bannière de mise à jour avec une fausse ancienne version (jamais pour une publication)
+     __APP_VERSION__: JSON.stringify(build.version) },
   plugins: [
     svelte(),
     // Hors ligne d'abord : tout le jeu (code, contenu, police, icônes) est précaché au premier chargement.

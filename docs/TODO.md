@@ -19,6 +19,7 @@
 | E7 | 1 nov. | la bonne réponse est montrée quand c'est faux | non conforme au principe COMIMa | jamais de réponse ni d'explication en cas d'erreur (indice seulement) ; la bonne option n'est plus surlignée | `invariants` E7 | 0.3.2 |
 | E8 | 1 nov. | LaTeX non rendu dans les choix multiples | les options étaient affichées comme du code brut | options, indices et titres passent par `md()` ; test des `$` équilibrés dans tout le contenu | `invariants` E8 | 0.3.2 |
 | E10 | 1 nov. (constatée par Claude) | paquets APK/AppImage livrés en retard sur le code (2 fois) | construction manuelle en plusieurs commandes, sans contrôle | `scripts/build-release.sh` (une seule commande) ; `release.mjs` refuse des paquets plus anciens que les sources | `release.mjs` | 0.3.2 |
+| E11 | 1 nov. (constatée par Claude à l'essai) | une app 0.3.1 ne montre pas la bannière « nouvelle version 0.3.2 » après redémarrage | la mise à jour trouvée n'était gardée qu'en mémoire alors que la vérification réseau est limitée à 1 fois / 6 h | mise à jour mémorisée et revalidée (`revalidate`) ; statut « en attente d'une version plus récente » mémorisé ; pas de bannière de téléchargement sur le site | `updates.test`, `invariants` E11 | 0.3.3 |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | 🔄 intégration en cours (voir § 1) | — | à venir |
 
 ## 1. Application et site

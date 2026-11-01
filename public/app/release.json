@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 5,
-  "version": "0.3.2",
+  "build": 6,
+  "version": "0.3.3",
   "notes": {
-   "fr": "Tu reprends maintenant une leçon là où tu l'avais laissée, et « Continuer » te mène au niveau suivant dès que tu as 50 %. Le bouton ← et le bouton retour du téléphone te ramènent à la carte d'avant ; le logo te ramène à l'accueil. Si tu te trompes, la réponse n'est plus montrée.",
-   "en": "You now resume a lesson where you left it, and “Continue” takes you to the next level once you reach 50%. The ← button and the phone's back button take you to the previous card; the logo takes you home. If you get it wrong, the answer is no longer shown."
+   "fr": "La nouvelle version de l'application est maintenant annoncée même après avoir fermé et rouvert l'app, avec les nouveautés des versions que tu as sautées. Les niveaux des modules 4 et 5 arrivent tout seuls.",
+   "en": "The new app version is now announced even after closing and reopening the app, with what's new in the versions you skipped. Levels for modules 4 and 5 arrive by themselves."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.2/academik-0.3.2.apk",
-    "sha256": "aef579e07511256c754c0b297721a961ee93cd3fa5d768e804cecfaa549f72d6",
-    "bytes": 3647064
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.3/academik-0.3.3.apk",
+    "sha256": "594abcc85ee60d8da49428d93012da3206578363a821c0c5e6eed447addfd924",
+    "bytes": 3710854
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.2/academik-0.3.2-x86_64.AppImage",
-    "sha256": "5aa9024efd27f55b73d84522b70b8964f477c0b7d2a92c70b24ce5e88978f171",
-    "bytes": 108370424
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.3/academik-0.3.3-x86_64.AppImage",
+    "sha256": "37a909353d6e2c825848998308b47d59cdf3a99854f9a57fad05f6db218bd245",
+    "bytes": 108423672
    }
   }
  },
  "history": [
+  {
+   "build": 5,
+   "version": "0.3.2",
+   "notes": {
+    "fr": "Tu reprends maintenant une leçon là où tu l'avais laissée, et « Continuer » te mène au niveau suivant dès que tu as 50 %. Le bouton ← et le bouton retour du téléphone te ramènent à la carte d'avant ; le logo te ramène à l'accueil. Si tu te trompes, la réponse n'est plus montrée.",
+    "en": "You now resume a lesson where you left it, and “Continue” takes you to the next level once you reach 50%. The ← button and the phone's back button take you to the previous card; the logo takes you home. If you get it wrong, the answer is no longer shown."
+   }
+  },
   {
    "build": 4,
    "version": "0.3.1",

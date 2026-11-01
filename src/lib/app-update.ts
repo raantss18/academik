@@ -42,3 +42,12 @@ export async function checkAppUpdate(o: CheckOptions): Promise<AppUpdate | null>
   const skipped = [{ version: r.latest.version, notes: r.latest.notes }, ...(r.history ?? []).filter(h => h.build > o.build && okNotes(h.notes)).map(h => ({ version: h.version, notes: h.notes }))];
   return { build: r.latest.build, version: r.latest.version, notes: skipped, asset, mandatory };
 }
+
+/** Relit une mise à jour mémorisée localement (elle avait été vérifiée et signée) : écartée si elle est périmée ou mal formée. */
+export function revalidate(x: unknown, build: number): AppUpdate | null {
+  const u = x as AppUpdate | null;
+  if (!u || typeof u !== 'object' || !Number.isInteger(u.build) || u.build <= build || typeof u.version !== 'string' || !Array.isArray(u.notes) || !u.notes.length) return null;
+  if (!u.notes.every(n => typeof n?.version === 'string' && okNotes(n.notes))) return null;
+  if (u.asset !== null && !okAsset(u.asset)) return null;
+  return { build: u.build, version: u.version, notes: u.notes, asset: u.asset, mandatory: u.mandatory === true };
+}
