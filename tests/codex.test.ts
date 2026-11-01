@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 // @ts-expect-error module JS sans types
 import { relayAction, lastRun, parseQuota, parseTokens, globToRegExp, parseAllowed, parseStatus, outsideAllowed, findSecrets } from '../scripts/codex.mjs';
@@ -35,4 +36,8 @@ describe('relais Claude ↔ Codex (demande d\u2019Antsa)', () => {
     expect(relayAction({ ...base, stoppedByQuota: false }, now)).toBe(null);
   });
   it('seul le dernier lancement compte', () => { expect(parseQuota(lastRun('usage limit, try again at 7:51 PM\n=== lancement 2026 ===\nok'))).toBe(null); expect(parseQuota(lastRun('ok\n=== lancement 2026 ===\nusage limit, try again at 7:51 PM'))).not.toBe(null); });
+});
+describe('quota : une ancienne phrase de quota ne bloque jamais Codex (E19)', () => {
+  it('un journal ancien ou une tâche terminée ne bloque jamais', () => { const t = readFileSync('scripts/codex.mjs', 'utf8'); expect(t).toContain('6 * 3600 * 1000'); expect(t).toContain("st === 'READY') scanQuota(id)"); });
+  it('scanQuota ne lit que le dernier lancement', () => { expect(readFileSync('scripts/codex.mjs', 'utf8')).toContain('parseQuota(lastRun(read(`${RUNS}/${id}.log`)))'); });
 });

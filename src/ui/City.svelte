@@ -14,7 +14,7 @@
   onMount(() => { import('../lib/city/gen.js').then(m => (gen = m), () => (failed = true)); });
   const fr = $derived(i18n.lang === 'fr');
   const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const out = $derived(gen ? gen.renderCity(districts, { reduce, top: fr ? 'Le Rova — Recherche' : 'The Rova — Research' }) : null);
+  const out = $derived(gen ? gen.renderCity(districts, { reduce, brand: 'academik', top: fr ? 'Le Rova — Recherche' : 'The Rova — Research' }) : null);
 
   // Au premier affichage, on centre la ville sur le niveau à jouer.
   let centered = false;
@@ -58,15 +58,15 @@
 {/if}
 
 <style>
-  .city { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; background: radial-gradient(120% 60% at 50% 0%, #3b2d5c, #18214a 45%, #0b1026 100%); border-radius: 20px 20px 0 0; }
+  .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; background: radial-gradient(120% 50% at 50% 0%, #3b2d5c, #18214a 45%, #0b1026 100%); }
   .city :global(svg) { display: block; min-width: 900px; width: 100%; height: auto; }
   .msg { color: #cfd3ec; text-align: center; padding: 40px 16px; }
   .city :global(.pin) { cursor: pointer; } .city :global(.pin:focus) { outline: none; } .city :global(.pin:focus-visible .hit) { stroke: #fff; stroke-width: 3; }
   .city :global(.pulse) { animation: pulse 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
-  .city :global(.float) { animation: float 2.6s ease-in-out infinite; } .city :global(.twinkle) { animation: twinkle 3s ease-in-out infinite; } .city :global(.smoke) { animation: smoke 4s ease-out infinite; }
+  .city :global(.drop) { animation: bounce 1.6s ease-in-out infinite; } .city :global(.twinkle) { animation: twinkle 3s ease-in-out infinite; } .city :global(.smoke) { animation: smoke 4s ease-out infinite; }
   @keyframes pulse { 0% { transform: scale(.7); opacity: .9 } 100% { transform: scale(1.9); opacity: 0 } }
-  @keyframes float { 50% { transform: translateY(-6px) } } @keyframes twinkle { 50% { opacity: .25 } } @keyframes smoke { 0% { transform: translateY(0); opacity: .5 } 100% { transform: translateY(-16px); opacity: 0 } }
-  @media (prefers-reduced-motion: reduce) { .city :global(.pulse), .city :global(.float), .city :global(.twinkle), .city :global(.smoke) { animation: none } }
+  @keyframes bounce { 50% { transform: translateY(-7px) } } @keyframes twinkle { 50% { opacity: .25 } } @keyframes smoke { 0% { transform: translateY(0); opacity: .5 } 100% { transform: translateY(-16px); opacity: 0 } }
+  @media (prefers-reduced-motion: reduce) { .city :global(.pulse), .city :global(.drop), .city :global(.twinkle), .city :global(.smoke) { animation: none } }
   .scrim { position: fixed; inset: 0; z-index: 9; background: rgb(0 0 0 / .35); }
   .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; margin: 0 auto; max-width: 560px; background: var(--c-surface); color: var(--c-text); border-radius: 28px 28px 0 0; padding: 12px 20px calc(var(--sab) + 20px); box-shadow: 0 -10px 40px rgb(0 0 0 / .4); }
   .grip { width: 40px; height: 4px; border-radius: 4px; background: var(--c-border); margin: 0 auto 12px; }

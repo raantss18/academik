@@ -36,6 +36,8 @@ Chaque règle vient d'un résultat de recherche publié. Les règles marquées �
 | C6 | **Pas d'auto-explication imposée à vide** : on préfère « exemple résolu → exercice » à « explique pourquoi » | dans la méta-analyse de Barbieri et al. 2023, ajouter des consignes d'auto-explication aux exemples n'a pas aidé en moyenne | relecture |
 | C7 | **Rien d'inventé** : chaque affirmation se retrouve dans une source listée du niveau ; chaque nombre d'un exemple est recalculé (`verif`) ; source ouverte de préférence (ex. Levin, *Discrete Mathematics: an Open Introduction*, CC BY-SA) ; une source en « pas de modification » (ex. Hammack, *Book of Proof*, CC BY-NC-ND) est seulement citée et liée, jamais adaptée | consignes 3 et 4 | relecture + `content.test` |
 
+| C8 | **Profondeur** (E17, demande d'Antsa du 2 nov. 2026 : « trop concis, plus de détails et d'illustrations ») : chaque notion prend **2 à 3 cartes** (la définition lue en mots, un exemple chiffré, un schéma ou un tableau) ; un niveau compte **au moins 6 cartes de théorie** (`idee`, `exemple`), **2 figures** et **2 exemples** (carte `exemple` ou champ `exemple`) ; durée visée **16 à 20 minutes** (`duree_min` ≥ 16) | on retient mieux ce qu'on voit sous plusieurs formes : exemple résolu (Barbieri et al. 2023), concret → abstrait (Fyfe et al. 2014), double codage texte + image (Mayer) | 🤖 |
+
 Méthode de réécriture d'une carte obscure : (1) quelle est **la** phrase à retenir ? (2) quels mots ou symboles le lecteur ne connaît pas encore ? les définir avant ; (3) quel cas avec de vrais nombres la montre ? (4) quel dessin la rend évidente ? (5) couper tout le reste.
 
 ## État au 2 nov. 2026 (honnête)
