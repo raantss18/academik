@@ -1,0 +1,106 @@
+id: '0.boss'
+module: 0
+duree_min: 15
+titre: { fr: 'Le message secret', en: 'The secret message' }
+ia: { fr: 'Kintana sait chiffrer et déchiffrer un message (César, affine).', en: 'Kintana can encrypt and decrypt a message (Caesar and affine ciphers).' }
+sources:
+  - { titre: 'COMIMa — Chapitres 0, 1, 3 et 5 : contre-exemples, récurrence, tiroirs et congruences', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
+  - { titre: 'Szabolcs Tengely — Classical ciphers, Université de Debrecen', url: 'https://shrek.unideb.hu/~tengely/crypto/section-2.html', licence: 'Licence non vérifiée : référence en lien seulement, aucun extrait repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana teste ses clés de chiffrement. Quelle est la négation de « chaque clé testée permet de retrouver le message » ?'
+    en: 'Kintana tests its encryption keys. What is the negation of “every tested key allows the message to be recovered”?'
+    choix:
+      - { fr: 'Aucune clé testée ne permet de le retrouver.', en: 'No tested key allows recovery.' }
+      - { fr: 'Au moins une clé testée ne permet pas de le retrouver.', en: 'At least one tested key does not allow recovery.', juste: true }
+      - { fr: 'Au moins une clé testée permet de le retrouver.', en: 'At least one tested key allows recovery.' }
+    explication: { fr: 'Un seul échec réfute « chaque » ; les autres clés peuvent fonctionner.', en: 'A single failure refutes “every”; the other keys may work.' }
+  - id: c2
+    type: idee
+    fr: 'Dans ce laboratoire, on utilise uniquement A à Z, sans accents ni espaces, avec $A=0,B=1,\ldots,Z=25$. César ajoute une clé $k$ modulo $26$ et déchiffre en la soustrayant ; l’affine calcule $y\equiv ax+b\pmod{26}$ et déchiffre par $x\equiv a^{-1}(y-b)\pmod{26}$ si $\operatorname{pgcd}(a,26)=1$. Ces chiffrements historiques servent à apprendre : ils ne protègent pas des secrets réels.'
+    en: 'In this lab we use only A to Z, without accents or spaces, with $A=0,B=1,\ldots,Z=25$. Caesar adds a key $k$ modulo $26$ and decrypts by subtracting it; affine encryption uses $y\equiv ax+b\pmod{26}$ and decrypts using $x\equiv a^{-1}(y-b)\pmod{26}$ if $\gcd(a,26)=1$. These historical ciphers are learning tools: they do not protect real secrets.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Essai sur une lettre', en: 'A one-letter trial' }
+    etapes:
+      - { fr: 'Pour C, on part de $x=2$ ; César avec $k=4$ donne $y=6$, donc G.', en: 'For C, start with $x=2$; Caesar with $k=4$ gives $y=6$, hence G.' }
+      - { fr: 'Avec la clé affine $a=5,b=7$, C donne $y=17$, donc R.', en: 'With affine key $a=5,b=7$, C gives $y=17$, hence R.' }
+      - { fr: 'L’inverse de $5$ est $21$ : depuis R, $21(17-7)=210\equiv2\pmod{26}$ redonne C.', en: 'The inverse of $5$ is $21$: from R, $21(17-7)=210\equiv2\pmod{26}$ recovers C.' }
+  - id: c4
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Kintana affirme que $x\mapsto2x$ modulo $26$ permet toujours de retrouver une lettre. Quelle paire de positions différentes réfute cette affirmation en donnant la même sortie ?'
+    en: 'Kintana claims that $x\mapsto2x$ modulo $26$ always allows a letter to be recovered. Which pair of different positions refutes this claim by giving the same output?'
+    choix:
+      - { fr: '$0$ et $1$', en: '$0$ and $1$' }
+      - { fr: '$1$ et $2$', en: '$1$ and $2$' }
+      - { fr: '$0$ et $13$', en: '$0$ and $13$', juste: true }
+    verif: "pairs=[(0,1),(1,2),(0,13)]\nprint(next(f'{x},{y}' for x,y in pairs if (2*x)%26==(2*y)%26))"
+    sortie: '0,13'
+    explication: { fr: '$2\times0\equiv2\times13\equiv0\pmod{26}$ : une même sortie correspond à A et N ; c’est un contre-exemple à l’unicité du déchiffrement.', en: '$2\times0\equiv2\times13\equiv0\pmod{26}$: the same output corresponds to A and N; this is a counterexample to unique decryption.' }
+  - id: c5
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour César, $P(n)$ signifie « chiffrer puis déchiffrer les $n$ premières lettres les restitue ». $P(0)$ est vrai pour le message vide : quel passage justifie la récurrence ?'
+    en: 'For Caesar, $P(n)$ means “encrypting then decrypting the first $n$ letters recovers them”. $P(0)$ holds for the empty message: which step justifies induction?'
+    choix:
+      - { fr: 'Supposer que le message entier est déjà restitué.', en: 'Assume that the entire message is already recovered.' }
+      - { fr: 'Conserver les $n$ lettres restituées et utiliser $(x+k)-k\equiv x$ pour la suivante.', en: 'Keep the $n$ recovered letters and use $(x+k)-k\equiv x$ for the next one.', juste: true }
+      - { fr: 'Vérifier seulement un message de deux lettres.', en: 'Check only one two-letter message.' }
+    explication: { fr: 'Chaque lettre est traitée indépendamment ; l’hypothèse conserve le préfixe et l’identité restitue la lettre suivante, pour tout $n\geq0$.', en: 'Each letter is processed independently; the hypothesis preserves the prefix and the identity recovers the next letter, for every $n\geq0$.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Kintana attribue une seule lettre A–Z comme étiquette à chaque message. Quel nombre minimal de messages garantit que deux partagent une étiquette ?'
+    en: 'Kintana assigns a single A–Z letter as a label to each message. What minimum number of messages guarantees that two share a label?'
+    reponses: ['27']
+    verif: "alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\nprint(len(alphabet)+1)"
+    explication: { fr: '$26$ étiquettes peuvent distinguer $26$ messages ; avec $27$, les tiroirs imposent une collision.', en: '$26$ labels can distinguish $26$ messages; with $27$, the pigeonhole principle forces a collision.' }
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avant d’utiliser la clé affine $a=5,b=7$, Kintana vérifie son inverse $21$. Quel reste obtient-il pour $5\times21$ modulo $26$ ?'
+    en: 'Before using affine key $a=5,b=7$, Kintana checks its inverse $21$. What remainder does it obtain for $5\times21$ modulo $26$?'
+    reponses: ['1']
+    verif: 'print((5*21)%26)'
+    explication: { fr: '$105=4\times26+1$ : le reste $1$ confirme l’inverse multiplicatif.', en: '$105=4\times26+1$: remainder $1$ confirms the multiplicative inverse.' }
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Chiffre le message SOA avec César et $k=4$. Utilise A–Z et écris les trois lettres chiffrées sans espace.'
+    en: 'Encrypt SOA using Caesar with $k=4$. Use A–Z and enter the three encrypted letters without spaces.'
+    reponses: ['WSE']
+    verif: "alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\nprint(''.join(alphabet[(alphabet.index(c)+4)%26] for c in 'SOA'))"
+    explication: { fr: 'Les positions $18,14,0$ deviennent $22,18,4$, donc WSE.', en: 'Positions $18,14,0$ become $22,18,4$, giving WSE.' }
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Déchiffre le message QME avec César et $k=4$ : soustrais la clé. Écris les trois lettres sans espace.'
+    en: 'Decrypt QME using Caesar with $k=4$: subtract the key. Enter the three letters without spaces.'
+    reponses: ['MIA']
+    verif: "alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\nprint(''.join(alphabet[(alphabet.index(c)-4)%26] for c in 'QME'))"
+    explication: { fr: 'Les positions $16,12,4$ redeviennent $12,8,0$, soit MIA.', en: 'Positions $16,12,4$ return to $12,8,0$, giving MIA.' }
+  - id: c10
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Passe au chiffrement affine $y\equiv5x+7\pmod{26}$ : chiffre SOA. Écris trois lettres A–Z sans espace.'
+    en: 'Switch to affine encryption $y\equiv5x+7\pmod{26}$: encrypt SOA. Enter three A–Z letters without spaces.'
+    reponses: ['TZH']
+    verif: "alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\nprint(''.join(alphabet[(5*alphabet.index(c)+7)%26] for c in 'SOA'))"
+    explication: { fr: 'Les positions $18,14,0$ donnent $97,77,7$, de restes $19,25,7$ : TZH.', en: 'Positions $18,14,0$ give $97,77,7$, with remainders $19,25,7$: TZH.' }
+  - id: c11
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi final. Kintana reçoit VPH, chiffré avec $y\equiv5x+7\pmod{26}$. Retrouve le message avec $x\equiv21(y-7)\pmod{26}$ ; écris trois lettres A–Z sans espace.'
+    en: 'Final challenge. Kintana receives VPH, encrypted with $y\equiv5x+7\pmod{26}$. Recover the message using $x\equiv21(y-7)\pmod{26}$; enter three A–Z letters without spaces.'
+    reponses: ['IMA']
+    verif: "alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\nprint(''.join(alphabet[(21*(alphabet.index(c)-7))%26] for c in 'VPH'))"
+    indice: { fr: 'Convertis chaque lettre en position, soustrais $7$, multiplie par $21$, puis réduis modulo $26$.', en: 'Convert each letter to its position, subtract $7$, multiply by $21$, then reduce modulo $26$.' }
+    explication: { fr: 'Les positions $21,15,7$ donnent $294,168,0$, de restes $8,12,0$ : IMA.', en: 'Positions $21,15,7$ give $294,168,0$, with remainders $8,12,0$: IMA.' }
+  - id: c12
+    type: idee
+    fr: 'Récap : un contre-exemple invalide une clé, les tiroirs révèlent les collisions et la récurrence étend le déchiffrement lettre par lettre. Kintana sait maintenant chiffrer et déchiffrer par César et par affine ; retrouver un message ne prouve pas que le chiffrement résiste à un adversaire.'
+    en: 'Recap: a counterexample invalidates a key, the pigeonhole principle reveals collisions, and induction extends decryption letter by letter. Kintana can now encrypt and decrypt with Caesar and affine ciphers; recovering a message does not prove that the cipher resists an adversary.'

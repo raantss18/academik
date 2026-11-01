@@ -88,6 +88,31 @@ describe('mise à jour du contenu (sans nouvelle version de l’app)', () => {
   });
 });
 
+describe('compatibilité par niveau', () => {
+  const withMin = async (min: Record<string, number>, levels: Record<string, object>) => {
+    const files = await publish(levels), k = '/content/v1/index.json', idx = JSON.parse(files[k]);
+    for (const [id, m] of Object.entries(min)) idx.levels[id].minBuild = m;
+    files[k] = JSON.stringify(idx); return files;
+  };
+  it('installe les niveaux compatibles et ignore ceux qui exigent une app plus récente', async () => {
+    const files = await withMin({ '0.2': 9 }, { '0.1': L('0.1', 'ok'), '0.2': L('0.2', 'futur') });
+    const { r, store } = await run(files, await pack({}), memoryPackStore(), 5);
+    expect(r).toEqual({ status: 'updated', changed: ['0.1'], rev: 20 });
+    expect(store.value!.levels['0.2']).toBeUndefined();
+  });
+  it('rien d\u2019installable : « needs-app », sans rien écrire', async () => {
+    const { r, store } = await run(await withMin({ '0.1': 9 }, { '0.1': L('0.1', 'futur') }), await pack({}), memoryPackStore(), 5);
+    expect(r.status).toBe('needs-app'); expect(store.puts).toBe(0);
+  });
+  it('une app assez récente installe tout', async () => {
+    const { r } = await run(await withMin({ '0.2': 9 }, { '0.1': L('0.1', 'a'), '0.2': L('0.2', 'b') }), await pack({}), memoryPackStore(), 9);
+    expect(r).toMatchObject({ status: 'updated', changed: ['0.1', '0.2'] });
+  });
+  it('minBuild invalide dans l\u2019index : index refusé', () => {
+    expect(parseIndex({ format: 1, rev: 1, minBuild: 1, cursus: { file: 'c.json', sha256: 'a'.repeat(64), bytes: 5 }, levels: { '0.1': { file: 'a.json', sha256: 'a'.repeat(64), bytes: 5, minBuild: 0 } } })).toBeNull();
+  });
+});
+
 describe('choix entre contenu embarqué et téléchargé', () => {
   it('le plus récent gagne, sans perdre les niveaux de l’autre', async () => {
     const b = await pack({ '0.1': L('0.1', 'old'), '2.1': L('2.1', 'x') }, 10), d = await pack({ '0.1': L('0.1', 'new') }, 20);

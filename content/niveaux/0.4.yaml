@@ -1,0 +1,98 @@
+id: '0.4'
+module: 0
+duree_min: 12
+titre: { fr: 'Tiroirs', en: 'The pigeonhole principle' }
+ia: { fr: 'Kintana détecte quand une collision de codes est inévitable.', en: 'Kintana detects when a code collision is unavoidable.' }
+sources:
+  - { titre: 'COMIMa — Principe des tiroirs, chapitre 3 (cours et recueil)', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
+  - { titre: 'MIT OCW — 18.200, Lecture 1: Pigeonhole Principle (2024)', url: 'https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/resources/mit18_200_s24_lec01_pdf/', licence: 'CC BY-NC-SA 4.0 ; vérification en ligne, aucun extrait repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana range $5$ messages dans $4$ dossiers, chacun dans un seul dossier. Quel est le plus grand nombre de messages qu’on peut garantir dans au moins un dossier ?'
+    en: 'Kintana places $5$ messages in $4$ folders, each in exactly one folder. What is the largest number of messages guaranteed to occur in at least one folder?'
+    choix:
+      - { fr: '1', en: '1' }
+      - { fr: '2', en: '2', juste: true }
+      - { fr: '3', en: '3' }
+    verif: "from itertools import product\nprint(min(max(a.count(i) for i in range(4)) for a in product(range(4), repeat=5)))"
+    sortie: '2'
+    explication: { fr: 'Au plus un message par dossier ne logerait que $4$ messages ; la répartition $2,1,1,1$ montre qu’on ne peut pas garantir $3$.', en: 'At most one message per folder would hold only $4$ messages; the distribution $2,1,1,1$ shows that $3$ cannot be guaranteed.' }
+  - id: c2
+    type: idee
+    fr: 'Le principe des tiroirs affirme que $m+1$ objets répartis dans $m\geq1$ tiroirs imposent un doublon. Plus généralement, $qm+1$ objets imposent au moins $q+1$ objets dans un même tiroir : sinon le total serait au plus $qm$. Chaque objet doit appartenir à un seul tiroir parmi ceux comptés.'
+    en: 'The pigeonhole principle says that placing $m+1$ objects into $m\geq1$ boxes forces a shared box. More generally, $qm+1$ objects force at least $q+1$ objects into one box: otherwise the total would be at most $qm$. Each object must belong to exactly one of the counted boxes.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Dimensionner des étiquettes', en: 'Sizing a label system' }
+    etapes:
+      - { fr: 'Kintana attribue à chaque fichier une des $3$ étiquettes A, B, C ; les fichiers sont les objets, les étiquettes les tiroirs.', en: 'Kintana assigns each file one of $3$ labels A, B, C; files are the objects and labels are the boxes.' }
+      - { fr: 'Avec au plus $2$ fichiers par étiquette, on peut étiqueter au plus $6$ fichiers.', en: 'With at most $2$ files per label, we can label at most $6$ files.' }
+      - { fr: 'Un septième impose une étiquette utilisée au moins $3$ fois ; cela ne dit pas laquelle.', en: 'A seventh forces some label to be used at least $3$ times; it does not tell us which one.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Il existe $6$ étiquettes possibles. Quel nombre minimal de fichiers garantit une étiquette partagée ?'
+    en: 'There are $6$ possible labels. What minimum number of files guarantees a shared label?'
+    reponses: ['7']
+    verif: 'capacity=6; print(capacity+1)'
+    explication: { fr: '$6$ fichiers peuvent avoir chacun leur étiquette ; le septième impose une répétition.', en: '$6$ files can each have their own label; the seventh forces a repetition.' }
+  - id: c5
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Parmi $7$ fichiers portant chacun une étiquette A, B ou C, que garantit le principe ?'
+    en: 'Among $7$ files each labelled A, B or C, what does the principle guarantee?'
+    choix:
+      - { fr: 'A est utilisée au moins trois fois.', en: 'A is used at least three times.' }
+      - { fr: 'Chaque étiquette est utilisée au moins trois fois.', en: 'Every label is used at least three times.' }
+      - { fr: 'Une étiquette, pas nécessairement A, est utilisée au moins trois fois.', en: 'Some label, not necessarily A, is used at least three times.', juste: true }
+    explication: { fr: 'Le principe garantit l’existence d’un tiroir assez rempli, pas son identité ni le remplissage des autres.', en: 'The principle guarantees the existence of a sufficiently full box, not its identity or the occupancy of the others.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Kintana dispose de $4$ dossiers. Combien de messages faut-il au minimum pour garantir qu’un dossier en contienne au moins $3$ ?'
+    en: 'Kintana has $4$ folders. What minimum number of messages guarantees that a folder contains at least $3$?'
+    reponses: ['9']
+    verif: 'folders=4; limit_without_target=2; print(folders*limit_without_target+1)'
+    explication: { fr: '$8$ messages peuvent se répartir $2,2,2,2$ ; le neuvième dépasse cette capacité.', en: '$8$ messages can be distributed as $2,2,2,2$; the ninth exceeds that capacity.' }
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un code de deux symboles utilise seulement A ou B à chaque position, avec répétition permise. Combien de codes distincts existent ?'
+    en: 'A two-symbol code uses only A or B at each position, with repetition allowed. How many distinct codes exist?'
+    reponses: ['4']
+    verif: "from itertools import product\nprint(len(list(product('AB',repeat=2))))"
+    explication: { fr: 'Les codes sont AA, AB, BA et BB : deux choix à chacune des deux positions.', en: 'The codes are AA, AB, BA and BB: two choices at each of the two positions.' }
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Kintana attribue un de ces codes AA, AB, BA, BB à chacun de $10$ messages. Quel est le plus grand nombre de messages garanti pour au moins un code ?'
+    en: 'Kintana assigns one of AA, AB, BA, BB to each of $10$ messages. What is the largest number of messages guaranteed to share some code?'
+    reponses: ['3']
+    verif: "from itertools import product\nprint(min(max(counts) for counts in product(range(11),repeat=4) if sum(counts)==10))"
+    explication: { fr: 'Deux par code n’en logeraient que $8$ ; $3,3,2,2$ montre que $4$ ne sont pas garantis.', en: 'Two per code would hold only $8$; $3,3,2,2$ shows that $4$ are not guaranteed.' }
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Si le nombre de fichiers égale le nombre d’étiquettes disponibles, une collision est-elle obligatoire ?'
+    en: 'If the number of files equals the number of available labels, is a collision compulsory?'
+    choix:
+      - { fr: 'Oui, toujours.', en: 'Yes, always.' }
+      - { fr: 'Non : une étiquette différente par fichier est possible.', en: 'No: a different label for each file is possible.', juste: true }
+      - { fr: 'Non, et une collision est impossible.', en: 'No, and a collision is impossible.' }
+    explication: { fr: 'Une collision reste possible si on réutilise une étiquette, mais elle n’est pas forcée.', en: 'A collision remains possible if a label is reused, but it is not forced.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Les codes ont trois symboles, chacun A ou B. Quel nombre minimal de messages garantit que trois messages partagent exactement le même code ?'
+    en: 'Challenge. Codes have three symbols, each A or B. What minimum number of messages guarantees that three messages share exactly the same code?'
+    reponses: ['17']
+    verif: "from itertools import product\ncodes=list(product('AB',repeat=3))\nprint(2*len(codes)+1)"
+    indice: { fr: 'Compte les codes, puis la capacité avec au plus deux messages par code.', en: 'Count the codes, then the capacity with at most two messages per code.' }
+    explication: { fr: 'Il y a $2^3=8$ codes ; $16$ messages peuvent en utiliser chacun deux fois, mais $17$ imposent un troisième message pour un code.', en: 'There are $2^3=8$ codes; $16$ messages can use each twice, but $17$ force a third message for some code.' }
+  - id: c11
+    type: idee
+    fr: 'Récap : nomme objets et tiroirs, calcule la capacité sans le regroupement recherché, puis dépasse-la d’une unité. Pour prouver qu’un seuil est minimal, construis aussi une répartition juste en dessous qui évite ce regroupement.'
+    en: 'Recap: identify objects and boxes, compute the capacity without the desired grouping, then exceed it by one. To prove a threshold is minimal, also construct a distribution just below it that avoids the grouping.'

@@ -10,9 +10,11 @@
   let { onplay, onrules }: { onplay: (id: string) => void; onrules: () => void } = $props();
 
   const scores = $derived(Object.fromEntries(content.order.map(id => [id, content.levels[id] ? levelScore(scoredItems(content.levels[id]), progress.best(id)) : 0])));
-  const open = $derived(unlockedLevels(content.order, scores, undefined, content.passed));
+  const open = $derived(unlockedLevels(content.order, scores, undefined, undefined, content.empty));
   const current = $derived(content.order.find(id => content.levels[id] && open.has(id) && scores[id] < 1) ?? content.order.find(id => content.levels[id]));
   const fr = $derived(i18n.lang === 'fr');
+  const ready = $derived(content.modules.filter(m => m.niveaux.some(n => content.levels[n.id])));
+  const upcoming = $derived(content.modules.filter(m => !m.niveaux.some(n => content.levels[n.id])));
 </script>
 
 <div class="wrap">
@@ -28,7 +30,7 @@
   {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}</button>{/if}
   <p class="muted small">{ui('guest')}</p>
 
-  {#each content.modules as m}
+  {#each ready as m}
     <section class="mod">
       <h2>{m.id} · {i18n.t(m.titre)}</h2>
       <ul>
@@ -47,9 +49,16 @@
       </ul>
     </section>
   {/each}
+  {#if upcoming.length}
+    <section class="mod">
+      <h2>{ui('soon')}</h2>
+      <ul class="soonlist">{#each upcoming as m}<li><span class="id">{m.id}</span> {i18n.t(m.titre)}</li>{/each}</ul>
+    </section>
+  {/if}
 </div>
 
 <style>
+  .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }
   .hud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
   .brand { font-weight: 800; font-size: 1.2rem; margin-right: auto; } .brand span { color: var(--c-accent); }
   .chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; font-size: .9rem; cursor: pointer; }

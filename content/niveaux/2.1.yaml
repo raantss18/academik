@@ -37,6 +37,11 @@ cartes:
       - { code: 'print("Bonjour", nom)', fr: "`print` accepte plusieurs valeurs, séparées par un espace. Affiche : `Bonjour Rakoto`.", en: "`print` accepts several values, separated by a space. Shows: `Bonjour Rakoto`." }
       - { code: 'print(f"Bonjour {nom} !")', fr: "Une **f-string** (le `f` devant les guillemets) remplace `{nom}` par sa valeur. Affiche : `Bonjour Rakoto !`.", en: "An **f-string** (the `f` before the quotes) replaces `{nom}` with its value. Shows: `Bonjour Rakoto !`." }
 
+  - id: c3b
+    type: retenir
+    fr: "`=` **range** une valeur dans une variable. Ce n'est pas le signe « égale » des maths : `x = x + 2` est une instruction, pas une équation."
+    en: "`=` **stores** a value in a variable. It is not the “equals” sign of maths: `x = x + 2` is an instruction, not an equation."
+
   - id: c4
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -66,6 +71,11 @@ cartes:
     explication:
       fr: "`x` vaut 3, puis `x + 2` vaut 5 et devient la nouvelle valeur de `x`. `=` signifie « range dans », pas « égale »."
       en: "`x` is 3, then `x + 2` is 5 and becomes the new value of `x`. `=` means “store in”, not “equals”."
+
+  - id: c5b
+    type: piege
+    fr: "Les guillemets font toute la différence : `print(nom)` affiche **la valeur** de la variable, `print(\"nom\")` affiche **le mot** nom."
+    en: "Quotes make all the difference: `print(nom)` displays the variable's **value**, `print(\"nom\")` displays the **word** nom."
 
   - id: c6
     type: parsons

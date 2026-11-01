@@ -2,24 +2,33 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 2,
-  "version": "0.2.0",
+  "build": 3,
+  "version": "0.3.0",
   "notes": {
-   "fr": "Les niveaux se mettent maintenant à jour tout seuls, sans réinstaller l'app. Tu es prévenu quand une nouvelle version de l'application est disponible, avec ce qu'elle apporte.",
-   "en": "Levels now update by themselves, with no need to reinstall the app. You are told when a new version of the app is available, with what it brings."
+   "fr": "Les cours sont plus clairs : formules bien écrites, code en couleurs, encadrés « À retenir » et « Piège », exemples qui montrent la ligne expliquée. Un nouveau module arrive : Raisonner (logique, preuves, récurrence, congruences).",
+   "en": "Courses are clearer: properly typeset formulas, coloured code, “Key takeaway” and “Pitfall” boxes, examples that highlight the line being explained. A new module arrives: Reasoning (logic, proofs, induction, congruences)."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.2.0/academik-0.2.0.apk",
-    "sha256": "66033f2516879082373e562bf18f6bac4be8c578ae5bcf3180c017dbef4f3034",
-    "bytes": 3334081
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.0/academik-0.3.0.apk",
+    "sha256": "6300409d40534cd9850c62e8efdc952dfb0c7dc061f774699da69b54f05d530e",
+    "bytes": 3717099
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.2.0/academik-0.2.0-x86_64.AppImage",
-    "sha256": "5e51674b36f58e3871bcd60c4f9fbaf68057fa72ac2a17016651f4b02ad23f8b",
-    "bytes": 107960824
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.0/academik-0.3.0-x86_64.AppImage",
+    "sha256": "f9c7aacc2dfec4bdc217647946985d0676b411f488861cf693de80804c3288f7",
+    "bytes": 108321272
    }
   }
  },
- "history": []
+ "history": [
+  {
+   "build": 2,
+   "version": "0.2.0",
+   "notes": {
+    "fr": "Les niveaux se mettent maintenant à jour tout seuls, sans réinstaller l'app. Tu es prévenu quand une nouvelle version de l'application est disponible, avec ce qu'elle apporte.",
+    "en": "Levels now update by themselves, with no need to reinstall the app. You are told when a new version of the app is available, with what it brings."
+   }
+  }
+ ]
 }

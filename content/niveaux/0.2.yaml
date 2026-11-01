@@ -1,0 +1,101 @@
+id: '0.2'
+module: 0
+duree_min: 13
+titre: { fr: 'Démontrer', en: 'Proving' }
+ia: { fr: 'Kintana justifie une règle et sait réfuter une généralisation abusive.', en: 'Kintana justifies a rule and can refute an unjustified generalisation.' }
+sources:
+  - { titre: 'COMIMa — Exemples et contre-exemples, chapitre 0', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
+  - { titre: 'Oscar Levin — Proofs', url: 'https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html', licence: 'CC BY-SA 4.0' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana prétend que tout entier positif impair est premier. Quel nombre parmi ceux-ci le réfute ?'
+    en: 'Kintana claims that every odd positive integer is prime. Which of these numbers refutes it?'
+    choix:
+      - { fr: '3', en: '3' }
+      - { fr: '5', en: '5' }
+      - { fr: '9', en: '9', juste: true }
+    verif: 'print(next(n for n in [3,5,9] if n % 2 and any(n % d == 0 for d in range(2,n))))'
+    sortie: '9'
+    explication: { fr: '$9=3\times3$ est impair et composé : il satisfait l’hypothèse, pas la conclusion.', en: '$9=3\times3$ is odd and composite: it satisfies the hypothesis but not the conclusion.' }
+  - id: c2
+    type: idee
+    fr: 'Une preuve directe part de l’hypothèse pour atteindre la conclusion. Pour prouver $P\Rightarrow Q$ par contraposée, on prouve $\neg Q\Rightarrow\neg P$ ; par l’absurde, on suppose $P$ et $\neg Q$, puis on obtient une contradiction. Un contre-exemple réfute une règle universelle : il ne la démontre pas.'
+    en: 'A direct proof starts from the hypothesis and reaches the conclusion. To prove $P\Rightarrow Q$ by contraposition, prove $\neg Q\Rightarrow\neg P$; by contradiction, assume $P$ and $\neg Q$, then derive a contradiction. A counterexample refutes a universal rule: it does not prove it.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Preuve directe : additionner deux pairs', en: 'Direct proof: adding two even numbers' }
+    etapes:
+      - { fr: 'Soient $a=2u$ et $b=2v$, avec $u,v$ entiers : c’est la définition de deux nombres pairs.', en: 'Let $a=2u$ and $b=2v$, with integers $u,v$: this is the definition of two even numbers.' }
+      - { fr: 'Alors $a+b=2u+2v=2(u+v)$.', en: 'Then $a+b=2u+2v=2(u+v)$.' }
+      - { fr: '$u+v$ étant entier, la somme est paire, quels que soient ces deux nombres pairs.', en: 'Since $u+v$ is an integer, the sum is even, whichever two even numbers we chose.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans la preuve précédente, prends $u=4$ et $v=7$. Quel entier multiplie $2$ dans $a+b=2(u+v)$ ?'
+    en: 'In the preceding proof, take $u=4$ and $v=7$. Which integer multiplies $2$ in $a+b=2(u+v)$?'
+    reponses: ['11']
+    verif: 'u,v=4,7; print(u+v)'
+    explication: { fr: '$u+v=11$, donc la somme vaut $22$ ; ce calcul illustre la preuve générale.', en: '$u+v=11$, so the sum is $22$; this calculation illustrates the general proof.' }
+  - id: c5
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quelle est la contraposée de « si $n^2$ est pair, alors $n$ est pair », pour $n$ entier ?'
+    en: 'What is the contrapositive of “if $n^2$ is even, then $n$ is even”, for integer $n$?'
+    choix:
+      - { fr: 'Si $n$ est pair, alors $n^2$ est pair.', en: 'If $n$ is even, then $n^2$ is even.' }
+      - { fr: 'Si $n$ est impair, alors $n^2$ est impair.', en: 'If $n$ is odd, then $n^2$ is odd.', juste: true }
+      - { fr: 'Si $n^2$ est impair, alors $n$ est impair.', en: 'If $n^2$ is odd, then $n$ is odd.' }
+    explication: { fr: 'On échange hypothèse et conclusion en les niant toutes les deux ; la réciproque ne suffit pas.', en: 'Swap hypothesis and conclusion and negate both; the converse is not enough.' }
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour finir cette contraposée, pose $n=2k+1$. Quelle écriture montre que $n^2$ est impair ?'
+    en: 'To finish that contrapositive proof, set $n=2k+1$. Which expression shows that $n^2$ is odd?'
+    choix:
+      - { fr: '$2(2k^2+2k)+1$', en: '$2(2k^2+2k)+1$', juste: true }
+      - { fr: '$2(k^2+k)$', en: '$2(k^2+k)$' }
+      - { fr: '$4k^2+1$', en: '$4k^2+1$' }
+    explication: { fr: 'Le développement donne $4k^2+4k+1$, soit deux fois un entier plus un.', en: 'Expanding gives $4k^2+4k+1$, which is twice an integer plus one.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'On suppose qu’il existe un plus grand entier $M$. Quelle contradiction termine la preuve par l’absurde ?'
+    en: 'Assume there is a greatest integer $M$. Which contradiction completes the proof?'
+    choix:
+      - { fr: '$M-1$ est plus petit que $M$.', en: '$M-1$ is smaller than $M$.' }
+      - { fr: '$M$ est un entier.', en: '$M$ is an integer.' }
+      - { fr: '$M+1$ est un entier plus grand que $M$.', en: '$M+1$ is an integer greater than $M$.', juste: true }
+    explication: { fr: 'L’entier $M+1$ contredit la maximalité supposée de $M$ : il n’existe donc pas de plus grand entier.', en: 'The integer $M+1$ contradicts the assumed maximality of $M$, so there is no greatest integer.' }
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel est le plus petit entier positif qui réfute « $n^2>n$ pour tout entier positif $n$ » ?'
+    en: 'What is the smallest positive integer refuting “$n^2>n$ for every positive integer $n$”?'
+    reponses: ['1']
+    verif: 'print(next(n for n in range(1,10) if not n*n > n))'
+    explication: { fr: 'Pour $n=1$, le carré vaut $1$ : l’inégalité stricte échoue dès le premier entier positif.', en: 'For $n=1$, the square is $1$: the strict inequality fails at the first positive integer.' }
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour prouver qu’un entier divisible par $6$ est pair, quelle démarche est directe et générale ?'
+    en: 'To prove that an integer divisible by $6$ is even, which approach is direct and general?'
+    choix:
+      - { fr: 'Tester seulement $6$, $12$ et $18$.', en: 'Test only $6$, $12$ and $18$.' }
+      - { fr: 'Écrire $n=6k=2(3k)$, avec $k$ entier.', en: 'Write $n=6k=2(3k)$, with integer $k$.', juste: true }
+      - { fr: 'Supposer que tout entier pair est divisible par $6$.', en: 'Assume every even integer is divisible by $6$.' }
+    explication: { fr: 'La définition de la divisibilité fournit $k$ ; $3k$ est entier, donc $n$ est pair.', en: 'The definition of divisibility supplies $k$; $3k$ is an integer, so $n$ is even.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. La réciproque « tout entier positif pair est divisible par $6$ » est fausse. Donne son plus petit contre-exemple.'
+    en: 'Challenge. The converse “every positive even integer is divisible by $6$” is false. Give its smallest counterexample.'
+    reponses: ['2']
+    verif: 'print(next(n for n in range(1,7) if n % 2 == 0 and n % 6 != 0))'
+    explication: { fr: '$2$ est pair mais non divisible par $6$ ; une implication et sa réciproque sont différentes.', en: '$2$ is even but not divisible by $6$; an implication and its converse are different.' }
+  - id: c11
+    type: idee
+    fr: 'Récap : pars des hypothèses, ou prouve la contraposée, ou mène une hypothèse contraire à une contradiction. Kintana doit distinguer une preuve valable dans tout le domaine d’un calcul sur quelques exemples.'
+    en: 'Recap: start from the hypotheses, prove the contrapositive, or derive a contradiction from a contrary assumption. Kintana must distinguish a proof valid throughout the domain from calculations on a few examples.'
