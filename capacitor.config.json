@@ -1,0 +1,7 @@
+{
+  "appId": "app.academik.learn",
+  "appName": "academik",
+  "webDir": "dist",
+  "android": { "allowMixedContent": false },
+  "server": { "androidScheme": "https" }
+}

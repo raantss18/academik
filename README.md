@@ -8,14 +8,23 @@ cours, prédire le mot suivant, s'entraîner tout seul, utiliser des outils, ré
 
 | | |
 | --- | --- |
-| 🌐 Site (même app, dans le navigateur) | bientôt : `raantss18.github.io/academik` |
-| 📱 Android (APK) · 🐧 Linux (AppImage) | bientôt, dans les *Releases* |
+| 🌐 Site (même app, dans le navigateur, installable) | <https://raantss18.github.io/academik/> |
+| 📱 Android (APK) · 🐧 Linux (AppImage) | [Releases](https://github.com/raantss18/academik/releases/latest) |
 | 📋 Où on en est | [`PROGRESS.md`](PROGRESS.md) |
 
 Pourquoi c'est construit ainsi : [`PEDAGOGIE.md`](PEDAGOGIE.md) · Le parcours : [`CURSUS.md`](CURSUS.md) ·
 Les règles du projet : [`CONSIGNES.md`](CONSIGNES.md) · Les choix techniques : [`DECISIONS.md`](DECISIONS.md).
 
 Compte facultatif : sans compte, tout reste sur ton appareil. Avec un compte, ta progression te suit d'un appareil à l'autre.
+
+## Développer
+
+```bash
+npm ci
+npm run dev        # http://localhost:5173
+npm run verify     # tests, types, build et audit « hors ligne »
+node scripts/licenses.mjs   # audit des licences des dépendances
+```
 
 Licences : code Apache-2.0, contenu selon [`LICENSES.md`](LICENSES.md).
 

@@ -30,3 +30,29 @@
   en les mettant à jour (`CONSIGNES.md` § 7, manifeste).
 - **Vérifié** : aucune erreur de console, 48 épingles, rendu bureau, téléphone 375 px (barre du haut corrigée, zones tactiles 50 px, pas de défilement horizontal), rendu en ≈ 320 ms. **Non vérifié** : poids
   (≈ 4 250 éléments SVG pour 8 quartiers : il faudra ne rendre que les quartiers proches).
+
+## Phase 2 — squelette, moteur, niveau 2.1 (2026-11-01, branche `phase-2/squelette-moteur`)
+
+- **Fait** : Svelte 5 + Vite 8 + TypeScript ; moteur (score pondéré, étoiles, déblocage à 50 %, journal en ajout seul,
+  fusion idempotente, XP anti-répétition, série avec gel, FSRS via ts-fsrs 6, Elo) ; stockage local à la COMIMa
+  (schéma versionné + migrations, sauvegarde `.bak`, profils, envoi idempotent « envoyée ») ; niveau 2.1 en YAML
+  (11 cartes, FR/EN, sources) validé par schéma ; lecteur de leçon (QCM, saisie, Parsons, exemples dépliables) ;
+  carte du parcours ; écran « Consignes » (règles, vie privée, effacement) ; migration Supabase du schéma `academik`
+  (RLS, ajout seul, effacement RGPD) **écrite, non appliquée**.
+- **Vérifié** : 54 tests (dont chaque réponse de 2.1 recalculée en exécutant Python) ; svelte-check 0 erreur ;
+  build : JS 28 Ko gzip (budget 150) ; jeu complet joué dans le navigateur, score 8/9 = 89 % ★★, 80 XP, rechargement OK.
+- **Pas encore fait** : synchro RxDB ↔ Supabase (la migration doit d'abord être appliquée par Antsa) ; carte-ville
+  isométrique dans l'app (aujourd'hui liste) ; cartes de code Python (Pyodide, phase 3) ; hors-ligne PWA (service worker) ;
+  traductions EN des titres du cursus (T-003) ; aucun test réseau coupé.
+
+### Préparation de la v0.1.0 (2026-11-01)
+
+- **Fait** : PWA hors ligne (16 fichiers précachés, aucune ressource externe) ; APK signé 3,2 Mo (`app.academik.learn`) ;
+  AppImage 102 Mo (WebKitGTK embarqué) ; audit des licences (11 paquets embarqués, tous OSI) ; CI et déploiement du site ;
+  migration Supabase appliquée au projet de Tontolo ; rapports Codex T-001 et T-002 intégrés.
+- **Vérifié** : 54 tests ; `npm run verify` ; APK installé sur l'émulateur Android 36 **en mode avion** : leçon jouée, app
+  fermée de force et relancée, 10 XP et série conservés ; AppImage lancée sur EndeavourOS (fenêtre affichée, niveau jouable).
+- **Non vérifié** : service worker dans un vrai navigateur réseau coupé (le navigateur de test sans interface plante ici ;
+  seul l'audit statique du précache a été fait) ; AppImage sur Linux Mint ; APK sur Xiaomi Pad 7 et Samsung S20+ réels ;
+  l'accès Supabase par un vrai compte (le test `supabase/tests/academik_rls.sql` n'a pas été exécuté) ; accessibilité WCAG AA
+  (pas d'audit outillé) ; poids de la carte-ville.

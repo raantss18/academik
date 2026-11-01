@@ -26,8 +26,8 @@
 | 13 | **LLM locaux** | parler avec un vrai modèle local | pré-entraînement vs adaptation (SFT, préférences, RLVR) vs inférence, calcul à l'inférence, llama.cpp/Ollama, quantification, licences des poids, budget RAM, prompts, décodage | HF LLM Course |
 | 14 | **RAG** | répondre avec tes cours en citant ses sources | découpage, embeddings, BM25, recherche hybride, reranking, citation exacte, **abstention**, évaluation, contamination | HF, articles récents |
 | 15 | **Agents et MCP** | utiliser des outils (calcul, fichiers, Python) | **d'abord** : processus, stdio, HTTP, permissions, isolation, données non fiables ; puis appel d'outils, boucle d'agent, MCP (serveur/client, bonnes pratiques de sécurité), planification, limites | HF Agents, MCP, MS AI Agents for Beginners |
-| 16 | **Processus stochastiques** | simuler des trajectoires de prix | marches aléatoires, chaînes de Markov, martingales, mouvement brownien, calcul d'Itô, EDS, Monte-Carlo | MIT 18.S096 (OCW) ; Shreve (lien) |
-| 17 | **Recherche quantitative** (le Marché) | mener une recherche : hypothèse → backtest honnête → rapport | rendements, risque, Markowitz, facteurs, Black-Scholes, VaR/ES, coûts, **sur-apprentissage du backtest** (Sharpe dégonflé), microstructure | MIT 15.401, 18.S096 ; Bailey & López de Prado 2014 |
+| 16 | **Processus stochastiques** | simuler des trajectoires de prix | équations différentielles et approximation numérique, espérance conditionnelle et filtration, marches aléatoires, chaînes de Markov, martingales, mouvement brownien, calcul d'Itô, EDS, Monte-Carlo | MIT 18.642 (OCW, 2024) ; Shreve (lien) |
+| 17 | **Recherche quantitative** (le Marché) | mener une recherche : hypothèse → backtest honnête → rapport | rendements, risque, Markowitz, facteurs, hypothèse et protocole de backtest, coûts, absence d'arbitrage et Black-Scholes, quantiles puis VaR/ES, microstructure, **sur-apprentissage du backtest** (Sharpe dégonflé) | MIT 15.401 (2008), 18.642 ; Bailey & López de Prado 2014 (lien) |
 | 18 | **Performance** | calculer vite (vectoriser, profiler, C++) | complexité réelle, mémoire/caches, vectorisation NumPy, profilage, C++ moderne de base, parallélisme | [ALGO], docs officielles |
 | 19 | **Sécurité** | résister aux attaques (injection de prompt, secrets, réseau) | réseaux, TLS, crypto moderne **par bibliothèques** (AES-GCM, X25519, ML-KEM), programmation sûre, OWASP LLM Top 10, lab d'injection de prompt | Menezes (HAC), NIST FIPS 203, OWASP |
 | 20 | **Évaluer et produire** | être mesurée, surveillée, livrée | évals, jeux de test, observabilité, reproductibilité, déploiement, éthique | HF, articles récents |
@@ -47,7 +47,7 @@ caché, 2 une entrée mal validée, 3 une collision de hachage jouet, 17 repére
 Un test de placement en entrée de chaque module : réussir son boss débloque le module entier (avec 1 étoile).
 
 - **IA** (sait déjà programmer) : 2 et 8 (placement) → 4.1–4.3 → 5.4–5.8 → 6.5–6.8 → 11 → 12 → 13 → 14 → 15 → 19 (volet IA).
-- **Quant** (bases de maths L2) : 6 (placement) → 7 → 8 → 10 → 16 → 17 → 18.
+- **Quant** : diagnostic des modules 2–6 avec rattrapages ciblés, puis 7 → 8 → 10 → 16 → 17 → 18, avec la passerelle de validation du module 9 (entraînement / validation / test gelé) et les équations différentielles avant le 16.
 
 Chaque piste ≈ 20 h : **4 semaines à ~5 h/semaine**, ou **12 à 18 semaines à 10–15 min/jour** (hors révisions).
 Le test de placement vérifie les compétences essentielles une à une (il ne marque pas tout le module comme acquis).

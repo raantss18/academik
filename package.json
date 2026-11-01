@@ -1,0 +1,36 @@
+{
+  "name": "academik",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "vite",
+    "content": "node scripts/build-content.mjs",
+    "prebuild": "node scripts/build-content.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "verify": "npm test && npm run check && npm run build && node scripts/check-offline.mjs dist"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@fontsource-variable/hanken-grotesk": "^5.3.0",
+    "ts-fsrs": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tauri-apps/cli": "^2.12.4",
+    "@types/node": "^26.6.6",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.7",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.5",
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.0.5",
+    "yaml": "^2.9.1"
+  }
+}
