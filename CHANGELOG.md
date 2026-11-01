@@ -2,6 +2,19 @@
 
 ## [Non publié]
 
+## [0.2.0] — 2026-11-02
+
+### Message fr
+Les niveaux se mettent maintenant à jour tout seuls, sans réinstaller l'app. Tu es prévenu quand une nouvelle version de l'application est disponible, avec ce qu'elle apporte.
+
+### Message en
+Levels now update by themselves, with no need to reinstall the app. You are told when a new version of the app is available, with what it brings.
+
+### Ajouts / Added
+- Contenu publié séparément de l'application, vérifié (SHA-256) et installé d'un bloc ; repli sur le contenu embarqué. / Content published separately from the app, verified (SHA-256) and installed atomically; falls back to bundled content.
+- Mise à jour de l'application signée (Ed25519), nouveautés des versions sautées, mise à jour obligatoire possible. / Signed app updates (Ed25519), notes of skipped versions, optional mandatory update.
+- Écran Consignes : vérifier les mises à jour. / Rules screen: check for updates.
+
 ## [0.1.0] — 2026-11-01
 
 ### Message fr

@@ -2,6 +2,9 @@
   import { i18n } from '../lib/i18n.svelte';
   import { progress } from '../lib/progress.svelte';
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
+  import { updates } from '../lib/updates.svelte';
+  import { content } from '../lib/content.svelte';
+  import { APP_BUILD, APP_VERSION, platform } from '../lib/platform';
   let { onexit }: { onexit: () => void } = $props();
   const fr = i18n.lang === 'fr';
   let confirm = $state(false);
@@ -34,6 +37,17 @@
     {#if progress.damaged}<p class="muted">{fr ? 'Une copie abîmée a été remplacée par la sauvegarde.' : 'A damaged copy was replaced by the backup.'}</p>{/if}
     {#if !confirm}<button class="btn" onclick={() => (confirm = true)}>{fr ? 'Effacer ma progression' : 'Erase my progress'}</button>
     {:else}<button class="btn primary" onclick={() => { progress.reset(); confirm = false; }}>{fr ? 'Oui, tout effacer sur cet appareil' : 'Yes, erase everything on this device'}</button>{/if}
+  </section>
+
+  <section class="card">
+    <h2>{fr ? 'Mises à jour' : 'Updates'}</h2>
+    <ul>
+      <li>{fr ? 'Le contenu (niveaux, exercices) se met à jour tout seul, sans installer de nouvelle version : l’app le télécharge quand elle a du réseau, vérifie chaque fichier, puis l’installe d’un coup. Sans réseau, tu gardes ce que tu as.' : 'Content (levels, exercises) updates by itself, with no new version to install: the app downloads it when online, checks every file, then installs it all at once. Offline, you keep what you have.'}</li>
+      <li>{fr ? 'L’application elle-même (APK, AppImage) est mise à jour séparément ; le site se met à jour avec ton accord.' : 'The app itself (APK, AppImage) is updated separately; the website updates with your consent.'}</li>
+    </ul>
+    <p class="muted">{fr ? `Contenu : révision ${content.pack.rev}` : `Content: revision ${content.pack.rev}`}{platform() !== 'web' ? ` · ${fr ? 'application' : 'app'} ${APP_VERSION} (${APP_BUILD})` : ''}</p>
+    <button class="btn" disabled={updates.checking} onclick={() => updates.checkAll(true)}>{updates.checking ? (fr ? 'Vérification…' : 'Checking…') : (fr ? 'Vérifier les mises à jour' : 'Check for updates')}</button>
+    {#if updates.status === 'ok'}<p class="muted">{fr ? 'Tout est à jour.' : 'Everything is up to date.'}</p>{:else if updates.status === 'offline'}<p class="muted">{fr ? 'Pas de réseau : rien n’a changé.' : 'No network: nothing changed.'}</p>{:else if updates.status === 'needs-app'}<p class="muted">{fr ? 'Du contenu plus récent attend une version plus récente de l’application.' : 'Newer content is waiting for a newer app version.'}</p>{:else if updates.status === 'invalid'}<p class="muted">{fr ? 'Un fichier reçu a été refusé (non conforme) : tu gardes ton contenu actuel.' : 'A received file was rejected (invalid): you keep your current content.'}</p>{/if}
   </section>
 
   <section class="card">
