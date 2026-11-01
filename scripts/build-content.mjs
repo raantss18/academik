@@ -4,7 +4,15 @@ import { parse } from 'yaml';
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 
-const TYPES = new Set(['tentative', 'idee', 'exemple', 'qcm', 'saisie', 'parsons']);
+const TYPES = new Set(['tentative', 'idee', 'exemple', 'qcm', 'saisie', 'parsons', 'retenir', 'piege', 'plus']);
+
+/** Build minimal de l'app pour afficher correctement un niveau (calculé, jamais écrit à la main). */
+export function requiredBuild(L) {
+  let b = 1; const text = JSON.stringify(L.cartes ?? []);
+  if ((L.cartes ?? []).some(c => ['retenir', 'piege', 'plus'].includes(c.type))) b = Math.max(b, 3);   // encadrés (0.3.0)
+  if (/\$[^\s$][^$\n]*\$/.test(text.replace(/\\n/g, '\n'))) b = Math.max(b, 3);                       // formules KaTeX (0.3.0)
+  return b;
+}
 const errors = [];
 const err = (where, msg) => errors.push(`${where}: ${msg}`);
 const both = (where, o, k) => { if (!o || typeof o[k] !== 'object' || !o[k].fr || !o[k].en) err(where, `« ${k} » doit avoir fr et en`); };
@@ -22,7 +30,8 @@ export function validateLevel(L, file) {
     const at = w(`#${c.id}`);
     if (!c.id || ids.has(c.id)) err(at, 'identifiant manquant ou en double'); ids.add(c.id);
     if (!TYPES.has(c.type)) err(at, `type inconnu « ${c.type} »`);
-    if (c.type === 'exemple') { both(at, c, 'titre'); if (!c.etapes?.length) err(at, 'étapes manquantes'); (c.etapes ?? []).forEach((e, i) => bi(`${at}.etape${i}`, e)); }
+    if (['retenir', 'piege', 'plus'].includes(c.type)) bi(at, c);
+    else if (c.type === 'exemple') { both(at, c, 'titre'); if (!c.etapes?.length) err(at, 'étapes manquantes'); (c.etapes ?? []).forEach((e, i) => bi(`${at}.etape${i}`, e)); }
     else bi(at, c);
     if (c.note) { if (!['exercise', 'quiz'].includes(c.note.kind) || !(c.note.poids > 0)) err(at, 'note invalide'); scored++; }
     if (['qcm', 'saisie', 'parsons'].includes(c.type) && !c.note) err(at, 'une carte à réponse doit être notée');
@@ -59,9 +68,9 @@ const sha = b => createHash('sha256').update(b).digest('hex');
 /** Écrit les paquets publiés (public/content/v1/) et renvoie le paquet embarqué (même contenu, mêmes empreintes). */
 export function writePacks(out, rev, minBuild, dir = 'public/content/v1') {
   rmSync(dir, { recursive: true, force: true }); mkdirSync(`${dir}/levels`, { recursive: true });
-  const ref = (name, obj) => { const text = JSON.stringify(obj), h = sha(text); const file = `${name}.${h.slice(0, 8)}.json`; writeFileSync(`${dir}/levels/${file}`, text); return { file, sha256: h, bytes: Buffer.byteLength(text) }; };
+  const ref = (name, obj, extra = {}) => { const text = JSON.stringify(obj), h = sha(text); const file = `${name}.${h.slice(0, 8)}.json`; writeFileSync(`${dir}/levels/${file}`, text); return { file, sha256: h, bytes: Buffer.byteLength(text), ...extra }; };
   const levels = {}, shas = {};
-  for (const [id, lvl] of Object.entries(out.levels)) { levels[id] = ref(id, lvl); shas[id] = levels[id].sha256; }
+  for (const [id, lvl] of Object.entries(out.levels)) { levels[id] = ref(id, lvl, { minBuild: requiredBuild(lvl) }); shas[id] = levels[id].sha256; }
   const cursus = ref('cursus', out.cursus);
   writeFileSync(`${dir}/index.json`, JSON.stringify({ format: 1, rev, minBuild, cursus, levels }, null, 1));
   return { rev, minBuild, cursus: out.cursus, cursusSha: cursus.sha256, levels: out.levels, sha: shas };

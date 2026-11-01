@@ -1,5 +1,7 @@
 <script lang="ts">
   import { md } from '../lib/md';
+  import { highlight } from '../lib/highlight';
+  import { typeset } from '../lib/typeset';
   import { shuffled } from '../lib/rand';
   import { i18n, ui } from '../lib/i18n.svelte';
   import { progress } from '../lib/progress.svelte';
@@ -23,6 +25,7 @@
   /* svelte-ignore state_referenced_locally */
   const total = level.cartes.length;
   const t = (x: Partial<{ fr: string; en: string }> | undefined) => i18n.t(x);
+  const exLines = $derived(card.type === 'exemple' ? card.etapes!.map((e, k) => ({ k, code: e.code })).filter((x): x is { k: number; code: string } => !!x.code && x.k <= step) : []);
   const body = $derived(i18n.t(card as { fr?: string; en?: string }));
   const choices = $derived(card.choix ? shuffled(card.choix.map((c, i) => ({ c, i })), `${run}${card.id}`) : []);
   const pool = $derived(card.lignes ? shuffled(card.lignes.map((l, i) => ({ l, i })), `${run}${card.id}`, true) : []);
@@ -58,13 +61,18 @@
       <span class="muted">{idx + 1}/{total}</span>
     </header>
 
-    <article class="card" aria-live="polite">
+    <article class="card" aria-live="polite" use:typeset={[idx, step, !!result, showHint, i18n.lang]}>
       {#if card.defi}<p class="tag">{ui('challenge')}</p>{/if}
       {#if card.type === 'exemple'}
         <h2>{t(card.titre)}</h2>
-        {#each card.etapes!.slice(0, step + 1) as e}
-          <div class="step">{#if e.code}<pre><code>{e.code}</code></pre>{/if}<p>{@html md(t(e))}</p></div>
-        {/each}
+        <div class="ex">
+          {#if exLines.length}<pre class="code"><code>{#each exLines as ln}<span class="ln" class:cur={ln.k === step}>{@html highlight(ln.code, card.lang ?? 'python')}</span>{'\n'}{/each}</code></pre>{/if}
+          <ol class="steps">
+            {#each card.etapes!.slice(0, step + 1) as e, k}<li class:cur={k === step}>{@html md(t(e))}</li>{/each}
+          </ol>
+        </div>
+      {:else if card.type === 'retenir' || card.type === 'piege' || card.type === 'plus'}
+        <aside class="callout {card.type}"><strong>{ui('k_' + card.type)}</strong><div>{@html md(body)}</div></aside>
       {:else}
         <p class="q">{@html md(body)}</p>
       {/if}
@@ -125,8 +133,8 @@
   .x { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--c-border); background: var(--c-surface); cursor: pointer; }
   .bar { flex: 1; height: 10px; background: var(--c-surface-2); border-radius: 99px; overflow: hidden; }
   .bar div { height: 100%; background: var(--c-primary); transition: width .3s; }
-  .q { font-size: 1.1rem; margin-top: 0; } .tag { color: var(--c-accent); font-weight: 800; text-transform: uppercase; font-size: .8rem; letter-spacing: .6px; margin: 0 0 6px; }
-  .step { margin: 10px 0; } .step p { margin: 4px 0 0; }
+  .q { font-size: 1.1rem; margin-top: 0; max-width: 62ch; } .tag { color: var(--c-accent); font-weight: 800; text-transform: uppercase; font-size: .8rem; letter-spacing: .6px; margin: 0 0 6px; }
+  .ex { display: grid; gap: 12px; } .steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; } .steps li { color: var(--c-text-muted); } .steps li.cur { color: var(--c-text); font-weight: 600; } .steps :global(p) { margin: 0; }
   .choices, .lines { display: grid; gap: 10px; margin-top: 14px; }
   .choice, .line { min-height: 52px; text-align: left; padding: 10px 16px; border-radius: 16px; border: 2px solid var(--c-border); background: var(--c-surface); cursor: pointer; }
   .choice.sel, .line.chosen { border-color: var(--c-primary); background: var(--c-primary-soft); }

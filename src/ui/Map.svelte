@@ -10,7 +10,7 @@
   let { onplay, onrules }: { onplay: (id: string) => void; onrules: () => void } = $props();
 
   const scores = $derived(Object.fromEntries(content.order.map(id => [id, content.levels[id] ? levelScore(scoredItems(content.levels[id]), progress.best(id)) : 0])));
-  const open = $derived(unlockedLevels(content.order, scores, undefined, content.passed));
+  const open = $derived(unlockedLevels(content.order, scores, undefined, undefined, content.empty));
   const current = $derived(content.order.find(id => content.levels[id] && open.has(id) && scores[id] < 1) ?? content.order.find(id => content.levels[id]));
   const fr = $derived(i18n.lang === 'fr');
 </script>

@@ -9,7 +9,7 @@
  */
 export const FORMAT = 1;
 
-export interface FileRef { file: string; sha256: string; bytes: number }
+export interface FileRef { file: string; sha256: string; bytes: number; minBuild?: number }
 export interface PackIndex { format: number; rev: number; minBuild: number; cursus: FileRef; levels: Record<string, FileRef>; notes?: { fr: string; en: string } }
 export interface Pack { rev: number; minBuild: number; cursus: unknown; cursusSha: string; levels: Record<string, unknown>; sha: Record<string, string> }
 export interface PackStore { get(): Promise<Pack | null>; put(p: Pack): Promise<void> }
@@ -35,7 +35,7 @@ export function parseIndex(x: unknown): PackIndex | null {
   const i = x as PackIndex;
   if (!Number.isInteger(i.format) || !Number.isInteger(i.rev) || i.rev <= 0 || !Number.isInteger(i.minBuild) || i.minBuild < 0) return null;
   if (!isRef(i.cursus) || !i.levels || typeof i.levels !== 'object') return null;
-  for (const [id, ref] of Object.entries(i.levels)) if (!LEVEL_ID.test(id) || !isRef(ref)) return null;
+  for (const [id, ref] of Object.entries(i.levels)) if (!LEVEL_ID.test(id) || !isRef(ref) || (ref.minBuild !== undefined && (!Number.isInteger(ref.minBuild) || ref.minBuild < 1))) return null;
   return i;
 }
 
@@ -64,8 +64,11 @@ export async function updateContent(o: UpdateOptions): Promise<UpdateResult> {
   if (index.rev <= o.current.rev) return { status: 'up-to-date' };
 
   const levels: Record<string, unknown> = { ...o.current.levels }, sha: Record<string, string> = { ...o.current.sha }, changed: string[] = [];
+  let skipped = 0;
   for (const [id, ref] of Object.entries(index.levels)) {
     if (o.current.sha[id] === ref.sha256) continue;
+    // Un niveau qui exige une app plus récente (nouveau type de carte…) est ignoré ; les autres sont installés quand même.
+    if ((ref.minBuild ?? 1) > o.appBuild) { skipped++; continue; }
     const bytes = await get(`levels/${ref.file}`);
     if (!bytes) return { status: 'offline' };
     if (bytes.byteLength !== ref.bytes || (await sha256Hex(bytes)) !== ref.sha256) return { status: 'invalid', reason: `empreinte incorrecte pour ${id}` };
@@ -82,7 +85,7 @@ export async function updateContent(o: UpdateOptions): Promise<UpdateResult> {
     try { cursus = JSON.parse(new TextDecoder().decode(bytes)); } catch { return { status: 'invalid', reason: 'cursus illisible' }; }
     cursusSha = index.cursus.sha256; changed.push('cursus');
   }
-  if (!changed.length) return { status: 'up-to-date' };
+  if (!changed.length) return skipped ? { status: 'needs-app' } : { status: 'up-to-date' };
   // Installation d'un bloc : un téléchargement interrompu ou altéré n'a rien écrit.
   await o.store.put({ rev: index.rev, minBuild: index.minBuild, cursus, cursusSha, levels, sha });
   return { status: 'updated', changed, rev: index.rev };

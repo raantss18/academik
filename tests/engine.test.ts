@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { bestCredits, levelScore, stars } from '../src/engine/score';
-import { unlockedLevels, UNLOCK_THRESHOLD, entryPassed } from '../src/engine/unlock';
+import { unlockedLevels, UNLOCK_THRESHOLD, emptyLevels } from '../src/engine/unlock';
 import { mergeJournals, totalXp, xpFor, streak } from '../src/engine/journal';
 import { createSrs, gradeFrom, Rating } from '../src/engine/srs';
 import { update, nextQuestion, pRight } from '../src/engine/elo';
@@ -38,16 +38,19 @@ describe('déblocage à 50 %', () => {
   it('un test de placement ouvre le niveau', () => expect(unlockedLevels(order, {}, .5, new Set(['0.3'])).has('0.3')).toBe(true));
 });
 
-describe('point d\u2019entrée provisoire de la démo', () => {
-  const order = ['0.1', '0.2', '2.1', '2.2'], has = (id: string) => id === '2.1';
-  it('ouvre le premier niveau qui a du contenu, même sans score avant', () => {
-    expect(unlockedLevels(order, {}, .5, entryPassed(order, has)).has('2.1')).toBe(true);
+describe('niveaux sans contenu (provisoire)', () => {
+  const order = ['0.1', '0.2', '1.1', '1.2', '2.1', '2.2'], has = (id: string) => ['0.1', '0.2', '2.1', '2.2'].includes(id), skip = emptyLevels(order, has);
+  it('la liste des niveaux sans contenu', () => { expect([...skip]).toEqual(['1.1', '1.2']); });
+  it('ne bloquent pas : 2.1 dépend du dernier niveau qui a du contenu (0.2)', () => {
+    expect(unlockedLevels(order, { '0.1': 1, '0.2': .49 }, .5, new Set(), skip).has('2.1')).toBe(false);
+    expect(unlockedLevels(order, { '0.1': 1, '0.2': .5 }, .5, new Set(), skip).has('2.1')).toBe(true);
   });
-  it('mais pas le suivant tant que 2.1 n\u2019a pas 50 %', () => {
-    expect(unlockedLevels(order, { '2.1': .49 }, .5, entryPassed(order, has)).has('2.2')).toBe(false);
-    expect(unlockedLevels(order, { '2.1': .5 }, .5, entryPassed(order, has)).has('2.2')).toBe(true);
+  it('le suivant reste fermé tant que 2.1 n\u2019a pas 50 %', () => {
+    expect(unlockedLevels(order, { '0.2': 1, '2.1': .49 }, .5, new Set(), skip).has('2.2')).toBe(false);
+    expect(unlockedLevels(order, { '0.2': 1, '2.1': .5 }, .5, new Set(), skip).has('2.2')).toBe(true);
   });
-  it('aucun contenu : rien d\u2019ouvert d\u2019office', () => { expect(entryPassed(order, () => false).size).toBe(0); });
+  it('sans niveau vide, le comportement ne change pas', () => { expect(emptyLevels(order, () => true).size).toBe(0); });
+  it('le premier niveau est ouvert même s\u2019il n\u2019a pas de contenu', () => { expect(unlockedLevels(['9.1', '9.2'], {}, .5, new Set(), new Set(['9.1'])).has('9.1')).toBe(true); });
 });
 
 describe('journal en ajout seul', () => {

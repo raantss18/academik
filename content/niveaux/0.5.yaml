@@ -1,0 +1,99 @@
+id: '0.5'
+module: 0
+duree_min: 14
+titre: { fr: 'Congruences', en: 'Congruences' }
+ia: { fr: 'Kintana calcule sur un alphabet circulaire et retrouve une lettre grâce à un inverse modulaire.', en: 'Kintana computes on a circular alphabet and recovers a letter using a modular inverse.' }
+sources:
+  - { titre: 'COMIMa — Théorie des nombres, chapitre 5, congruences et Bézout', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
+  - { titre: 'Szabolcs Tengely — Classical ciphers, Université de Debrecen', url: 'https://shrek.unideb.hu/~tengely/crypto/section-2.html', licence: 'Licence non vérifiée : référence en lien seulement, aucun extrait repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Les positions d’un alphabet sont numérotées de $0$ à $25$. Depuis la position $24$, Kintana avance de $5$ positions en revenant à $0$ après $25$ : où arrive-t-il ?'
+    en: 'Alphabet positions are numbered from $0$ to $25$. From position $24$, Kintana moves forward $5$ places, returning to $0$ after $25$: where does it land?'
+    choix:
+      - { fr: '29', en: '29' }
+      - { fr: '4', en: '4' }
+      - { fr: '3', en: '3', juste: true }
+    verif: 'print((24+5)%26)'
+    sortie: '3'
+    explication: { fr: '$24+5=29=26+3$ : on enlève un tour complet et on arrive en position $3$.', en: '$24+5=29=26+3$: remove one full turn to reach position $3$.' }
+  - id: c2
+    type: idee
+    fr: 'Pour un entier $m\geq2$, $a\equiv b\pmod m$ signifie que $m$ divise $a-b$ : les deux nombres ont le même reste. On peut additionner ou multiplier des congruences de même module ; on choisit ici les restes entre $0$ et $m-1$. Un inverse de $a$ est un entier $u$ tel que $au\equiv1\pmod m$ ; il existe exactement quand $\operatorname{pgcd}(a,m)=1$, c’est-à-dire sans diviseur commun positif autre que $1$.'
+    en: 'For an integer $m\geq2$, $a\equiv b\pmod m$ means that $m$ divides $a-b$: the two numbers have the same remainder. Congruences with the same modulus can be added or multiplied; here we choose remainders from $0$ to $m-1$. An inverse of $a$ is an integer $u$ with $au\equiv1\pmod m$; it exists exactly when $\gcd(a,m)=1$, meaning there is no common positive divisor other than $1$.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Défaire une multiplication modulo $7$', en: 'Undo multiplication modulo $7$' }
+    etapes:
+      - { fr: 'On cherche $x$ entre $0$ et $6$ tel que $3x\equiv5\pmod7$.', en: 'Find $x$ from $0$ to $6$ such that $3x\equiv5\pmod7$.' }
+      - { fr: '$3\times5=15\equiv1\pmod7$ : $5$ est un inverse de $3$.', en: '$3\times5=15\equiv1\pmod7$: $5$ is an inverse of $3$.' }
+      - { fr: 'On multiplie par $5$ : $x\equiv25\equiv4\pmod7$ ; vérification : $3\times4=12\equiv5\pmod7$.', en: 'Multiply by $5$: $x\equiv25\equiv4\pmod7$; check: $3\times4=12\equiv5\pmod7$.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel est le reste de $47$ dans la division par $6$ ?'
+    en: 'What is the remainder when $47$ is divided by $6$?'
+    reponses: ['5']
+    verif: 'print(47%6)'
+    explication: { fr: '$47=7\times6+5$ et $0\leq5<6$.', en: '$47=7\times6+5$ and $0\leq5<6$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel entier entre $0$ et $25$ est congru à $-3$ modulo $26$ ?'
+    en: 'Which integer from $0$ to $25$ is congruent to $-3$ modulo $26$?'
+    reponses: ['23']
+    verif: 'print((-3)%26)'
+    explication: { fr: 'On ajoute $26$ : $-3+26=23$ ; la différence entre les deux représentants est un multiple de $26$.', en: 'Add $26$: $-3+26=23$; the difference between the two representatives is a multiple of $26$.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Si $a\equiv5\pmod7$ et $b\equiv4\pmod7$, quel est le reste de $a+b$ modulo $7$ ?'
+    en: 'If $a\equiv5\pmod7$ and $b\equiv4\pmod7$, what is the remainder of $a+b$ modulo $7$?'
+    reponses: ['2']
+    verif: 'print((5+4)%7)'
+    explication: { fr: '$5+4=9\equiv2\pmod7$ ; ajouter des multiples de $7$ à $a$ ou $b$ ne change pas ce reste.', en: '$5+4=9\equiv2\pmod7$; adding multiples of $7$ to $a$ or $b$ does not change this remainder.' }
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Calcule le reste de $17\times19$ modulo $5$ en réduisant d’abord les facteurs.'
+    en: 'Compute the remainder of $17\times19$ modulo $5$ by reducing the factors first.'
+    reponses: ['3']
+    verif: 'print((17*19)%5)'
+    explication: { fr: '$17\equiv2$ et $19\equiv4$ modulo $5$, donc le produit est congru à $8$, soit $3$.', en: '$17\equiv2$ and $19\equiv4$ modulo $5$, so the product is congruent to $8$, hence $3$.' }
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Trouve l’inverse de $5$ modulo $26$, entre $0$ et $25$. Tu peux chercher un multiple de $5$ qui dépasse un multiple de $26$ de $1$.'
+    en: 'Find the inverse of $5$ modulo $26$, from $0$ to $25$. Look for a multiple of $5$ that exceeds a multiple of $26$ by $1$.'
+    reponses: ['21']
+    verif: 'print(next(u for u in range(26) if 5*u%26==1))'
+    indice: { fr: 'Essaie $26k+1$ pour $k=1,2,3,4$.', en: 'Try $26k+1$ for $k=1,2,3,4$.' }
+    explication: { fr: '$5\times21=105=4\times26+1$, donc multiplier par $21$ défait une multiplication par $5$ modulo $26$.', en: '$5\times21=105=4\times26+1$, so multiplying by $21$ undoes multiplication by $5$ modulo $26$.' }
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Combien d’inverses de $2$ modulo $26$ y a-t-il entre $0$ et $25$ ?'
+    en: 'How many inverses of $2$ modulo $26$ are there from $0$ to $25$?'
+    choix:
+      - { fr: '0', en: '0', juste: true }
+      - { fr: '1', en: '1' }
+      - { fr: '2', en: '2' }
+    verif: 'print(sum(2*u%26==1 for u in range(26)))'
+    sortie: '0'
+    explication: { fr: '$2u-26q$ est toujours pair, donc ne peut pas valoir $1$ ; le PGCD vaut $2$, pas $1$.', en: '$2u-26q$ is always even, so it cannot equal $1$; the GCD is $2$, not $1$.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Kintana transforme une position $x$ en $y\equiv5x+7\pmod{26}$. Si $y=4$, retrouve $x$ entre $0$ et $25$ ; l’inverse de $5$ est $21$.'
+    en: 'Challenge. Kintana transforms a position $x$ into $y\equiv5x+7\pmod{26}$. If $y=4$, recover $x$ from $0$ to $25$; the inverse of $5$ is $21$.'
+    reponses: ['15']
+    verif: 'print(next(x for x in range(26) if (5*x+7)%26==4))'
+    indice: { fr: 'Soustrais $7$, puis multiplie par $21$ et prends le reste.', en: 'Subtract $7$, then multiply by $21$ and take the remainder.' }
+    explication: { fr: '$x\equiv21(4-7)=-63\equiv15\pmod{26}$ ; en retour, $5\times15+7=82\equiv4$.', en: '$x\equiv21(4-7)=-63\equiv15\pmod{26}$; checking forwards, $5\times15+7=82\equiv4$.' }
+  - id: c11
+    type: idee
+    fr: 'Récap : réduire un nombre revient à garder son reste ; addition et multiplication respectent les congruences. Pour défaire une multiplication, Kintana cherche un inverse, qui n’existe pas pour toutes les clés.'
+    en: 'Recap: reducing a number means keeping its remainder; addition and multiplication respect congruences. To undo multiplication, Kintana looks for an inverse, which does not exist for every key.'

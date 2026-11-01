@@ -1,0 +1,100 @@
+id: '0.3'
+module: 0
+duree_min: 14
+titre: { fr: 'Récurrence', en: 'Mathematical induction' }
+ia: { fr: 'Kintana justifie une règle qui reste vraie à chaque étape de traitement.', en: 'Kintana justifies a rule that remains true at every processing step.' }
+sources:
+  - { titre: 'COMIMa — Récurrence, chapitre 1 (cours et recueil)', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
+  - { titre: 'Oscar Levin — Induction', url: 'https://discrete.openmathbooks.org/dmoi3/sec_seq-induction.html', licence: 'CC BY-SA 4.0' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana sait que chaque étape réussie entraîne la réussite de la suivante. Que manque-t-il pour garantir toutes les étapes à partir de la première ?'
+    en: 'Kintana knows that each successful step implies success at the next. What is missing to guarantee all steps starting with the first?'
+    choix:
+      - { fr: 'La réussite de la première étape.', en: 'Success at the first step.', juste: true }
+      - { fr: 'Le numéro de la dernière étape seulement.', en: 'Only the number of the last step.' }
+      - { fr: 'Rien : le passage suffit.', en: 'Nothing: the transition is enough.' }
+    explication: { fr: 'Sans départ vrai, la chaîne d’implications peut ne jamais établir une seule réussite.', en: 'Without a true starting point, the chain of implications may never establish a single success.' }
+  - id: c2
+    type: idee
+    fr: 'Pour prouver $P(n)$ pour tout entier $n\geq n_0$, vérifie d’abord $P(n_0)$ : l’initialisation. Fixe ensuite un entier quelconque $k\geq n_0$, suppose $P(k)$ et démontre $P(k+1)$ : l’hérédité. Les deux étapes permettent de conclure pour tous ces entiers, sans les tester un par un.'
+    en: 'To prove $P(n)$ for every integer $n\geq n_0$, first verify $P(n_0)$: the base case. Then fix an arbitrary integer $k\geq n_0$, assume $P(k)$ and prove $P(k+1)$: the inductive step. Together, these steps establish the result for all those integers without testing them individually.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un compteur de messages', en: 'A message counter' }
+    etapes:
+      - { fr: 'Le compteur commence à $u_0=2$ et suit $u_{n+1}=u_n+3$ ; on veut prouver $u_n=2+3n$.', en: 'The counter starts at $u_0=2$ and follows $u_{n+1}=u_n+3$; we want to prove $u_n=2+3n$.' }
+      - { fr: 'Initialisation : $u_0=2=2+3\times0$.', en: 'Base case: $u_0=2=2+3\times0$.' }
+      - { fr: 'Si $u_k=2+3k$, alors $u_{k+1}=u_k+3=2+3(k+1)$ ; donc la formule vaut pour tout entier $n\geq0$.', en: 'If $u_k=2+3k$, then $u_{k+1}=u_k+3=2+3(k+1)$; hence the formula holds for every integer $n\geq0$.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec $u_0=2$ et $u_{n+1}=u_n+3$, calcule $u_3$.'
+    en: 'With $u_0=2$ and $u_{n+1}=u_n+3$, compute $u_3$.'
+    reponses: ['11']
+    verif: "u=2\nfor _ in range(3): u+=3\nprint(u)"
+    explication: { fr: 'Les valeurs successives sont $2$, $5$, $8$, $11$ ; l’indice commence à zéro.', en: 'The successive values are $2$, $5$, $8$, $11$; the index starts at zero.' }
+  - id: c5
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans une récurrence visant tous les entiers $n\geq3$, quel cas doit-on initialiser ?'
+    en: 'In an induction intended to cover every integer $n\geq3$, which case must be established first?'
+    choix:
+      - { fr: '$P(0)$ seulement', en: '$P(0)$ only' }
+      - { fr: '$P(3)$', en: '$P(3)$', juste: true }
+      - { fr: '$P(4)$ seulement', en: '$P(4)$ only' }
+    explication: { fr: 'Le point de départ demandé est $3$ ; un départ à $4$ laisserait le cas $3$ sans preuve.', en: 'The requested starting point is $3$; starting at $4$ would leave case $3$ unproved.' }
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour prouver $1+\cdots+n=n(n+1)/2$ pour $n\geq1$, quelle hypothèse peut-on utiliser à l’étape $k\to k+1$ ?'
+    en: 'To prove $1+\cdots+n=n(n+1)/2$ for $n\geq1$, which hypothesis may be used in the step $k\to k+1$?'
+    choix:
+      - { fr: 'La formule est déjà vraie pour tous les entiers.', en: 'The formula already holds for all integers.' }
+      - { fr: 'La formule au rang $k+1$, qui est à démontrer.', en: 'The formula at index $k+1$, which is what we must prove.' }
+      - { fr: '$1+\cdots+k=k(k+1)/2$ pour un $k\geq1$ fixé quelconque.', en: '$1+\cdots+k=k(k+1)/2$ for a fixed arbitrary $k\geq1$.', juste: true }
+    explication: { fr: 'On suppose le rang $k$ uniquement pour établir le passage ; supposer le résultat visé serait circulaire.', en: 'We assume case $k$ only to establish the transition; assuming the target result would be circular.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'À partir de $S_k=k(k+1)/2$, on ajoute $k+1$. Quelle expression obtient-on pour $S_{k+1}$ ?'
+    en: 'Starting from $S_k=k(k+1)/2$, add $k+1$. Which expression do we obtain for $S_{k+1}$?'
+    choix:
+      - { fr: '$(k+1)(k+2)/2$', en: '$(k+1)(k+2)/2$', juste: true }
+      - { fr: '$k(k+2)/2$', en: '$k(k+2)/2$' }
+      - { fr: '$(k+1)^2/2$', en: '$(k+1)^2/2$' }
+    explication: { fr: 'On factorise $k+1$ : $(k+1)(k/2+1)=(k+1)(k+2)/2$ ; avec $S_1=1$, la récurrence est complète.', en: 'Factor out $k+1$: $(k+1)(k/2+1)=(k+1)(k+2)/2$; together with $S_1=1$, this completes the induction.' }
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Kintana traite $1$ lettre, puis $2$, puis $3$, jusqu’à $8$ lettres au huitième tour. Combien de lettres a-t-il traitées en tout ?'
+    en: 'Kintana processes $1$ letter, then $2$, then $3$, up to $8$ letters on round eight. How many letters has it processed in total?'
+    reponses: ['36']
+    verif: 'print(sum(range(1,9)))'
+    explication: { fr: 'La somme vaut $8\times9/2=36$. Le programme la recalcule par addition.', en: 'The sum is $8\times9/2=36$. The program recomputes it by addition.' }
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'On vérifie $P(0)$ et on prouve seulement $P(k)\Rightarrow P(k+2)$ pour tout $k\geq0$. Quels indices sont garantis ?'
+    en: 'We verify $P(0)$ and prove only $P(k)\Rightarrow P(k+2)$ for every $k\geq0$. Which indices are guaranteed?'
+    choix:
+      - { fr: 'Tous les indices.', en: 'All indices.' }
+      - { fr: 'Les indices pairs seulement.', en: 'Only the even indices.', juste: true }
+      - { fr: 'Les indices impairs seulement.', en: 'Only the odd indices.' }
+    explication: { fr: 'On atteint $0,2,4,\ldots$ ; il faudrait aussi initialiser $P(1)$ pour démarrer la chaîne impaire.', en: 'We reach $0,2,4,\ldots$; we would also need the base case $P(1)$ to start the odd chain.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Un compteur suit $v_0=1$ et $v_{n+1}=2v_n+1$. La formule conjecturée est $v_n=2^{n+1}-1$ : calcule $v_5$.'
+    en: 'Challenge. A counter follows $v_0=1$ and $v_{n+1}=2v_n+1$. The conjectured formula is $v_n=2^{n+1}-1$: compute $v_5$.'
+    reponses: ['63']
+    verif: "v=1\nfor _ in range(5): v=2*v+1\nprint(v)"
+    indice: { fr: 'Effectue cinq transitions, ou applique la formule au rang $5$.', en: 'Perform five transitions, or apply the formula at index $5$.' }
+    explication: { fr: '$v_5=63$ ; pour prouver la formule, le départ vaut $2^1-1=1$ et le passage donne $2(2^{k+1}-1)+1=2^{k+2}-1$.', en: '$v_5=63$; to prove the formula, the base case gives $2^1-1=1$ and the transition gives $2(2^{k+1}-1)+1=2^{k+2}-1$.' }
+  - id: c11
+    type: idee
+    fr: 'Récap : départ, hypothèse au rang quelconque $k$, passage au rang suivant, puis conclusion sur le domaine. Calculer des termes aide Kintana à conjecturer ; la récurrence justifie tous les termes.'
+    en: 'Recap: base case, hypothesis at an arbitrary index $k$, transition to the next index, then a conclusion over the domain. Computing terms helps Kintana conjecture; induction justifies every term.'

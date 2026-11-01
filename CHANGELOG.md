@@ -2,6 +2,20 @@
 
 ## [Non publié]
 
+## [0.3.0] — 2026-11-01
+
+### Message fr
+Les cours sont plus clairs : formules bien écrites, code en couleurs, encadrés « À retenir » et « Piège », exemples qui montrent la ligne expliquée. Un nouveau module arrive : Raisonner (logique, preuves, récurrence, congruences).
+
+### Message en
+Courses are clearer: properly typeset formulas, coloured code, “Key takeaway” and “Pitfall” boxes, examples that highlight the line being explained. A new module arrives: Reasoning (logic, proofs, induction, congruences).
+
+### Ajouts / Added
+- Formules (KaTeX, hors ligne), code coloré, encadrés typés, exemples pas à pas avec ligne surlignée. / Typeset formulas (KaTeX, offline), coloured code, typed callouts, step-by-step examples with highlighted line.
+- Module 0 « Raisonner » : 5 niveaux + boss (Codex, vérifié en exécutant Python). / Module 0 “Reasoning”: 5 levels + boss (Codex, checked by running Python).
+- Compatibilité par niveau : une ancienne app ignore seulement les niveaux qu'elle ne sait pas afficher. / Per-level compatibility: an older app only skips levels it cannot display.
+- Un niveau sans contenu ne bloque plus la suite. / A level with no content no longer blocks what follows.
+
 ## [0.2.0] — 2026-11-01
 
 ### Message fr

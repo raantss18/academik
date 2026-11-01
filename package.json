@@ -1,14 +1,14 @@
 {
   "name": "academik",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
     "content": "node scripts/build-content.mjs",
     "prebuild": "node scripts/build-content.mjs",
-    "build": "vite build",
+    "build": "vite build && node scripts/trim-fonts.mjs",
     "preview": "vite preview",
     "test": "vitest run",
     "check": "svelte-check --tsconfig ./tsconfig.json",
@@ -20,12 +20,14 @@
     "@fontsource-variable/hanken-grotesk": "^5.3.0",
     "@noble/ed25519": "^3.2.0",
     "@tauri-apps/plugin-opener": "^2.7.2",
+    "katex": "^0.19.1",
     "ts-fsrs": "^6.0.0"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.6.0",
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
     "@tauri-apps/cli": "^2.12.4",
+    "@types/katex": "^0.16.8",
     "@types/node": "^26.6.6",
     "svelte": "^5.57.3",
     "svelte-check": "^4.7.7",

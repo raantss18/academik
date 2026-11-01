@@ -1,0 +1,104 @@
+id: '0.1'
+module: 0
+duree_min: 12
+titre: { fr: 'Vrai ou faux ?', en: 'True or false?' }
+ia: { fr: 'Kintana distingue une règle générale, un témoin et un contre-exemple.', en: 'Kintana distinguishes a general rule, a witness and a counterexample.' }
+sources:
+  - { titre: 'COMIMa — Exemples et contre-exemples, chapitre 0', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
+  - { titre: 'Oscar Levin — Mathematical Statements', url: 'https://discrete.openmathbooks.org/dmoi3/sec_intro-statements.html', licence: 'CC BY-SA 4.0' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana affirme : « Tous les nombres de la liste $[2,4,7]$ sont pairs. » Quel nombre réfute cette affirmation ?'
+    en: 'Kintana claims: “All numbers in the list $[2,4,7]$ are even.” Which number refutes this claim?'
+    choix:
+      - { fr: '2', en: '2' }
+      - { fr: '7', en: '7', juste: true }
+      - { fr: '4', en: '4' }
+    verif: 'print(next(n for n in [2,4,7] if n % 2))'
+    sortie: '7'
+    explication: { fr: '$7$ est impair : un seul échec suffit à réfuter « tous ».', en: '$7$ is odd: one failure is enough to refute “all”.' }
+  - id: c2
+    type: idee
+    fr: 'Une proposition est un énoncé vrai ou faux ; une question ne l’est pas. Sur un ensemble précisé, $\forall$ signifie « pour tout » et $\exists$ « il existe au moins un ». Nier « tous vérifient $P$ » donne « au moins un ne vérifie pas $P$ » ; nier « au moins un vérifie $P$ » donne « aucun ne vérifie $P$ ».'
+    en: 'A proposition is a statement that is true or false; a question is not one. On a specified set, $\forall$ means “for every” and $\exists$ means “there is at least one”. Negating “all satisfy $P$” gives “at least one does not satisfy $P$”; negating “at least one satisfies $P$” gives “none satisfy $P$”.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Auditer une liste', en: 'Audit a list' }
+    etapes:
+      - { fr: 'Sur $E=\{1,3,6\}$, examinons « chaque élément est inférieur à $5$ ».', en: 'On $E=\{1,3,6\}$, examine “every element is less than $5$”.' }
+      - { fr: '$6$ ne vérifie pas la règle : la proposition universelle est fausse.', en: '$6$ fails the rule: the universal statement is false.' }
+      - { fr: 'Sa négation est « il existe un élément supérieur ou égal à $5$ » ; $6$ en est un témoin.', en: 'Its negation is “there is an element greater than or equal to $5$”; $6$ is a witness.' }
+  - id: c4
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Laquelle est une proposition dont on peut décider la vérité ?'
+    en: 'Which is a proposition whose truth can be determined?'
+    choix:
+      - { fr: 'Quel fichier ouvrir ?', en: 'Which file should we open?' }
+      - { fr: 'Ouvre ce fichier !', en: 'Open this file!' }
+      - { fr: '$8$ est pair.', en: '$8$ is even.', juste: true }
+    explication: { fr: 'L’affirmation sur $8$ est vraie ; une question et un ordre n’affirment rien de vrai ou faux.', en: 'The claim about $8$ is true; a question and a command assert nothing true or false.' }
+  - id: c5
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quelle est la négation de « tous les messages sont lisibles » ?'
+    en: 'What is the negation of “all messages are readable”?'
+    choix:
+      - { fr: 'Aucun message n’est lisible.', en: 'No message is readable.' }
+      - { fr: 'Au moins un message n’est pas lisible.', en: 'At least one message is not readable.', juste: true }
+      - { fr: 'Au moins un message est lisible.', en: 'At least one message is readable.' }
+    explication: { fr: '« Pas tous » exige un échec, sans imposer que tous échouent.', en: '“Not all” requires one failure, without requiring every message to fail.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans $E=\{1,2,3,4\}$, combien de témoins vérifient $x^2>8$ ?'
+    en: 'In $E=\{1,2,3,4\}$, how many witnesses satisfy $x^2>8$?'
+    reponses: ['2']
+    verif: 'print(sum(x*x > 8 for x in [1,2,3,4]))'
+    explication: { fr: '$3$ et $4$ conviennent, car leurs carrés sont $9$ et $16$.', en: '$3$ and $4$ work, since their squares are $9$ and $16$.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quelle est la négation de « il existe un fichier vide » ?'
+    en: 'What is the negation of “there exists an empty file”?'
+    choix:
+      - { fr: 'Tous les fichiers sont vides.', en: 'All files are empty.' }
+      - { fr: 'Il existe un fichier non vide.', en: 'There exists a nonempty file.' }
+      - { fr: 'Aucun fichier n’est vide.', en: 'No file is empty.', juste: true }
+    explication: { fr: 'Pour nier l’existence, on doit exclure chaque témoin possible.', en: 'To negate existence, every possible witness must be ruled out.' }
+  - id: c8
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour une règle « si $P$, alors $Q$ », quel cas la rend fausse ?'
+    en: 'For a rule “if $P$, then $Q$”, which case makes it false?'
+    choix:
+      - { fr: '$P$ vrai, $Q$ faux', en: '$P$ true, $Q$ false', juste: true }
+      - { fr: '$P$ faux, $Q$ vrai', en: '$P$ false, $Q$ true' }
+      - { fr: '$P$ vrai, $Q$ vrai', en: '$P$ true, $Q$ true' }
+    explication: { fr: 'La règle promet $Q$ lorsque $P$ est vrai ; seule une promesse non tenue la réfute.', en: 'The rule promises $Q$ when $P$ is true; only a broken promise refutes it.' }
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: '« Tous les entiers positifs vérifient cette règle. » Kintana teste seulement les $100$ premiers avec succès : que peut-il conclure ?'
+    en: '“All positive integers satisfy this rule.” Kintana successfully tests only the first $100$: what can it conclude?'
+    choix:
+      - { fr: 'La règle est démontrée pour tous.', en: 'The rule is proved for all.' }
+      - { fr: 'La règle est vérifiée pour les entiers testés seulement.', en: 'The rule is verified only for the tested integers.', juste: true }
+      - { fr: 'La règle est nécessairement fausse.', en: 'The rule must be false.' }
+    explication: { fr: 'Les entiers non testés restent à traiter par un raisonnement général.', en: 'Untested integers still require a general argument.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Sur $E=\{0,1,2,3,4\}$, combien de valeurs rendent fausse la règle « si $x$ est pair, alors $x<4$ » ?'
+    en: 'Challenge. On $E=\{0,1,2,3,4\}$, how many values make “if $x$ is even, then $x<4$” false?'
+    reponses: ['1']
+    verif: 'print(sum(x % 2 == 0 and not x < 4 for x in range(5)))'
+    indice: { fr: 'Cherche une hypothèse vraie et une conclusion fausse.', en: 'Look for a true hypothesis and a false conclusion.' }
+    explication: { fr: 'Seul $4$ est pair sans être strictement inférieur à $4$.', en: 'Only $4$ is even without being strictly less than $4$.' }
+  - id: c11
+    type: idee
+    fr: 'Récap : précise l’ensemble, distingue « tous » et « au moins un », puis cherche ce qui réfuterait la règle. Kintana peut vérifier exhaustivement un ensemble fini ; quelques tests ne prouvent pas une règle sur tous les entiers.'
+    en: 'Recap: specify the set, distinguish “all” from “at least one”, then look for what would refute the rule. Kintana can exhaustively check a finite set; a few tests do not prove a rule about all integers.'

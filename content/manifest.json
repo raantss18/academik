@@ -314,6 +314,39 @@
       "verifie": "2026-11-01",
       "mode": "a-valider",
       "note": "fichier, empreinte et période à figer avant embarquement ; cours de référence, pas des prix exécutables"
+    },
+    {
+      "id": "levin-dmoi",
+      "titre": "Discrete Mathematics: An Open Introduction (3e éd.)",
+      "etablissement": "Oscar Levin",
+      "url": "https://discrete.openmathbooks.org/dmoi3/",
+      "licence": "CC BY-SA 4.0",
+      "preuve_licence": "https://discrete.openmathbooks.org/dmoi3/front-colophon.html",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "définitions contrôlées, rien d'embarqué ; 4e éd. annoncée"
+    },
+    {
+      "id": "mit-18200",
+      "titre": "18.200 Principles of Discrete Applied Mathematics (2024)",
+      "etablissement": "MIT OCW (A. Moitra)",
+      "url": "https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/",
+      "licence": "CC BY-NC-SA 4.0",
+      "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "énoncé des tiroirs contrôlé, rien incorporé"
+    },
+    {
+      "id": "tengely-ciphers",
+      "titre": "Classical ciphers",
+      "etablissement": "S. Tengely (Université de Debrecen)",
+      "url": "https://shrek.unideb.hu/~tengely/crypto/section-2.html",
+      "licence": "non vérifiée",
+      "preuve_licence": "",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "lien seulement ; aucun texte repris"
     }
   ]
 }
