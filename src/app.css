@@ -3,6 +3,8 @@
   --c-primary: #1d7a33; --c-primary-strong: #145c26; --c-primary-soft: #e6f3e9; --c-accent: #d6362b; --c-accent-soft: #fdeae8;
   --c-bg: #f7f8f6; --c-surface: #fff; --c-surface-2: #eef1ec; --c-text: #1b211d; --c-text-muted: #55605a; --c-border: #dde2dc;
   --radius: 14px; --font: 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --sat: var(--safe-area-inset-top, env(safe-area-inset-top, 0px)); --sab: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --sal: var(--safe-area-inset-left, env(safe-area-inset-left, 0px)); --sar: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
   --mono: ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
@@ -33,7 +35,7 @@ code { font-family: var(--mono); background: var(--c-surface-2); padding: .08em 
 .math[data-display='1'] { display: block; text-align: center; margin: .5em 0; overflow-x: auto; }
 pre { background: var(--c-surface-2); border: 1px solid var(--c-border); border-radius: 12px; padding: 12px 14px; overflow-x: auto; margin: .6em 0; }
 pre code { background: none; padding: 0; }
-.wrap { max-width: 640px; margin: 0 auto; padding: 16px; }
+.wrap { max-width: 640px; margin: 0 auto; padding: calc(var(--sat) + 12px) calc(var(--sar) + 16px) calc(var(--sab) + 16px) calc(var(--sal) + 16px); }   /* jamais sous la barre d'état ni la barre de gestes */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 48px; padding: 0 22px; border-radius: 999px; font-weight: 700; cursor: pointer; border: 1px solid var(--c-border); background: var(--c-surface); }
 .btn:hover { border-color: var(--c-primary); }
 .btn.primary { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }

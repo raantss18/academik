@@ -6,6 +6,7 @@ import { i18n } from './lib/i18n.svelte';
 import { content } from './lib/content.svelte';
 import { updates } from './lib/updates.svelte';
 import { platform } from './lib/platform';
+import { theme } from './lib/theme.svelte';
 
 /** APK / AppImage : tout est dans le paquet, donc plus de service worker (la 0.1.0 en avait installé un qui servirait l'ancienne interface). */
 async function dropStaleServiceWorker() {
@@ -17,6 +18,7 @@ async function dropStaleServiceWorker() {
 
 async function main() {
   document.documentElement.lang = i18n.lang;
+  theme.apply();
   await content.load();               // contenu embarqué, ou téléchargé s'il est plus récent
   mount(App, { target: document.getElementById('app')! });
 

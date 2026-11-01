@@ -2,6 +2,19 @@
 
 ## [Non publié]
 
+## [0.3.1] — 2026-11-01
+
+### Message fr
+Les boutons du haut ne sont plus cachés par la barre d'état du téléphone. Les réglages, la langue, le thème, la synchronisation et les mises à jour sont dans le logo academik. Nouvelle icône : le « e » rouge.
+
+### Message en
+The buttons at the top are no longer hidden by the phone's status bar. Settings, language, theme, sync and updates are in the academik logo. New icon: the red “e”.
+
+### Corrections / Fixes
+- Marges de la barre d'état et de la barre de gestes (Android récent, dessin bord à bord). / Status bar and gesture bar margins (recent Android, edge-to-edge drawing).
+- Menu du logo (réglages, à propos, synchronisation, langue, thème, mises à jour), comme COMIMa. / Logo menu (settings, about, sync, language, theme, updates), like COMIMa.
+- Icône et écran de démarrage : le « e » rouge. / Icon and splash screen: the red “e”.
+
 ## [0.3.0] — 2026-11-01
 
 ### Message fr

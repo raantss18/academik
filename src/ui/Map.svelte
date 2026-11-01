@@ -4,6 +4,7 @@
   import { scoredItems } from '../lib/level';
   import { content } from '../lib/content.svelte';
   import UpdateBanner from './UpdateBanner.svelte';
+  import LogoMenu from './LogoMenu.svelte';
   import { levelScore, stars } from '../engine/score';
   import { unlockedLevels } from '../engine/unlock';
 
@@ -19,11 +20,9 @@
 
 <div class="wrap">
   <header class="hud">
-    <div class="brand">acad<span>e</span>mik</div>
-    <span class="chip">🔥 {progress.streak} {progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>
+    <LogoMenu {onrules} />
+    <span class="chip" title={ui('streak')}>🔥 {progress.streak} {progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>
     <span class="chip">⭐ {progress.xp} {ui('xp')}</span>
-    <button class="chip" onclick={() => i18n.set(fr ? 'en' : 'fr')} aria-label="Langue / Language">{fr ? 'EN' : 'FR'}</button>
-    <button class="chip" onclick={onrules}>{fr ? 'Consignes' : 'Rules'}</button>
   </header>
 
   <UpdateBanner />
@@ -60,8 +59,7 @@
 <style>
   .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }
   .hud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
-  .brand { font-weight: 800; font-size: 1.2rem; margin-right: auto; } .brand span { color: var(--c-accent); }
-  .chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; font-size: .9rem; cursor: pointer; }
+  .chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; font-size: .9rem; }
   .go { width: 100%; margin: 6px 0; } .small { font-size: .85rem; }
   .mod { margin: 18px 0; } .mod h2 { font-size: 1.05rem; margin: 0 0 8px; } ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
   .lv { width: 100%; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 14px; border-radius: 16px; border: 1px solid var(--c-border); background: var(--c-surface); text-align: left; cursor: pointer; }
