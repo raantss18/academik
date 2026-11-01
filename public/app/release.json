@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 10,
-  "version": "0.3.7",
+  "build": 11,
+  "version": "0.3.8",
   "notes": {
-   "fr": "Les révisions arrivent : chaque jour, l'app te repose les questions que tu risques d'oublier, au meilleur moment pour t'en souvenir. Le bouton apparaît sur l'accueil dès qu'il y en a.",
-   "en": "Reviews are here: each day the app asks again the questions you are about to forget, at the best moment to remember them. The button appears on the home screen whenever there are some."
+   "fr": "Tu peux maintenant écrire du vrai code Python dans les leçons et t'entraîner dans un terminal simulé, sans rien risquer sur ton ordinateur. Deux nouveaux niveaux : « Se repérer » (terminal) et « Décider » (Python).",
+   "en": "You can now write real Python code in lessons and practise in a simulated terminal, without risking anything on your computer. Two new levels: “Finding your way” (terminal) and “Deciding” (Python)."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.7/academik-0.3.7.apk",
-    "sha256": "831cae6d2a02286442f33673a193ad3aaa5d7fe5ff2a55ccb147499d9af69f2d",
-    "bytes": 3781179
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.8/academik-0.3.8.apk",
+    "sha256": "4fc272951d421f5605dac7531fab8bfb8818d236b49454b596950b5455f1a395",
+    "bytes": 10144684
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.7/academik-0.3.7-x86_64.AppImage",
-    "sha256": "6cccc4cba89ecd630b1d2ccfabfe72e68f1a846b265d5d7e30313cb79255cefb",
-    "bytes": 108833272
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.8/academik-0.3.8-x86_64.AppImage",
+    "sha256": "b0739263112c56ebe2dd6dd4a30a11136b4b582154cb4d34909e091145bc4e10",
+    "bytes": 114665976
    }
   }
  },
  "history": [
+  {
+   "build": 10,
+   "version": "0.3.7",
+   "notes": {
+    "fr": "Les révisions arrivent : chaque jour, l'app te repose les questions que tu risques d'oublier, au meilleur moment pour t'en souvenir. Le bouton apparaît sur l'accueil dès qu'il y en a.",
+    "en": "Reviews are here: each day the app asks again the questions you are about to forget, at the best moment to remember them. The button appears on the home screen whenever there are some."
+   }
+  },
   {
    "build": 9,
    "version": "0.3.6",
