@@ -2,6 +2,18 @@
 
 ## [Non publié]
 
+## [0.3.3] — 2026-11-01
+
+### Message fr
+La nouvelle version de l'application est maintenant annoncée même après avoir fermé et rouvert l'app, avec les nouveautés des versions que tu as sautées. Les niveaux des modules 4 et 5 arrivent tout seuls.
+
+### Message en
+The new app version is now announced even after closing and reopening the app, with what's new in the versions you skipped. Levels for modules 4 and 5 arrive by themselves.
+
+### Corrections / Fixes
+- La bannière « nouvelle version » disparaissait au redémarrage ; elle est mémorisée. / The “new version” banner vanished on restart; it is now remembered.
+- Nouveautés des versions sautées affichées. / Notes of skipped versions shown.
+
 ## [0.3.2] — 2026-11-01
 
 ### Message fr
