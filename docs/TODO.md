@@ -44,8 +44,8 @@
 | 1 Le terminal | ⏳ attend le terminal simulé |
 | 2 Python | 🔄 2.1 fait ; 2.2 à 2.5 + boss ⏳ (attend Pyodide pour les exercices de code) |
 | 3 Algorithmes | ✅ 6 niveaux (T-004) |
-| 4 Algèbre linéaire | 🔄 T-005 (4 niveaux faits, 4.5 et boss en cours) |
-| 5 Analyse | 🔄 T-006 (4 niveaux faits, 5.5 et boss en cours) |
+| 4 Algèbre linéaire | ✅ 6 niveaux (T-005) |
+| 5 Analyse | ✅ 6 niveaux (T-006) |
 | 6 Probabilités, 7 Statistique | ⏳ à lancer (T-007, T-008) après T-005/T-006 |
 | 8 à 20, R | ⏳ voir `CURSUS.md` (volet IA puis quant) |
 - ⏳ Mettre à jour les passages datés des livres d'Antsa avec les sources récentes (règle « le plus moderne gagne ») ; documenter dans `remplace` du manifeste
@@ -58,7 +58,7 @@
 
 ## 4. Codex / ChatGPT (`docs/CODEX.md`)
 - ✅ Outil `scripts/codex.mjs` : quota, 2 tâches max, périmètre, contrôle, fusion sûre
-- 🔄 T-005, T-006 en cours ; ⏳ T-007 (probabilités), T-008 (statistique), T-009 (traductions EN du cursus)
+- ✅ T-005, T-006 intégrées ; ⏳ T-007 (probabilités), T-008 (statistique), T-009 (traductions EN du cursus)
 - ⏳ Tâche de **relecture croisée** : Codex résout les exercices de Claude sans voir les solutions
 
 ## 5. Publication

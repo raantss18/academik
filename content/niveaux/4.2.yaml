@@ -1,0 +1,97 @@
+id: '4.2'
+module: 4
+duree_min: 14
+titre: { fr: 'Produit scalaire et norme', en: 'Dot product and norm' }
+ia: { fr: 'Kintana compare les directions des vecteurs de textes grâce au cosinus.', en: 'Kintana compares text vector directions using cosine similarity.' }
+sources:
+  - { titre: 'Gilbert Strang — MIT 18.06, orthogonalité', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+  - { titre: 'scikit-learn — cosine_similarity', url: 'https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html', licence: 'BSD-3-Clause' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Une flèche avance de $3$ unités vers la droite et de $4$ vers le haut. Quelle est sa longueur à vol d’oiseau ?'
+    en: 'An arrow moves $3$ units right and $4$ units up. What is its straight-line length?'
+    choix:
+      - { fr: '7', en: '7' }
+      - { fr: '25', en: '25' }
+      - { fr: '5', en: '5', juste: true }
+    verif: 'from math import isqrt; print(isqrt(3**2+4**2))'
+    sortie: '5'
+    explication: { fr: 'Pythagore donne $\sqrt{3^2+4^2}=5$, et non la somme des déplacements.', en: 'Pythagoras gives $\sqrt{3^2+4^2}=5$, not the sum of the movements.' }
+  - id: c2
+    type: idee
+    fr: 'Le produit scalaire $u\cdot v=\sum_i u_i v_i$ mesure un alignement, mais dépend aussi des longueurs. La norme euclidienne $\|u\|=\sqrt{u\cdot u}$ est la longueur de la flèche. Pour deux vecteurs non nuls, $\cos(u,v)=\frac{u\cdot v}{\|u\|\|v\|}$ compare seulement leurs directions.'
+    en: 'The dot product $u\cdot v=\sum_i u_i v_i$ measures alignment, but also depends on lengths. The Euclidean norm $\|u\|=\sqrt{u\cdot u}$ is the arrow’s length. For two nonzero vectors, $\cos(u,v)=\frac{u\cdot v}{\|u\|\|v\|}$ compares only their directions.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Deux directions proches', en: 'Two nearby directions' }
+    etapes:
+      - { code: 'u, v = (3, 4), (4, 3)', fr: 'Les deux flèches ont une longueur de $5$.', en: 'Both arrows have length $5$.' }
+      - { code: 'dot = sum(a*b for a, b in zip(u, v))', fr: 'Le produit scalaire vaut $3\times4+4\times3=24$.', en: 'The dot product is $3\times4+4\times3=24$.' }
+      - { code: 'from fractions import Fraction; print(Fraction(dot, 25))', fr: 'Le cosinus vaut $24/25$, proche de $1$ : les directions sont proches.', en: 'The cosine is $24/25$, close to $1$: the directions are similar.' }
+    verif: "from fractions import Fraction\nfrom math import isqrt\nu,v=(3,4),(4,3)\nprint(Fraction(sum(a*b for a,b in zip(u,v)),isqrt(sum(a*a for a in u))*isqrt(sum(b*b for b in v))))"
+    sortie: '24/25'
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Calcule $(2,1)\cdot(3,4)$.'
+    en: 'Compute $(2,1)\cdot(3,4)$.'
+    reponses: ['10']
+    verif: 'print(sum(a*b for a,b in zip((2,1),(3,4))))'
+    explication: { fr: '$2\times3+1\times4=10$ : multiplie les coordonnées correspondantes, puis additionne.', en: '$2\times3+1\times4=10$: multiply matching coordinates, then add.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Calcule la norme de $(6,8)$.'
+    en: 'Compute the norm of $(6,8)$.'
+    reponses: ['10']
+    verif: 'from math import isqrt; print(isqrt(sum(a*a for a in (6,8))))'
+    explication: { fr: '$\sqrt{36+64}=10$ ; doubler $(3,4)$ double sa longueur.', en: '$\sqrt{36+64}=10$; doubling $(3,4)$ doubles its length.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Deux vecteurs sont orthogonaux si leur produit scalaire est nul. Calcule $(1,2)\cdot(2,-1)$ pour tester cette propriété.'
+    en: 'Two vectors are orthogonal if their dot product is zero. Compute $(1,2)\cdot(2,-1)$ to test this property.'
+    reponses: ['0']
+    verif: 'print(sum(a*b for a,b in zip((1,2),(2,-1))))'
+    explication: { fr: '$2-2=0$ : ces deux flèches sont perpendiculaires.', en: '$2-2=0$: these two arrows are perpendicular.' }
+  - id: c7
+    type: piege
+    fr: 'Le cosinus mathématique est indéfini si un vecteur est nul : Kintana doit traiter ce cas avant toute division.'
+    en: 'The mathematical cosine is undefined when either vector is zero: Kintana must handle this case before dividing.'
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Normaliser un vecteur non nul consiste à le diviser par sa norme. Donne la première coordonnée de $(3,4)/5$ en fraction irréductible.'
+    en: 'Normalizing a nonzero vector means dividing it by its norm. Give the first coordinate of $(3,4)/5$ as a reduced fraction.'
+    reponses: ['3/5']
+    verif: 'from fractions import Fraction; from math import isqrt; u=(3,4); print(Fraction(u[0],isqrt(sum(a*a for a in u))))'
+    explication: { fr: 'On obtient $(3/5,4/5)$, de norme $1$.', en: 'The result is $(3/5,4/5)$, with norm $1$.' }
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel est le cosinus entre $(3,4)$ et $(6,8)$ ?'
+    en: 'What is the cosine between $(3,4)$ and $(6,8)$?'
+    reponses: ['1']
+    verif: 'from fractions import Fraction; from math import isqrt; u,v=(3,4),(6,8); print(Fraction(sum(a*b for a,b in zip(u,v)),isqrt(sum(a*a for a in u))*isqrt(sum(b*b for b in v))))'
+    explication: { fr: '$50/(5\times10)=1$ : doubler tous les comptages conserve la direction.', en: '$50/(5\times10)=1$: doubling every count preserves direction.' }
+  - id: c10
+    type: plus
+    fr: 'Pour aller plus loin : le cosinus de vecteurs réels non nuls est entre $-1$ et $1$ ; avec des comptages non négatifs, il est entre $0$ et $1$ (MIT 18.06 et documentation scikit-learn, sources).'
+    en: 'Further exploration: the cosine of nonzero real vectors lies between $-1$ and $1$; with nonnegative counts, it lies between $0$ and $1$ (MIT 18.06 and scikit-learn documentation, sources).'
+  - id: c11
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Pour la requête $q=(1,0)$, les textes sont $a=(3,4)$ et $b=(0,5)$. Donne le plus grand des deux cosinus sous forme de fraction irréductible.'
+    en: 'Challenge. For query $q=(1,0)$, the texts are $a=(3,4)$ and $b=(0,5)$. Give the larger cosine as a reduced fraction.'
+    reponses: ['3/5']
+    verif: "from fractions import Fraction\nfrom math import isqrt\nq=(1,0)\nprint(max(Fraction(sum(x*y for x,y in zip(q,v)),isqrt(sum(x*x for x in q))*isqrt(sum(y*y for y in v))) for v in ((3,4),(0,5))))"
+    indice: { fr: 'Les deux textes ont la même norme, mais pas le même produit scalaire avec la requête.', en: 'Both texts have the same norm, but different dot products with the query.' }
+    explication: { fr: 'Le texte $a$ obtient $3/5$, contre $0$ pour $b$ ; Kintana classe donc $a$ en premier.', en: 'Text $a$ scores $3/5$, versus $0$ for $b$; Kintana therefore ranks $a$ first.' }
+  - id: c12
+    type: retenir
+    fr: 'À retenir : produit scalaire pour combiner les coordonnées, norme pour la longueur, cosinus pour comparer les directions non nulles.'
+    en: 'Remember: dot product combines coordinates, norm measures length, and cosine compares nonzero directions.'

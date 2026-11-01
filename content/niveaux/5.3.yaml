@@ -1,0 +1,115 @@
+id: '5.3'
+module: 5
+duree_min: 14
+titre: { fr: 'Gradient et dérivées partielles', en: 'Gradient and partial derivatives' }
+ia: { fr: 'Kintana mesure la sensibilité de son erreur à plusieurs paramètres.', en: 'Kintana measures how sensitive its error is to several parameters.' }
+sources:
+  - { titre: 'MIT OCW — 18.02SC, Partial Derivatives', url: 'https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/pages/2.-partial-derivatives/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana règle $w$ et $b$. Pour isoler la sensibilité de son erreur à $w$, que faire de $b$ ?'
+    en: 'Kintana adjusts $w$ and $b$. To isolate how sensitive its error is to $w$, what should happen to $b$?'
+    choix:
+      - { fr: 'Le faire varier comme $w$.', en: 'Vary it along with $w$.' }
+      - { fr: 'Le garder fixe.', en: 'Keep it fixed.', juste: true }
+      - { fr: 'Le remplacer forcément par zéro.', en: 'Always replace it with zero.' }
+    explication: { fr: 'Une dérivée partielle fait varier une coordonnée en gardant les autres constantes, à leurs valeurs actuelles.', en: 'A partial derivative varies one coordinate while keeping the others constant at their current values.' }
+  - id: c2
+    type: idee
+    fr: 'Pour une fonction différentiable $L(w,b)$, le gradient regroupe les dérivées partielles : $\nabla L=(\partial_wL,\partial_bL)$. Un petit déplacement $d$ produit une variation approximative $\nabla L\cdot d$. Parmi les directions de norme euclidienne $1$, la baisse locale est maximale dans la direction $-\nabla L/\|\nabla L\|$ si le gradient est non nul.'
+    en: 'For a differentiable function $L(w,b)$, the gradient collects the partial derivatives: $\nabla L=(\partial_wL,\partial_bL)$. A small displacement $d$ produces an approximate change $\nabla L\cdot d$. Among directions of Euclidean norm $1$, the greatest local decrease is along $-\nabla L/\|\nabla L\|$ when the gradient is nonzero.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Deux boutons, deux pentes', en: 'Two controls, two slopes' }
+    lang: python
+    etapes:
+      - { code: 'w, b = 1, 0', fr: 'Prends $L(w,b)=(w-2)^2+3(b+1)^2$ au point $(1,0)$.', en: 'Take $L(w,b)=(w-2)^2+3(b+1)^2$ at $(1,0)$.' }
+      - { code: 'gw, gb = 2*(w-2), 6*(b+1)', fr: 'En fixant tour à tour chaque coordonnée, on obtient $\partial_wL=2(w-2)$ et $\partial_bL=6(b+1)$.', en: 'Holding each coordinate fixed in turn gives $\partial_wL=2(w-2)$ and $\partial_bL=6(b+1)$.' }
+      - { code: 'print(gw, gb)', fr: 'Le gradient vaut $(-2,6)$ : augmenter un peu $w$ et diminuer un peu $b$ fait baisser cette erreur.', en: 'The gradient is $(-2,6)$: slightly increasing $w$ and slightly decreasing $b$ reduces this error.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $F(x,y)=x^2+3y^2$, calcule $\partial_xF(2,1)$.'
+    en: 'For $F(x,y)=x^2+3y^2$, compute $\partial_xF(2,1)$.'
+    reponses: ['4']
+    verif: |
+      from fractions import Fraction
+      F = lambda x,y: x*x+3*y*y
+      h = Fraction(1,10)
+      print((F(2+h,1)-F(2-h,1))/(2*h))
+    explication: { fr: 'Le terme $3y^2$ est constant par rapport à $x$ ; la dérivée partielle vaut $2x=4$.', en: 'The term $3y^2$ is constant with respect to $x$; the partial derivative is $2x=4$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour la même fonction $F(x,y)=x^2+3y^2$, calcule $\partial_yF(2,1)$.'
+    en: 'For the same function $F(x,y)=x^2+3y^2$, compute $\partial_yF(2,1)$.'
+    reponses: ['6']
+    verif: |
+      from fractions import Fraction
+      F = lambda x,y: x*x+3*y*y
+      h = Fraction(1,10)
+      print((F(2,1+h)-F(2,1-h))/(2*h))
+    explication: { fr: 'Cette fois $x^2$ est constant et $\partial_yF=6y$, donc la réponse est $6$.', en: 'This time $x^2$ is constant and $\partial_yF=6y$, so the answer is $6$.' }
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Si $\nabla F=(4,6)$, quelle direction unitaire donne une dérivée directionnelle négative ?'
+    en: 'If $\nabla F=(4,6)$, which unit direction gives a negative directional derivative?'
+    choix:
+      - { fr: '$(1,0)$', en: '$(1,0)$' }
+      - { fr: '$(0,1)$', en: '$(0,1)$' }
+      - { fr: '$(-1,0)$', en: '$(-1,0)$', juste: true }
+    verif: |
+      g = (4,6)
+      directions = [(1,0),(0,1),(-1,0)]
+      found = [d for d in directions if sum(a*b for a,b in zip(g,d)) < 0]
+      assert len(found) == 1
+      print(*found[0], sep=',')
+    sortie: '-1,0'
+    explication: { fr: 'Le produit scalaire avec $(-1,0)$ vaut $-4$ ; les deux autres donnent $4$ et $6$.', en: 'The dot product with $(-1,0)$ is $-4$; the other two give $4$ and $6$.' }
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le gradient vaut $(4,6)$ et le déplacement vaut $(0{,}1,-0{,}1)$. Quelle variation de $F$ prédit le modèle linéaire ?'
+    en: 'The gradient is $(4,6)$ and the displacement is $(0.1,-0.1)$. What change in $F$ does the linear model predict?'
+    reponses: ['-0.2', '-0,2', '-1/5']
+    verif: |
+      from fractions import Fraction
+      print(4*Fraction(1,10)-6*Fraction(1,10))
+    explication: { fr: '$4\times0{,}1-6\times0{,}1=-0{,}2$ ; cette variation est une approximation, pas la valeur finale de $F$.', en: '$4\times0.1-6\times0.1=-0.2$; this change is an approximation, not the final value of $F$.' }
+  - id: c8
+    type: piege
+    fr: 'Un gradient nul peut signaler un point selle : $F(x,y)=x^2-y^2$ augmente le long de $x$ mais diminue le long de $y$ autour de $(0,0)$.'
+    en: 'A zero gradient can indicate a saddle point: $F(x,y)=x^2-y^2$ increases along $x$ but decreases along $y$ near $(0,0)$.'
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $G(w,b)=wb+b^2$, calcule $\partial_bG(3,2)$.'
+    en: 'For $G(w,b)=wb+b^2$, compute $\partial_bG(3,2)$.'
+    reponses: ['7']
+    verif: |
+      from fractions import Fraction
+      G = lambda w,b: w*b+b*b
+      h = Fraction(1,10)
+      print((G(3,2+h)-G(3,2-h))/(2*h))
+    explication: { fr: '$w$ est constant, donc $\partial_bG=w+2b=3+4=7$.', en: '$w$ is constant, so $\partial_bG=w+2b=3+4=7$.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi : $L(w,b)=(2w+b-5)^2$. Calcule $\partial_wL(1,1)$.'
+    en: 'Challenge: $L(w,b)=(2w+b-5)^2$. Compute $\partial_wL(1,1)$.'
+    reponses: ['-8']
+    verif: |
+      from fractions import Fraction
+      L = lambda w,b: (2*w+b-5)**2
+      h = Fraction(1,100)
+      print((L(1+h,1)-L(1-h,1))/(2*h))
+    indice: { fr: 'Fixe $b=1$ puis développe le carré en $w$.', en: 'Fix $b=1$ and expand the square in $w$.' }
+    explication: { fr: 'À $b=1$, $L=(2w-4)^2=4w^2-16w+16$ ; sa dérivée en $w=1$ est $8-16=-8$.', en: 'At $b=1$, $L=(2w-4)^2=4w^2-16w+16$; its derivative at $w=1$ is $8-16=-8$.' }
+  - id: c11
+    type: retenir
+    fr: 'À retenir : une partielle isole un paramètre, le gradient les rassemble ; son opposé indique à Kintana une direction de baisse locale quand il est non nul.'
+    en: 'Remember: a partial derivative isolates one parameter, and the gradient gathers them all; its negative gives Kintana a local descent direction when nonzero.'

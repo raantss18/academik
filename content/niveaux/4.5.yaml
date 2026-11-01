@@ -1,0 +1,97 @@
+id: '4.5'
+module: 4
+duree_min: 15
+titre: { fr: 'Valeurs propres et SVD', en: 'Eigenvalues and SVD' }
+ia: { fr: 'Kintana découvre comment réduire les dimensions de ses vecteurs, au prix d’une perte d’information.', en: 'Kintana discovers how to reduce vector dimensions at the cost of losing information.' }
+sources:
+  - { titre: 'Gilbert Strang — MIT 18.06, valeurs propres et SVD', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+  - { titre: 'NumPy — définition de la SVD (consultation uniquement)', url: 'https://numpy.org/doc/stable/reference/generated/numpy.linalg.svd.html', licence: 'BSD-3-Clause' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Une transformation envoie $(1,0)$ sur $(4,0)$. Par quel facteur multiplie-t-elle cette flèche ?'
+    en: 'A transformation maps $(1,0)$ to $(4,0)$. By what factor does it scale this arrow?'
+    choix:
+      - { fr: '4', en: '4', juste: true }
+      - { fr: '0', en: '0' }
+      - { fr: '5', en: '5' }
+    verif: 'from fractions import Fraction; print(Fraction(4,1))'
+    sortie: '4'
+    explication: { fr: 'La flèche reste sur le même axe et quadruple : $(4,0)=4(1,0)$.', en: 'The arrow stays on the same axis and quadruples: $(4,0)=4(1,0)$.' }
+  - id: c2
+    type: idee
+    fr: 'Une flèche non nulle qui reste sur sa droite après transformation est un vecteur propre : $Av=\lambda v$, où $\lambda$ est la valeur propre. Pour $A=\operatorname{diag}(4,2)$, la flèche $(1,0)$ est multipliée par $4$, et $(0,1)$ par $2$. Un facteur négatif inverse le sens ; un facteur nul écrase la flèche.'
+    en: 'A nonzero arrow that stays on its line after a transformation is an eigenvector: $Av=\lambda v$, where $\lambda$ is the eigenvalue. For $A=\operatorname{diag}(4,2)$, the arrow $(1,0)$ is scaled by $4$, and $(0,1)$ by $2$. A negative factor reverses its direction; a zero factor collapses it.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Une direction propre hors des axes', en: 'An eigenvector away from the axes' }
+    etapes:
+      - { code: 'A, v = [[3, 1], [1, 3]], [1, 1]', fr: 'Prends une flèche sur la diagonale du plan.', en: 'Take an arrow along the diagonal of the plane.' }
+      - { code: 'Av = [sum(a*b for a,b in zip(row,v)) for row in A]', fr: 'Le produit donne $(4,4)$, toujours sur la même droite.', en: 'Multiplication gives $(4,4)$, still on the same line.' }
+      - { code: 'from fractions import Fraction; print(Fraction(Av[0], v[0]))', fr: 'Les deux coordonnées sont multipliées par $4$ : la valeur propre associée vaut $4$.', en: 'Both coordinates are multiplied by $4$: the corresponding eigenvalue is $4$.' }
+    verif: 'from fractions import Fraction; A=[[3,1],[1,3]]; v=[1,1]; Av=[sum(a*b for a,b in zip(row,v)) for row in A]; k=Fraction(Av[0],v[0]); assert Av==[k*x for x in v]; print(k)'
+    sortie: '4'
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour la même matrice $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$, calcule la valeur propre associée à $v=(1,-1)$.'
+    en: 'For the same matrix $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$, compute the eigenvalue associated with $v=(1,-1)$.'
+    reponses: ['2']
+    verif: 'from fractions import Fraction; A=[[3,1],[1,3]]; v=[1,-1]; w=[sum(a*b for a,b in zip(row,v)) for row in A]; k=Fraction(w[0],v[0]); assert w==[k*x for x in v]; print(k)'
+    explication: { fr: '$Av=(2,-2)=2v$ ; il faut vérifier les deux coordonnées, pas une seule.', en: '$Av=(2,-2)=2v$; check both coordinates, not just one.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'La SVD décompose une transformation réelle en réorientation, étirement, puis réorientation : $A=U\Sigma V^T$, avec $U,V$ orthogonales (longueurs conservées) et $\Sigma$ diagonale non négative. Pour $A=\operatorname{diag}(4,2)$, on peut prendre $U=V=I$ : quelle est la plus grande valeur singulière, donc le plus grand étirement ?'
+    en: 'SVD decomposes a real transformation into reorientation, stretching, then reorientation: $A=U\Sigma V^T$, with orthogonal $U,V$ (lengths preserved) and nonnegative diagonal $\Sigma$. For $A=\operatorname{diag}(4,2)$, we can take $U=V=I$: what is the largest singular value, hence the largest stretch?'
+    reponses: ['4']
+    verif: 'from math import isqrt; A=[[4,0],[0,2]]; squares=[sum(x*x for x in col) for col in zip(*A)]; print(isqrt(max(squares)))'
+    explication: { fr: 'Le cercle unité devient une ellipse de demi-axes $4$ et $2$ ; ici $\Sigma=A$.', en: 'The unit circle becomes an ellipse with semiaxes $4$ and $2$; here $\Sigma=A$.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $A=\operatorname{diag}(-4,2)$, la direction $(1,0)$ est renversée et sa longueur quadruple. Quelle est la valeur propre associée à cette direction ?'
+    en: 'For $A=\operatorname{diag}(-4,2)$, direction $(1,0)$ is reversed and its length quadruples. What is the eigenvalue associated with this direction?'
+    reponses: ['-4']
+    verif: 'A=[[-4,0],[0,2]]; v=[1,0]; w=[sum(a*b for a,b in zip(row,v)) for row in A]; assert w==[-4*x for x in v]; print(w[0])'
+    explication: { fr: 'La valeur propre est $-4$ ; l’étirement mesuré par la valeur singulière correspondante vaut $4$.', en: 'The eigenvalue is $-4$; the stretch measured by the corresponding singular value is $4$.' }
+  - id: c7
+    type: piege
+    fr: 'Valeurs propres et singulières ne sont pas interchangeables : les singulières sont non négatives, et une SVD existe même pour une matrice rectangulaire ; une valeur propre concerne une matrice carrée.'
+    en: 'Eigenvalues and singular values are not interchangeable: singular values are nonnegative, and SVD exists even for a rectangular matrix; an eigenvalue concerns a square matrix.'
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Les carrés des valeurs singulières sont les valeurs propres de $A^TA$. Pour $A=\begin{pmatrix}0&4\\2&0\end{pmatrix}$, on obtient $A^TA=\operatorname{diag}(4,16)$ : quelle est la plus petite valeur singulière ?'
+    en: 'Squared singular values are the eigenvalues of $A^TA$. For $A=\begin{pmatrix}0&4\\2&0\end{pmatrix}$, we get $A^TA=\operatorname{diag}(4,16)$: what is the smaller singular value?'
+    reponses: ['2']
+    verif: 'from math import isqrt; A=[[0,4],[2,0]]; cols=list(zip(*A)); G=[[sum(x*y for x,y in zip(u,v)) for v in cols] for u in cols]; assert G==[[4,0],[0,16]]; print(isqrt(min(G[0][0],G[1][1])))'
+    explication: { fr: 'On prend les racines positives : $2$ et $4$, rangées généralement $4$ puis $2$.', en: 'Take the nonnegative square roots: $2$ and $4$, usually ordered as $4$ then $2$.' }
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Tronquer la SVD garde seulement les plus grands étirements. Pour $A=\operatorname{diag}(4,2)$, on garde $A_1=\operatorname{diag}(4,0)$ : combien de directions indépendantes survivent, autrement dit quel est son rang ?'
+    en: 'Truncating SVD keeps only the largest stretches. For $A=\operatorname{diag}(4,2)$, keep $A_1=\operatorname{diag}(4,0)$: how many independent directions survive, that is, what is its rank?'
+    reponses: ['1']
+    verif: 'diagonal=[4,0]; print(sum(x!=0 for x in diagonal))'
+    explication: { fr: 'Seul l’axe horizontal survit ; toute flèche verticale est écrasée.', en: 'Only the horizontal axis survives; every vertical arrow is collapsed.' }
+  - id: c10
+    type: plus
+    fr: 'Pour aller plus loin : MIT 18.06 présente comment choisir les directions de la SVD ; la documentation NumPy précise le lien avec $A^TA$ (sources), sans que tu aies besoin de cette bibliothèque ici.'
+    en: 'Further exploration: MIT 18.06 explains how to choose SVD directions; the NumPy documentation details the connection with $A^TA$ (sources), without requiring that library here.'
+  - id: c11
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Kintana remplace $A=\operatorname{diag}(4,2)$ par $A_1=\operatorname{diag}(4,0)$. Pour $x=(1,3)$, calcule la norme de l’erreur $Ax-A_1x$.'
+    en: 'Challenge. Kintana replaces $A=\operatorname{diag}(4,2)$ with $A_1=\operatorname{diag}(4,0)$. For $x=(1,3)$, compute the norm of the error $Ax-A_1x$.'
+    reponses: ['6']
+    verif: 'from math import isqrt; from fractions import Fraction; x=list(map(Fraction,[1,3])); error=[(a-b)*t for a,b,t in zip([4,2],[4,0],x)]; print(isqrt(int(sum(t*t for t in error))))'
+    indice: { fr: 'Calcule les deux images avant de les soustraire.', en: 'Compute both images before subtracting them.' }
+    explication: { fr: '$Ax=(4,6)$, $A_1x=(4,0)$ : l’erreur $(0,6)$ a pour norme $6$ ; réduire la dimension peut modifier les similarités.', en: '$Ax=(4,6)$, $A_1x=(4,0)$: error $(0,6)$ has norm $6$; reducing dimensions can change similarities.' }
+  - id: c12
+    type: retenir
+    fr: 'À retenir : une valeur propre décrit $Av=\lambda v$ avec $v\ne0$ ; la SVD sépare directions et étirements pour permettre à Kintana une compression avec perte.'
+    en: 'Remember: an eigenvalue describes $Av=\lambda v$ with $v\ne0$; SVD separates directions and stretches to let Kintana perform lossy compression.'

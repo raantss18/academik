@@ -1,0 +1,104 @@
+id: '4.4'
+module: 4
+duree_min: 14
+titre: { fr: 'Systèmes linéaires', en: 'Linear systems' }
+ia: { fr: 'Kintana retrouve des poids à partir de scores et détecte des contraintes incompatibles.', en: 'Kintana recovers weights from scores and detects incompatible constraints.' }
+sources:
+  - { titre: 'Gilbert Strang — MIT 18.06, élimination et solutions de Ax=b', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Les poids de Kintana vérifient $x+y=5$ et $x-y=1$. Quelle valeur de $x$ satisfait les deux contraintes ?'
+    en: 'Kintana’s weights satisfy $x+y=5$ and $x-y=1$. Which value of $x$ satisfies both constraints?'
+    choix:
+      - { fr: '2', en: '2' }
+      - { fr: '3', en: '3', juste: true }
+      - { fr: '5', en: '5' }
+    verif: 'from fractions import Fraction; print(Fraction(5+1,2))'
+    sortie: '3'
+    explication: { fr: 'Additionner les équations élimine $y$ : $2x=6$, puis $y=2$.', en: 'Adding the equations eliminates $y$: $2x=6$, then $y=2$.' }
+  - id: c2
+    type: idee
+    fr: 'Chaque équation linéaire à deux inconnues non toutes deux absentes décrit une droite : résoudre le système, c’est chercher leurs points communs. La forme $Aw=b$ regroupe toutes les contraintes sur le vecteur de poids $w$. Ajouter à une équation un multiple d’une autre conserve les solutions et permet d’éliminer une inconnue.'
+    en: 'Each linear equation in two unknowns, with at least one nonzero coefficient, describes a line: solving the system means finding shared points. The form $Aw=b$ groups all constraints on the weight vector $w$. Adding a multiple of one equation to another preserves the solutions and can eliminate an unknown.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Éliminer puis remplacer', en: 'Eliminate, then substitute' }
+    etapes:
+      - { code: 'from fractions import Fraction', fr: 'Résous $x+y=5$ et $2x-y=1$ avec des fractions exactes.', en: 'Solve $x+y=5$ and $2x-y=1$ using exact fractions.' }
+      - { code: 'x = Fraction(5+1, 1+2)', fr: 'L’addition des deux équations donne $3x=6$, donc $x=2$.', en: 'Adding the equations gives $3x=6$, so $x=2$.' }
+      - { code: 'y = 5-x; print(x, y)', fr: 'Remplace dans la première : $y=3$, et vérifie la seconde : $2\times2-3=1$.', en: 'Substitute into the first: $y=3$, then check the second: $2\times2-3=1$.' }
+    verif: 'from fractions import Fraction; x=Fraction(6,3); y=5-x; assert x+y==5 and 2*x-y==1; print(x,y)'
+    sortie: '2 3'
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans $x+y=7$ et $x-y=3$, calcule $y$.'
+    en: 'For $x+y=7$ and $x-y=3$, compute $y$.'
+    reponses: ['2']
+    verif: 'from fractions import Fraction; y=Fraction(7-3,2); x=7-y; assert x-y==3; print(y)'
+    explication: { fr: 'Soustraire la seconde équation de la première donne $2y=4$.', en: 'Subtracting the second equation from the first gives $2y=4$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Résous $2x+y=4$ et $y=1$ : donne $x$ sous forme de fraction irréductible.'
+    en: 'Solve $2x+y=4$ and $y=1$: give $x$ as a reduced fraction.'
+    reponses: ['3/2']
+    verif: 'from fractions import Fraction; y=1; x=Fraction(4-y,2); assert 2*x+y==4; print(x)'
+    explication: { fr: '$2x=3$, donc $x=3/2$ ; une solution peut ne pas être entière.', en: '$2x=3$, so $x=3/2$; a solution need not be an integer.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le déterminant de $\begin{pmatrix}a&b\\c&d\end{pmatrix}$ vaut $ad-bc$ ; s’il est non nul, le système a une unique solution pour chaque second membre. Calcule-le pour $\begin{pmatrix}1&1\\2&-1\end{pmatrix}$.'
+    en: 'The determinant of $\begin{pmatrix}a&b\\c&d\end{pmatrix}$ is $ad-bc$; if it is nonzero, the system has a unique solution for every right-hand side. Compute it for $\begin{pmatrix}1&1\\2&-1\end{pmatrix}$.'
+    reponses: ['-3']
+    verif: 'A=[[1,1],[2,-1]]; print(A[0][0]*A[1][1]-A[0][1]*A[1][0])'
+    explication: { fr: '$1\times(-1)-1\times2=-3$ ; le système de l’exemple a donc une solution unique.', en: '$1\times(-1)-1\times2=-3$; the example system therefore has a unique solution.' }
+  - id: c7
+    type: piege
+    fr: 'Un déterminant nul ne signifie pas « aucune solution » : des droites confondues donnent une infinité de solutions, des droites parallèles distinctes aucune.'
+    en: 'A zero determinant does not mean “no solution”: coincident lines give infinitely many solutions, while distinct parallel lines give none.'
+  - id: c8
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Combien de solutions réelles possède $x+y=2$, $2x+2y=5$ ?'
+    en: 'How many real solutions does $x+y=2$, $2x+2y=5$ have?'
+    choix:
+      - { fr: 'Aucune', en: 'None', juste: true }
+      - { fr: 'Une', en: 'One' }
+      - { fr: 'Une infinité', en: 'Infinitely many' }
+    verif: 'row=[2-2*1,2-2*1,5-2*2]; assert row[:2]==[0,0] and row[2]!=0; print(0)'
+    sortie: '0'
+    explication: { fr: 'Retrancher deux fois la première équation de la seconde donne $0=1$, impossible.', en: 'Subtracting twice the first equation from the second gives $0=1$, which is impossible.' }
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Que donne au contraire $x+y=2$, $2x+2y=4$ ?'
+    en: 'What does $x+y=2$, $2x+2y=4$ give instead?'
+    choix:
+      - { fr: 'Une infinité de solutions', en: 'Infinitely many solutions', juste: true }
+      - { fr: 'Aucune solution', en: 'No solution' }
+      - { fr: 'Seulement $(1,1)$', en: 'Only $(1,1)$' }
+    verif: "from fractions import Fraction\nassert [2-2*1,2-2*1,4-2*2]==[0,0,0]\n# x=t, y=2-t : coefficients constants et de t des deux résidus.\nassert [0+2-2,1-1,2*0+2*2-4,2-2]==[0,0,0,0]\nprint('inf')"
+    sortie: 'inf'
+    explication: { fr: 'La seconde équation répète la première ; tout $(t,2-t)$ avec $t$ réel convient.', en: 'The second equation repeats the first; every $(t,2-t)$ with real $t$ works.' }
+  - id: c10
+    type: plus
+    fr: 'Pour aller plus loin : avec davantage de mesures que d’inconnues, les contraintes peuvent se contredire ; les moindres carrés cherchent alors un compromis (MIT 18.06, sources).'
+    en: 'Further exploration: with more measurements than unknowns, constraints may conflict; least squares then seeks a compromise (MIT 18.06, sources).'
+  - id: c11
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Les scores imposent $2x+y=7$ et $x+2y=8$. Retrouve les poids, puis donne le score $3x+y$ d’un nouveau texte.'
+    en: 'Challenge. Scores impose $2x+y=7$ and $x+2y=8$. Recover the weights, then give the score $3x+y$ of a new text.'
+    reponses: ['9']
+    verif: 'from fractions import Fraction; x=Fraction(2*7-8,3); y=7-2*x; assert 2*x+y==7 and x+2*y==8; print(3*x+y)'
+    indice: { fr: 'Double la première équation puis soustrais la seconde pour éliminer $y$.', en: 'Double the first equation, then subtract the second to eliminate $y$.' }
+    explication: { fr: '$3x=6$, donc $x=2$, $y=3$ ; le nouveau score vaut $3\times2+3=9$.', en: '$3x=6$, so $x=2$, $y=3$; the new score is $3\times2+3=9$.' }
+  - id: c12
+    type: retenir
+    fr: 'À retenir : élimine, remplace et vérifie toutes les équations ; Kintana distingue solution unique, absence de solution et infinité de solutions.'
+    en: 'Remember: eliminate, substitute, and check every equation; Kintana distinguishes a unique solution, no solution, and infinitely many solutions.'

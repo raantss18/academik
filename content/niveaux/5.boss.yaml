@@ -1,0 +1,117 @@
+id: '5.boss'
+module: 5
+duree_min: 15
+titre: { fr: 'La pente la plus raide', en: 'The steepest slope' }
+ia: { fr: 'Kintana sait apprendre ses propres paramètres par descente de gradient.', en: 'Kintana can learn its own parameters through gradient descent.' }
+sources:
+  - { titre: 'Boyd et Vandenberghe — Convex Optimization, chapitres 3 et 9', url: 'https://web.stanford.edu/~boyd/cvxbook/', licence: 'Copyright Cambridge University Press ; référence en lien seulement, aucun extrait repris' }
+  - { titre: 'MIT OCW — 18.02SC, Partial Derivatives', url: 'https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/pages/2.-partial-derivatives/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana prédit une même valeur $w$ pour deux observations, $2$ et $6$. Avec la perte moyenne $J(w)=((w-2)^2+(w-6)^2)/2$, combien vaut $J(0)$ ?'
+    en: 'Kintana predicts the same value $w$ for two observations, $2$ and $6$. With mean loss $J(w)=((w-2)^2+(w-6)^2)/2$, what is $J(0)$?'
+    choix:
+      - { fr: '$8$', en: '$8$' }
+      - { fr: '$20$', en: '$20$', juste: true }
+      - { fr: '$40$', en: '$40$' }
+    verif: 'print(sum((0-y)**2 for y in [2,6])//2)'
+    sortie: '20'
+    explication: { fr: 'Les erreurs au carré valent $4$ et $36$ ; leur moyenne vaut $20$.', en: 'The squared errors are $4$ and $36$; their mean is $20$.' }
+  - id: c2
+    type: idee
+    fr: 'Les moindres carrés choisissent les paramètres qui minimisent une somme ou une moyenne d’erreurs au carré. Ici, développer donne $J(w)=w^2-8w+20=(w-4)^2+4$. Le carré montre que la meilleure perte possible est positive : une constante ne peut égaler deux observations différentes.'
+    en: 'Least squares chooses parameters that minimize a sum or mean of squared errors. Here, expanding gives $J(w)=w^2-8w+20=(w-4)^2+4$. The square shows that the best possible loss is positive: one constant cannot match two different observations.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un autre départ pour voir la méthode', en: 'Another starting point to see the method' }
+    lang: python
+    etapes:
+      - { code: 'w, eta = 8, 0.25', fr: 'Sur cette perte, essaie le départ $w=8$ avec $\eta=1/4$.', en: 'For this loss, try starting at $w=8$ with $\eta=1/4$.' }
+      - { code: 'g = sum(2*(w-y) for y in [2,6])/2', fr: 'La moyenne des dérivées vaut $J\prime(w)=2w-8$, donc $8$ ici.', en: 'The mean of the derivatives is $J\prime(w)=2w-8$, hence $8$ here.' }
+      - { code: 'w -= eta*g', fr: 'Le réglage devient $6$ ; la perte passe de $20$ à $8$.', en: 'The setting becomes $6$; the loss falls from $20$ to $8$.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi : repars de $w_0=0$. Calcule $J\prime(0)$ pour $J(w)=((w-2)^2+(w-6)^2)/2$.'
+    en: 'Your turn: restart at $w_0=0$. Compute $J\prime(0)$ for $J(w)=((w-2)^2+(w-6)^2)/2$.'
+    reponses: ['-8']
+    verif: |
+      from fractions import Fraction
+      J = lambda w: sum((w-y)**2 for y in [2,6])/2
+      h = Fraction(1,10)
+      print((J(h)-J(-h))/(2*h))
+    explication: { fr: 'La dérivée vaut $(2(w-2)+2(w-6))/2=2w-8$, donc $-8$ en zéro.', en: 'The derivative is $(2(w-2)+2(w-6))/2=2w-8$, hence $-8$ at zero.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec $w_0=0$, $J\prime(0)=-8$ et $\eta=1/4$, calcule $w_1$.'
+    en: 'With $w_0=0$, $J\prime(0)=-8$ and $\eta=1/4$, compute $w_1$.'
+    reponses: ['2']
+    verif: 'from fractions import Fraction; print(0-Fraction(1,4)*(-8))'
+    explication: { fr: '$w_1=0-(1/4)(-8)=2$ ; soustraire une dérivée négative augmente le paramètre.', en: '$w_1=0-(1/4)(-8)=2$; subtracting a negative derivative increases the parameter.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Calcule maintenant $J(w_1)$ avec $w_1=2$. Le premier pas a-t-il réduit la perte ? Donne sa nouvelle valeur.'
+    en: 'Now compute $J(w_1)$ with $w_1=2$. Did the first step reduce the loss? Enter its new value.'
+    reponses: ['8']
+    verif: 'print(sum((2-y)**2 for y in [2,6])//2)'
+    explication: { fr: 'La perte vaut $(0+16)/2=8<20$ ; atteindre une observation ne rend pas toute la perte nulle.', en: 'The loss is $(0+16)/2=8<20$; matching one observation does not make the entire loss zero.' }
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $J(w)=w^2-8w+20$, calcule $J\prime\prime(w)$ afin de certifier la stricte convexité.'
+    en: 'For $J(w)=w^2-8w+20$, compute $J\prime\prime(w)$ to certify strict convexity.'
+    reponses: ['2']
+    verif: 'J=lambda w: w*w-8*w+20; print(J(1)-2*J(0)+J(-1))'
+    explication: { fr: 'La dérivée seconde vaut $2>0$ partout ; le point stationnaire $w=4$ est donc l’unique minimiseur global.', en: 'The second derivative is $2>0$ everywhere; the stationary point $w=4$ is therefore the unique global minimizer.' }
+  - id: c8
+    type: piege
+    fr: 'Passer de la moyenne à la somme double ici le gradient : conserver le même pas change la trajectoire, même si le minimiseur reste le même.'
+    en: 'Switching from the mean to the sum doubles the gradient here: keeping the same step size changes the trajectory even though the minimizer stays the same.'
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec $w_0=0$ et $\eta=1/4$, la suite vaut $w_k=4(1-2^{-k})$. Vers quelle valeur la PERTE $J(w_k)=(w_k-4)^2+4$ converge-t-elle ?'
+    en: 'With $w_0=0$ and $\eta=1/4$, the sequence is $w_k=4(1-2^{-k})$. What value does the LOSS $J(w_k)=(w_k-4)^2+4$ converge to?'
+    reponses: ['4']
+    verif: |
+      from fractions import Fraction
+      targets = [2,6]
+      optimum = Fraction(sum(targets),len(targets))
+      print(sum((optimum-y)**2 for y in targets)/len(targets))
+    explication: { fr: '$w_k\to4$ ; par continuité du polynôme, $J(w_k)\to J(4)=4$. Le calcul vérifie la valeur limite, pas à lui seul la convergence.', en: '$w_k\to4$; by continuity of the polynomial, $J(w_k)\to J(4)=4$. The computation checks the limit value, not convergence by itself.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: "Défi programme : prédis la valeur finale affichée après trois pas depuis zéro.\n```python\nw = 0\nfor _ in range(3):\n    g = sum(2*(w-y) for y in [2,6])/2\n    w = w - 0.25*g\nprint(w)\n```"
+    en: "Code challenge: predict the final value printed after three steps from zero.\n```python\nw = 0\nfor _ in range(3):\n    g = sum(2*(w-y) for y in [2,6])/2\n    w = w - 0.25*g\nprint(w)\n```"
+    reponses: ['3.5', '3,5', '7/2']
+    verif: |
+      w = 0
+      for _ in range(3):
+          g = sum(2*(w-y) for y in [2,6])/2
+          w = w - 0.25*g
+      print(w)
+    indice: { fr: 'Recalcule le gradient après chaque mise à jour.', en: 'Recompute the gradient after every update.' }
+    explication: { fr: 'On obtient $2$, puis $3$, puis $3{,}5$ ; la perte finale vaut $4{,}25$, encore au-dessus de $4$.', en: 'We obtain $2$, then $3$, then $3.5$; the final loss is $4.25$, still above $4$.' }
+  - id: c11
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dernier transfert : pour deux paramètres, pose $F(w,b)=J(w)+b^2$. Au point $(0,1)$, calcule la composante en $b$ du gradient.'
+    en: 'Final transfer: for two parameters, let $F(w,b)=J(w)+b^2$. At $(0,1)$, compute the gradient component for $b$.'
+    reponses: ['2']
+    verif: |
+      from fractions import Fraction
+      h = Fraction(1,10)
+      # w=0 : la partie constante est représentée exactement.
+      F = lambda b: 20+b*b
+      print((F(1+h)-F(1-h))/(2*h))
+    explication: { fr: 'En gardant $w$ fixe, $\partial_bF=2b=2$ ; le gradient complet vaut $(-8,2)$ et son opposé donne la direction de plus forte baisse locale en norme euclidienne.', en: 'Holding $w$ fixed gives $\partial_bF=2b=2$; the full gradient is $(-8,2)$, and its negative gives the steepest local descent direction in the Euclidean norm.' }
+  - id: c12
+    type: retenir
+    fr: 'À retenir : dérive la perte, ajuste les paramètres, vérifie la baisse et distingue limite et arrêt fini ; Kintana sait apprendre ses propres paramètres par descente de gradient.'
+    en: 'Remember: differentiate the loss, adjust the parameters, check the decrease, and distinguish a limit from finite stopping; Kintana can learn its own parameters through gradient descent.'

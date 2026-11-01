@@ -1,0 +1,112 @@
+id: '4.boss'
+module: 4
+duree_min: 15
+titre: { fr: 'Le moteur de similarité', en: 'The similarity engine' }
+ia: { fr: 'Kintana sait mesurer la ressemblance de deux textes (vecteurs de comptage et cosinus).', en: 'Kintana can measure how similar two texts are using count vectors and cosine similarity.' }
+sources:
+  - { titre: 'Gilbert Strang — MIT 18.06, algèbre linéaire', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+  - { titre: 'scikit-learn — cosine_similarity', url: 'https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html', licence: 'BSD-3-Clause' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana reçoit « chat lune chat chat ». Dans le vocabulaire ordonné (chat, lune), quelle est la première coordonnée du vecteur de comptage ?'
+    en: 'Kintana receives “chat lune chat chat”. In the ordered vocabulary (chat, lune), what is the first coordinate of the count vector?'
+    choix:
+      - { fr: '4', en: '4' }
+      - { fr: '1', en: '1' }
+      - { fr: '3', en: '3', juste: true }
+    verif: 'print("chat lune chat chat".split().count("chat"))'
+    sortie: '3'
+    explication: { fr: 'On compte chaque mot séparément : le vecteur est $(3,1)$.', en: 'Count each word separately: the vector is $(3,1)$.' }
+  - id: c2
+    type: idee
+    fr: 'Mission : compare une requête aux textes dans les mêmes axes, comme des flèches issues du même point. Pour des vecteurs non nuls, utilise $s(q,d)=\frac{q\cdot d}{\|q\|\|d\|}$ afin de comparer les directions. Tu vas aussi vérifier les transformations et les pertes introduites par une compression.'
+    en: 'Mission: compare a query with texts on shared axes, like arrows starting at the same point. For nonzero vectors, use $s(q,d)=\frac{q\cdot d}{\|q\|\|d\|}$ to compare directions. You will also check transformations and losses introduced by compression.'
+  - id: c3
+    type: exemple
+    lang: python
+    titre: { fr: 'Un score de bout en bout', en: 'A score from start to finish' }
+    etapes:
+      - { code: 'from math import sqrt; q, d = [1, 0], [3, 4]', fr: 'La requête porte sur chat ; le texte compte trois chat et quatre lune.', en: 'The query concerns chat; the text counts three chat and four lune.' }
+      - { code: 'dot = sum(a*b for a,b in zip(q,d)); nq = sqrt(sum(a*a for a in q)); nd = sqrt(sum(b*b for b in d))', fr: 'Produit scalaire $3$, normes $1$ et $5$.', en: 'Dot product $3$, norms $1$ and $5$.' }
+      - { code: 'score = None if nq == 0 or nd == 0 else dot/(nq*nd); print(score)', fr: 'Le score vaut $0{,}6$ ; `None` indique un cosinus indéfini si une norme est nulle.', en: 'The score is $0.6$; `None` indicates an undefined cosine if either norm is zero.' }
+    verif: 'from math import sqrt; q,d=[1,0],[3,4]; dot=sum(a*b for a,b in zip(q,d)); nq=sqrt(sum(a*a for a in q)); nd=sqrt(sum(b*b for b in d)); print(None if nq==0 or nd==0 else dot/(nq*nd))'
+    sortie: '0.6'
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Deux textes deviennent les lignes de $D=\begin{pmatrix}3&4\\0&5\end{pmatrix}$. Pour $q=(1,0)$, donne la première coordonnée de $Dq$, avant normalisation.'
+    en: 'Two texts become the rows of $D=\begin{pmatrix}3&4\\0&5\end{pmatrix}$. For $q=(1,0)$, give the first coordinate of $Dq$, before normalization.'
+    reponses: ['3']
+    verif: 'D,q=[[3,4],[0,5]],[1,0]; print([sum(a*b for a,b in zip(row,q)) for row in D][0])'
+    explication: { fr: '$Dq=(3,0)$ : un produit scalaire par texte, pas encore les cosinus.', en: '$Dq=(3,0)$: one dot product per text, not yet the cosines.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un texte a été répété deux fois : son vecteur devient $(6,8)$. Pour la requête $(1,0)$, calcule son cosinus sous forme de fraction irréductible.'
+    en: 'A text has been repeated twice: its vector becomes $(6,8)$. For query $(1,0)$, compute its cosine as a reduced fraction.'
+    reponses: ['3/5']
+    verif: 'from fractions import Fraction; from math import isqrt; q,d=(1,0),(6,8); print(Fraction(sum(a*b for a,b in zip(q,d)),isqrt(sum(a*a for a in q))*isqrt(sum(b*b for b in d))))'
+    explication: { fr: '$6/10=3/5$ : le texte répété garde la même direction, donc le même score.', en: '$6/10=3/5$: the repeated text keeps the same direction, hence the same score.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Des scores imposent les poids $x+y=3$ et $2x+y=5$. Retrouve $x$, le poids du premier mot.'
+    en: 'Scores impose weights $x+y=3$ and $2x+y=5$. Recover $x$, the weight of the first word.'
+    reponses: ['2']
+    verif: 'from fractions import Fraction; x=Fraction(5-3); y=3-x; assert x+y==3 and 2*x+y==5; print(x)'
+    explication: { fr: 'La seconde équation moins la première donne $x=2$ ; puis $y=1$.', en: 'Subtracting the first equation from the second gives $x=2$; then $y=1$.' }
+  - id: c7
+    type: piege
+    fr: 'Un texte sans mot du vocabulaire donne le vecteur nul : marque son cosinus comme indéfini ; même un score élevé entre textes non nuls mesure les comptages, sans garantir le même sens.'
+    en: 'A text containing no vocabulary words gives the zero vector: mark its cosine as undefined; even a high score between nonzero texts measures counts without guaranteeing the same meaning.'
+  - id: c8
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec le vocabulaire (chat, lune), « soleil » devient $(0,0)$. Quel résultat doit renvoyer le code de l’exemple pour sa comparaison à $(1,0)$ ?'
+    en: 'With vocabulary (chat, lune), “soleil” becomes $(0,0)$. What should the example code return when comparing it with $(1,0)$?'
+    choix:
+      - { fr: 'None : indéfini', en: 'None: undefined', juste: true }
+      - { fr: '1 : même direction', en: '1: same direction' }
+      - { fr: '-1 : direction opposée', en: '-1: opposite direction' }
+    verif: 'from math import sqrt; q=(1,0); d=tuple("soleil".split().count(w) for w in ("chat","lune")); den=sqrt(sum(a*a for a in q))*sqrt(sum(b*b for b in d)); print(None if den==0 else sum(a*b for a,b in zip(q,d))/den)'
+    sortie: 'None'
+    explication: { fr: 'Le dénominateur est nul ; la branche `None` évite la division et distingue l’absence de direction de l’orthogonalité.', en: 'The denominator is zero; the `None` branch avoids division and distinguishes absence of direction from orthogonality.' }
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avant de compresser, Kintana applique $A=\operatorname{diag}(5,2)$. Quelle est la valeur propre associée à $v=(0,1)$ ?'
+    en: 'Before compressing, Kintana applies $A=\operatorname{diag}(5,2)$. What is the eigenvalue associated with $v=(0,1)$?'
+    reponses: ['2']
+    verif: 'from fractions import Fraction; A=[[5,0],[0,2]]; v=[0,1]; w=[sum(a*b for a,b in zip(row,v)) for row in A]; k=Fraction(w[1],v[1]); assert w==[k*t for t in v]; print(k)'
+    explication: { fr: '$Av=(0,2)=2v$ : la direction verticale est étirée d’un facteur $2$.', en: '$Av=(0,2)=2v$: the vertical direction is stretched by a factor of $2$.' }
+  - id: c10
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $A=\operatorname{diag}(5,2)$, tronque la SVD en gardant seulement la valeur singulière $5$ : $A_1=\operatorname{diag}(5,0)$. Quelle est la norme de $A_1(0,3)$ ?'
+    en: 'For $A=\operatorname{diag}(5,2)$, truncate SVD by keeping only singular value $5$: $A_1=\operatorname{diag}(5,0)$. What is the norm of $A_1(0,3)$?'
+    reponses: ['0']
+    verif: 'from math import isqrt; A=[[5,0],[0,0]]; v=[0,3]; w=[sum(a*b for a,b in zip(row,v)) for row in A]; print(isqrt(sum(x*x for x in w)))'
+    explication: { fr: 'Le texte devient nul : même après compression, il faut recontrôler les normes avant un cosinus.', en: 'The text becomes zero: norms must be checked again before computing a cosine after compression.' }
+  - id: c11
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi final. La requête est $q=(3,4)$ ; les textes numérotés sont $d_1=(0,5)$, $d_2=(6,8)$, $d_3=(4,3)$. Donne le numéro du texte au cosinus maximal.'
+    en: 'Final challenge. The query is $q=(3,4)$; the numbered texts are $d_1=(0,5)$, $d_2=(6,8)$, $d_3=(4,3)$. Give the number of the text with the largest cosine.'
+    reponses: ['2']
+    verif: |
+      from fractions import Fraction
+      from math import isqrt
+      q=(3,4)
+      docs=[(0,5),(6,8),(4,3)]
+      scores=[Fraction(sum(a*b for a,b in zip(q,d)),isqrt(sum(a*a for a in q))*isqrt(sum(b*b for b in d))) for d in docs]
+      assert scores==[Fraction(4,5),Fraction(1),Fraction(24,25)]
+      print(1+max(range(len(docs)),key=lambda i:scores[i]))
+    indice: { fr: 'Les normes des textes sont $5$, $10$, $5$ : compare les scores normalisés.', en: 'The text norms are $5$, $10$, $5$: compare normalized scores.' }
+    explication: { fr: 'Les scores sont $4/5$, $1$, $24/25$ : le texte 2 gagne, car son vecteur est un multiple positif de la requête.', en: 'The scores are $4/5$, $1$, $24/25$: text 2 wins because its vector is a positive multiple of the query.' }
+  - id: c12
+    type: retenir
+    fr: 'À retenir : vocabulaire commun, comptages, normes non nulles, cosinus puis classement ; Kintana mesure maintenant une ressemblance lexicale entre textes.'
+    en: 'Remember: shared vocabulary, counts, nonzero norms, cosine, then ranking; Kintana now measures lexical similarity between texts.'

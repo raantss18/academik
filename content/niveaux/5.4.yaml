@@ -1,0 +1,107 @@
+id: '5.4'
+module: 5
+duree_min: 14
+titre: { fr: 'Convexité', en: 'Convexity' }
+ia: { fr: 'Kintana reconnaît les erreurs convexes, pour lesquelles un point stationnaire est un minimum global.', en: 'Kintana recognizes convex losses, for which a stationary point is a global minimum.' }
+sources:
+  - { titre: 'Boyd et Vandenberghe — Convex Optimization, chapitre 3 (référence uniquement)', url: 'https://web.stanford.edu/~boyd/cvxbook/', licence: 'Copyright Cambridge University Press ; accès gratuit, aucune licence libre ; lien seulement' }
+  - { titre: 'Boyd, Vandenberghe et Nobel — diapositives révisées en 2023 (référence uniquement)', url: 'https://web.stanford.edu/~boyd/cvxbook/bv_cvxslides.pdf', licence: 'Aucune licence libre indiquée ; lien seulement, aucun extrait repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Pour $f(x)=x^2$, compare $f(2)$ à la moyenne de $f(0)$ et $f(4)$. Où se trouve la valeur au milieu ?'
+    en: 'For $f(x)=x^2$, compare $f(2)$ with the average of $f(0)$ and $f(4)$. Where is the midpoint value?'
+    choix:
+      - { fr: 'En dessous : $4<8$.', en: 'Below: $4<8$.', juste: true }
+      - { fr: 'Au-dessus : $4>8$.', en: 'Above: $4>8$.' }
+      - { fr: 'Au même niveau.', en: 'At the same height.' }
+    verif: 'print(2**2 < (0**2+4**2)/2)'
+    sortie: 'True'
+    explication: { fr: 'La moyenne des hauteurs aux extrémités vaut $8$ ; la parabole est en dessous de la corde au milieu.', en: 'The average endpoint height is $8$; the parabola is below the chord at the midpoint.' }
+  - id: c2
+    type: idee
+    fr: 'Sur un domaine convexe, $f$ est convexe si $f((1-t)x+ty)\leq(1-t)f(x)+tf(y)$ pour tous $x,y$ du domaine et $t\in[0,1]$ : son graphe reste sous les cordes. Pour une fonction deux fois dérivable sur un intervalle ouvert, cela équivaut à $f\prime\prime\geq0$. Pour une fonction convexe différentiable sur $\mathbb{R}^d$, un gradient nul garantit un minimum global, pas forcément unique.'
+    en: 'On a convex domain, $f$ is convex if $f((1-t)x+ty)\leq(1-t)f(x)+tf(y)$ for every $x,y$ in the domain and $t\in[0,1]$: its graph stays below its chords. For a twice differentiable function on an open interval, this is equivalent to $f\prime\prime\geq0$. For a differentiable convex function on $\mathbb{R}^d$, a zero gradient guarantees a global minimum, which need not be unique.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Certifier le meilleur réglage', en: 'Certifying the best setting' }
+    etapes:
+      - { fr: 'Pour $L(w)=(w-3)^2+2$, on a $L\prime(w)=2(w-3)$.', en: 'For $L(w)=(w-3)^2+2$, we have $L\prime(w)=2(w-3)$.' }
+      - { fr: '$L\prime\prime(w)=2>0$ partout : la fonction est strictement convexe.', en: '$L\prime\prime(w)=2>0$ everywhere: the function is strictly convex.' }
+      - { fr: '$L\prime(3)=0$ et $L(w)\geq2=L(3)$, avec égalité seulement en $3$ : le minimum est unique.', en: '$L\prime(3)=0$ and $L(w)\geq2=L(3)$, with equality only at $3$: the minimum is unique.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $q(x)=3x^2-4x+7$, calcule la dérivée seconde $q\prime\prime(x)$.'
+    en: 'For $q(x)=3x^2-4x+7$, compute the second derivative $q\prime\prime(x)$.'
+    reponses: ['6']
+    verif: |
+      # La différence seconde est exacte pour une fonction quadratique.
+      q = lambda x: 3*x*x-4*x+7
+      print(q(1)-2*q(0)+q(-1))
+    explication: { fr: '$q\prime(x)=6x-4$, puis $q\prime\prime(x)=6>0$ ; $q$ est strictement convexe sur les réels.', en: '$q\prime(x)=6x-4$, then $q\prime\prime(x)=6>0$; $q$ is strictly convex on the real line.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel réel $w$ minimise $L(w)=(w-5)^2+4$ ? Donne le paramètre, pas la perte.'
+    en: 'Which real $w$ minimizes $L(w)=(w-5)^2+4$? Give the parameter, not the loss.'
+    reponses: ['5']
+    verif: |
+      from fractions import Fraction
+      # Sommet de aw²+bw+c, avec a>0.
+      a, b = 1, -10
+      print(Fraction(-b,2*a))
+    explication: { fr: 'Le carré est minimal et nul en $w=5$ ; la perte minimale vaut alors $4$.', en: 'The square is minimized at zero when $w=5$; the minimum loss is then $4$.' }
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'La fonction constante $f(x)=7$ sur les réels est convexe. Son minimum est-il unique ?'
+    en: 'The constant function $f(x)=7$ on the real line is convex. Is its minimum unique?'
+    choix:
+      - { fr: 'Oui : la convexité impose un seul minimiseur.', en: 'Yes: convexity forces a single minimizer.' }
+      - { fr: 'Non : chaque réel est un minimiseur.', en: 'No: every real number is a minimizer.', juste: true }
+      - { fr: 'Elle ne possède aucun minimum.', en: 'It has no minimum.' }
+    explication: { fr: 'Toutes les valeurs sont égales ; la convexité seule ne donne pas l’unicité, contrairement à la stricte convexité lorsqu’un minimum existe.', en: 'All values are equal; convexity alone does not ensure uniqueness, unlike strict convexity when a minimum exists.' }
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $f(x)=x^2$, $x=1$, $y=5$ et $t=1/4$, calcule la borne $(1-t)f(x)+tf(y)$ dans l’inégalité de convexité.'
+    en: 'For $f(x)=x^2$, $x=1$, $y=5$ and $t=1/4$, compute the bound $(1-t)f(x)+tf(y)$ in the convexity inequality.'
+    reponses: ['7']
+    verif: |
+      from fractions import Fraction
+      t = Fraction(1,4)
+      print((1-t)*1**2+t*5**2)
+    explication: { fr: 'La borne vaut $3/4+25/4=7$ ; au point mélangé $2$, la fonction vaut $4\leq7$.', en: 'The bound is $3/4+25/4=7$; at the mixed point $2$, the function is $4\leq7$.' }
+  - id: c8
+    type: piege
+    fr: 'Convexe ne veut pas dire que tout pas de descente réussit, ni qu’un minimum existe : la fonction affine $f(x)=x$ est convexe sur les réels mais non bornée inférieurement.'
+    en: 'Convex does not mean every descent step succeeds or that a minimum exists: the affine function $f(x)=x$ is convex on the real line but unbounded below.'
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pourquoi $f(x)=-x^2$ n’est-elle pas convexe sur les réels ?'
+    en: 'Why is $f(x)=-x^2$ not convex on the real line?'
+    choix:
+      - { fr: 'Elle prend des valeurs négatives.', en: 'It takes negative values.' }
+      - { fr: 'Elle est dérivable.', en: 'It is differentiable.' }
+      - { fr: 'Sa dérivée seconde est strictement négative partout.', en: 'Its second derivative is strictly negative everywhere.', juste: true }
+    explication: { fr: 'Sa courbure est tournée vers le bas ; le signe des valeurs de la fonction ne détermine pas sa convexité.', en: 'It curves downward; the sign of the function values does not determine convexity.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi : minimise $J(w)=(w-1)^2+(w-5)^2$ sur les réels. Quel est le paramètre optimal ?'
+    en: 'Challenge: minimize $J(w)=(w-1)^2+(w-5)^2$ over the real line. What is the optimal parameter?'
+    reponses: ['3']
+    verif: |
+      from fractions import Fraction
+      targets = [1,5]
+      print(Fraction(sum(targets),len(targets)))
+    indice: { fr: 'Additionne les dérivées et cherche leur zéro.', en: 'Add the derivatives and find their zero.' }
+    explication: { fr: '$J\prime(w)=4w-12$ s’annule en $3$ ; $J\prime\prime=4>0$, donc c’est l’unique minimiseur.', en: '$J\prime(w)=4w-12$ vanishes at $3$; $J\prime\prime=4>0$, so this is the unique minimizer.' }
+  - id: c11
+    type: retenir
+    fr: 'À retenir : la convexité transforme un minimum local en minimum global ; Kintana peut certifier un réglage stationnaire pour une erreur convexe différentiable sans contrainte.'
+    en: 'Remember: convexity makes a local minimum global; Kintana can certify a stationary setting for an unconstrained differentiable convex loss.'

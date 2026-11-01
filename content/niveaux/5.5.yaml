@@ -1,0 +1,95 @@
+id: '5.5'
+module: 5
+duree_min: 14
+titre: { fr: 'Descente de gradient', en: 'Gradient descent' }
+ia: { fr: 'Kintana sait apprendre ses propres paramètres par descente de gradient.', en: 'Kintana can learn its own parameters through gradient descent.' }
+sources:
+  - { titre: 'Boyd et Vandenberghe — Convex Optimization, chapitre 9', url: 'https://web.stanford.edu/~boyd/cvxbook/', licence: 'Copyright Cambridge University Press ; référence en lien seulement, aucun extrait repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'La dérivée de la perte de Kintana est négative au réglage actuel. Quel petit déplacement permet de la réduire ?'
+    en: 'The derivative of Kintana’s loss is negative at the current setting. Which small change reduces it?'
+    choix:
+      - { fr: 'Augmenter le paramètre.', en: 'Increase the parameter.', juste: true }
+      - { fr: 'Diminuer le paramètre.', en: 'Decrease the parameter.' }
+      - { fr: 'Le garder fixe.', en: 'Keep it fixed.' }
+    explication: { fr: 'Une dérivée négative signifie que la perte baisse pour un déplacement positif suffisamment petit.', en: 'A negative derivative means the loss decreases for a sufficiently small positive change.' }
+  - id: c2
+    type: idee
+    fr: 'La descente applique $w_{k+1}=w_k-\eta L\prime(w_k)$, avec un pas $\eta>0$ ; à plusieurs paramètres, remplace la dérivée par le gradient. Le signe choisit la direction, le pas règle la distance. Une direction de baisse locale ne garantit pas une baisse pour un grand déplacement.'
+    en: 'Descent applies $w_{k+1}=w_k-\eta L\prime(w_k)$ with step size $\eta>0$; for several parameters, replace the derivative with the gradient. The sign selects the direction, and the step size controls the distance. A local descent direction does not guarantee a decrease for a large move.'
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un premier ajustement', en: 'A first adjustment' }
+    lang: python
+    etapes:
+      - { code: 'w, eta = 0, 0.25', fr: 'Pour $L(w)=(w-4)^2$, pars de $w_0=0$ avec $\eta=1/4$.', en: 'For $L(w)=(w-4)^2$, start at $w_0=0$ with $\eta=1/4$.' }
+      - { code: 'g = 2*(w-4)', fr: 'La dérivée actuelle vaut $-8$.', en: 'The current derivative is $-8$.' }
+      - { code: 'w = w - eta*g', fr: 'Le nouveau réglage vaut $2$ ; la perte passe de $16$ à $4$.', en: 'The new setting is $2$; the loss drops from $16$ to $4$.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Toujours avec $L(w)=(w-4)^2$ et $\eta=1/4$, pars maintenant de $w=2$. Quel est le réglage suivant ?'
+    en: 'Still using $L(w)=(w-4)^2$ and $\eta=1/4$, now start at $w=2$. What is the next setting?'
+    reponses: ['3']
+    verif: 'from fractions import Fraction; print(2-Fraction(1,4)*2*(2-4))'
+    explication: { fr: '$2-(1/4)(-4)=3$ ; on recalcule la dérivée au nouveau point.', en: '$2-(1/4)(-4)=3$; we recompute the derivative at the new point.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Au réglage $w=3$, combien vaut la perte $L(w)=(w-4)^2$ ?'
+    en: 'At setting $w=3$, what is the loss $L(w)=(w-4)^2$?'
+    reponses: ['1']
+    verif: 'print((3-4)**2)'
+    explication: { fr: 'La perte vaut $1$ ; ne confonds pas le paramètre et la perte.', en: 'The loss is $1$; distinguish the parameter from the loss.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Essaie un grand pas : pour $L(w)=(w-4)^2$, pars de $0$ avec $\eta=3/2$. Quelle est la perte APRÈS un pas ?'
+    en: 'Try a large step: for $L(w)=(w-4)^2$, start at $0$ with $\eta=3/2$. What is the loss AFTER one step?'
+    reponses: ['64']
+    verif: 'from fractions import Fraction; w=0-Fraction(3,2)*2*(0-4); print((w-4)**2)'
+    explication: { fr: 'On arrive à $12$, donc la perte vaut $64$, contre $16$ au départ : le pas est trop grand.', en: 'We reach $12$, so the loss is $64$, compared with $16$ initially: the step size is too large.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $L(w)=(w-4)^2$ et $\eta=1/4$, on obtient $w_k=4(1-2^{-k})$. Que devient le réglage ?'
+    en: 'For $L(w)=(w-4)^2$ and $\eta=1/4$, we obtain $w_k=4(1-2^{-k})$. What happens to the setting?'
+    choix:
+      - { fr: 'Il converge vers le minimiseur sans l’atteindre en un nombre fini de pas, en calcul exact.', en: 'It converges to the minimizer without reaching it in finitely many steps in exact arithmetic.', juste: true }
+      - { fr: 'Il oscille avec une amplitude constante.', en: 'It oscillates with constant amplitude.' }
+      - { fr: 'Il s’éloigne indéfiniment du minimiseur.', en: 'It moves ever farther from the minimizer.' }
+    explication: { fr: '$2^{-k}$ tend vers zéro mais reste positif pour tout entier fini ; un ordinateur peut arrondir différemment.', en: '$2^{-k}$ tends to zero but remains positive for every finite integer; a computer may round differently.' }
+  - id: c8
+    type: piege
+    fr: 'Un petit gradient ne prouve pas toujours un bon minimum ; en pratique, contrôle aussi la perte et limite le nombre d’itérations.'
+    en: 'A small gradient does not always prove that a minimum is good; in practice, also monitor the loss and cap the iteration count.'
+  - id: c9
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec $L(w,b)=(w-2)^2+(b+1)^2$, pars de $(0,0)$ et prends $\eta=1/4$. Quelle est la nouvelle valeur de $b$ ?'
+    en: 'For $L(w,b)=(w-2)^2+(b+1)^2$, start at $(0,0)$ and use $\eta=1/4$. What is the new value of $b$?'
+    reponses: ['-1/2', '-0.5', '-0,5']
+    verif: 'from fractions import Fraction; print(0-Fraction(1,4)*2*(0+1))'
+    explication: { fr: 'La partielle en $b$ vaut $2$ ; $b$ devient $-1/2$, tandis que $w$ devient $1$.', en: 'The partial derivative in $b$ is $2$; $b$ becomes $-1/2$, while $w$ becomes $1$.' }
+  - id: c10
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi : pour $L(w)=(w-4)^2$, pars de $0$ et effectue quatre pas avec $\eta=1/4$. Quel réglage obtiens-tu ?'
+    en: 'Challenge: for $L(w)=(w-4)^2$, start at $0$ and take four steps with $\eta=1/4$. Which setting do you reach?'
+    reponses: ['15/4', '3.75', '3,75']
+    verif: |
+      from fractions import Fraction
+      w = 0
+      for _ in range(4):
+          w -= Fraction(1,4)*2*(w-4)
+      print(w)
+    indice: { fr: 'Chaque pas divise par deux la distance à $4$.', en: 'Each step halves the distance to $4$.' }
+    explication: { fr: 'Les réglages sont $2$, $3$, $7/2$, puis $15/4$ ; la perte finale vaut $1/16$.', en: 'The settings are $2$, $3$, $7/2$, then $15/4$; the final loss is $1/16$.' }
+  - id: c11
+    type: retenir
+    fr: 'À retenir : calcule le gradient, avance dans son sens opposé avec un pas adapté, puis mesure la perte ; Kintana apprend ainsi ses paramètres.'
+    en: 'Remember: compute the gradient, move in its opposite direction with a suitable step size, then measure the loss; this is how Kintana learns its parameters.'
