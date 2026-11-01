@@ -133,3 +133,13 @@ describe('E9 · la ville est l’accueil (la liste reste un choix)', () => {
   });
   it('le bouton retour ferme la fiche d’un niveau avant de quitter', () => { expect(app).toContain('map?.back()'); expect(city).toContain('export function close()'); });
 });
+
+describe('Révisions espacées : même règles que les leçons (D-021)', () => {
+  it('une révision enregistre sur la carte d’origine, sans XP, sans reprise ; la réponse n’est jamais montrée', () => {
+    expect(lesson).toContain('xp: level.review ? 0 : xp'); expect(lesson).toContain('if (!level.review) resume.set(level.id, i)');
+    expect(lesson).toContain('level.review ? ui(\'review_later\')'); expect(lesson).not.toMatch(/\{@html md\(t\(card\.reponses/);
+  });
+  it('l’état des révisions est rejoué depuis le journal (rien d’autre à synchroniser)', () => {
+    const r = read('src/engine/reviews.ts'); expect(r).toContain('export async function schedule(events'); expect(r).not.toMatch(/localStorage|indexedDB/);
+  });
+});

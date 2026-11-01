@@ -21,9 +21,11 @@
   /* svelte-ignore state_referenced_locally */
   let idx = $state(clampIndex(startAt, level.cartes.length)), step = $state(0), selected = $state<number | null>(null), text = $state(''), chosen = $state<number[]>([]);
   let hints = $state(0), showHint = $state(false), result = $state<null | { ok: boolean; credit: number }>(null), earned = $state(0);
-  let finished = $state(false);
+  let finished = $state(false), rightCount = $state(0);
+  // Séance de révision : chaque carte vient d'un niveau différent ; la réponse est enregistrée sur sa carte d'origine, sans XP ni reprise.
+  const source = (id: string) => (level.review ? { level: id.split('|')[0], item: id.split('|')[1] } : { level: level.id, item: id });
   /* svelte-ignore state_referenced_locally */
-  const startBest = new Map(progress.best(level.id));
+  const startBest = new Map(level.review ? [] : progress.best(level.id));
 
   const card = $derived(level.cartes[idx]);
   /* svelte-ignore state_referenced_locally */
@@ -45,8 +47,9 @@
     const credit = ok ? (hints > 0 ? 0.5 : 1) : 0;
     const prev = Math.max(startBest.get(card.id) ?? 0, 0), xp = xpFor(credit, prev);
     startBest.set(card.id, Math.max(prev, credit));
-    progress.add({ level: level.id, item: card.id, credit, hints, xp });
-    earned += xp; result = { ok, credit };
+    const src = source(card.id);
+    progress.add({ level: src.level, item: src.item, credit, hints, xp: level.review ? 0 : xp });
+    earned += level.review ? 0 : xp; if (ok) rightCount++; result = { ok, credit };
   }
   // État de chaque carte déjà vue : « Précédent » la remet comme elle était (réponse, correction, étape).
   interface Snap { step: number; selected: number | null; text: string; chosen: number[]; hints: number; showHint: boolean; result: null | { ok: boolean; credit: number } }
@@ -55,16 +58,17 @@
     snaps[idx] = { step, selected, text, chosen: [...chosen], hints, showHint, result };
     idx = i; const s = snaps[i];
     step = s?.step ?? 0; selected = s?.selected ?? null; text = s?.text ?? ''; chosen = s ? [...s.chosen] : []; hints = s?.hints ?? 0; showHint = s?.showHint ?? false; result = s?.result ?? null;
-    resume.set(level.id, i); window.scrollTo(0, 0);
+    if (!level.review) resume.set(level.id, i);
+    window.scrollTo(0, 0);
   }
   function next() {
-    if (idx + 1 >= total) { resume.clear(level.id); finished = true; return; }
+    if (idx + 1 >= total) { if (!level.review) resume.clear(level.id); finished = true; return; }
     goto(idx + 1);
   }
   function prev() { if (idx > 0) goto(idx - 1); }
   /** Bouton retour du téléphone : revient à la carte précédente (renvoie false au début : l'appelant quitte la leçon). */
   export function back(): boolean { if (!finished && idx > 0) { prev(); return true; } return false; }
-  function replay() { resume.clear(level.id); onreplay(); }
+  function replay() { if (!level.review) resume.clear(level.id); onreplay(); }
   const score = $derived(levelScore(scoredItems(level), progress.best(level.id)));
   function key(e: KeyboardEvent) { if (e.key === 'Enter' && card.type === 'saisie' && !result && canCheck) check(); }
 </script>
@@ -123,7 +127,7 @@
             <p>{@html md(t(card.explication))}</p>
           {:else}
             {#if card.indice}<p>💡 {@html md(t(card.indice))}</p>{/if}
-            <p class="muted">{ui('retry_later')}</p>
+            <p class="muted">{level.review ? ui('review_later') : ui('retry_later')}</p>
           {/if}
         </div>
       {/if}
@@ -142,11 +146,17 @@
   {:else}
     <section class="card end">
       <h1>{@html md(t(level.titre))}</h1>
+      {#if level.review}
+        <p class="big">{rightCount} / {total}</p>
+        <p>{ui('review_done')}</p>
+        <div class="foot"><button class="btn primary" onclick={onexit}>{ui('back')}</button></div>
+      {:else}
       <p class="big">{Math.round(score * 100)} %</p>
       <p class="stars" aria-label={`${stars(score)} / 3`}>{'★'.repeat(stars(score))}<span class="off">{'★'.repeat(3 - stars(score))}</span></p>
       <p>{score + 1e-9 >= UNLOCK_THRESHOLD ? ui('unlocked') : ui('need')}</p>
       <div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(t(level.ia))}</div>
       <div class="foot"><button class="btn" onclick={replay}>{ui('replay')}</button><button class="btn primary" onclick={onexit}>{ui('back')}</button></div>
+      {/if}
     </section>
   {/if}
 </div>

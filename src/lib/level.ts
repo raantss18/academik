@@ -19,7 +19,8 @@ export interface Card {
   figure?: Figure; exemple?: { fr: string; en: string };
   indice?: { fr: string; en: string }; explication?: { fr: string; en: string };
 }
-export interface Level { id: string; module: number; duree_min: number; titre: { fr: string; en: string }; ia: { fr: string; en: string }; cartes: Card[] }
+/** `review` : séance de révision assemblée à la volée ; les ids de cartes y sont « niveau|carte » (voir src/lib/review.ts). */
+export interface Level { review?: boolean; id: string; module: number; duree_min: number; titre: { fr: string; en: string }; ia: { fr: string; en: string }; cartes: Card[] }
 export interface CursusLevel { id: string; boss?: boolean; titre: { fr: string; en?: string } }
 export interface CursusModule { id: number; titre: { fr: string; en: string }; niveaux: CursusLevel[] }
 

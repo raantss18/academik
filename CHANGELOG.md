@@ -2,6 +2,17 @@
 
 ## [Non publié]
 
+## [0.3.7] — 2026-11-01
+
+### Message fr
+Les révisions arrivent : chaque jour, l'app te repose les questions que tu risques d'oublier, au meilleur moment pour t'en souvenir. Le bouton apparaît sur l'accueil dès qu'il y en a.
+
+### Message en
+Reviews are here: each day the app asks again the questions you are about to forget, at the best moment to remember them. The button appears on the home screen whenever there are some.
+
+### Ajouts / Added
+- Révision du jour : jusqu'à 10 questions dues (algorithme FSRS), jamais le jour même, sans montrer la réponse. / Daily review: up to 10 due questions (FSRS), never on the same day, without showing the answer.
+
 ## [0.3.6] — 2026-11-01
 
 ### Message fr

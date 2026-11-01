@@ -10,8 +10,9 @@
   import { resume } from '../lib/resume';
   import City from './City.svelte';
   import { buildDistricts } from '../lib/city/index';
+  import { dueCards } from '../lib/review';
 
-  let { onplay, onrules }: { onplay: (id: string) => void; onrules: () => void } = $props();
+  let { onplay, onrules, onreview }: { onplay: (id: string) => void; onrules: () => void; onreview: () => void } = $props();
 
   const scores = $derived(Object.fromEntries(content.order.map(id => [id, content.levels[id] ? levelScore(scoredItems(content.levels[id]), progress.best(id)) : 0])));
   const open = $derived(unlockedLevels(content.order, scores, undefined, undefined, content.empty));
@@ -27,6 +28,9 @@
   let view = $state<'city' | 'list'>((() => { try { return localStorage.getItem(VIEW) === 'list' ? 'list' : 'city'; } catch { return 'city'; } })());
   function toggle() { view = view === 'city' ? 'list' : 'city'; try { localStorage.setItem(VIEW, view); } catch { /* ignoré */ } }
   let city: City | undefined = $state();
+  // Révisions à faire (FSRS, rejoué depuis le journal) : le nombre s'affiche dès qu'il est calculé, jamais bloquant.
+  let due = $state(0);
+  $effect(() => { const ev = progress.events, lv = content.levels; let live = true; void dueCards(ev, lv).then(c => { if (live) due = c.length; }, () => { if (live) due = 0; }); return () => { live = false; }; });
   /** Bouton retour du téléphone : ferme la fiche d'un niveau ouverte sur la ville (false = rien à fermer). */
   export function back(): boolean { return !!city?.close(); }
 </script>
@@ -41,6 +45,7 @@
   </header>
 
   <UpdateBanner />
+  {#if due > 0}<button class="btn review" onclick={onreview}>🔁 {ui('review_title')} · {due} {ui('review_n')}</button>{/if}
   {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}{where > 0 ? ` (${ui('card')} ${where + 1}/${content.levels[current].cartes.length})` : ''}</button>{/if}
   {#if view === 'list'}<p class="muted small">{ui('guest')}</p>{/if}
 </div>
@@ -85,7 +90,7 @@
   .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }
   .hud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
   .chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; font-size: .9rem; }
-  .go { width: 100%; margin: 6px 0; } .small { font-size: .85rem; }
+  .go { width: 100%; margin: 6px 0; } .review { width: 100%; margin: 6px 0; border: 2px solid var(--c-accent); background: var(--c-accent-soft); } .small { font-size: .85rem; }
   .mod { margin: 18px 0; } .mod h2 { font-size: 1.05rem; margin: 0 0 8px; } ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
   .lv { width: 100%; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 14px; border-radius: 16px; border: 1px solid var(--c-border); background: var(--c-surface); text-align: left; cursor: pointer; }
   .lv:disabled { opacity: .55; cursor: default; } .lv.cur { border: 2px solid var(--c-primary); background: var(--c-primary-soft); }
