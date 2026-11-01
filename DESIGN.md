@@ -49,8 +49,19 @@ définition au premier usage. Messages d'erreur pédagogiques : ce qui ne va pas
 
 ## [academik] Écrans propres
 
-- **Carte du cursus** : chemin vertical de niveaux (pastilles rondes, couleur du module), le niveau courant mis en
-  avant, cadenas pour les niveaux fermés, 0–3 étoiles, boss en fin de module (pastille plus grande).
+- **Carte du cursus = « la ville qui s'allume »**, en **isométrique 2,5D** (vue de jeu de gestion). Une ville de
+  collines inspirée d'Antananarivo (terrasses, escaliers, maisons de brique à toits pentus, le lac en bas, le Rova au
+  sommet), **de nuit** au départ.
+  - Un module = un **quartier** sur sa terrasse, plus haut que le précédent ; on monte par des **escaliers**.
+  - Un niveau = un **bâtiment** au bord de la rue-chemin ; réussi, ses fenêtres **s'allument** (plus d'étoiles = plus
+    de fenêtres). Le boss = le **monument** du quartier ; le vaincre allume tout le quartier (réverbères compris).
+  - Le niveau courant : épingle qui pulse et l'étoile Kintana qui flotte au-dessus. Niveaux fermés : quartier en
+    silhouette sombre, cadenas.
+  - Toucher un bâtiment ouvre une **fiche de mission** (titre, durée, étoiles, brique « Ton IA », bouton « Jouer »).
+  - Rendu **SVG généré par code** (prismes isométriques, toits, fenêtres) : aucune image lourde, net sur tablette,
+    couleurs reprises des jetons. Animations douces coupées si `prefers-reduced-motion`.
+  - Accessibilité : bouton **« Vue liste »** (même contenu, lisible au lecteur d'écran et au clavier) ; épingles ≥ 48 px.
+  - Ce n'est la copie d'aucun jeu existant : seule l'idée générale d'un chemin de niveaux sur une carte est reprise.
 - **Écran de leçon** : une carte à la fois, barre de progression en haut, bouton « Vérifier » en bas, retour immédiat
   (bandeau vert « Juste » / rouge doux « Pas encore » + explication), jamais de vies ni de punition.
 - **Brique du fil rouge** : encadré « Ton IA » à la fin d'un niveau, montrant ce que l'assistant sait faire de plus.

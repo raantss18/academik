@@ -1,8 +1,18 @@
 {
   "updated": "2026-11-01",
   "phase": 1,
-  "done": ["cadrage", "CONSIGNES.md", "DESIGN.md", "PEDAGOGIE.md", "CURSUS.md", "DECISIONS.md"],
-  "in_progress": ["T-001 relecture croisée du cursus et des sources (Codex)"],
+  "done": [
+    "cadrage",
+    "CONSIGNES.md",
+    "DESIGN.md",
+    "PEDAGOGIE.md",
+    "CURSUS.md",
+    "DECISIONS.md",
+    "T-001 relecture croisée (Codex) intégrée",
+    "volet quant (D-017)",
+    "maquette carte-ville isométrique (D-018)"
+  ],
+  "in_progress": [],
   "blocked": [],
-  "next": "Phase 2 : squelette Svelte/Vite, moteur (déblocage, FSRS, journal, synchro), niveau 2.1 de bout en bout"
+  "next": "Phase 2 : squelette Svelte/Vite + carte-ville en composant, moteur (déblocage, FSRS, journal, synchro), niveau 2.1 ; T-002 (sources quant) à passer READY"
 }

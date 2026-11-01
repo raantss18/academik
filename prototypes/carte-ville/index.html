@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>academik — carte de la ville</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  /* Jetons de DESIGN.md (COMIMa) ; la carte a sa propre palette de nuit. */
+  :root {
+    --c-primary: #1d7a33; --c-primary-strong: #145c26; --c-accent: #d6362b;
+    --c-surface: #ffffff; --c-surface-2: #eef1ec; --c-text: #1b211d; --c-text-muted: #55605a; --c-border: #dde2dc;
+    --night-1: #0b1026; --night-2: #18214a; --night-3: #3b2d5c;
+    --gold: #ffd36b;
+    --font: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --c-primary: #53b96e; --c-primary-strong: #7ed197; --c-accent: #f0655a;
+      --c-surface: #171c18; --c-surface-2: #1f2620; --c-text: #e6eae5; --c-text-muted: #9aa69d; --c-border: #2b332c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { font-family: var(--font); background: var(--night-1); color: var(--c-text); overflow: hidden; }
+
+  .hud {
+    position: fixed; inset: 0 0 auto 0; z-index: 5; display: flex; align-items: center; gap: 8px;
+    padding: max(10px, env(safe-area-inset-top)) 16px 10px;
+    background: linear-gradient(var(--night-1) 40%, transparent); color: #fff;
+  }
+  .brand { font-weight: 800; font-size: 1.15rem; letter-spacing: .3px; margin-right: auto; }
+  .brand span { color: var(--gold); }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; min-height: 36px; border-radius: 999px;
+    background: rgb(255 255 255 / .1); backdrop-filter: blur(8px); font-weight: 600; font-size: .9rem; color: #fff;
+    border: 1px solid rgb(255 255 255 / .14);
+  }
+  .chip svg { width: 18px; height: 18px; }
+  button.chip { cursor: pointer; font: inherit; font-weight: 600; font-size: .9rem; }
+
+  .map { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain;
+    background: radial-gradient(120% 60% at 50% 0%, var(--night-3), var(--night-2) 45%, var(--night-1) 100%); }
+  .map svg { display: block; min-width: 620px; width: 100%; height: auto; }
+  .pin { cursor: pointer; }
+  .pin:focus-visible circle.hit { stroke: #fff; stroke-width: 3; }
+  .pulse { animation: pulse 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+  .float { animation: float 2.6s ease-in-out infinite; }
+  .twinkle { animation: twinkle 3s ease-in-out infinite; }
+  @keyframes pulse { 0% { transform: scale(.7); opacity: .9 } 100% { transform: scale(1.9); opacity: 0 } }
+  @keyframes float { 50% { transform: translateY(-6px) } }
+  @keyframes twinkle { 50% { opacity: .25 } }
+  @media (prefers-reduced-motion: reduce) { .pulse, .float, .twinkle { animation: none } }
+
+  .cta {
+    position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 5;
+    min-height: 52px; padding: 0 28px; border: 0; border-radius: 999px; font: 800 1.05rem var(--font);
+    background: var(--c-primary); color: #fff; box-shadow: 0 8px 28px rgb(29 122 51 / .45); cursor: pointer;
+  }
+
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; margin: 0 auto; max-width: 560px;
+    background: var(--c-surface); color: var(--c-text); border-radius: 28px 28px 0 0;
+    padding: 12px 20px max(20px, env(safe-area-inset-bottom)); transform: translateY(105%); transition: transform .28s ease;
+    box-shadow: 0 -10px 40px rgb(0 0 0 / .4);
+  }
+  .sheet.open { transform: none; }
+  .sheet .grip { width: 40px; height: 4px; border-radius: 4px; background: var(--c-border); margin: 0 auto 12px; }
+  .sheet .kicker { font-size: .8rem; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; }
+  .sheet h2 { margin: 4px 0 6px; font-size: 1.35rem; }
+  .sheet p { margin: 0 0 10px; color: var(--c-text-muted); line-height: 1.5; }
+  .sheet .ia { background: var(--c-surface-2); border-radius: 16px; padding: 10px 14px; margin: 10px 0 14px; font-size: .95rem; }
+  .sheet .ia b { color: var(--c-primary); }
+  .sheet .row { display: flex; gap: 10px; }
+  .btn { flex: 1; min-height: 48px; border-radius: 999px; font: 700 1rem var(--font); cursor: pointer; border: 1px solid var(--c-border);
+    background: var(--c-surface); color: var(--c-text); }
+  .btn-primary { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .stars { color: #e0a800; letter-spacing: 2px; }
+
+  .list { position: fixed; inset: 0; z-index: 4; overflow: auto; padding: 72px 16px 100px; background: var(--c-surface-2);
+    color: var(--c-text); display: none; }
+  .list.open { display: block; }
+  .list h3 { margin: 18px 0 8px; font-size: 1rem; }
+  .list button { display: flex; width: 100%; align-items: center; gap: 10px; min-height: 48px; padding: 8px 14px; margin: 6px 0;
+    border-radius: 16px; border: 1px solid var(--c-border); background: var(--c-surface); color: var(--c-text); font: 600 .95rem var(--font); text-align: left; cursor: pointer; }
+  .list button:disabled { opacity: .55; }
+  .list button .stars { margin-left: auto; }
+</style>
+</head>
+<body>
+  <header class="hud">
+    <div class="brand">acad<span>e</span>mik</div>
+    <span class="chip" title="Série de jours"><svg viewBox="0 0 24 24" fill="#ff9d3b"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-6 1-9.5z"/></svg>5</span>
+    <span class="chip" title="Points d'expérience"><svg viewBox="0 0 24 24" fill="#ffd36b"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>1 240</span>
+    <button class="chip" id="toggleList" aria-pressed="false">Vue liste</button>
+  </header>
+
+  <main class="map" id="map" aria-label="Carte de la ville : chaque bâtiment est un niveau"></main>
+  <section class="list" id="list" aria-label="Liste des niveaux"></section>
+
+  <button class="cta" id="cta">Continuer · 2.3</button>
+
+  <aside class="sheet" id="sheet" role="dialog" aria-modal="false" aria-labelledby="sheetTitle">
+    <div class="grip"></div>
+    <div class="kicker" id="sheetKicker"></div>
+    <h2 id="sheetTitle"></h2>
+    <p id="sheetMeta"></p>
+    <div class="ia" id="sheetIA"></div>
+    <div class="row">
+      <button class="btn" id="sheetClose">Fermer</button>
+      <button class="btn btn-primary" id="sheetPlay">Jouer</button>
+    </div>
+  </aside>
+
+<script>
+// ---------------------------------------------------------------- données de démonstration
+// Progression fictive : quartiers 0 et 1 finis, quartier 2 en cours (niveau 2.3).
+const DISTRICTS = [
+  { n: 0, name: 'Raisonner', color: '#E64A19', ia: 'chiffrer un message (César)', levels: ['Vrai ou faux ?', 'Démontrer', 'Récurrence', 'Tiroirs', 'Congruences'], boss: 'Le message secret', stars: [3,3,2,3,2], bossDone: true },
+  { n: 1, name: 'Le terminal', color: '#546E7A', ia: 'vivre dans un dossier versionné', levels: ['Se repérer', 'Fichiers', 'Droits', 'Tuyaux', 'Git'], boss: 'Le fichier caché', stars: [3,2,2,1,3], bossDone: true },
+  { n: 2, name: 'Python', color: '#6A4FB6', ia: 'répondre à des commandes simples', levels: ['Kintana dit bonjour', 'Décider', 'Répéter', 'Fonctions', 'Listes et dictionnaires'], boss: 'Le chatbot à règles', stars: [3,2], bossDone: false },
+  { n: 3, name: 'Algorithmes', color: '#3A6EA5', ia: 'retrouver un document vite', levels: ['Complexité', 'Trier', 'Dichotomie', 'Hachage', 'Graphes'], boss: "L'index inversé", stars: [] },
+  { n: 4, name: 'Algèbre linéaire', color: '#3F51B5', ia: 'comparer deux textes', levels: ['Vecteurs', 'Produit scalaire', 'Matrices', 'Systèmes', 'SVD'], boss: 'Le moteur de similarité', stars: [] },
+  { n: 5, name: 'Analyse', color: '#F9A825', ia: 'apprendre ses paramètres', levels: ['Limites', 'Dérivées', 'Gradient', 'Convexité', 'Descente'], boss: 'La pente la plus raide', stars: [] },
+  { n: 6, name: 'Probabilités', color: '#8E24AA', ia: 'prédire le mot suivant', levels: ['Hasard', 'Bayes', 'Lois', 'Espérance', 'Entropie'], boss: 'Le modèle bigramme', stars: [] },
+  { n: 7, name: 'Statistique', color: '#00897B', ia: 'séparer le signal du hasard', levels: ['Estimer', 'Intervalles', 'Tester', 'Bootstrap', 'Tests multiples'], boss: 'Le faux signal', stars: [] },
+];
+const CURRENT = { d: 2, l: 2 };
+
+// ---------------------------------------------------------------- outils isométriques
+const TW = 32, TH = 16;                       // demi-largeur et demi-hauteur d'une case
+const iso = (x, y, z = 0) => [(x - y) * TW, (x + y) * TH - z];
+const pts = (...p) => p.map(([x, y, z]) => iso(x, y, z).map(v => v.toFixed(1)).join(',')).join(' ');
+const poly = (fill, ...p) => `<polygon points="${pts(...p)}" fill="${fill}"/>`;
+function shade(hex, k) {                      // k < 1 assombrit, k > 1 éclaircit
+  const n = parseInt(hex.slice(1), 16);
+  const c = [n >> 16, (n >> 8) & 255, n & 255].map(v => Math.max(0, Math.min(255, Math.round(k > 1 ? v + (255 - v) * (k - 1) : v * k))));
+  return '#' + c.map(v => v.toString(16).padStart(2, '0')).join('');
+}
+function mix(a, b, t) {
+  const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const A = p(a), B = p(b);
+  return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+// Prisme (bâtiment, terrasse) : faces visibles +y (gauche à l'écran), +x (droite), dessus.
+function prism(x, y, w, d, z0, h, col) {
+  const t = z0 + h;
+  return poly(shade(col, .62), [x, y + d, z0], [x + w, y + d, z0], [x + w, y + d, t], [x, y + d, t])
+       + poly(shade(col, .8), [x + w, y, z0], [x + w, y + d, z0], [x + w, y + d, t], [x + w, y, t])
+       + poly(col, [x, y, t], [x + w, y, t], [x + w, y + d, t], [x, y + d, t]);
+}
+// Toit à deux pans (faîtage selon x), comme les maisons de brique des collines de Tana.
+function roof(x, y, w, d, t, r, col) {
+  const m = y + d / 2;
+  return poly(shade(col, .7), [x, y, t], [x + w, y, t], [x + w, m, t + r], [x, m, t + r])
+       + poly(shade(col, .55), [x + w, y, t], [x + w, y + d, t], [x + w, m, t + r])
+       + poly(col, [x, y + d, t], [x + w, y + d, t], [x + w, m, t + r], [x, m, t + r]);
+}
+// Fenêtres sur les deux faces visibles ; `lit` = proportion de fenêtres allumées.
+function windows(x, y, w, d, z0, h, lit, R) {
+  let s = '';
+  const rows = Math.max(1, Math.floor((h - 6) / 10));
+  const face = (len, mk) => {
+    const cols = Math.max(1, Math.floor(len / .34));
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      const on = R() < lit;
+      const u0 = (c + .3) * len / cols, u1 = (c + .7) * len / cols, v0 = z0 + 5 + r * 10, v1 = v0 + 5;
+      s += poly(on ? '#ffd36b' : '#1d2338', ...mk(u0, u1, v0, v1));
+    }
+  };
+  face(w, (u0, u1, v0, v1) => [[x + u0, y + d, v0], [x + u1, y + d, v0], [x + u1, y + d, v1], [x + u0, y + d, v1]]);
+  face(d, (u0, u1, v0, v1) => [[x + w, y + u0, v0], [x + w, y + u1, v0], [x + w, y + u1, v1], [x + w, y + u0, v1]]);
+  return s;
+}
+const WALLS = ['#b5523b', '#c8693f', '#d9a35b', '#e8e2d6', '#9c4a35'];
+const ROOFS = ['#7a3325', '#5b2a22', '#3b4252', '#8a3b2b'];
+
+// ---------------------------------------------------------------- construction de la carte
+const SIZE = 8, RISE = 26;
+let svgBody = '', items = [], signs = '';
+const pins = [];
+
+// Les quartiers montent en zigzag : un pas vers −y (en haut à droite), puis vers −x (en haut à gauche).
+function districtGeom(d) {
+  const ox = -SIZE * Math.floor(d / 2), y0 = -SIZE * Math.ceil(d / 2), z = d * RISE;
+  return { ox, y0, y1: y0 + SIZE, z, odd: d % 2 === 1 };
+}
+// Rue d'un quartier, dans un repère local (entrée sur le bord +x, sortie sur le bord −y) ;
+// les quartiers impairs échangent x et y, ce qui fait le miroir à l'écran.
+const LOCAL_PATH = [[8, 4], [6.5, 4], [6.5, 6.5], [1.5, 6.5], [1.5, 1.5], [4, 1.5], [4, 0]];
+function pathOf(d) {
+  const g = districtGeom(d);
+  return LOCAL_PATH.map(([u, v]) => g.odd ? [g.ox + v, g.y0 + u] : [g.ox + u, g.y0 + v]);
+}
+function sampleAlong(P, ts) {                 // points à des fractions de la longueur
+  const seg = []; let tot = 0;
+  for (let i = 1; i < P.length; i++) { const l = Math.hypot(P[i][0] - P[i-1][0], P[i][1] - P[i-1][1]); seg.push(l); tot += l; }
+  return ts.map(t => {
+    let s = t * tot, i = 0;
+    while (i < seg.length - 1 && s > seg[i]) { s -= seg[i]; i++; }
+    const k = seg[i] ? s / seg[i] : 0;
+    return [P[i][0] + (P[i+1][0] - P[i][0]) * k, P[i][1] + (P[i+1][1] - P[i][1]) * k];
+  });
+}
+function distToPath(P, x, y) {
+  let m = 1e9;
+  for (let i = 1; i < P.length; i++) {
+    const [ax, ay] = P[i-1], [bx, by] = P[i];
+    const dx = bx - ax, dy = by - ay, L = dx * dx + dy * dy || 1;
+    const t = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / L));
+    m = Math.min(m, Math.hypot(x - ax - t * dx, y - ay - t * dy));
+  }
+  return m;
+}
+function statusOf(d, l) {                     // 'done' | 'current' | 'locked'
+  const D = DISTRICTS[d];
+  if (l < 5) return l < D.stars.length ? 'done' : (d === CURRENT.d && l === CURRENT.l ? 'current' : 'locked');
+  return D.bossDone ? 'done' : 'locked';
+}
+
+for (let d = DISTRICTS.length - 1; d >= 0; d--) {
+  const D = DISTRICTS[d], g = districtGeom(d), R = rng(1000 + d);
+  const P = pathOf(d);
+  const reached = d <= CURRENT.d;
+  const progress = D.bossDone ? 1 : (D.stars.length / 6);
+  const lightFrac = !reached ? .04 : .12 + .88 * progress;
+
+  // terrasse : socle de terre + dessus coloré du quartier
+  const top = reached ? mix(mix(D.color, '#2c3a2e', .7), '#000000', .1) : mix(D.color, '#141a2b', .86);
+  svgBody += prism(g.ox, g.y0, SIZE, SIZE, -30, g.z + 30, reached ? '#7a4f38' : '#2a2433')   // falaise de terre rouge
+           + poly(top, [g.ox, g.y0, g.z], [g.ox + SIZE, g.y0, g.z], [g.ox + SIZE, g.y1, g.z], [g.ox, g.y1, g.z]);
+  // rue (chemin)
+  const road = P.map(([x, y]) => iso(x, y, g.z).join(',')).join(' ');
+  svgBody += `<polyline points="${road}" fill="none" stroke="${reached ? '#cdb994' : '#3a3f55'}" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>`;
+  svgBody += `<polyline points="${road}" fill="none" stroke="${reached ? '#e9dcbc' : '#454b63'}" stroke-width="2" stroke-dasharray="6 7" stroke-linecap="round"/>`;
+
+  items = [];
+  // niveaux : 5 bâtiments + monument (boss) répartis le long de la rue
+  const nodes = sampleAlong(P, [.1, .26, .42, .58, .74, .9]);
+  const taken = [];
+  nodes.forEach(([nx, ny], l) => {
+    const isBoss = l === 5, st = statusOf(d, l);
+    // le bâtiment se pose du côté de la rue le plus libre
+    let bx = nx + 1, by = ny - .4;
+    const cands = [[nx + .9, ny - .5], [nx - 1.9, ny - .5], [nx - .5, ny + .9], [nx - .5, ny - 1.9]];
+    for (const [cx, cy] of cands) if (cx > g.ox + .1 && cx < g.ox + SIZE - 1.1 && cy > g.y0 + .1 && cy < g.y1 - 1.1 && distToPath(P, cx + .5, cy + .5) > .9) { bx = cx; by = cy; break; }
+    const w = isBoss ? 1.5 : 1, h = isBoss ? 78 : 30 + R() * 16;
+    taken.push([bx + w / 2, by + w / 2]);
+    const wall = isBoss ? shade(D.color, reached ? .95 : .35) : (reached ? WALLS[Math.floor(R() * WALLS.length)] : '#2b2f40');
+    const lit = st === 'done' ? (isBoss ? 1 : .35 + .22 * (D.stars[l] || 3)) : st === 'current' ? .15 : .03;
+    let s = prism(bx, by, w, w, g.z, h, wall) + windows(bx, by, w, w, g.z, h, lit, R);
+    if (isBoss) {   // monument : toit pyramidal + drapeau
+      const t = g.z + h, cx = bx + w / 2, cy = by + w / 2;
+      s += poly(shade(D.color, .5), [bx + w, by, t], [bx + w, by + w, t], [cx, cy, t + 34]);
+      s += poly(shade(D.color, .7), [bx, by + w, t], [bx + w, by + w, t], [cx, cy, t + 34]);
+      const [fx, fy] = iso(cx, cy, t + 34);
+      s += `<line x1="${fx}" y1="${fy}" x2="${fx}" y2="${fy - 22}" stroke="#ddd" stroke-width="1.5"/><path d="M${fx} ${fy - 22} l14 4 l-14 4z" fill="${reached ? D.color : '#555'}"/>`;
+    } else if (R() < .7) s += roof(bx, by, w, w, g.z + h, 14, reached ? ROOFS[Math.floor(R() * ROOFS.length)] : '#23273a');
+    items.push({ k: bx + by + w, s });
+    pins.push({ d, l, x: nx, y: ny, z: g.z, st, isBoss });
+  });
+
+  // maisons de décor
+  for (let gx = 0; gx < SIZE; gx++) for (let gy = 0; gy < SIZE; gy++) {
+    const x = g.ox + gx + .12, y = g.y0 + gy + .12;
+    if (distToPath(P, x + .4, y + .4) < 1.05 || taken.some(([tx, ty]) => Math.hypot(tx - x - .4, ty - y - .4) < 1.3)) continue;
+    if (R() < .22) {   // arbre
+      const [tx, ty] = iso(x + .4, y + .4, g.z);
+      items.push({ k: x + y + .8, s: `<rect x="${tx - 1.5}" y="${ty - 10}" width="3" height="10" fill="#4a3426"/><circle cx="${tx}" cy="${ty - 16}" r="9" fill="${reached ? '#2f6b3a' : '#1b2a24'}"/><circle cx="${tx - 3}" cy="${ty - 19}" r="4" fill="${reached ? '#3f8a4b' : '#20302a'}"/>` });
+      continue;
+    }
+    if (R() < .25) continue;
+    const w = .62 + R() * .18, h = 16 + R() * 26;
+    const wall = reached ? WALLS[Math.floor(R() * WALLS.length)] : mix('#2b2f40', D.color, .08);
+    let s = prism(x, y, w, w, g.z, h, wall) + windows(x, y, w, w, g.z, h, lightFrac, R);
+    if (R() < .75) s += roof(x, y, w, w, g.z + h, 10 + R() * 6, reached ? ROOFS[Math.floor(R() * ROOFS.length)] : '#23273a');
+    items.push({ k: x + y + w, s });
+  }
+  // réverbères le long de la rue
+  sampleAlong(P, [.18, .34, .5, .66, .82]).forEach(([lx, ly]) => {
+    const [px, py] = iso(lx + .55, ly + .55, g.z);
+    const on = reached;
+    items.push({ k: lx + ly + 1.2, s: `<line x1="${px}" y1="${py}" x2="${px}" y2="${py - 16}" stroke="#555b6e" stroke-width="1.5"/>`
+      + (on ? `<circle cx="${px}" cy="${py - 17}" r="10" fill="url(#halo)"/>` : '') + `<circle cx="${px}" cy="${py - 17}" r="2.4" fill="${on ? '#ffe7a3' : '#3d4256'}"/>` });
+  });
+  // escalier vers le quartier suivant
+  if (d < DISTRICTS.length - 1) {
+    const [ex, ey] = P[P.length - 1], nz = districtGeom(d + 1).z, steps = 7;
+    const col = d < CURRENT.d ? '#cdb994' : '#3a3f55';
+    let s = '';
+    for (let i = steps - 1; i >= 0; i--) {   // de la marche du haut (au fond) à celle du bas
+      const h = (nz - g.z) * (i + 1) / steps, o = (i + 1) * .12;
+      s += g.odd ? prism(ex - o, ey - .5, .12, 1, g.z, h, col) : prism(ex - .5, ey - o, 1, .12, g.z, h, col);
+    }
+    items.push({ k: ex + ey + .5, s });
+  }
+  // panneau du quartier, sur le bord avant (dessiné au premier plan)
+  const [sx2, sy2] = g.odd ? iso(g.ox + SIZE, g.y0 + 2, g.z) : iso(g.ox + 2, g.y1, g.z);
+  const tw = 30 + 7.4 * (`${D.n} · ${D.name}`).length;
+  signs += `<g transform="translate(${sx2 + (g.odd ? 18 : -18 - tw)},${sy2 + 14})"><rect width="${tw}" height="28" rx="14" fill="${reached ? D.color : '#2a2f45'}" stroke="rgb(255 255 255 / .3)"/>`
+    + `<text x="${tw / 2}" y="18.5" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="13" fill="#fff">${D.n} · ${D.name}</text></g>`;
+
+  items.sort((a, b) => a.k - b.k).forEach(it => svgBody += it.s);
+}
+
+// épingles des niveaux (au-dessus de tout)
+let pinSvg = '';
+pins.forEach(p => {
+  const [x, y] = iso(p.x, p.y, p.z);
+  const D = DISTRICTS[p.d], r = p.isBoss ? 17 : 14;
+  const fill = p.st === 'done' ? D.color : p.st === 'current' ? '#ffffff' : '#30354a';
+  const label = p.isBoss ? 'Boss ' + D.n + ' : ' + D.boss : `Niveau ${D.n}.${p.l + 1} : ${D.levels[p.l]}`;
+  let g = `<g class="pin" tabindex="0" role="button" aria-label="${label}" data-d="${p.d}" data-l="${p.l}" transform="translate(${x},${y - 8})">`;
+  if (p.st === 'current') g += `<circle class="pulse" r="${r + 4}" fill="none" stroke="#ffd36b" stroke-width="3"/>`;
+  g += `<circle class="hit" r="24" fill="transparent"/><circle r="${r}" fill="${fill}" stroke="${p.st === 'current' ? '#ffd36b' : 'rgb(255 255 255 / .55)'}" stroke-width="2.5"/>`;
+  if (p.st === 'locked') g += `<path d="M-4 -1v-3a4 4 0 0 1 8 0v3" fill="none" stroke="#8a90a8" stroke-width="2"/><rect x="-6" y="-1" width="12" height="9" rx="2" fill="#8a90a8"/>`;
+  else if (p.isBoss) g += `<path d="M-8 4 l-2 -10 l6 5 l4 -8 l4 8 l6 -5 l-2 10z" fill="${p.st === 'current' ? D.color : '#fff'}"/>`;
+  else g += `<text y="5" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="13" fill="${p.st === 'current' ? D.color : '#fff'}">${D.n}.${p.l + 1}</text>`;
+  if (p.st === 'done' && !p.isBoss) {
+    const n = D.stars[p.l];
+    g += `<text y="${-r - 5}" text-anchor="middle" font-size="11" fill="#ffd36b" letter-spacing="1">${'★'.repeat(n)}<tspan fill="#5b6075">${'★'.repeat(3 - n)}</tspan></text>`;
+  }
+  if (p.st === 'current') g += `<g class="float"><path transform="translate(0,-44) scale(1.1)" d="M0 -12 l3.5 7.6 8.3 .9 -6.2 5.6 1.8 8.2 -7.4 -4.3 -7.4 4.3 1.8 -8.2 -6.2 -5.6 8.3 -.9z" fill="#ffd36b" filter="url(#glow)"/></g>`;
+  pinSvg += g + '</g>';
+});
+
+// cadre : bornes de la carte
+let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
+DISTRICTS.forEach((_, d) => { const g = districtGeom(d);
+  [[g.ox, g.y0], [g.ox + SIZE, g.y0], [g.ox, g.y1], [g.ox + SIZE, g.y1]].forEach(([x, y]) => {
+    const [sx, sy] = iso(x, y, g.z); const [, by] = iso(x, y, -30);
+    minX = Math.min(minX, sx); maxX = Math.max(maxX, sx); minY = Math.min(minY, sy - 150); maxY = Math.max(maxY, by); }); });
+minX -= 140; maxX += 140; maxY += 90;
+const VW = maxX - minX, VH = maxY - minY;
+
+// ciel : étoiles, lune, colline lointaine avec le Rova
+const RS = rng(7);
+let sky = '';
+for (let i = 0; i < 90; i++) sky += `<circle class="${i % 5 ? '' : 'twinkle'}" style="animation-delay:${(RS() * 3).toFixed(2)}s" cx="${minX + RS() * VW}" cy="${minY + RS() * VH * .55}" r="${(RS() * 1.3 + .3).toFixed(2)}" fill="#fff" opacity="${(.35 + RS() * .6).toFixed(2)}"/>`;
+sky += `<circle cx="${maxX - 90}" cy="${minY + 70}" r="26" fill="#f4ecd2"/><circle cx="${maxX - 80}" cy="${minY + 64}" r="24" fill="#2b2a55" opacity=".9"/>`;
+const hx = (minX + maxX) / 2, hy = minY + 150;
+sky += `<path d="M${minX} ${hy + 120} Q ${hx - 160} ${hy - 30} ${hx} ${hy - 40} Q ${hx + 170} ${hy - 30} ${maxX} ${hy + 140} V ${hy + 300} H ${minX}z" fill="#1a1d3f"/>`;
+sky += `<g opacity=".9"><rect x="${hx - 26}" y="${hy - 78}" width="52" height="38" fill="#262a52"/><path d="M${hx - 32} ${hy - 78} L${hx} ${hy - 104} L${hx + 32} ${hy - 78}z" fill="#2e3260"/>`
+     + `<rect x="${hx - 3}" y="${hy - 70}" width="6" height="8" fill="#3a3f72"/><text x="${hx}" y="${hy - 112}" text-anchor="middle" font-family="var(--font)" font-size="11" font-weight="600" fill="#9aa0d0">Le Rova — Recherche</text></g>`;
+
+document.getElementById('map').innerHTML = `<svg viewBox="${minX} ${minY} ${VW} ${VH}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ville isométrique de nuit">
+  <defs>
+    <radialGradient id="halo"><stop offset="0" stop-color="#ffe7a3" stop-opacity=".55"/><stop offset="1" stop-color="#ffe7a3" stop-opacity="0"/></radialGradient>
+    <filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>${sky}${svgBody}${signs}${pinSvg}</svg>`;
+
+// Échelle minimale ~0,9 : les épingles gardent une cible tactile ≥ 44 px ; la carte se fait glisser sur téléphone.
+document.querySelector('#map svg').style.minWidth = Math.round(VW * .9) + 'px';
+
+// ---------------------------------------------------------------- interactions
+const sheet = document.getElementById('sheet');
+function openLevel(d, l) {
+  const D = DISTRICTS[d], st = statusOf(d, l), boss = l === 5;
+  document.getElementById('sheetKicker').textContent = `Quartier ${D.n} · ${D.name}`;
+  document.getElementById('sheetKicker').style.color = D.color;
+  document.getElementById('sheetTitle').textContent = boss ? 'Boss : ' + D.boss : `${D.n}.${l + 1} · ${D.levels[l]}`;
+  const stars = st === 'done' && !boss ? D.stars[l] : 0;
+  document.getElementById('sheetMeta').innerHTML = (boss ? '20 min · révision mélangée du quartier' : '12 min · 10 cartes · 6 exercices')
+    + (st === 'done' ? ` · <span class="stars">${'★'.repeat(stars || 3)}${'☆'.repeat(3 - (stars || 3))}</span>` : '')
+    + (st === 'locked' ? ' · se débloque à 50 % au niveau précédent' : '');
+  document.getElementById('sheetIA').innerHTML = `<b>Ton IA</b> — à la fin du quartier, Kintana saura ${D.ia}.`;
+  const play = document.getElementById('sheetPlay');
+  play.disabled = st === 'locked';
+  play.textContent = st === 'done' ? 'Rejouer' : 'Jouer';
+  sheet.classList.add('open');
+  play.focus();
+}
+document.getElementById('sheetClose').onclick = () => sheet.classList.remove('open');
+document.getElementById('map').addEventListener('click', e => {
+  const p = e.target.closest('.pin'); if (p) openLevel(+p.dataset.d, +p.dataset.l);
+});
+document.getElementById('map').addEventListener('keydown', e => {
+  const p = e.target.closest('.pin'); if (p && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openLevel(+p.dataset.d, +p.dataset.l); }
+});
+function scrollToCurrent(smooth) {
+  const el = document.querySelector(`.pin[data-d="${CURRENT.d}"][data-l="${CURRENT.l}"]`);
+  if (el) el.scrollIntoView({ block: 'center', inline: 'center', behavior: smooth ? 'smooth' : 'auto' });
+}
+document.getElementById('cta').onclick = () => { scrollToCurrent(true); openLevel(CURRENT.d, CURRENT.l); };
+
+// vue liste (accessibilité)
+const list = document.getElementById('list');
+list.innerHTML = DISTRICTS.map((D, d) => `<h3 style="color:${D.color}">Quartier ${D.n} · ${D.name}</h3>` +
+  [0, 1, 2, 3, 4, 5].map(l => { const st = statusOf(d, l), n = D.stars[l];
+    return `<button data-d="${d}" data-l="${l}" ${st === 'locked' ? 'disabled' : ''}>${l === 5 ? 'Boss · ' + D.boss : D.n + '.' + (l + 1) + ' · ' + D.levels[l]}`
+      + `<span class="stars">${st === 'done' && l < 5 ? '★'.repeat(n) + '☆'.repeat(3 - n) : st === 'current' ? 'à faire' : st === 'locked' ? '🔒' : '✓'}</span></button>`; }).join('')).join('');
+list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) openLevel(+b.dataset.d, +b.dataset.l); });
+const tl = document.getElementById('toggleList');
+tl.onclick = () => { const o = list.classList.toggle('open'); tl.setAttribute('aria-pressed', o); tl.textContent = o ? 'Vue ville' : 'Vue liste'; };
+
+requestAnimationFrame(() => scrollToCurrent(false));
+</script>
+</body>
+</html>

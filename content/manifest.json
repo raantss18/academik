@@ -1,12 +1,246 @@
 {
-  "note": "Chaque source : vérifier licence et date avant d'embarquer. mode = embarque | lien | import-local. remplace = source plus ancienne que celle-ci supplante.",
+  "note": "Vérification T-001 (Codex, 2026-11-01). mode = embarque | lien | import-local | a-valider. Code Apache-2.0 séparé des paquets de contenu NC/SA. import-local ne crée aucun droit.",
   "sources": [
-    { "id": "algo", "titre": "Mon livre d'algorithmique", "etablissement": "Antsa (auteur)", "url": "", "licence": "auteur — à préciser", "verifie": "", "mode": "embarque" },
-    { "id": "m1-ankatso", "titre": "M1 Info Ankatso (Linux, LaTeX, Python, données, Sage)", "etablissement": "Université d'Antananarivo", "url": "", "licence": "auteur — à préciser", "verifie": "", "mode": "embarque" },
-    { "id": "comima", "titre": "Cours et recueil COMIMa", "etablissement": "COMIMa", "url": "https://www.comima.mg", "licence": "pédagogique non commercial (README COMIMa)", "verifie": "", "mode": "embarque" },
-    { "id": "mada-boky", "titre": "Mada-Boky (manuels)", "etablissement": "Antsa", "url": "", "licence": "voir Mada-Boky/LICENSE.md", "verifie": "", "mode": "a-valider" },
-    { "id": "mit-1806", "titre": "MIT 18.06 Linear Algebra", "etablissement": "MIT OCW", "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/", "licence": "CC BY-NC-SA 4.0", "verifie": "", "mode": "lien" },
-    { "id": "karpathy-z2h", "titre": "Neural Networks: Zero to Hero", "etablissement": "A. Karpathy", "url": "https://karpathy.ai/zero-to-hero.html", "licence": "code MIT (micrograd, nanoGPT) — vidéos en lien", "verifie": "", "mode": "lien" },
-    { "id": "hf-courses", "titre": "Hugging Face LLM / Agents / MCP courses", "etablissement": "Hugging Face", "url": "https://huggingface.co/learn", "licence": "Apache-2.0 (à vérifier par cours)", "verifie": "", "mode": "lien" }
+    {
+      "id": "algo",
+      "titre": "Mon livre d'algorithmique",
+      "etablissement": "Antsa (auteur)",
+      "url": "",
+      "licence": "auteur — à préciser — redistribution à confirmer par l'auteur (T-001)",
+      "verifie": "",
+      "mode": "embarque"
+    },
+    {
+      "id": "m1-ankatso",
+      "titre": "M1 Info Ankatso (Linux, LaTeX, Python, données, Sage)",
+      "etablissement": "Université d'Antananarivo",
+      "url": "",
+      "licence": "auteur — à préciser — redistribution à confirmer par l'auteur (T-001)",
+      "verifie": "",
+      "mode": "embarque"
+    },
+    {
+      "id": "comima",
+      "titre": "Cours et recueil COMIMa",
+      "etablissement": "COMIMa",
+      "url": "https://www.comima.mg",
+      "licence": "pédagogique non commercial (README COMIMa) — redistribution à confirmer par l'auteur (T-001)",
+      "verifie": "",
+      "mode": "embarque"
+    },
+    {
+      "id": "mada-boky",
+      "titre": "Mada-Boky (manuels)",
+      "etablissement": "Antsa",
+      "url": "",
+      "licence": "voir Mada-Boky/LICENSE.md — redistribution à confirmer par l'auteur (T-001)",
+      "verifie": "",
+      "mode": "a-valider"
+    },
+    {
+      "id": "mit-1801sc",
+      "titre": "18.01SC Single Variable Calculus (2010)",
+      "etablissement": "MIT OCW",
+      "url": "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/",
+      "licence": "CC BY-NC-SA 4.0",
+      "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "paquet NC-SA séparé ; exclure les éléments réservés ; pas de données d'entraînement d'IA"
+    },
+    {
+      "id": "mit-1802sc",
+      "titre": "18.02SC Multivariable Calculus (2010)",
+      "etablissement": "MIT OCW",
+      "url": "https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/",
+      "licence": "CC BY-NC-SA 4.0",
+      "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "idem"
+    },
+    {
+      "id": "mit-1806",
+      "titre": "18.06 Linear Algebra (2010)",
+      "etablissement": "MIT OCW",
+      "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/",
+      "licence": "CC BY-NC-SA 4.0",
+      "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "le manuel de Strang n'est pas couvert"
+    },
+    {
+      "id": "mit-18650",
+      "titre": "18.650 Statistics for Applications (2016)",
+      "etablissement": "MIT OCW",
+      "url": "https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/",
+      "licence": "CC BY-NC-SA 4.0",
+      "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "verifie": "2026-11-01",
+      "mode": "embarque"
+    },
+    {
+      "id": "mit-6036",
+      "titre": "6.036 Introduction to Machine Learning (2020)",
+      "etablissement": "MIT OCW",
+      "url": "https://ocw.mit.edu/courses/6-036-introduction-to-machine-learning-fall-2020/",
+      "licence": "CC BY-NC-SA 4.0",
+      "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "verifie": "2026-11-01",
+      "mode": "embarque"
+    },
+    {
+      "id": "stanford-cs229",
+      "titre": "CS229 Machine Learning",
+      "etablissement": "Stanford",
+      "url": "https://cs229.stanford.edu/",
+      "licence": "non vérifiée",
+      "preuve_licence": "",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "accès public ≠ licence ouverte"
+    },
+    {
+      "id": "stanford-cs231n",
+      "titre": "CS231n notes",
+      "etablissement": "Stanford / A. Karpathy",
+      "url": "https://cs231n.github.io/",
+      "licence": "MIT (notes du dépôt)",
+      "preuve_licence": "https://github.com/cs231n/cs231n.github.io/blob/master/LICENSE",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "vidéos, diapositives, datasets : lien"
+    },
+    {
+      "id": "stanford-cs336-2025",
+      "titre": "CS336 Language Modeling from Scratch (supports 2025)",
+      "etablissement": "Stanford",
+      "url": "https://github.com/stanford-cs336/spring2025-lectures",
+      "licence": "MIT",
+      "preuve_licence": "https://github.com/stanford-cs336/spring2025-lectures/blob/main/LICENSE",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "édition 2026 et vidéos : non vérifiées → lien"
+    },
+    {
+      "id": "karpathy-z2h",
+      "titre": "Neural Networks: Zero to Hero (code)",
+      "etablissement": "A. Karpathy",
+      "url": "https://github.com/karpathy/nn-zero-to-hero",
+      "licence": "MIT (code, notebooks)",
+      "preuve_licence": "https://github.com/karpathy/nn-zero-to-hero/blob/master/LICENSE",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "vidéos YouTube : lien seulement"
+    },
+    {
+      "id": "hf-llm",
+      "titre": "Hugging Face LLM Course",
+      "etablissement": "Hugging Face",
+      "url": "https://huggingface.co/learn/llm-course/chapter1/1",
+      "licence": "Apache-2.0",
+      "preuve_licence": "https://github.com/huggingface/course/blob/main/LICENSE",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "modèles et datasets à vérifier séparément"
+    },
+    {
+      "id": "hf-agents",
+      "titre": "Hugging Face Agents Course",
+      "etablissement": "Hugging Face",
+      "url": "https://huggingface.co/learn/agents-course/unit0/introduction",
+      "licence": "Apache-2.0",
+      "preuve_licence": "https://github.com/huggingface/agents-course/blob/main/LICENSE",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "remplacer les services hébergés par des labs locaux"
+    },
+    {
+      "id": "hf-mcp",
+      "titre": "Hugging Face MCP Course",
+      "etablissement": "Hugging Face",
+      "url": "https://huggingface.co/learn/mcp-course/unit0/introduction",
+      "licence": "Apache-2.0",
+      "preuve_licence": "https://github.com/huggingface/mcp-course/blob/main/LICENSE",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "épingler la version du protocole"
+    },
+    {
+      "id": "ms-agents",
+      "titre": "AI Agents for Beginners",
+      "etablissement": "Microsoft",
+      "url": "https://github.com/microsoft/ai-agents-for-beginners",
+      "licence": "MIT",
+      "preuve_licence": "https://github.com/microsoft/ai-agents-for-beginners/blob/main/LICENSE",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "services Azure : hors périmètre"
+    },
+    {
+      "id": "cs50p",
+      "titre": "CS50's Introduction to Programming with Python",
+      "etablissement": "Harvard",
+      "url": "https://cs50.harvard.edu/python/",
+      "licence": "CC BY-NC-SA 4.0",
+      "preuve_licence": "https://cs50.harvard.edu/python/license/",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "ne jamais reproduire de solutions"
+    },
+    {
+      "id": "mil",
+      "titre": "Mathematics in Lean",
+      "etablissement": "Lean community",
+      "url": "https://github.com/leanprover-community/mathematics_in_lean",
+      "licence": "Apache-2.0",
+      "preuve_licence": "https://github.com/leanprover-community/mathematics_in_lean/blob/master/LICENSE",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "épingler Lean/mathlib"
+    },
+    {
+      "id": "linux-journey",
+      "titre": "Linux Journey",
+      "etablissement": "LabEx",
+      "url": "https://labex.io/linuxjourney",
+      "licence": "CC BY-SA 4.0 (contenu) + restriction sur nom/identité/collection",
+      "preuve_licence": "https://github.com/labex-labs/linuxjourney#license-and-usage",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "clarifier la restriction avant tout embarquement"
+    },
+    {
+      "id": "pro-git",
+      "titre": "Pro Git, 2e éd.",
+      "etablissement": "S. Chacon, B. Straub",
+      "url": "https://git-scm.com/book/en/v2",
+      "licence": "CC BY-NC-SA 3.0",
+      "preuve_licence": "https://git-scm.com/book/en/v2",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "paquet distinct, licence 3.0 conservée"
+    },
+    {
+      "id": "mit-18s096",
+      "titre": "18.S096 Topics in Mathematics with Applications in Finance (2013)",
+      "etablissement": "MIT OCW",
+      "url": "https://ocw.mit.edu/courses/18-s096-topics-in-mathematics-with-applications-in-finance-fall-2013/",
+      "licence": "CC BY-NC-SA 4.0 (à vérifier, T-002)",
+      "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "verifie": "2026-11-01",
+      "mode": "a-valider"
+    },
+    {
+      "id": "fpp3",
+      "titre": "Forecasting: Principles and Practice, 3e éd.",
+      "etablissement": "R. Hyndman, G. Athanasopoulos",
+      "url": "https://otexts.com/fpp3/",
+      "licence": "non vérifiée (T-002)",
+      "preuve_licence": "",
+      "verifie": "2026-11-01",
+      "mode": "lien"
+    }
   ]
 }

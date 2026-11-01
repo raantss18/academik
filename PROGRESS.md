@@ -9,3 +9,15 @@
   (inspection du paquet npm) ; ts-fsrs 6.0.0 MIT ; Codex CLI 0.166 présent.
 - **Risques** : poids de Pyodide dans l'APK ; volume de contenu (17 modules) ; Supabase partagé avec deux autres apps.
 - **Prochaine étape** : phase 2 (squelette + moteur + niveau 2.1).
+
+### Ajouts du 2026-11-01 (après retour d'Antsa)
+
+- **Fait** : volet *quantitative researcher* intégré au fil rouge (modules Statistique, Séries temporelles, Processus
+  stochastiques, Recherche quantitative, Performance ; boss final = Kintana agent de recherche quant). Carte « ville qui
+  s'allume » en isométrique 2,5D : maquette `prototypes/carte-ville/` (SVG généré par code, 8 quartiers, fiche de
+  mission, vue liste). Rapport Codex T-001 intégré : prérequis corrigés, références pédagogiques corrigées, licences
+  vérifiées dans `content/manifest.json`.
+- **Vérifié** : maquette ouverte dans le navigateur (bureau 800 px et téléphone 375 px) ; cibles tactiles 44 px ;
+  aucune barre de défilement horizontale de page ; fiche de mission ouverte par « Continuer ».
+- **Risques** : licences des livres maison à confirmer avant de les embarquer ; poids de la carte quand les 21 quartiers
+  seront dessinés (ne rendre que les quartiers visibles).
