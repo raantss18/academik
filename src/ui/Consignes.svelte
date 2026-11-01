@@ -3,6 +3,7 @@
   import { progress } from '../lib/progress.svelte';
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
   import { updates } from '../lib/updates.svelte';
+  import LogoMenu from './LogoMenu.svelte';
   import { content } from '../lib/content.svelte';
   import { APP_BUILD, APP_VERSION, platform } from '../lib/platform';
   let { onexit }: { onexit: () => void } = $props();
@@ -11,7 +12,7 @@
 </script>
 
 <div class="wrap">
-  <button class="btn" onclick={onexit}>← {fr ? 'Retour' : 'Back'}</button>
+  <div class="hd"><button class="btn" onclick={onexit}>← {fr ? 'Retour' : 'Back'}</button><LogoMenu compact onhome={onexit} /></div>
   <h1>{fr ? 'Consignes' : 'How it works'}</h1>
 
   <section class="card">
@@ -20,8 +21,8 @@
       <li>{fr ? 'Une leçon dure 10 à 15 minutes. Le cours est dans la leçon : essaie, lis, puis réponds.' : 'A lesson takes 10 to 15 minutes. The course is inside the lesson: try, read, then answer.'}</li>
       <li>{fr ? `Le niveau suivant s'ouvre quand tu atteins ${UNLOCK_THRESHOLD * 100} % au niveau précédent.` : `The next level opens when you reach ${UNLOCK_THRESHOLD * 100}% on the previous one.`}</li>
       <li>{fr ? 'Étoiles : ★ à 50 %, ★★ à 80 %, ★★★ à 100 %. Tu peux rejouer autant que tu veux : on garde ton meilleur score.' : 'Stars: ★ at 50%, ★★ at 80%, ★★★ at 100%. Replay as often as you like: your best score is kept.'}</li>
-      <li>{fr ? 'Une seule tentative par carte à chaque partie ; un indice réduit le point à moitié.' : 'One attempt per card in each run; a hint halves the point.'}</li>
-      <li>{fr ? 'Après chaque réponse, une explication te dit pourquoi, que tu aies juste ou faux.' : 'After each answer, an explanation tells you why, right or wrong.'}</li>
+      <li>{fr ? 'Une seule tentative par carte à chaque partie ; un indice réduit le point à moitié. Si tu te trompes, la réponse n’est jamais montrée : tu rejoues le niveau quand tu veux.' : 'One attempt per card in each run; a hint halves the point. If you get it wrong, the answer is never shown: replay the level whenever you like.'}</li>
+      <li>{fr ? 'Quand tu as juste, une explication te dit pourquoi ; sinon tu as un indice, jamais la solution.' : 'When you are right, an explanation tells you why; otherwise you get a hint, never the solution.'}</li>
     </ul>
   </section>
 
@@ -60,4 +61,4 @@
   </section>
 </div>
 
-<style> h2 { margin-top: 0; } section { margin: 14px 0; } ul { padding-left: 1.2em; margin: 0; } li { margin: .35em 0; } </style>
+<style> .hd { display: flex; justify-content: space-between; align-items: center; } h2 { margin-top: 0; } section { margin: 14px 0; } ul { padding-left: 1.2em; margin: 0; } li { margin: .35em 0; } </style>

@@ -10,6 +10,7 @@
   import { scoredItems, type Level } from '../lib/level';
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
   import { resume, clampIndex } from '../lib/resume';
+  import LogoMenu from './LogoMenu.svelte';
 
   let { level, onexit, onreplay, startAt = 0 }: { level: Level; onexit: () => void; onreplay: () => void; startAt?: number } = $props();
 
@@ -63,7 +64,6 @@
   /** Bouton retour du téléphone : revient à la carte précédente (renvoie false au début : l'appelant quitte la leçon). */
   export function back(): boolean { if (!finished && idx > 0) { prev(); return true; } return false; }
   function replay() { resume.clear(level.id); onreplay(); }
-  const rightText = $derived(card.type === 'saisie' ? card.reponses![0] : card.type === 'parsons' ? card.lignes!.join('\n') : card.choix?.find(c => c.juste) ? i18n.t(card.choix!.find(c => c.juste)) : '');
   const score = $derived(levelScore(scoredItems(level), progress.best(level.id)));
   function key(e: KeyboardEvent) { if (e.key === 'Enter' && card.type === 'saisie' && !result && canCheck) check(); }
 </script>
@@ -71,7 +71,8 @@
 <div class="wrap">
   {#if !finished}
     <header class="top">
-      <button class="x" onclick={onexit} aria-label={ui('leave')}>✕</button>
+      <button class="x" onclick={() => { if (!back()) onexit(); }} aria-label={ui('prev')} title={ui('prev')}>←</button>
+      <LogoMenu compact onhome={onexit} />
       <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax={total} aria-valuenow={idx}><div style="width:{(idx / total) * 100}%"></div></div>
       <span class="muted">{idx + 1}/{total}</span>
     </header>
@@ -95,7 +96,7 @@
       {#if card.type === 'qcm' || card.type === 'tentative'}
         <div class="choices" role="radiogroup">
           {#each choices as { c, i }}
-            <button class="choice" class:sel={selected === i} class:ok={result && c.juste} class:bad={result && selected === i && !c.juste} role="radio" aria-checked={selected === i} disabled={!!result} onclick={() => (selected = i)}><code>{t(c)}</code></button>
+            <button class="choice" class:sel={selected === i} class:ok={result?.ok && selected === i} class:bad={result && selected === i && !c.juste} role="radio" aria-checked={selected === i} disabled={!!result} onclick={() => (selected = i)}><code>{t(c)}</code></button>
           {/each}
         </div>
       {:else if card.type === 'saisie'}
@@ -115,14 +116,17 @@
       {#if result}
         <div class="fb" class:good={result.ok} role="status">
           <strong>{result.ok ? ui('right') : ui('notyet')}</strong>{result.ok && earned ? ` +${earned} ${ui('xp')}` : ''}
-          {#if !result.ok}<div class="small">{ui('answer')} : <pre><code>{rightText}</code></pre></div>{/if}
-          <p>{@html md(t(card.explication))}</p>
+          {#if result.ok}
+            <p>{@html md(t(card.explication))}</p>
+          {:else}
+            {#if card.indice}<p>💡 {t(card.indice)}</p>{/if}
+            <p class="muted">{ui('retry_later')}</p>
+          {/if}
         </div>
       {/if}
     </article>
 
     <footer class="foot">
-      {#if idx > 0}<button class="btn prev" onclick={prev}>← {ui('prev')}</button>{/if}
       {#if card.type === 'exemple' && step + 1 < card.etapes!.length}
         <button class="btn primary" onclick={() => step++}>{ui('next_step')}</button>
       {:else if hasAnswer && !result}

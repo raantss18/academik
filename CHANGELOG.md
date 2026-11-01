@@ -5,15 +5,16 @@
 ## [0.3.2] — 2026-11-01
 
 ### Message fr
-Tu reprends maintenant une leçon là où tu l'avais laissée, et « Continuer » te mène au niveau suivant dès que tu as 50 %. Un bouton « Précédent » (et le bouton retour du téléphone) te ramène à la carte d'avant.
+Tu reprends maintenant une leçon là où tu l'avais laissée, et « Continuer » te mène au niveau suivant dès que tu as 50 %. Le bouton ← et le bouton retour du téléphone te ramènent à la carte d'avant ; le logo te ramène à l'accueil. Si tu te trompes, la réponse n'est plus montrée.
 
 ### Message en
-You now resume a lesson where you left it, and “Continue” takes you to the next level once you reach 50%. A “Previous” button (and the phone's back button) takes you back to the previous card.
+You now resume a lesson where you left it, and “Continue” takes you to the next level once you reach 50%. The ← button and the phone's back button take you to the previous card; the logo takes you home. If you get it wrong, the answer is no longer shown.
 
 ### Corrections / Fixes
 - « Continuer » ramenait à la même leçon tant qu'elle n'était pas à 100 % : il passe maintenant au niveau suivant dès le seuil de 50 %. / “Continue” kept returning to the same lesson until 100%: it now moves on at the 50% threshold.
 - Reprise d'une leçon quittée en cours de route (carte mémorisée). / Resuming a lesson left half-way (card remembered).
-- Bouton « Précédent » avec la correction déjà vue ; bouton retour du téléphone. / “Previous” button keeping the correction already seen; phone back button.
+- Bouton retour (←) distinct de l'accueil (menu du logo) ; bouton retour du téléphone (il fermait l'app). / Back (←) distinct from home (logo menu); phone back button (it used to close the app).
+- En cas d'erreur, la bonne réponse et l'explication ne sont plus montrées (un indice seulement), comme COMIMa. / On a wrong answer, the right answer and explanation are no longer shown (a hint only), like COMIMa.
 
 ## [0.3.1] — 2026-11-01
 

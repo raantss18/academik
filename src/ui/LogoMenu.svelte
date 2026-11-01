@@ -6,7 +6,7 @@
   import { progress } from '../lib/progress.svelte';
   import { APP_VERSION, APP_BUILD, platform } from '../lib/platform';
 
-  let { onrules }: { onrules: () => void } = $props();
+  let { onrules, onhome, compact = false }: { onrules?: () => void; onhome?: () => void; compact?: boolean } = $props();
   let open = $state(false), root: HTMLElement;
   const fr = $derived(i18n.lang === 'fr');
   const themes: { v: Theme; fr: string; en: string }[] = [{ v: 'auto', fr: 'Auto', en: 'Auto' }, { v: 'light', fr: 'Clair', en: 'Light' }, { v: 'dark', fr: 'Sombre', en: 'Dark' }];
@@ -18,13 +18,14 @@
 
 <svelte:window onkeydown={key} onpointerdown={outside} />
 
-<div class="menu" bind:this={root}>
+<div class="menu" class:compact bind:this={root}>
   <button class="logo" aria-haspopup="menu" aria-expanded={open} onclick={() => (open = !open)}>
-    <Logo size={30} /><span class="word">acad<span class="e">e</span>mik</span><span class="chev" aria-hidden="true">▾</span>
+    <Logo size={30} />{#if !compact}<span class="word">acad<span class="e">e</span>mik</span>{/if}<span class="chev" aria-hidden="true">▾</span>
   </button>
   {#if open}
     <div class="pop" role="menu" aria-label="academik">
-      <button role="menuitem" onclick={go(onrules)}><span>⚙️</span> {fr ? 'Réglages et à propos' : 'Settings and about'}</button>
+      {#if onhome}<button role="menuitem" onclick={go(onhome)}><span>🏠</span> {fr ? 'Accueil' : 'Home'}</button>{/if}
+      {#if onrules}<button role="menuitem" onclick={go(onrules)}><span>⚙️</span> {fr ? 'Réglages et à propos' : 'Settings and about'}</button>{/if}
       <button role="menuitem" onclick={() => updates.checkAll(true)} disabled={updates.checking}><span>🔄</span> {updates.checking ? (fr ? 'Vérification…' : 'Checking…') : (fr ? 'Vérifier les mises à jour' : 'Check for updates')}</button>
       <div class="row" role="group" aria-label={fr ? 'Synchronisation' : 'Sync'}>
         <span>☁️</span>
@@ -45,11 +46,12 @@
 </div>
 
 <style>
-  .menu { position: relative; margin-right: auto; }
+  .menu { position: relative; margin-right: auto; } .menu.compact { margin-right: 0; }
   .logo { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px 0 6px; border-radius: 999px; border: 1px solid transparent; background: transparent; cursor: pointer; font-weight: 800; font-size: 1.15rem; }
   .logo:hover, .logo[aria-expanded='true'] { background: var(--c-surface-2); border-color: var(--c-border); }
   .e { color: var(--c-accent); } .chev { color: var(--c-text-muted); font-size: .8rem; }
   .pop { position: absolute; left: 0; top: calc(100% + 6px); z-index: 20; width: min(340px, calc(100vw - 32px)); display: grid; gap: 4px; padding: 8px; border-radius: 20px; background: var(--c-surface); border: 1px solid var(--c-border); box-shadow: 0 12px 40px rgb(0 0 0 / .25); }
+  .menu.compact .pop { position: fixed; left: 16px; right: 16px; width: auto; top: calc(var(--sat) + 72px); }
   .pop > button { display: flex; gap: 12px; align-items: center; min-height: 48px; padding: 0 14px; border: 0; border-radius: 14px; background: none; text-align: left; font-weight: 600; cursor: pointer; }
   .pop > button:hover:not(:disabled) { background: var(--c-surface-2); } .pop > button:disabled { opacity: .6; }
   .row { display: flex; gap: 12px; align-items: center; padding: 8px 14px; min-height: 48px; } .txt { display: grid; gap: 2px; } small { color: var(--c-text-muted); line-height: 1.35; }
