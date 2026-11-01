@@ -8,6 +8,7 @@ const tree = JSON.parse(execFileSync('npm', ['ls', '--omit=dev', '--all', '--jso
 const seen = new Map();
 (function walk(deps) {
   for (const [name, d] of Object.entries(deps ?? {})) {
+    if (d.version === undefined) continue;   // dépendance facultative non installée (ex. bufferutil de ws) : rien n'est embarqué
     const key = `${name}@${d.version}`;
     if (!seen.has(key)) { seen.set(key, { name, version: d.version, license: (typeof d.license === 'string' ? d.license : d.license?.type) ?? readLicense(d.path), homepage: d.homepage ?? '' }); walk(d.dependencies); }
   }

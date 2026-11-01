@@ -143,3 +143,15 @@ describe('Révisions espacées : même règles que les leçons (D-021)', () => {
     const r = read('src/engine/reviews.ts'); expect(r).toContain('export async function schedule(events'); expect(r).not.toMatch(/localStorage|indexedDB/);
   });
 });
+
+describe('Terminal simulé et Python : sûrs, hors système, sans jamais montrer la réponse (D-025, D-026)', () => {
+  const term = read('src/lib/terminal.ts'), py = read('src/lib/python.ts'), worker = read('src/lib/py-worker.ts');
+  it('le terminal n’a aucun accès au vrai système, au réseau ni à eval', () => { expect(term).not.toMatch(/node:|require\(|fetch\(|XMLHttpRequest|\beval\(|new Function|child_process|localStorage/); });
+  it('Python tourne dans un worker arrêté de force après un délai ; un moteur absent ne note rien', () => {
+    expect(py).toContain('w.terminate()'); expect(py).toContain('TIMEOUT_MS'); expect(py).toContain('unavailable: true'); expect(lesson).toContain('if (r.unavailable)'); expect(worker).not.toContain('.postMessage(self');
+  });
+  it('le message des tests n’est jamais montré à l’élève (seulement sa propre sortie et sa propre erreur)', () => { expect(lesson).toContain("pyOut.stage !== 'tests' && pyOut.error"); });
+  it('les fichiers de Python sont publiés, hors du précache, et autorisés par la CSP de Tauri', () => {
+    const vite = read('vite.config.ts'); expect(vite).toContain("'py/**'"); expect(vite).toContain("'pyodide.asm.wasm'"); expect(read('src-tauri/tauri.conf.json')).toContain("'wasm-unsafe-eval'");
+  });
+});

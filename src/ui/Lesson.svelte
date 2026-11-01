@@ -10,8 +10,11 @@
   import { scoredItems, type Level } from '../lib/level';
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
   import { resume, clampIndex } from '../lib/resume';
+  import { tick } from 'svelte';
   import LogoMenu from './LogoMenu.svelte';
   import Figure from './Figure.svelte';
+  import { python, type PyResult } from '../lib/python';
+  import { newTerm, run as runCmd, check as checkTerm, type Term } from '../lib/terminal';
 
   let { level, onexit, onreplay, startAt = 0 }: { level: Level; onexit: () => void; onreplay: () => void; startAt?: number } = $props();
 
@@ -19,9 +22,19 @@
   /* svelte-ignore state_referenced_locally */
   const run = crypto.randomUUID().slice(0, 6);
   /* svelte-ignore state_referenced_locally */
-  let idx = $state(clampIndex(startAt, level.cartes.length)), step = $state(0), selected = $state<number | null>(null), text = $state(''), chosen = $state<number[]>([]);
+  let idx = $state(clampIndex(startAt, level.cartes.length)), step = $state(0), selected = $state<number | null>(null), text = $state(level.cartes[clampIndex(startAt, level.cartes.length)].depart ?? ''), chosen = $state<number[]>([]);
   let hints = $state(0), showHint = $state(false), result = $state<null | { ok: boolean; credit: number }>(null), earned = $state(0);
   let finished = $state(false), rightCount = $state(0);
+  // Carte « terminal » : un shell simulé dans un système de fichiers virtuel (D-016), recréé pour chaque carte.
+  let term = $state.raw<Term | null>(null), cmd = $state(''), ran = $state(0);
+  // Carte « code » : Python (Pyodide) dans un Web Worker ; `text` contient le programme de l'élève.
+  let pyOut = $state<PyResult | null>(null), busy = $state(false), pyNote = $state('');
+  const freshTerm = (c: { type: string; fs?: import('../lib/terminal').Tree; cwd?: string }) => (c.type === 'terminal' ? newTerm(c.fs ?? {}, c.cwd) : null);
+  /* svelte-ignore state_referenced_locally */
+  term = freshTerm(level.cartes[idx]);
+  const prompt = (cwd: string) => `kintana:${cwd.replace(/^\/home\/kintana/, '~')}$`;
+  function submit() { if (!term || result || !cmd.trim()) return; runCmd(term, cmd); term = { ...term }; cmd = ''; ran++; void tick().then(() => document.querySelector('.tty')?.scrollTo(0, 1e9)); }
+  function restart() { if (result) return; term = freshTerm(card); ran = 0; cmd = ''; }
   // Séance de révision : chaque carte vient d'un niveau différent ; la réponse est enregistrée sur sa carte d'origine, sans XP ni reprise.
   const source = (id: string) => (level.review ? { level: id.split('|')[0], item: id.split('|')[1] } : { level: level.id, item: id });
   /* svelte-ignore state_referenced_locally */
@@ -35,14 +48,22 @@
   const body = $derived(i18n.t(card as { fr?: string; en?: string }));
   const choices = $derived(card.choix ? shuffled(card.choix.map((c, i) => ({ c, i })), `${run}${card.id}`) : []);
   const pool = $derived(card.lignes ? shuffled(card.lignes.map((l, i) => ({ l, i })), `${run}${card.id}`, true) : []);
-  const hasAnswer = $derived(card.type === 'qcm' || card.type === 'tentative' || card.type === 'saisie' || card.type === 'parsons');
-  const canCheck = $derived(card.type === 'saisie' ? text.trim().length > 0 : card.type === 'parsons' ? chosen.length === (card.lignes?.length ?? 0) : selected !== null);
+  const hasAnswer = $derived(card.type === 'qcm' || card.type === 'tentative' || card.type === 'saisie' || card.type === 'parsons' || card.type === 'terminal' || card.type === 'code');
+  const canCheck = $derived(busy ? false : card.type === 'saisie' || card.type === 'code' ? text.trim().length > 0 : card.type === 'parsons' ? chosen.length === (card.lignes?.length ?? 0) : card.type === 'terminal' ? ran > 0 : selected !== null);
 
   const norm = (s: string) => s.trim().replace(/\s+/g, ' ').toLowerCase();
-  function check() {
+  /** « Exécuter » : lance le programme seul (sans les tests), autant de fois que l'élève veut. */
+  async function runCode() { if (busy || result) return; busy = true; pyNote = ''; pyOut = await python.run(text); busy = false; if (pyOut.unavailable) pyNote = ui('py_off'); }
+  async function check() {
     let ok = false;
     if (card.type === 'qcm' || card.type === 'tentative') ok = !!card.choix![selected!].juste;
     else if (card.type === 'saisie') ok = card.reponses!.some(r => norm(r) === norm(text));
+    else if (card.type === 'code') {
+      busy = true; pyNote = ''; const r = await python.run(text, card.tests); busy = false; pyOut = r;
+      if (r.unavailable) { pyNote = ui('py_off'); return; }   // moteur absent : ce n'est pas une erreur de l'élève, on ne note rien
+      ok = r.ok;
+    }
+    else if (card.type === 'terminal') ok = !!term && checkTerm(term, card.attendu ?? {}).length === 0;
     else if (card.type === 'parsons') ok = chosen.every((p, k) => card.lignes![k] === pool[p].l);
     const credit = ok ? (hints > 0 ? 0.5 : 1) : 0;
     const prev = Math.max(startBest.get(card.id) ?? 0, 0), xp = xpFor(credit, prev);
@@ -52,12 +73,14 @@
     earned += level.review ? 0 : xp; if (ok) rightCount++; result = { ok, credit };
   }
   // État de chaque carte déjà vue : « Précédent » la remet comme elle était (réponse, correction, étape).
-  interface Snap { step: number; selected: number | null; text: string; chosen: number[]; hints: number; showHint: boolean; result: null | { ok: boolean; credit: number } }
+  interface Snap { pyOut: PyResult | null; term: Term | null; ran: number; step: number; selected: number | null; text: string; chosen: number[]; hints: number; showHint: boolean; result: null | { ok: boolean; credit: number } }
   const snaps: Record<number, Snap> = {};
   function goto(i: number) {
-    snaps[idx] = { step, selected, text, chosen: [...chosen], hints, showHint, result };
+    snaps[idx] = { pyOut, term, ran, step, selected, text, chosen: [...chosen], hints, showHint, result };
     idx = i; const s = snaps[i];
-    step = s?.step ?? 0; selected = s?.selected ?? null; text = s?.text ?? ''; chosen = s ? [...s.chosen] : []; hints = s?.hints ?? 0; showHint = s?.showHint ?? false; result = s?.result ?? null;
+    term = s ? s.term : freshTerm(level.cartes[i]); ran = s?.ran ?? 0; cmd = '';
+    pyOut = s?.pyOut ?? null; pyNote = '';
+    step = s?.step ?? 0; selected = s?.selected ?? null; text = s ? s.text : level.cartes[i].depart ?? ''; chosen = s ? [...s.chosen] : []; hints = s?.hints ?? 0; showHint = s?.showHint ?? false; result = s?.result ?? null;
     if (!level.review) resume.set(level.id, i);
     window.scrollTo(0, 0);
   }
@@ -118,6 +141,23 @@
         </div>
       {/if}
 
+      {#if card.type === 'terminal' && term}
+        <div class="tty" role="log" aria-label={ui('terminal')}>
+          {#each term.log as l}<div><span class="ps">{prompt(l.cwd)}</span> {l.cmd}</div>{#if l.out}<pre>{l.out}</pre>{/if}{/each}
+          <label class="inl"><span class="ps">{prompt(term.cwd)}</span>
+            <input class="cmd" bind:value={cmd} onkeydown={e => { if (e.key === 'Enter') { e.preventDefault(); submit(); } }} disabled={!!result} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label={ui('type_cmd')} enterkeyhint="send" /></label>
+        </div>
+        {#if !result}<div class="ttybar"><button class="btn" onclick={submit} disabled={!cmd.trim()}>{ui('run')}</button><button class="btn" onclick={restart} disabled={!ran}>{ui('restart')}</button></div>{/if}
+      {/if}
+
+      {#if card.type === 'code'}
+        <textarea class="ed" bind:value={text} disabled={!!result || busy} spellcheck="false" autocomplete="off" autocapitalize="off" aria-label={ui('code_here')} rows={Math.min(14, Math.max(5, text.split('\n').length + 1))}
+          onkeydown={e => { if (e.key === 'Tab' && !e.shiftKey) { e.preventDefault(); const t = e.currentTarget, a = t.selectionStart; text = text.slice(0, a) + '    ' + text.slice(t.selectionEnd); void tick().then(() => { t.selectionStart = t.selectionEnd = a + 4; }); } }}></textarea>
+        {#if !result}<div class="ttybar"><button class="btn" onclick={runCode} disabled={busy || !text.trim()}>{busy ? ui('py_run') : ui('run')}</button></div>{/if}
+        {#if pyNote}<p class="hint">{pyNote}</p>{/if}
+        {#if pyOut && (pyOut.out || pyOut.error) && !pyOut.unavailable && (pyOut.stage !== 'tests' || pyOut.out)}<pre class="tty pyout" aria-label={ui('py_out')}>{pyOut.out}{#if pyOut.stage !== 'tests' && pyOut.error}<span class="err">{pyOut.error}</span>{/if}</pre>{/if}
+      {/if}
+
       {#if showHint && card.indice}<p class="hint">💡 {@html md(t(card.indice))}</p>{/if}
 
       {#if result}
@@ -174,6 +214,12 @@
   .choice.sel, .line.chosen { border-color: var(--c-primary); background: var(--c-primary-soft); }
   .choice.ok { border-color: var(--c-primary); background: var(--c-primary-soft); } .choice.bad { border-color: var(--c-accent); background: var(--c-accent-soft); }
   .field { width: 100%; min-height: 52px; margin-top: 14px; padding: 0 16px; border-radius: 16px; border: 2px solid var(--c-border); background: var(--c-surface-2); color: var(--c-text); font: 1.05rem var(--font); }
+  .tty { margin-top: 14px; padding: 12px; border-radius: 14px; background: #0f1411; color: #d7e5d9; font: .95rem/1.5 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; max-height: 46vh; overflow: auto; overflow-wrap: anywhere; }
+  .tty pre { margin: 0; padding: 0; background: none; border: 0; white-space: pre-wrap; color: #d7e5d9; } .ps { color: #7ed197; }
+  .inl { display: flex; gap: .5ch; align-items: center; } .cmd { flex: 1; min-width: 0; min-height: 44px; background: transparent; border: 0; outline: 0; color: #fff; font: inherit; caret-color: #fff; }
+  .ed { width: 100%; margin-top: 14px; padding: 12px; border-radius: 14px; border: 2px solid var(--c-border); background: var(--c-surface-2); color: var(--c-text); font: .95rem/1.5 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; tab-size: 4; resize: vertical; }
+  .ed:focus { outline: none; border-color: var(--c-primary); } .pyout { margin-top: 10px; max-height: 30vh; white-space: pre-wrap; } .pyout .err { color: #ff9d8f; }
+  .tty:focus-within { outline: 2px solid var(--c-primary); } .ttybar { display: flex; gap: 10px; margin-top: 10px; }
   .hint { background: var(--c-surface-2); padding: 10px 14px; border-radius: 14px; }
   .fb { margin-top: 16px; padding: 12px 16px; border-radius: 16px; background: var(--c-accent-soft); border: 1px solid var(--c-accent); }
   .fb.good { background: var(--c-primary-soft); border-color: var(--c-primary); } .fb p { margin: 6px 0 0; } .small { font-size: .9rem; }

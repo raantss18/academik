@@ -4,7 +4,7 @@ import type { AnswerEvent } from '../engine/types';
 import { schedule, dueNow, SESSION_SIZE } from '../engine/reviews';
 
 /** Cartes qu'on peut reposer seules : à réponse, notées, et qui ne renvoient pas à une carte voisine (« l'exemple précédent »…). */
-const ANSWERABLE = new Set(['qcm', 'saisie', 'tentative', 'parsons']);
+const ANSWERABLE = new Set(['qcm', 'saisie', 'tentative', 'parsons', 'terminal']);
 const CONTEXT = /\b(précédent|précédente|ci-dessus|ci-dessous|previous|preceding|above|below|même (fonction|matrice|programme|boucle)|same (function|matrix|program|loop))\b/i;
 export const standalone = (c: Card) => ANSWERABLE.has(c.type) && !!c.note && !CONTEXT.test(`${c.fr ?? ''} ${c.en ?? ''}`);
 

@@ -11,11 +11,15 @@ export interface Figure {
 }
 export interface Choice { fr: string; en: string; juste?: boolean }
 export interface Card {
-  id: string; type: 'tentative' | 'idee' | 'exemple' | 'qcm' | 'saisie' | 'parsons' | 'retenir' | 'piege' | 'plus';
+  id: string; type: 'tentative' | 'idee' | 'exemple' | 'qcm' | 'saisie' | 'parsons' | 'terminal' | 'code' | 'retenir' | 'piege' | 'plus';
   fr?: string; en?: string; lang?: string; titre?: { fr: string; en: string }; defi?: boolean;
   note?: { kind: 'exercise' | 'quiz'; poids: number };
   choix?: Choice[]; reponses?: string[]; lignes?: string[];
   etapes?: { code?: string; fr: string; en: string }[];
+  /** terminal : système de fichiers de départ, dossier courant, état attendu et une solution (vérifiée à la compilation). */
+  fs?: import('./terminal').Tree; cwd?: string; attendu?: import('./terminal').Checks; solution?: string[];
+  /** code : programme de départ, tests Python (AssertionError si faux) et une solution vérifiée à la compilation. */
+  depart?: string; tests?: string; solutionCode?: string;
   figure?: Figure; exemple?: { fr: string; en: string };
   indice?: { fr: string; en: string }; explication?: { fr: string; en: string };
 }

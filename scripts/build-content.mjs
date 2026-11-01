@@ -4,13 +4,14 @@ import { parse } from 'yaml';
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 
-const TYPES = new Set(['tentative', 'idee', 'exemple', 'qcm', 'saisie', 'parsons', 'retenir', 'piege', 'plus']);
+const TYPES = new Set(['tentative', 'idee', 'exemple', 'qcm', 'saisie', 'parsons', 'terminal', 'code', 'retenir', 'piege', 'plus']);
 
 /** Build minimal de l'app pour afficher correctement un niveau (calculé, jamais écrit à la main). */
 export function requiredBuild(L) {
   let b = 1; const text = JSON.stringify(L.cartes ?? []);
   if ((L.cartes ?? []).some(c => ['retenir', 'piege', 'plus'].includes(c.type))) b = Math.max(b, 3);   // encadrés (0.3.0)
   if (/\$[^\s$][^$\n]*\$/.test(text.replace(/\\n/g, '\n'))) b = Math.max(b, 3);                       // formules KaTeX (0.3.0)
+  if ((L.cartes ?? []).some(c => c.type === 'terminal' || c.type === 'code')) b = Math.max(b, 11);                     // terminal simulé (0.3.8)
   if ((L.cartes ?? []).some(c => c.figure || c.exemple)) b = Math.max(b, 8);                       // illustrations et « Par exemple » (0.3.5, E14)
   return b;
 }
@@ -47,7 +48,7 @@ export function validateLevel(L, file) {
     if (c.figure) validateFigure(`${at}.figure`, c.figure);
     if (c.exemple) bi(`${at}.exemple`, c.exemple);
     if (c.note) { if (!['exercise', 'quiz'].includes(c.note.kind) || !(c.note.poids > 0)) err(at, 'note invalide'); scored++; }
-    if (['qcm', 'saisie', 'parsons'].includes(c.type) && !c.note) err(at, 'une carte à réponse doit être notée');
+    if (['qcm', 'saisie', 'parsons', 'terminal', 'code'].includes(c.type) && !c.note) err(at, 'une carte à réponse doit être notée');
     if (c.type === 'qcm') {
       if (!(c.choix?.length >= 2)) err(at, 'au moins 2 choix');
       if ((c.choix ?? []).filter(x => x.juste).length !== 1) err(at, 'exactement un choix juste');
@@ -56,6 +57,17 @@ export function validateLevel(L, file) {
     if (c.type === 'saisie' && !(c.reponses?.length)) err(at, 'réponses acceptées manquantes');
     if (c.type === 'parsons' && !(c.lignes?.length >= 3)) err(at, 'au moins 3 lignes');
     if (c.note) { both(at, c, 'explication'); if (c.indice) both(at, c, 'indice'); }
+    if (c.type === 'terminal') {
+      const tree = (t, d = 0) => d < 8 && t && typeof t === 'object' && !Array.isArray(t) && Object.values(t).every(v => typeof v === 'string' || tree(v, d + 1));
+      if (!tree(c.fs ?? {})) err(at, 'terminal : fs doit être un arbre (texte = fichier, objet = dossier)');
+      if (!c.attendu || !Object.keys(c.attendu).length) err(at, 'terminal : attendu manquant');
+      if (!Array.isArray(c.solution) || !c.solution.length || !c.solution.every(x => typeof x === 'string')) err(at, 'terminal : solution (liste de commandes) manquante');
+    }
+    if (c.type === 'code') {
+      for (const k of ['tests', 'solutionCode']) if (typeof c[k] !== 'string' || !c[k].trim()) err(at, `code : « ${k} » manquant`);
+      if (c.depart !== undefined && typeof c.depart !== 'string') err(at, 'code : depart doit être du texte');
+      if (!c.indice) err(at, 'code : indice manquant (l\u2019élève ne voit jamais la solution)'); else both(at, c, 'indice');
+    }
     if (c.type === 'saisie' && !c.verif) err(at, 'verif (programme exécutable) manquant');
   }
   if (!scored) err(w(), 'aucune carte notée');
