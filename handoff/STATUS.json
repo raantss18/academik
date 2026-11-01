@@ -1,0 +1,8 @@
+{
+  "updated": "2026-11-01",
+  "phase": 1,
+  "done": ["cadrage", "CONSIGNES.md", "DESIGN.md", "PEDAGOGIE.md", "CURSUS.md", "DECISIONS.md"],
+  "in_progress": ["T-001 relecture croisée du cursus et des sources (Codex)"],
+  "blocked": [],
+  "next": "Phase 2 : squelette Svelte/Vite, moteur (déblocage, FSRS, journal, synchro), niveau 2.1 de bout en bout"
+}

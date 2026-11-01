@@ -1,0 +1,14 @@
+node_modules/
+dist/
+build/
+.svelte-kit/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+release-keys/
+src-tauri/target/
+android/app/build/
+android/.gradle/
+.DS_Store

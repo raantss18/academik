@@ -1,0 +1,12 @@
+{
+  "note": "Chaque source : vérifier licence et date avant d'embarquer. mode = embarque | lien | import-local. remplace = source plus ancienne que celle-ci supplante.",
+  "sources": [
+    { "id": "algo", "titre": "Mon livre d'algorithmique", "etablissement": "Antsa (auteur)", "url": "", "licence": "auteur — à préciser", "verifie": "", "mode": "embarque" },
+    { "id": "m1-ankatso", "titre": "M1 Info Ankatso (Linux, LaTeX, Python, données, Sage)", "etablissement": "Université d'Antananarivo", "url": "", "licence": "auteur — à préciser", "verifie": "", "mode": "embarque" },
+    { "id": "comima", "titre": "Cours et recueil COMIMa", "etablissement": "COMIMa", "url": "https://www.comima.mg", "licence": "pédagogique non commercial (README COMIMa)", "verifie": "", "mode": "embarque" },
+    { "id": "mada-boky", "titre": "Mada-Boky (manuels)", "etablissement": "Antsa", "url": "", "licence": "voir Mada-Boky/LICENSE.md", "verifie": "", "mode": "a-valider" },
+    { "id": "mit-1806", "titre": "MIT 18.06 Linear Algebra", "etablissement": "MIT OCW", "url": "https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/", "licence": "CC BY-NC-SA 4.0", "verifie": "", "mode": "lien" },
+    { "id": "karpathy-z2h", "titre": "Neural Networks: Zero to Hero", "etablissement": "A. Karpathy", "url": "https://karpathy.ai/zero-to-hero.html", "licence": "code MIT (micrograd, nanoGPT) — vidéos en lien", "verifie": "", "mode": "lien" },
+    { "id": "hf-courses", "titre": "Hugging Face LLM / Agents / MCP courses", "etablissement": "Hugging Face", "url": "https://huggingface.co/learn", "licence": "Apache-2.0 (à vérifier par cours)", "verifie": "", "mode": "lien" }
+  ]
+}
