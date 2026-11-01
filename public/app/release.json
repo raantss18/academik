@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 9,
-  "version": "0.3.6",
+  "build": 10,
+  "version": "0.3.7",
   "notes": {
-   "fr": "L'accueil devient une ville qui s'allume : chaque quartier est un module, chaque bâtiment un niveau, et il s'éclaire à mesure que tu gagnes des étoiles. Touche un bâtiment pour jouer. La liste reste disponible d'un geste.",
-   "en": "Home is now a city that lights up: each district is a module, each building a level, and it brightens as you earn stars. Tap a building to play. The list is still one tap away."
+   "fr": "Les révisions arrivent : chaque jour, l'app te repose les questions que tu risques d'oublier, au meilleur moment pour t'en souvenir. Le bouton apparaît sur l'accueil dès qu'il y en a.",
+   "en": "Reviews are here: each day the app asks again the questions you are about to forget, at the best moment to remember them. The button appears on the home screen whenever there are some."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.6/academik-0.3.6.apk",
-    "sha256": "d3152f7a9224e8b3f7e57fc43e085e7c1d97e78ca7cb9cfc0dfb1eaa51287bd7",
-    "bytes": 3756489
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.7/academik-0.3.7.apk",
+    "sha256": "831cae6d2a02286442f33673a193ad3aaa5d7fe5ff2a55ccb147499d9af69f2d",
+    "bytes": 3781179
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.6/academik-0.3.6-x86_64.AppImage",
-    "sha256": "3b2657243ab8db15cb9879d85be3d1d0bb5143f537a5ff9a73aaec8062aa7a2f",
-    "bytes": 108808696
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.7/academik-0.3.7-x86_64.AppImage",
+    "sha256": "6cccc4cba89ecd630b1d2ccfabfe72e68f1a846b265d5d7e30313cb79255cefb",
+    "bytes": 108833272
    }
   }
  },
  "history": [
+  {
+   "build": 9,
+   "version": "0.3.6",
+   "notes": {
+    "fr": "L'accueil devient une ville qui s'allume : chaque quartier est un module, chaque bâtiment un niveau, et il s'éclaire à mesure que tu gagnes des étoiles. Touche un bâtiment pour jouer. La liste reste disponible d'un geste.",
+    "en": "Home is now a city that lights up: each district is a module, each building a level, and it brightens as you earn stars. Tap a building to play. The list is still one tap away."
+   }
+  },
   {
    "build": 8,
    "version": "0.3.5",
