@@ -20,8 +20,21 @@ cartes:
     explication: { fr: 'La première coordonnée compte uniquement « chat », présent deux fois.', en: 'The first coordinate counts only “chat”, which occurs twice.' }
   - id: c2
     type: idee
-    fr: 'Imagine une flèche : sa coordonnée horizontale indique le déplacement vers la droite, sa coordonnée verticale le déplacement vers le haut. Un vecteur de $\mathbb{R}^n$ est une liste ordonnée de $n$ nombres réels ; on additionne coordonnée par coordonnée. Pour un texte, chaque axe désigne un mot du même vocabulaire ordonné.'
-    en: 'Imagine an arrow: its horizontal coordinate gives the movement to the right, and its vertical coordinate the movement upward. A vector in $\mathbb{R}^n$ is an ordered list of $n$ real numbers; addition is coordinate by coordinate. For a text, each axis refers to a word in the same ordered vocabulary.'
+    fr: 'Un **vecteur** de $\mathbb{R}^n$ est une liste ordonnée de $n$ nombres, ses **coordonnées**. Dessiné, c’est une flèche : $(3,2)$ va de $3$ vers la droite et de $2$ vers le haut.'
+    en: 'A **vector** of $\mathbb{R}^n$ is an ordered list of $n$ numbers, its **coordinates**. Drawn, it is an arrow: $(3,2)$ goes $3$ to the right and $2$ up.'
+    exemple: { fr: '$(3,2)$ et $(2,3)$ sont deux vecteurs différents : l’ordre des coordonnées compte.', en: '$(3,2)$ and $(2,3)$ are two different vectors: the order of coordinates matters.' }
+  - id: c2a
+    type: idee
+    fr: 'Pour un texte, chaque **axe** est un mot d’un vocabulaire fixé, et la coordonnée compte ses apparitions. On **additionne** deux vecteurs coordonnée par coordonnée.'
+    en: 'For a text, each **axis** is a word of a fixed vocabulary, and the coordinate counts its occurrences. Two vectors are **added** coordinate by coordinate.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Texte', en: 'Text' }, { fr: 'axe `riz`', en: 'axis `riz`' }, { fr: 'axe `eau`', en: 'axis `eau`' }]
+      cellules:
+        - ['« riz eau riz »', '$2$', '$1$']
+        - ['« eau »', '$0$', '$1$']
+        - [{ fr: 'les deux réunis', en: 'both together' }, { fr: '$2+0=2$', en: '$2+0=2$', ton: ok }, { fr: '$1+1=2$', en: '$1+1=2$', ton: ok }]
+      legende: { fr: '$(2,1)+(0,1)=(2,2)$ : réunir deux textes, c’est additionner leurs vecteurs.', en: '$(2,1)+(0,1)=(2,2)$: joining two texts means adding their vectors.' }
   - id: c3
     type: exemple
     lang: python

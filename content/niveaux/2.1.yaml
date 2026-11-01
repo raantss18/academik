@@ -39,14 +39,16 @@ cartes:
 
   - id: c2
     type: idee
-    fr: "Une **variable** est une étiquette collée sur une valeur : `nom =
-      \"Rakoto\"`. Ensuite, écrire `nom` revient à écrire `\"Rakoto\"`. Les
-      guillemets disent « ceci est du texte » ; sans guillemets, Python cherche
-      une variable."
-    en: "A **variable** is a label stuck on a value: `name = \"Rakoto\"`.
-      Afterwards, writing `name` is the same as writing `\"Rakoto\"`. Quotes
-      mean “this is text”; without quotes, Python looks for a variable."
-
+    fr: 'Une **variable** est une étiquette collée sur une valeur. Les **guillemets** disent « ceci est du texte » ; sans guillemets, Python cherche une variable de ce nom.'
+    en: 'A **variable** is a label stuck on a value. **Quotes** say “this is text”; without quotes, Python looks for a variable with that name.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Ligne', en: 'Line' }, { fr: 'Python comprend', en: 'Python understands' }, { fr: 'À l’écran', en: 'On screen' }]
+      cellules:
+        - ['`ville = "Tana"`', { fr: 'colle l’étiquette `ville` sur le texte `Tana`', en: 'sticks the label `ville` on the text `Tana`' }, { fr: '(rien)', en: '(nothing)' }]
+        - ['`print(ville)`', { fr: 'la valeur de la variable `ville`', en: 'the value of the variable `ville`' }, { fr: '`Tana`', en: '`Tana`', ton: ok }]
+        - ['`print("ville")`', { fr: 'le texte `ville` lui-même', en: 'the text `ville` itself' }, { fr: '`ville`', en: '`ville`', ton: bad }]
+      legende: { fr: 'Deux guillemets changent tout : variable ou texte.', en: 'Two quotes change everything: variable or text.' }
   - id: c3
     type: exemple
     titre:

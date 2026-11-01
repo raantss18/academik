@@ -20,8 +20,19 @@ cartes:
     explication: { fr: 'La liste est triée et $11>8$ : tous les éléments de gauche sont trop petits.', en: 'The list is sorted and $11>8$: all items on the left are too small.' }
   - id: c2
     type: idee
-    fr: 'La dichotomie exige un tableau trié selon le même ordre que la recherche, avec accès direct aux indices. Maintiens une fenêtre $[lo,hi)$, borne droite exclue ; si la valeur centrale est trop petite, pose `lo = mid + 1`, sinon `hi = mid`. À la fin, `lo` est la première position où insérer la cible : il reste à vérifier sa présence.'
-    en: 'Binary search requires an array sorted by the same ordering as the search, with direct indexed access. Maintain a window $[lo,hi)$ with an exclusive upper bound; if the middle value is too small, set `lo = mid + 1`, otherwise `hi = mid`. At the end, `lo` is the first position where the target can be inserted: you must still check whether it is present.'
+    fr: 'La **dichotomie** cherche une valeur dans une liste **triée** : on regarde le milieu, puis on garde seulement la moitié où la valeur peut être. Chaque comparaison divise la zone par deux.'
+    en: '**Binary search** looks for a value in a **sorted** list: look at the middle, then keep only the half where the value can be. Each comparison halves the zone.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Chercher $17$ dans `[2, 5, 8, 11, 14, 17, 20, 23]`', en: 'Find $17$ in `[2, 5, 8, 11, 14, 17, 20, 23]`' }
+          noeuds: [{ fr: 'milieu $14<17$ : à droite', en: 'middle $14<17$: go right' }, { fr: 'milieu $20\geq17$ : à gauche', en: 'middle $20\geq17$: go left' }, { fr: 'milieu $17\geq17$ : à gauche', en: 'middle $17\geq17$: go left' }, { fr: 'position $5$ : trouvé', en: 'position $5$: found', ton: ok }]
+      legende: { fr: '$8$ éléments, $3$ comparaisons : $\log_2 8=3$.', en: '$8$ elements, $3$ comparisons: $\log_2 8=3$.' }
+  - id: c2a
+    type: idee
+    fr: 'En code, la zone est la fenêtre $[lo,hi)$ : $lo$ inclus, $hi$ exclu. Si `a[mid] < x`, on pose `lo = mid + 1`, sinon `hi = mid`. À la fin, `lo` est la première place possible de `x` : il reste à vérifier qu’il y est.'
+    en: 'In code, the zone is the window $[lo,hi)$: $lo$ included, $hi$ excluded. If `a[mid] < x`, set `lo = mid + 1`, otherwise `hi = mid`. At the end, `lo` is the first possible place of `x`: you still check it is there.'
+    exemple: { fr: 'Dans la recherche ci-dessus, la fenêtre passe de $[0,8)$ à $[5,8)$, puis $[5,6)$, puis $[5,5)$ : `lo = 5` et `a[5] == 17`.', en: 'In the search above, the window goes from $[0,8)$ to $[5,8)$, then $[5,6)$, then $[5,5)$: `lo = 5` and `a[5] == 17`.' }
   - id: c3
     type: exemple
     lang: python

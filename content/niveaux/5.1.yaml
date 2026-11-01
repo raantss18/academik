@@ -18,8 +18,21 @@ cartes:
     explication: { fr: 'La distance est $1/n>0$, mais pour toute tolérance positive on peut choisir un rang assez grand.', en: 'The distance is $1/n>0$, but for any positive tolerance we can choose a sufficiently large index.' }
   - id: c2
     type: idee
-    fr: '$u_n\to\ell$ signifie que, pour toute tolérance $\varepsilon>0$, tous les termes après un certain rang vérifient $|u_n-\ell|<\varepsilon$. Pour une fonction, $\lim_{x\to a}f(x)=\ell$ décrit les valeurs lorsque $x$ approche $a$, avec $x\ne a$. La valeur $f(a)$ peut être différente, voire absente.'
-    en: '$u_n\to\ell$ means that, for every tolerance $\varepsilon>0$, all terms beyond some index satisfy $|u_n-\ell|<\varepsilon$. For a function, $\lim_{x\to a}f(x)=\ell$ describes values as $x$ approaches $a$, with $x\ne a$. The value $f(a)$ may differ or may not exist.'
+    fr: '$u_n\to\ell$ se lit « $u_n$ **tend vers** $\ell$ ». Cela veut dire : quelle que soit la tolérance $\varepsilon>0$ choisie, à partir d’un certain rang, tous les termes sont à moins de $\varepsilon$ de $\ell$.'
+    en: '$u_n\to\ell$ is read “$u_n$ **tends to** $\ell$”. It means: whatever tolerance $\varepsilon>0$ you pick, from some index on, every term is within $\varepsilon$ of $\ell$.'
+    figure:
+      kind: tableau
+      entetes: ['$n$', '$v_n=5-\frac1n$', { fr: 'écart à $5$', en: 'gap to $5$' }]
+      cellules:
+        - ['$1$', '$4$', '$1$']
+        - ['$10$', '$4{,}9$', '$0{,}1$']
+        - ['$100$', '$4{,}99$', { fr: '$0{,}01$', en: '$0{,}01$', ton: ok }]
+      legende: { fr: 'Avec $\varepsilon=0{,}05$ : l’écart $\frac1n$ est sous $\varepsilon$ pour tout $n\geq21$. Donc $v_n\to5$, sans jamais valoir $5$.', en: 'With $\varepsilon=0{,}05$: the gap $\frac1n$ is below $\varepsilon$ for every $n\geq21$. So $v_n\to5$, without ever equalling $5$.' }
+  - id: c2a
+    type: idee
+    fr: 'Pour une fonction, $\lim_{x\to a}f(x)=\ell$ décrit les valeurs de $f$ quand $x$ s’approche de $a$, sans jamais valoir $a$. La valeur $f(a)$ elle-même peut être différente, ou ne pas exister.'
+    en: 'For a function, $\lim_{x\to a}f(x)=\ell$ describes the values of $f$ as $x$ gets close to $a$, without ever being $a$. The value $f(a)$ itself may differ, or not exist.'
+    exemple: { fr: '$f(x)=x$ pour $x\ne2$, et $f(2)=5$. Près de $2$, $f(x)$ est proche de $2$ : la limite vaut $2$, mais $f(2)=5$.', en: '$f(x)=x$ for $x\ne2$, and $f(2)=5$. Near $2$, $f(x)$ is close to $2$: the limit is $2$, but $f(2)=5$.' }
   - id: c3
     type: exemple
     titre: { fr: 'Un trou que le calcul contourne', en: 'Computing around a hole' }

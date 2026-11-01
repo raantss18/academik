@@ -21,26 +21,38 @@ cartes:
     explication: { fr: 'La moyenne des hauteurs aux extrémités vaut $8$ ; la parabole est en dessous de la corde au milieu.', en: 'The average endpoint height is $8$; the parabola is below the chord at the midpoint.' }
   - id: c2
     type: idee
-    fr: 'Sur un domaine convexe, $f$ est convexe si $f((1-t)x+ty)\leq(1-t)f(x)+tf(y)$ pour tous $x,y$ du domaine et $t\in[0,1]$ : son graphe reste sous les cordes. Pour une fonction deux fois dérivable sur un intervalle ouvert, cela équivaut à $f\prime\prime\geq0$. Pour une fonction convexe différentiable sur $\mathbb{R}^d$, un gradient nul garantit un minimum global, pas forcément unique.'
-    en: 'On a convex domain, $f$ is convex if $f((1-t)x+ty)\leq(1-t)f(x)+tf(y)$ for every $x,y$ in the domain and $t\in[0,1]$: its graph stays below its chords. For a twice differentiable function on an open interval, this is equivalent to $f\prime\prime\geq0$. For a differentiable convex function on $\mathbb{R}^d$, a zero gradient guarantees a global minimum, which need not be unique.'
+    fr: 'Une fonction est **convexe** si son graphe reste **sous ses cordes** : entre deux points de la courbe, le segment qui les relie est au-dessus. Le graphe a la forme d’un bol.'
+    en: 'A function is **convex** if its graph stays **below its chords**: between two points of the curve, the segment joining them lies above. The graph is bowl-shaped.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Fonction', en: 'Function' }, { fr: 'Milieu $f(2)$ et corde entre $1$ et $3$', en: 'Middle $f(2)$ and chord between $1$ and $3$' }, { fr: 'Convexe ?', en: 'Convex?' }]
+      cellules:
+        - ['$x^2$', '$4\leq\frac{1+9}{2}=5$', { fr: 'oui', en: 'yes', ton: ok }]
+        - ['$-x^2$', '$-4>\frac{-1-9}{2}=-5$', { fr: 'non', en: 'no', ton: bad }]
+      legende: { fr: 'La définition exacte : $f((1-t)x+ty)\leq(1-t)f(x)+tf(y)$ pour tous $x$, $y$ et tout $t\in[0,1]$.', en: 'The exact definition: $f((1-t)x+ty)\leq(1-t)f(x)+tf(y)$ for all $x$, $y$ and every $t\in[0,1]$.' }
+  - id: c2a
+    type: idee
+    fr: 'Deux outils pratiques. Si $f''''\geq0$ sur un intervalle ouvert, $f$ y est convexe. Et pour une fonction convexe dérivable, une pente nulle donne un **minimum global**, pas forcément unique.'
+    en: 'Two practical tools. If $f''''\geq0$ on an open interval, $f$ is convex there. And for a differentiable convex function, a zero slope gives a **global minimum**, not necessarily unique.'
+    exemple: { fr: '$L(w)=(w-2)^2+1$ : $L''''=2\geq0$ et $L''(2)=0$. Le minimum global est en $w=2$, où $L=1$.', en: '$L(w)=(w-2)^2+1$: $L''''=2\geq0$ and $L''(2)=0$. The global minimum is at $w=2$, where $L=1$.' }
   - id: c3
     type: exemple
     titre: { fr: 'Certifier le meilleur réglage', en: 'Certifying the best setting' }
     etapes:
-      - { fr: 'Pour $L(w)=(w-3)^2+2$, on a $L\prime(w)=2(w-3)$.', en: 'For $L(w)=(w-3)^2+2$, we have $L\prime(w)=2(w-3)$.' }
-      - { fr: '$L\prime\prime(w)=2>0$ partout : la fonction est strictement convexe.', en: '$L\prime\prime(w)=2>0$ everywhere: the function is strictly convex.' }
-      - { fr: '$L\prime(3)=0$ et $L(w)\geq2=L(3)$, avec égalité seulement en $3$ : le minimum est unique.', en: '$L\prime(3)=0$ and $L(w)\geq2=L(3)$, with equality only at $3$: the minimum is unique.' }
+      - { fr: 'Pour $L(w)=(w-3)^2+2$, on a $L''(w)=2(w-3)$.', en: 'For $L(w)=(w-3)^2+2$, we have $L''(w)=2(w-3)$.' }
+      - { fr: '$L''''(w)=2>0$ partout : la fonction est strictement convexe.', en: '$L''''(w)=2>0$ everywhere: the function is strictly convex.' }
+      - { fr: '$L''(3)=0$ et $L(w)\geq2=L(3)$, avec égalité seulement en $3$ : le minimum est unique.', en: '$L''(3)=0$ and $L(w)\geq2=L(3)$, with equality only at $3$: the minimum is unique.' }
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
-    fr: 'Pour $q(x)=3x^2-4x+7$, calcule la dérivée seconde $q\prime\prime(x)$.'
-    en: 'For $q(x)=3x^2-4x+7$, compute the second derivative $q\prime\prime(x)$.'
+    fr: 'Pour $q(x)=3x^2-4x+7$, calcule la dérivée seconde $q''''(x)$.'
+    en: 'For $q(x)=3x^2-4x+7$, compute the second derivative $q''''(x)$.'
     reponses: ['6']
     verif: |
       # La différence seconde est exacte pour une fonction quadratique.
       q = lambda x: 3*x*x-4*x+7
       print(q(1)-2*q(0)+q(-1))
-    explication: { fr: '$q\prime(x)=6x-4$, puis $q\prime\prime(x)=6>0$ ; $q$ est strictement convexe sur les réels.', en: '$q\prime(x)=6x-4$, then $q\prime\prime(x)=6>0$; $q$ is strictly convex on the real line.' }
+    explication: { fr: '$q''(x)=6x-4$, puis $q''''(x)=6>0$ ; $q$ est strictement convexe sur les réels.', en: '$q''(x)=6x-4$, then $q''''(x)=6>0$; $q$ is strictly convex on the real line.' }
   - id: c5
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -76,8 +88,8 @@ cartes:
     explication: { fr: 'La borne vaut $3/4+25/4=7$ ; au point mélangé $2$, la fonction vaut $4\leq7$.', en: 'The bound is $3/4+25/4=7$; at the mixed point $2$, the function is $4\leq7$.' }
   - id: c8
     type: piege
-    fr: 'Convexe ne veut pas dire que tout pas de descente réussit, ni qu’un minimum existe : la fonction affine $f(x)=x$ est convexe sur les réels mais non bornée inférieurement.'
-    en: 'Convex does not mean every descent step succeeds or that a minimum exists: the affine function $f(x)=x$ is convex on the real line but unbounded below.'
+    fr: 'Convexe ne veut pas dire que tout pas de descente réussit, ni qu’un minimum existe. Exemple : $f(x)=x$ est convexe sur les réels, mais descend sans fin.'
+    en: 'Convex does not mean every descent step succeeds, nor that a minimum exists. Example: $f(x)=x$ is convex on the real line, but decreases without end.'
   - id: c9
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -100,7 +112,7 @@ cartes:
       targets = [1,5]
       print(Fraction(sum(targets),len(targets)))
     indice: { fr: 'Additionne les dérivées et cherche leur zéro.', en: 'Add the derivatives and find their zero.' }
-    explication: { fr: '$J\prime(w)=4w-12$ s’annule en $3$ ; $J\prime\prime=4>0$, donc c’est l’unique minimiseur.', en: '$J\prime(w)=4w-12$ vanishes at $3$; $J\prime\prime=4>0$, so this is the unique minimizer.' }
+    explication: { fr: '$J''(w)=4w-12$ s’annule en $3$ ; $J''''=4>0$, donc c’est l’unique minimiseur.', en: '$J''(w)=4w-12$ vanishes at $3$; $J''''=4>0$, so this is the unique minimizer.' }
   - id: c11
     type: retenir
     fr: 'À retenir : la convexité transforme un minimum local en minimum global ; Kintana peut certifier un réglage stationnaire pour une erreur convexe différentiable sans contrainte.'

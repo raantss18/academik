@@ -39,16 +39,27 @@ cartes:
       }
   - id: c2
     type: idee
-    fr: 'Un tri ordonne les éléments selon une clé ; un tri stable conserve leur
-      ordre initial lorsque les clés sont égales. Le tri par insertion déplace
-      chaque nouvel élément dans un préfixe déjà trié et peut coûter $O(n^2)$ au
-      pire. Le tri fusion divise puis fusionne deux suites triées en $O(n\log
-      n)$ au pire, pour des comparaisons de coût constant.'
-    en: 'Sorting orders items by a key; a stable sort preserves their initial order
-      when keys are equal. Insertion sort moves each new item into an already
-      sorted prefix and can cost $O(n^2)$ in the worst case. Merge sort divides
-      and then merges sorted sequences in $O(n\log n)$ worst-case time, assuming
-      constant-cost comparisons.'
+    fr: 'Un **tri** range des éléments selon une **clé** (un score, un nom…). Un tri est **stable** s’il garde l’ordre de départ des éléments de même clé.'
+    en: 'A **sort** orders elements by a **key** (a score, a name…). A sort is **stable** if it keeps the original order of elements with equal keys.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Avant (nom, score)', en: 'Before (name, score)' }, { fr: 'Tri stable par score', en: 'Stable sort by score' }]
+      cellules:
+        - ['Lova $3$', { fr: 'Mamy $1$', en: 'Mamy $1$' }]
+        - ['Mamy $1$', { fr: 'Lova $3$', en: 'Lova $3$', ton: ok }]
+        - ['Nirina $3$', { fr: 'Nirina $3$', en: 'Nirina $3$', ton: ok }]
+      legende: { fr: 'Lova et Nirina ont le même score : Lova était avant, elle reste avant.', en: 'Lova and Nirina have the same score: Lova was first, she stays first.' }
+  - id: c2a
+    type: idee
+    fr: 'Deux méthodes classiques. L’**insertion** glisse chaque élément à sa place dans le début déjà trié. La **fusion** coupe en deux, trie chaque moitié, puis fusionne.'
+    en: 'Two classic methods. **Insertion** slides each element into place in the already sorted start. **Merge sort** splits in two, sorts each half, then merges.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Méthode', en: 'Method' }, { fr: 'Pire cas', en: 'Worst case' }, { fr: 'Pour $n=1000$ (ordre de grandeur)', en: 'For $n=1000$ (order of magnitude)' }]
+      cellules:
+        - [{ fr: 'Insertion', en: 'Insertion' }, '$O(n^2)$', { fr: 'environ $10^6$ comparaisons', en: 'about $10^6$ comparisons', ton: bad }]
+        - [{ fr: 'Fusion', en: 'Merge' }, '$O(n\log n)$', { fr: 'environ $10^4$ comparaisons', en: 'about $10^4$ comparisons', ton: ok }]
+      legende: { fr: 'On suppose qu’une comparaison coûte toujours le même temps.', en: 'We assume a comparison always takes the same time.' }
   - id: c3
     type: exemple
     lang: python

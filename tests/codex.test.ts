@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 // @ts-expect-error module JS sans types
-import { parseQuota, parseTokens, globToRegExp, parseAllowed, parseStatus, outsideAllowed, findSecrets } from '../scripts/codex.mjs';
+import { relayAction, lastRun, parseQuota, parseTokens, globToRegExp, parseAllowed, parseStatus, outsideAllowed, findSecrets } from '../scripts/codex.mjs';
 
 describe('quota ChatGPT', () => {
   const msg = "ERROR: You’ve hit your usage limit. Upgrade to Pro (https://chatgpt.com/explore/pro), visit https://chatgpt.com/settings/usage to purchase more credits or try again at 6:29 PM.";
@@ -24,4 +24,15 @@ describe('périmètre d’une tâche', () => {
 describe('secrets', () => {
   it('repère clés et mots de passe', () => { expect(findSecrets('key: sk-abcdefghijklmnopqrstuvwxyz123456')).toBeTruthy(); expect(findSecrets('password = "hunter22222"')).toBeTruthy(); expect(findSecrets('-----BEGIN RSA PRIVATE KEY-----')).toBeTruthy(); });
   it('texte ordinaire : rien', () => { expect(findSecrets('Kintana dit bonjour. Le mot de passe est une notion.')).toBeNull(); });
+});
+
+describe('relais Claude ↔ Codex (demande d\u2019Antsa)', () => {
+  const now = new Date('2026-11-01T19:00:00'), later = new Date('2026-11-01T19:51:00'), base = { status: 'READY', running: false, stoppedByQuota: true, quotaUntil: later, takenByClaude: false };
+  it('quota épuisé et tâche arrêtée → Claude reprend', () => { expect(relayAction(base, now)).toBe('claude'); });
+  it('quota revenu → on rend à Codex, même si Claude a avancé', () => { expect(relayAction({ ...base, quotaUntil: null, takenByClaude: true }, now)).toBe('codex'); expect(relayAction(base, new Date('2026-11-01T20:00:00'))).toBe('codex'); });
+  it('tâche en cours, terminée ou jamais bloquée → rien', () => {
+    expect(relayAction({ ...base, running: true }, now)).toBe(null); expect(relayAction({ ...base, status: 'DONE' }, now)).toBe(null);
+    expect(relayAction({ ...base, stoppedByQuota: false }, now)).toBe(null);
+  });
+  it('seul le dernier lancement compte', () => { expect(parseQuota(lastRun('usage limit, try again at 7:51 PM\n=== lancement 2026 ===\nok'))).toBe(null); expect(parseQuota(lastRun('ok\n=== lancement 2026 ===\nusage limit, try again at 7:51 PM'))).not.toBe(null); });
 });

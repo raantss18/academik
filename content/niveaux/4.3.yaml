@@ -20,8 +20,20 @@ cartes:
     explication: { fr: 'Chaque texte a deux comptages : $3\times2=6$ cases.', en: 'Each text has two counts: $3\times2=6$ cells.' }
   - id: c2
     type: idee
-    fr: 'Une matrice $A$ à $m$ lignes et $n$ colonnes transforme un vecteur à $n$ coordonnées en un vecteur à $m$ coordonnées. Chaque coordonnée de $Ax$ est le produit scalaire d’une ligne de $A$ avec $x$. Géométriquement, les colonnes indiquent où vont les vecteurs des axes.'
-    en: 'A matrix $A$ with $m$ rows and $n$ columns transforms a vector with $n$ coordinates into one with $m$ coordinates. Each coordinate of $Ax$ is the dot product of a row of $A$ with $x$. Geometrically, the columns show where the axis vectors go.'
+    fr: 'Une **matrice** $m\times n$ est un tableau de nombres à $m$ lignes et $n$ colonnes. Kintana y range un texte par ligne et un mot par colonne.'
+    en: 'An $m\times n$ **matrix** is a table of numbers with $m$ rows and $n$ columns. Kintana stores one text per row and one word per column.'
+    figure:
+      kind: tableau
+      entetes: ['', '`riz`', '`eau`']
+      cellules:
+        - [{ fr: 'texte 1', en: 'text 1' }, '$1$', '$2$']
+        - [{ fr: 'texte 2', en: 'text 2' }, '$3$', '$1$']
+      legende: { fr: 'C’est la matrice $A=\begin{pmatrix}1&2\\3&1\end{pmatrix}$, de taille $2\times2$.', en: 'This is the matrix $A=\begin{pmatrix}1&2\\3&1\end{pmatrix}$, of size $2\times2$.' }
+  - id: c2a
+    type: idee
+    fr: '$Ax$ transforme un vecteur $x$ à $n$ coordonnées en un vecteur à $m$ coordonnées. Chaque coordonnée de $Ax$ est le produit scalaire d’une **ligne** de $A$ avec $x$.'
+    en: '$Ax$ turns a vector $x$ with $n$ coordinates into a vector with $m$ coordinates. Each coordinate of $Ax$ is the dot product of a **row** of $A$ with $x$.'
+    exemple: { fr: 'Requête $x=(2,1)$ : $Ax=(1\times2+2\times1,\ 3\times2+1\times1)=(4,7)$. Le texte 2 répond mieux.', en: 'Query $x=(2,1)$: $Ax=(1\times2+2\times1,\ 3\times2+1\times1)=(4,7)$. Text 2 matches better.' }
   - id: c3
     type: exemple
     lang: python

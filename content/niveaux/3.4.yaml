@@ -21,8 +21,21 @@ cartes:
     explication: { fr: 'Les restes sont égaux : c’est une collision, pas une égalité de clés.', en: 'The remainders match: this is a collision, not equality of keys.' }
   - id: c2
     type: idee
-    fr: 'Le hachage transforme une clé en un code qui aide à choisir où la ranger ; plusieurs clés peuvent entrer en collision. Avec le chaînage, chaque seau conserve les paires clé-valeur et la recherche compare les clés. Une recherche coûte $O(1)$ en espérance sous de bonnes hypothèses de répartition et de charge, mais $O(n)$ au pire ; on suppose ici hachage et comparaison des clés de coût constant.'
-    en: 'Hashing transforms a key into a code that helps choose where to store it; different keys may collide. With chaining, each bucket stores key-value pairs and lookup compares the keys. Lookup takes expected $O(1)$ time under suitable distribution and load assumptions, but $O(n)$ in the worst case; here hashing and comparing keys are assumed to take constant time.'
+    fr: 'Le **hachage** transforme une clé en un numéro de **seau** où la ranger. Deux clés différentes peuvent tomber dans le même seau : c’est une **collision**, on garde alors les deux.'
+    en: '**Hashing** turns a key into the number of a **bucket** where it is stored. Two different keys can land in the same bucket: that is a **collision**, and both are kept.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Seau $h(k)=k\bmod5$', en: 'Bucket $h(k)=k\bmod5$' }, { fr: 'Clés rangées (on insère $3$, $8$, $10$, $13$)', en: 'Stored keys (insert $3$, $8$, $10$, $13$)' }]
+      cellules:
+        - ['$0$', '$10$']
+        - ['$1$, $2$, $4$', { fr: 'vides', en: 'empty' }]
+        - ['$3$', { fr: '$3$, $8$, $13$ : collisions', en: '$3$, $8$, $13$: collisions', ton: bad }]
+      legende: { fr: 'Pour retrouver $13$, on va au seau $3$ puis on compare les clés une à une.', en: 'To find $13$, go to bucket $3$, then compare the keys one by one.' }
+  - id: c2a
+    type: idee
+    fr: 'Si les clés se répartissent bien, chaque seau reste petit : une recherche coûte $O(1)$ **en moyenne**. Si toutes tombent dans le même seau, elle coûte $O(n)$ : c’est le **pire cas**.'
+    en: 'If keys spread out well, each bucket stays small: a lookup costs $O(1)$ **on average**. If they all land in the same bucket, it costs $O(n)$: that is the **worst case**.'
+    exemple: { fr: 'Avec $h(k)=k\bmod5$, les clés $5, 10, 15, 20$ vont toutes au seau $0$ : chercher $20$ demande $4$ comparaisons.', en: 'With $h(k)=k\bmod5$, keys $5, 10, 15, 20$ all go to bucket $0$: finding $20$ takes $4$ comparisons.' }
   - id: c3
     type: exemple
     lang: python

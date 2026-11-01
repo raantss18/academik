@@ -24,6 +24,7 @@
 | E13 | 1 nov. | mise à jour de l'app : renvoi vers GitHub au lieu d'être automatique et intégrée | l'app ouvrait le lien de téléchargement dans le navigateur | téléchargement, vérification SHA-256 et installation **dans l'app** (Android : plugin natif + installateur système ; Linux : commandes Rust, remplacement de l'AppImage et redémarrage ; site : rechargement tout seul sur la carte) ; **essais réels** : émulateur Android (0.0.1 → 0.3.3 via l'installateur) et AppImage (remplacée et relancée) | `invariants` E13, `installer.test` | 0.3.4 |
 | E14 | 1 nov. | cartes de théorie en texte dense, sans illustration ni exemple (0.2 « Démontrer ») | le format des cartes ne permettait **aucune figure** (Codex ne pouvait pas en ajouter) et rien n'exigeait d'exemple concret | champ `figure` (schéma, tableau, nombres ; HTML/CSS, formules rendues par KaTeX) et encadré « Par exemple » sur toute carte ; 0.2 réécrit (contre-exemple colorié, trois chemins de preuve, deux exemples résolus, tableau récapitulatif) ; vérifié sur téléphone (375 px) ; **24 autres niveaux** en attente (T-011) | `invariants` E14/E15 (liste d'attente qui ne fait que rétrécir), `content.test` (figures) | 0.3.5 |
 | E15 | 1 nov. | « le cours n'est pas assez clair » | aucune règle **vérifiable** de clarté : symboles ($\neg$, $\Rightarrow$) utilisés sans être lus en mots, plusieurs idées par carte, abstrait avant concret | recherches (Mayer ; Rosenshine 2012 ; Fyfe et al. 2014 ; Barbieri et al. 2023 ; Titsworth et al. 2015) → **barre de clarté C1–C7** dans `docs/QUALITE-COURS.md` ; 0.2 : carte « notations » (se lit…, exemple) | `invariants` E15 (C1, C2, C4, C5 automatiques) | 0.3.5 |
+| E16 | 1 nov. (trouvée par Claude) | dérivées affichées « L// » au lieu de « L′′ » (module 5) ; tableaux à 4 colonnes qui débordent sur téléphone | `\prime` seul n'est pas un exposant en KaTeX ; aucune limite de colonnes | `f'` partout (62 dérivées) ; le schéma refuse plus de 3 colonnes | `invariants` E8 (`\prime` interdit), `content.test` (3 colonnes) | contenu 1 nov. |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | 🔄 intégration en cours (voir § 1) | — | à venir |
 
 ## 1. Application et site
@@ -50,7 +51,7 @@
 | 1 Le terminal | ⏳ attend le terminal simulé |
 | 2 Python | 🔄 2.1 fait ; 2.2 à 2.5 + boss ⏳ (attend Pyodide pour les exercices de code) |
 | 3 Algorithmes | ✅ 6 niveaux (T-004) |
-| 4 Algèbre linéaire | ✅ 6 niveaux (T-005) |
+| 4 Algèbre linéaire | ✅ 6 niveaux (T-005) ; barre de clarté (T-012) |
 | 5 Analyse | ✅ 6 niveaux (T-006) |
 | 6 Probabilités, 7 Statistique | ⏳ à lancer (T-007, T-008) après T-005/T-006 |
 | 8 à 20, R | ⏳ voir `CURSUS.md` (volet IA puis quant) |
@@ -65,7 +66,8 @@
 ## 4. Codex / ChatGPT (`docs/CODEX.md`)
 - ✅ Outil `scripts/codex.mjs` : quota, 2 tâches max, périmètre, contrôle, fusion sûre
 - ✅ T-005, T-006 intégrées ; ⏳ T-007 (probabilités), T-008 (statistique), T-009 (traductions EN du cursus)
-- 🔄 **T-011** : mettre les 24 niveaux de la liste d'attente E14/E15 à la barre de clarté (figures, « Par exemple », notations définies) ; puis 6.* et 7.* (T-007/T-008) avant fusion
+- ✅ **Relais Claude ↔ Codex** : `codex.mjs relay` / `took` ; quota épuisé → Claude prend le relais, quota revenu → rendu à Codex (testé : `codex.test`)
+- ✅ **T-011, T-012** : les 24 niveaux à la barre de clarté — faits par **Claude en relais** pendant le quota de Codex ; ⏳ 6.* et 7.* (T-007/T-008) à mettre à la barre avant fusion
 - ⏳ Tâche de **relecture croisée** : Codex résout les exercices de Claude sans voir les solutions
 
 ## 5. Publication
