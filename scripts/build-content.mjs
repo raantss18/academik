@@ -11,12 +11,23 @@ export function requiredBuild(L) {
   let b = 1; const text = JSON.stringify(L.cartes ?? []);
   if ((L.cartes ?? []).some(c => ['retenir', 'piege', 'plus'].includes(c.type))) b = Math.max(b, 3);   // encadrés (0.3.0)
   if (/\$[^\s$][^$\n]*\$/.test(text.replace(/\\n/g, '\n'))) b = Math.max(b, 3);                       // formules KaTeX (0.3.0)
+  if ((L.cartes ?? []).some(c => c.figure || c.exemple)) b = Math.max(b, 8);                       // illustrations et « Par exemple » (0.3.5, E14)
   return b;
 }
 const errors = [];
 const err = (where, msg) => errors.push(`${where}: ${msg}`);
 const both = (where, o, k) => { if (!o || typeof o[k] !== 'object' || !o[k].fr || !o[k].en) err(where, `« ${k} » doit avoir fr et en`); };
 const bi = (where, o) => { if (!o || !o.fr || !o.en) err(where, 'texte fr et en requis'); };
+const FIG = new Set(['schema', 'tableau', 'nombres']), TONS = new Set(['ok', 'bad', 'neutre']);
+const txt = (where, x) => { if (typeof x === 'string' || typeof x === 'number') return; bi(where, x); if (x?.ton && !TONS.has(x.ton)) err(where, `ton inconnu « ${x.ton} »`); };
+/** Illustration (E14) : un schéma, un tableau ou des nombres, toujours avec une légende bilingue. */
+function validateFigure(at, f) {
+  if (!FIG.has(f?.kind)) return err(at, `figure : kind inconnu « ${f?.kind} »`);
+  both(at, f, 'legende');
+  if (f.kind === 'schema') { if (!f.lignes?.length) err(at, 'schema : lignes manquantes'); (f.lignes ?? []).forEach((l, i) => { if (l.titre) txt(`${at}.l${i}`, l.titre); if (!(l.noeuds?.length >= 2)) err(`${at}.l${i}`, 'au moins 2 nœuds'); (l.noeuds ?? []).forEach((n, j) => txt(`${at}.l${i}.n${j}`, n)); }); }
+  if (f.kind === 'tableau') { const w = f.entetes?.length ?? f.cellules?.[0]?.length; if (!f.cellules?.length) err(at, 'tableau : cellules manquantes'); (f.entetes ?? []).forEach((h, i) => txt(`${at}.h${i}`, h)); (f.cellules ?? []).forEach((r, i) => { if (r.length !== w) err(`${at}.r${i}`, 'nombre de colonnes différent'); r.forEach((c, j) => txt(`${at}.r${i}.c${j}`, c)); }); }
+  if (f.kind === 'nombres') { if (!f.liste?.length || !f.liste.every(Number.isFinite)) err(at, 'nombres : liste manquante'); (f.groupes ?? []).forEach((g, i) => { if (!TONS.has(g.ton)) err(`${at}.g${i}`, 'ton inconnu'); txt(`${at}.g${i}`, g.label); if (!g.valeurs?.every(v => f.liste?.includes(v))) err(`${at}.g${i}`, 'valeur absente de la liste'); }); }
+}
 
 /** Valide un niveau et renvoie la liste des NOUVELLES erreurs (vide = valide). */
 export function validateLevel(L, file) {
@@ -33,6 +44,8 @@ export function validateLevel(L, file) {
     if (['retenir', 'piege', 'plus'].includes(c.type)) bi(at, c);
     else if (c.type === 'exemple') { both(at, c, 'titre'); if (!c.etapes?.length) err(at, 'étapes manquantes'); (c.etapes ?? []).forEach((e, i) => bi(`${at}.etape${i}`, e)); }
     else bi(at, c);
+    if (c.figure) validateFigure(`${at}.figure`, c.figure);
+    if (c.exemple) bi(`${at}.exemple`, c.exemple);
     if (c.note) { if (!['exercise', 'quiz'].includes(c.note.kind) || !(c.note.poids > 0)) err(at, 'note invalide'); scored++; }
     if (['qcm', 'saisie', 'parsons'].includes(c.type) && !c.note) err(at, 'une carte à réponse doit être notée');
     if (c.type === 'qcm') {

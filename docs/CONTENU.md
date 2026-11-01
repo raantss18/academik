@@ -38,6 +38,21 @@
 ```
 `exemple` : `titre: {fr,en}` + `etapes: [{ code?, fr, en }]` (le code s'affiche en un seul programme, la ligne de l'étape courante est surlignée ; `lang: python|bash` sur la carte).
 
+**Illustrations et exemples (E14, app 0.3.5)** — sur n'importe quelle carte :
+```yaml
+  exemple: { fr: "Cas concret avec de vrais nombres…", en: "…" }    # encadré « Par exemple »
+  figure:                                                             # une seule par carte, légende obligatoire
+    kind: schema            # schema | tableau | nombres
+    lignes:                 # schema : un chemin de raisonnement par ligne
+      - titre: { fr: Direct, en: Direct }
+        noeuds: [{ fr: "on suppose $P$", en: "assume $P$" }, { fr: "donc $Q$", en: "so $Q$", ton: ok }]
+    # tableau : entetes: [...], cellules: [[...], ...]   (même nombre de colonnes ; ≤ 3 colonnes pour tenir sur téléphone)
+    # nombres : liste: [1, 3, 9], groupes: [{ valeurs: [9], ton: bad, label: { fr: …, en: … } }]
+    legende: { fr: "…", en: "…" }
+```
+Un texte de figure est une chaîne (identique en fr et en) ou `{ fr, en, ton? }` ; `ton` : `ok` (vert), `bad` (rouge), `neutre`. Les formules `$…$` y sont rendues par KaTeX.
+**Barre de clarté** (`docs/QUALITE-COURS.md`, C1–C7) : une idée par carte, le concret d'abord, rien d'utilisé avant d'être défini, un exemple résolu avant chaque nouvelle méthode.
+
 **Cartes d'encadré** (non notées) : `type: retenir` (une phrase à retenir), `piege` (erreur fréquente), `plus` (pour aller plus loin, avec source). Texte `fr` / `en`.
 
 **Formules** : LaTeX entre `$…$` (en ligne) ou `$$…$$` (centré), rendu par KaTeX hors ligne. Un `$` isolé (prix) n'est pas une formule ; écris `\$` n'est pas géré : évite le signe `$` seul. **Code** : `` `…` `` en ligne, blocs ```` ```python ```` colorés.

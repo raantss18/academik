@@ -1,6 +1,6 @@
 id: '0.2'
 module: 0
-duree_min: 13
+duree_min: 15
 titre: { fr: 'Démontrer', en: 'Proving' }
 ia: { fr: 'Kintana justifie une règle et sait réfuter une généralisation abusive.', en: 'Kintana justifies a rule and can refute an unjustified generalisation.' }
 sources:
@@ -21,8 +21,43 @@ cartes:
     explication: { fr: '$9=3\times3$ est impair et composé : il satisfait l’hypothèse, pas la conclusion.', en: '$9=3\times3$ is odd and composite: it satisfies the hypothesis but not the conclusion.' }
   - id: c2
     type: idee
-    fr: 'Une preuve directe part de l’hypothèse pour atteindre la conclusion. Pour prouver $P\Rightarrow Q$ par contraposée, on prouve $\neg Q\Rightarrow\neg P$ ; par l’absurde, on suppose $P$ et $\neg Q$, puis on obtient une contradiction. Un contre-exemple réfute une règle universelle : il ne la démontre pas.'
-    en: 'A direct proof starts from the hypothesis and reaches the conclusion. To prove $P\Rightarrow Q$ by contraposition, prove $\neg Q\Rightarrow\neg P$; by contradiction, assume $P$ and $\neg Q$, then derive a contradiction. A counterexample refutes a universal rule: it does not prove it.'
+    fr: 'Un **contre-exemple** est un seul cas qui vérifie l’hypothèse mais pas la conclusion : il suffit pour **réfuter** une règle « pour tout ». Mille exemples qui marchent ne la **démontrent** pas.'
+    en: 'A **counterexample** is a single case that meets the hypothesis but not the conclusion: it is enough to **refute** a “for all” rule. A thousand examples that work do not **prove** it.'
+    exemple: { fr: 'Règle de Kintana : « tout impair est premier ». $3, 5, 7$ marchent, mais $9=3\times3$ est impair et composé : la règle est fausse.', en: 'Kintana’s rule: “every odd number is prime”. $3, 5, 7$ work, but $9=3\times3$ is odd and composite: the rule is false.' }
+    figure:
+      kind: nombres
+      liste: [1, 3, 5, 7, 9, 11, 13, 15]
+      groupes:
+        - { valeurs: [3, 5, 7, 11, 13], ton: ok, label: { fr: 'premier : la règle tient', en: 'prime: the rule holds' } }
+        - { valeurs: [9, 15], ton: bad, label: { fr: 'composé : contre-exemple', en: 'composite: counterexample' } }
+        - { valeurs: [1], ton: neutre, label: { fr: 'ni premier ni composé (aussi un contre-exemple)', en: 'neither prime nor composite (also a counterexample)' } }
+      legende: { fr: 'Les impairs de $1$ à $15$ : il suffit d’une seule case rouge pour réfuter la règle.', en: 'Odd numbers from $1$ to $15$: a single red box is enough to refute the rule.' }
+  - id: c2a
+    type: idee
+    fr: 'Avant les méthodes, trois notations. Une **implication** relie une hypothèse $P$ à une conclusion $Q$. Le symbole $\neg$ veut dire « non » : il nie une phrase.'
+    en: 'Before the methods, three notations. An **implication** links a hypothesis $P$ to a conclusion $Q$. The symbol $\neg$ means “not”: it negates a sentence.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Notation', en: 'Notation' }, { fr: 'Se lit', en: 'Read as' }, { fr: 'Exemple avec un entier $n$', en: 'Example with an integer $n$' }]
+      cellules:
+        - ['$P$, $Q$', { fr: 'deux phrases, vraies ou fausses', en: 'two sentences, true or false' }, { fr: '$P$ : « $n$ est pair », $Q$ : « $n^2$ est pair »', en: '$P$: “$n$ is even”, $Q$: “$n^2$ is even”' }]
+        - ['$P\Rightarrow Q$', { fr: '« si $P$, alors $Q$ »', en: '“if $P$, then $Q$”' }, { fr: 'si $n$ est pair, alors $n^2$ est pair', en: 'if $n$ is even, then $n^2$ is even' }]
+        - ['$\neg Q$', { fr: '« non $Q$ »', en: '“not $Q$”' }, { fr: '$n^2$ n’est pas pair, donc $n^2$ est impair', en: '$n^2$ is not even, so $n^2$ is odd' }]
+      legende: { fr: 'Pour un entier, « non pair » et « impair » disent la même chose.', en: 'For an integer, “not even” and “odd” mean the same thing.' }
+  - id: c2b
+    type: idee
+    fr: 'Pour **démontrer** $P\Rightarrow Q$ (« si $P$, alors $Q$ »), trois chemins sont valables. **Direct** : on part de $P$ et on arrive à $Q$. **Contraposée** : on prouve $\neg Q\Rightarrow\neg P$, qui dit la même chose. **Absurde** : on suppose $P$ et $\neg Q$, et on aboutit à une contradiction.'
+    en: 'To **prove** $P\Rightarrow Q$ (“if $P$, then $Q$”), three paths are valid. **Direct**: start from $P$ and reach $Q$. **Contrapositive**: prove $\neg Q\Rightarrow\neg P$, which says the same thing. **Contradiction**: assume $P$ and $\neg Q$, then reach a contradiction.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Direct', en: 'Direct' }
+          noeuds: [{ fr: 'on suppose $P$', en: 'assume $P$' }, { fr: 'raisonnement', en: 'reasoning' }, { fr: 'donc $Q$', en: 'so $Q$', ton: ok }]
+        - titre: { fr: 'Contraposée', en: 'Contrapositive' }
+          noeuds: [{ fr: 'on suppose $\neg Q$', en: 'assume $\neg Q$' }, { fr: 'raisonnement', en: 'reasoning' }, { fr: 'donc $\neg P$', en: 'so $\neg P$', ton: ok }]
+        - titre: { fr: 'Par l’absurde', en: 'By contradiction' }
+          noeuds: [{ fr: 'on suppose $P$ et $\neg Q$', en: 'assume $P$ and $\neg Q$' }, { fr: 'raisonnement', en: 'reasoning' }, { fr: 'contradiction !', en: 'contradiction!', ton: bad }]
+      legende: { fr: 'Trois routes vers la même destination : $P\Rightarrow Q$ est démontré.', en: 'Three roads to the same destination: $P\Rightarrow Q$ is proved.' }
   - id: c3
     type: exemple
     titre: { fr: 'Preuve directe : additionner deux pairs', en: 'Direct proof: adding two even numbers' }
@@ -38,6 +73,14 @@ cartes:
     reponses: ['11']
     verif: 'u,v=4,7; print(u+v)'
     explication: { fr: '$u+v=11$, donc la somme vaut $22$ ; ce calcul illustre la preuve générale.', en: '$u+v=11$, so the sum is $22$; this calculation illustrates the general proof.' }
+  - id: c4b
+    type: exemple
+    titre: { fr: 'Contraposée : si $3n$ est impair, alors $n$ est impair', en: 'Contrapositive: if $3n$ is odd, then $n$ is odd' }
+    etapes:
+      - { fr: 'Prouver directement est maladroit : de « $3n$ impair », on ne sait pas écrire $n$. On prouve donc la contraposée : **si $n$ est pair, alors $3n$ est pair**.', en: 'A direct proof is awkward: from “$3n$ odd” we cannot write $n$. So we prove the contrapositive: **if $n$ is even, then $3n$ is even**.' }
+      - { fr: 'Si $n$ est pair, $n=2k$ avec $k$ entier.', en: 'If $n$ is even, $n=2k$ with integer $k$.' }
+      - { fr: 'Alors $3n=6k=2(3k)$ et $3k$ est entier : $3n$ est pair.', en: 'Then $3n=6k=2(3k)$ and $3k$ is an integer: $3n$ is even.' }
+      - { fr: 'La contraposée est vraie, donc l’énoncé de départ aussi : les deux disent exactement la même chose.', en: 'The contrapositive is true, so the original statement is too: both say exactly the same thing.' }
   - id: c5
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -58,6 +101,14 @@ cartes:
       - { fr: '$2(k^2+k)$', en: '$2(k^2+k)$' }
       - { fr: '$4k^2+1$', en: '$4k^2+1$' }
     explication: { fr: 'Le développement donne $4k^2+4k+1$, soit deux fois un entier plus un.', en: 'Expanding gives $4k^2+4k+1$, which is twice an integer plus one.' }
+  - id: c6b
+    type: exemple
+    titre: { fr: 'Par l’absurde : pas de plus petit rationnel strictement positif', en: 'By contradiction: no smallest positive rational' }
+    etapes:
+      - { fr: 'On suppose le contraire : il existe un plus petit rationnel $r>0$.', en: 'Assume the opposite: there is a smallest rational $r>0$.' }
+      - { fr: 'Alors $\frac{r}{2}$ est aussi un rationnel, et $0<\frac{r}{2}<r$.', en: 'Then $\frac{r}{2}$ is also rational, and $0<\frac{r}{2}<r$.' }
+      - { fr: 'On a trouvé un rationnel positif plus petit que « le plus petit » : **contradiction**.', en: 'We found a positive rational smaller than “the smallest”: **contradiction**.' }
+      - { fr: 'L’hypothèse est donc fausse : aucun rationnel strictement positif n’est le plus petit.', en: 'So the assumption is false: no positive rational is the smallest.' }
   - id: c7
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -97,5 +148,14 @@ cartes:
     explication: { fr: '$2$ est pair mais non divisible par $6$ ; une implication et sa réciproque sont différentes.', en: '$2$ is even but not divisible by $6$; an implication and its converse are different.' }
   - id: c11
     type: idee
-    fr: 'Récap : pars des hypothèses, ou prouve la contraposée, ou mène une hypothèse contraire à une contradiction. Kintana doit distinguer une preuve valable dans tout le domaine d’un calcul sur quelques exemples.'
-    en: 'Recap: start from the hypotheses, prove the contrapositive, or derive a contradiction from a contrary assumption. Kintana must distinguish a proof valid throughout the domain from calculations on a few examples.'
+    fr: 'Récap : Kintana doit distinguer une **preuve**, valable dans tout le domaine, d’un **calcul sur quelques exemples**. Choisis la méthode selon ce qui est le plus facile à écrire.'
+    en: 'Recap: Kintana must distinguish a **proof**, valid throughout the domain, from **calculations on a few examples**. Choose the method by what is easiest to write.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Méthode', en: 'Method' }, { fr: 'On suppose', en: 'Assume' }, { fr: 'On montre', en: 'Show' }]
+      cellules:
+        - [{ fr: 'Directe', en: 'Direct' }, '$P$', '$Q$']
+        - [{ fr: 'Contraposée', en: 'Contrapositive' }, '$\neg Q$', '$\neg P$']
+        - [{ fr: 'Absurde', en: 'Contradiction' }, { fr: '$P$ et $\neg Q$', en: '$P$ and $\neg Q$' }, { fr: 'une contradiction', en: 'a contradiction' }]
+        - [{ fr: 'Contre-exemple', en: 'Counterexample', ton: bad }, { fr: 'un cas précis', en: 'one specific case' }, { fr: 'la règle est **fausse**', en: 'the rule is **false**', ton: bad }]
+      legende: { fr: 'Les trois premières lignes **démontrent** ; la dernière **réfute**.', en: 'The first three rows **prove**; the last one **refutes**.' }

@@ -31,7 +31,7 @@ code { font-family: var(--mono); background: var(--c-surface-2); padding: .08em 
 /* Encadrés typés */
 .callout { border-radius: 16px; padding: 12px 16px; margin: 6px 0; border-left: 6px solid var(--c-primary); background: var(--c-primary-soft); }
 .callout > strong { display: block; font-size: .8rem; letter-spacing: .6px; text-transform: uppercase; margin-bottom: 4px; }
-.callout.piege { border-color: var(--c-accent); background: var(--c-accent-soft); } .callout.plus { border-color: #3a6ea5; background: var(--c-surface-2); }
+.callout.piege { border-color: var(--c-accent); background: var(--c-accent-soft); } .callout.plus { border-color: #3a6ea5; background: var(--c-surface-2); } .callout.exemple { border-color: var(--c-text-muted); background: var(--c-surface-2); margin-top: 12px; }
 .math[data-display='1'] { display: block; text-align: center; margin: .5em 0; overflow-x: auto; }
 pre { background: var(--c-surface-2); border: 1px solid var(--c-border); border-radius: 12px; padding: 12px 14px; overflow-x: auto; margin: .6em 0; }
 pre code { background: none; padding: 0; }

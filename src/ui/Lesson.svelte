@@ -11,6 +11,7 @@
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
   import { resume, clampIndex } from '../lib/resume';
   import LogoMenu from './LogoMenu.svelte';
+  import Figure from './Figure.svelte';
 
   let { level, onexit, onreplay, startAt = 0 }: { level: Level; onexit: () => void; onreplay: () => void; startAt?: number } = $props();
 
@@ -92,6 +93,8 @@
       {:else}
         <p class="q">{@html md(body)}</p>
       {/if}
+      {#if card.exemple}<aside class="callout exemple"><strong>{ui('k_exemple')}</strong><div>{@html md(t(card.exemple))}</div></aside>{/if}
+      {#if card.figure}<Figure fig={card.figure} />{/if}
 
       {#if card.type === 'qcm' || card.type === 'tentative'}
         <div class="choices" role="radiogroup">
