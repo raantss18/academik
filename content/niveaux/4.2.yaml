@@ -21,8 +21,26 @@ cartes:
     explication: { fr: 'Pythagore donne $\sqrt{3^2+4^2}=5$, et non la somme des déplacements.', en: 'Pythagoras gives $\sqrt{3^2+4^2}=5$, not the sum of the movements.' }
   - id: c2
     type: idee
-    fr: 'Le produit scalaire $u\cdot v=\sum_i u_i v_i$ mesure un alignement, mais dépend aussi des longueurs. La norme euclidienne $\|u\|=\sqrt{u\cdot u}$ est la longueur de la flèche. Pour deux vecteurs non nuls, $\cos(u,v)=\frac{u\cdot v}{\|u\|\|v\|}$ compare seulement leurs directions.'
-    en: 'The dot product $u\cdot v=\sum_i u_i v_i$ measures alignment, but also depends on lengths. The Euclidean norm $\|u\|=\sqrt{u\cdot u}$ is the arrow’s length. For two nonzero vectors, $\cos(u,v)=\frac{u\cdot v}{\|u\|\|v\|}$ compares only their directions.'
+    fr: 'Le **produit scalaire** $u\cdot v$ multiplie les coordonnées deux à deux puis additionne. Plus il est grand, plus les vecteurs vont dans le même sens, mais il grandit aussi avec leurs longueurs.'
+    en: 'The **dot product** $u\cdot v$ multiplies coordinates pairwise and then adds. The larger it is, the more the vectors point the same way, but it also grows with their lengths.'
+    exemple: { fr: '$(1,2)\cdot(3,1)=1\times3+2\times1=5$.', en: '$(1,2)\cdot(3,1)=1\times3+2\times1=5$.' }
+  - id: c2a
+    type: idee
+    fr: 'La **norme** $\|u\|$ se lit « norme de $u$ » : c’est la longueur de la flèche, $\|u\|=\sqrt{u\cdot u}$. C’est le théorème de Pythagore.'
+    en: 'The **norm** $\|u\|$ is read “norm of $u$”: it is the length of the arrow, $\|u\|=\sqrt{u\cdot u}$. It is Pythagoras’ theorem.'
+    exemple: { fr: '$\|(5,12)\|=\sqrt{25+144}=\sqrt{169}=13$.', en: '$\|(5,12)\|=\sqrt{25+144}=\sqrt{169}=13$.' }
+  - id: c2b
+    type: idee
+    fr: 'Le **cosinus** $\cos(u,v)=\frac{u\cdot v}{\|u\|\,\|v\|}$ divise par les longueurs : il ne compare que les **directions**. Il est défini pour deux vecteurs non nuls.'
+    en: 'The **cosine** $\cos(u,v)=\frac{u\cdot v}{\|u\|\,\|v\|}$ divides by the lengths: it compares only **directions**. It is defined for two nonzero vectors.'
+    figure:
+      kind: tableau
+      entetes: ['$u$, $v$', '$\cos(u,v)$', { fr: 'Les flèches sont…', en: 'The arrows are…' }]
+      cellules:
+        - ['$(1,0)$, $(5,0)$', '$1$', { fr: 'dans le même sens', en: 'in the same direction', ton: ok }]
+        - ['$(1,0)$, $(0,2)$', '$0$', { fr: 'perpendiculaires', en: 'perpendicular' }]
+        - ['$(1,0)$, $(-3,0)$', '$-1$', { fr: 'opposées', en: 'opposite', ton: bad }]
+      legende: { fr: '$(5,0)$ est $5$ fois plus long que $(1,0)$, mais le cosinus vaut quand même $1$.', en: '$(5,0)$ is $5$ times longer than $(1,0)$, yet the cosine is still $1$.' }
   - id: c3
     type: exemple
     lang: python

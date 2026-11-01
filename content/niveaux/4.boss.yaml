@@ -21,8 +21,14 @@ cartes:
     explication: { fr: 'On compte chaque mot séparément : le vecteur est $(3,1)$.', en: 'Count each word separately: the vector is $(3,1)$.' }
   - id: c2
     type: idee
-    fr: 'Mission : compare une requête aux textes dans les mêmes axes, comme des flèches issues du même point. Pour des vecteurs non nuls, utilise $s(q,d)=\frac{q\cdot d}{\|q\|\|d\|}$ afin de comparer les directions. Tu vas aussi vérifier les transformations et les pertes introduites par une compression.'
-    en: 'Mission: compare a query with texts on shared axes, like arrows starting at the same point. For nonzero vectors, use $s(q,d)=\frac{q\cdot d}{\|q\|\|d\|}$ to compare directions. You will also check transformations and losses introduced by compression.'
+    fr: 'Mission : comparer une requête aux textes, dans les mêmes axes. Pour deux vecteurs non nuls, le score est le cosinus $s(q,d)=\frac{q\cdot d}{\|q\|\,\|d\|}$ : il compare les directions, pas les longueurs.'
+    en: 'Mission: compare a query with texts, on the same axes. For two nonzero vectors, the score is the cosine $s(q,d)=\frac{q\cdot d}{\|q\|\,\|d\|}$: it compares directions, not lengths.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Le moteur, étape par étape', en: 'The engine, step by step' }
+          noeuds: [{ fr: 'textes et requête', en: 'texts and query' }, { fr: 'vecteurs de comptages (4.1)', en: 'count vectors (4.1)' }, { fr: 'normes non nulles ? (4.2)', en: 'nonzero norms? (4.2)' }, { fr: 'cosinus', en: 'cosine' }, { fr: 'classement', en: 'ranking', ton: ok }]
+      legende: { fr: 'Tu vérifieras aussi les transformations (4.3–4.5) et ce que coûte une compression.', en: 'You will also check the transformations (4.3–4.5) and what a compression costs.' }
   - id: c3
     type: exemple
     lang: python

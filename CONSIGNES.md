@@ -65,6 +65,7 @@ Public : l'auteur (Antsa), les étudiants L1–M1, les lycéens COMIMa (module 0
 - Lancement : `/usr/lib/chatgpt/resources/codex exec -C ../academik-codex -s workspace-write -o handoff/results/T-XXX.log "<prompt>"`.
 - Relais manuel si Codex est indisponible : `handoff/OUTBOX_chatgpt.md` (Antsa colle dans ChatGPT).
 - **Rien de ce que produit Codex n'est fusionné sans relecture et tests par Claude.**
+- **Relais automatique** (demande d'Antsa, 1er nov. 2026) : quand le quota de Codex est épuisé, Claude **reprend lui-même** les tâches arrêtées, fichier par fichier, dans le dossier de travail de la tâche (`node scripts/codex.mjs relay`, puis `took T-XXX <fichier>` pour chaque fichier fini) ; dès que le quota revient, Claude **rend la suite à Codex** (`start T-XXX`), qui ne retouche pas ce que Claude a fait. Vérifier `relay` au début de chaque étape de travail.
 
 ## 5. Budgets
 

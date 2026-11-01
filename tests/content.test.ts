@@ -25,6 +25,7 @@ describe('contenu : schéma', () => {
     expect(validateLevel(carte({ figure: { kind: 'schema', lignes: [{ noeuds: ['a', 'b'] }] } }), 't').join()).toContain('legende');
     expect(validateLevel(carte({ figure: { kind: 'image', legende: { fr: 'l', en: 'l' } } }), 't').join()).toContain('kind inconnu');
     expect(validateLevel(carte({ figure: { kind: 'tableau', entetes: ['a', 'b'], cellules: [['x']], legende: { fr: 'l', en: 'l' } } }), 't').join()).toContain('colonnes');
+    expect(validateLevel(carte({ figure: { kind: 'tableau', cellules: [['a', 'b', 'c', 'd']], legende: { fr: 'l', en: 'l' } } }), 't').join()).toContain('3 colonnes au plus');
   });
   it('refuse une carte à réponse non notée', () => { expect(validateLevel(carte({ note: undefined }), 't').join()).toContain('doit être notée'); });
   it('refuse un niveau sans source', () => { expect(validateLevel({ ...carte({}), sources: [] }, 't').join()).toContain('source'); });

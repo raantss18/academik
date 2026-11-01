@@ -1,6 +1,6 @@
 id: '0.1'
 module: 0
-duree_min: 12
+duree_min: 14
 titre: { fr: 'Vrai ou faux ?', en: 'True or false?' }
 ia: { fr: 'Kintana distingue une règle générale, un témoin et un contre-exemple.', en: 'Kintana distinguishes a general rule, a witness and a counterexample.' }
 sources:
@@ -21,8 +21,30 @@ cartes:
     explication: { fr: '$7$ est impair : un seul échec suffit à réfuter « tous ».', en: '$7$ is odd: one failure is enough to refute “all”.' }
   - id: c2
     type: idee
-    fr: 'Une proposition est un énoncé vrai ou faux ; une question ne l’est pas. Sur un ensemble précisé, $\forall$ signifie « pour tout » et $\exists$ « il existe au moins un ». Nier « tous vérifient $P$ » donne « au moins un ne vérifie pas $P$ » ; nier « au moins un vérifie $P$ » donne « aucun ne vérifie $P$ ».'
-    en: 'A proposition is a statement that is true or false; a question is not one. On a specified set, $\forall$ means “for every” and $\exists$ means “there is at least one”. Negating “all satisfy $P$” gives “at least one does not satisfy $P$”; negating “at least one satisfies $P$” gives “none satisfy $P$”.'
+    fr: 'Une **proposition** est une phrase qui est soit vraie, soit fausse. Une question ou un ordre n’en est pas une : on ne peut pas dire s’ils sont vrais.'
+    en: 'A **proposition** is a sentence that is either true or false. A question or a command is not one: we cannot say whether it is true.'
+    exemple: { fr: '« $7$ est pair » est une proposition (fausse). « $7$ est-il pair ? » n’en est pas une.', en: '“$7$ is even” is a proposition (false). “Is $7$ even?” is not one.' }
+  - id: c2a
+    type: idee
+    fr: 'Deux symboles reviennent partout. Ils parlent toujours d’un **ensemble précisé** : la liste des objets dont on parle.'
+    en: 'Two symbols come up everywhere. They always talk about a **specified set**: the list of objects we are talking about.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Symbole', en: 'Symbol' }, { fr: 'Se lit', en: 'Read as' }, { fr: 'Exemple sur $E=\{2,4,7\}$', en: 'Example on $E=\{2,4,7\}$' }]
+      cellules:
+        - ['$\forall$', { fr: '« pour tout »', en: '“for every”' }, { fr: '« $\forall x\in E$, $x$ est pair » : **faux**, à cause de $7$', en: '“$\forall x\in E$, $x$ is even”: **false**, because of $7$', ton: bad }]
+        - ['$\exists$', { fr: '« il existe au moins un »', en: '“there is at least one”' }, { fr: '« $\exists x\in E$, $x$ est pair » : **vrai**, $2$ suffit', en: '“$\exists x\in E$, $x$ is even”: **true**, $2$ is enough', ton: ok }]
+      legende: { fr: 'Le nombre qui rend vrai un « il existe » s’appelle un **témoin** ; celui qui rend faux un « pour tout », un **contre-exemple**.', en: 'The number that makes a “there is” true is called a **witness**; the one that makes a “for every” false, a **counterexample**.' }
+  - id: c2b
+    type: idee
+    fr: '**Nier** une phrase, c’est dire le contraire exact. Le contraire de « tous » n’est pas « aucun » : c’est « au moins un ne… pas ».'
+    en: 'To **negate** a sentence is to say its exact opposite. The opposite of “all” is not “none”: it is “at least one does not”.'
+    figure:
+      kind: schema
+      lignes:
+        - noeuds: [{ fr: 'tous vérifient $P$', en: 'all satisfy $P$' }, { fr: 'au moins un ne vérifie pas $P$', en: 'at least one does not satisfy $P$', ton: ok }]
+        - noeuds: [{ fr: 'au moins un vérifie $P$', en: 'at least one satisfies $P$' }, { fr: 'aucun ne vérifie $P$', en: 'none satisfies $P$', ton: ok }]
+      legende: { fr: 'À gauche une phrase, à droite sa négation : « pour tout » devient « il existe », et inversement.', en: 'On the left a sentence, on the right its negation: “for every” becomes “there is”, and vice versa.' }
   - id: c3
     type: exemple
     titre: { fr: 'Auditer une liste', en: 'Audit a list' }
@@ -68,6 +90,18 @@ cartes:
       - { fr: 'Il existe un fichier non vide.', en: 'There exists a nonempty file.' }
       - { fr: 'Aucun fichier n’est vide.', en: 'No file is empty.', juste: true }
     explication: { fr: 'Pour nier l’existence, on doit exclure chaque témoin possible.', en: 'To negate existence, every possible witness must be ruled out.' }
+  - id: c7b
+    type: idee
+    fr: 'Une règle « si $P$, alors $Q$ » est une **promesse** : chaque fois que $P$ est vrai, $Q$ doit l’être aussi. Elle n’est fausse que si la promesse est rompue.'
+    en: 'A rule “if $P$, then $Q$” is a **promise**: whenever $P$ is true, $Q$ must be true too. It is false only if the promise is broken.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: '« S’il pleut », $P$', en: '“If it rains”, $P$' }, { fr: '« je prends un parapluie », $Q$', en: '“I take an umbrella”, $Q$' }, { fr: 'La promesse', en: 'The promise' }]
+      cellules:
+        - [{ fr: 'il pleut', en: 'it rains' }, { fr: 'parapluie', en: 'umbrella' }, { fr: 'tenue', en: 'kept', ton: ok }]
+        - [{ fr: 'il pleut', en: 'it rains' }, { fr: 'pas de parapluie', en: 'no umbrella' }, { fr: '**rompue**', en: '**broken**', ton: bad }]
+        - [{ fr: 'il ne pleut pas', en: 'no rain' }, { fr: 'peu importe', en: 'either way' }, { fr: 'pas concernée : pas rompue', en: 'not concerned: not broken', ton: ok }]
+      legende: { fr: 'Une seule ligne rend la règle fausse : hypothèse vraie, conclusion fausse.', en: 'Only one row makes the rule false: true hypothesis, false conclusion.' }
   - id: c8
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -100,5 +134,13 @@ cartes:
     explication: { fr: 'Seul $4$ est pair sans être strictement inférieur à $4$.', en: 'Only $4$ is even without being strictly less than $4$.' }
   - id: c11
     type: idee
-    fr: 'Récap : précise l’ensemble, distingue « tous » et « au moins un », puis cherche ce qui réfuterait la règle. Kintana peut vérifier exhaustivement un ensemble fini ; quelques tests ne prouvent pas une règle sur tous les entiers.'
-    en: 'Recap: specify the set, distinguish “all” from “at least one”, then look for what would refute the rule. Kintana can exhaustively check a finite set; a few tests do not prove a rule about all integers.'
+    fr: 'Récap : précise l’ensemble, distingue « tous » et « au moins un », puis cherche ce qui réfuterait la règle.'
+    en: 'Recap: specify the set, distinguish “all” from “at least one”, then look for what would refute the rule.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Pour montrer que…', en: 'To show that…' }, { fr: 'il suffit de…', en: 'it is enough to…' }]
+      cellules:
+        - [{ fr: '« il existe » est vrai', en: '“there is” is true' }, { fr: 'trouver **un** témoin', en: 'find **one** witness', ton: ok }]
+        - [{ fr: '« pour tout » est faux', en: '“for every” is false' }, { fr: 'trouver **un** contre-exemple', en: 'find **one** counterexample', ton: ok }]
+        - [{ fr: '« pour tout » est vrai', en: '“for every” is true' }, { fr: 'vérifier **chaque** cas (ensemble fini) ou faire une preuve', en: 'check **every** case (finite set) or write a proof', ton: bad }]
+      legende: { fr: 'Kintana peut tout tester sur un ensemble fini ; sur tous les entiers, quelques tests ne prouvent rien.', en: 'Kintana can test everything on a finite set; on all integers, a few tests prove nothing.' }

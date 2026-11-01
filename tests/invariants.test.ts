@@ -23,6 +23,9 @@ describe('E8 · les formules ne restent jamais en texte brut', () => {
     }
     expect(bad).toEqual([]);
   });
+  it('les dérivées s\u2019écrivent $f\u2019$ et non $f\\prime$ (KaTeX dessinerait une barre au niveau de la ligne)', () => {
+    expect(readdirSync('content/niveaux').filter(f => read(`content/niveaux/${f}`).includes('\\prime'))).toEqual([]);
+  });
   it('les $ des textes de contenu sont équilibrés (sinon une formule resterait brute)', () => {
     const bad: string[] = [];
     for (const f of readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'))) {
@@ -101,11 +104,11 @@ describe('E14 / E15 · cours illustrés et clairs (barre de clarté C1–C5, doc
       if (t.length > 300 || sentences(c.fr!).length > 4) g.push(`C1 ${c.id} trop dense`);
       if (t.length > 200 && !c.figure && !c.exemple) g.push(`C2 ${c.id} sans exemple ni figure`);
     }
-    for (const c of cartes) for (const s of c.fr ? sentences(c.fr) : []) if (s.split(/\s+/).length > 25) g.push(`C1 ${c.id} phrase > 25 mots`);
+    for (const c of cartes) for (const s of c.fr ? sentences(c.fr) : []) if (s.split(/\s+/).filter(w => /[\p{L}\p{N}]/u.test(w)).length > 25) g.push(`C1 ${c.id} phrase > 25 mots`);   // une flèche « → » n'est pas un mot
     return g;
   }
   // Niveaux à réécrire (tâche Codex T-011). Cette liste ne fait que RÉTRÉCIR : un niveau conforme doit en sortir.
-  const PENDING = new Set(['0.1', '0.3', '0.4', '0.5', '0.boss', '2.1', '3.1', '3.2', '3.3', '3.4', '3.5', '3.boss', '4.1', '4.2', '4.3', '4.4', '4.5', '4.boss', '5.1', '5.2', '5.3', '5.4', '5.5', '5.boss']);
+  const PENDING = new Set<string>([]);
   const levels = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => parse(read(`content/niveaux/${f}`)) as { id: string; cartes: C[] });
   it('chaque niveau hors liste d’attente passe la barre de clarté', () => {
     expect(Object.fromEntries(levels.filter(l => !PENDING.has(l.id)).map(l => [l.id, gaps(l.cartes)]).filter(([, g]) => g.length))).toEqual({});

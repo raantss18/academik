@@ -18,8 +18,22 @@ cartes:
     explication: { fr: 'Une dérivée négative signifie que la perte baisse pour un déplacement positif suffisamment petit.', en: 'A negative derivative means the loss decreases for a sufficiently small positive change.' }
   - id: c2
     type: idee
-    fr: 'La descente applique $w_{k+1}=w_k-\eta L\prime(w_k)$, avec un pas $\eta>0$ ; à plusieurs paramètres, remplace la dérivée par le gradient. Le signe choisit la direction, le pas règle la distance. Une direction de baisse locale ne garantit pas une baisse pour un grand déplacement.'
-    en: 'Descent applies $w_{k+1}=w_k-\eta L\prime(w_k)$ with step size $\eta>0$; for several parameters, replace the derivative with the gradient. The sign selects the direction, and the step size controls the distance. A local descent direction does not guarantee a decrease for a large move.'
+    fr: 'La **descente de gradient** répète $w_{k+1}=w_k-\eta\,L''(w_k)$. Le signe de la pente choisit le sens ; le **pas** $\eta>0$ règle la distance. Avec plusieurs réglages, on utilise le gradient.'
+    en: '**Gradient descent** repeats $w_{k+1}=w_k-\eta\,L''(w_k)$. The sign of the slope picks the direction; the **step** $\eta>0$ sets the distance. With several settings, use the gradient.'
+    figure:
+      kind: tableau
+      entetes: ['$k$', '$w_k$', { fr: 'perte $L(w_k)=(w_k-1)^2$', en: 'loss $L(w_k)=(w_k-1)^2$' }]
+      cellules:
+        - ['$0$', '$3$', '$4$']
+        - ['$1$', '$2$', '$1$']
+        - ['$2$', '$1{,}5$', '$0{,}25$']
+        - ['$3$', '$1{,}25$', { fr: '$0{,}0625$', en: '$0{,}0625$', ton: ok }]
+      legende: { fr: 'Pas $\eta=\frac14$ depuis $w_0=3$ : $L''(3)=4$, donc $w_1=3-\frac14\times4=2$. La perte baisse à chaque pas.', en: 'Step $\eta=\frac14$ from $w_0=3$: $L''(3)=4$, so $w_1=3-\frac14\times4=2$. The loss drops at every step.' }
+  - id: c2a
+    type: idee
+    fr: 'Attention au pas : la pente ne garantit une baisse que pour un **petit** déplacement. Un pas trop grand peut sauter par-dessus le minimum et faire monter la perte.'
+    en: 'Mind the step: the slope only guarantees a decrease for a **small** move. A step that is too large can jump over the minimum and raise the loss.'
+    exemple: { fr: 'Même perte, même départ $w_0=3$, mais $\eta=\frac32$ : $w_1=3-\frac32\times4=-3$, et la perte passe de $4$ à $16$.', en: 'Same loss, same start $w_0=3$, but $\eta=\frac32$: $w_1=3-\frac32\times4=-3$, and the loss goes from $4$ to $16$.' }
   - id: c3
     type: exemple
     titre: { fr: 'Un premier ajustement', en: 'A first adjustment' }

@@ -20,8 +20,20 @@ cartes:
     explication: { fr: 'Pour chaque document, tu fais dix comparaisons : $10\times10=100$.', en: 'For each document, you make ten comparisons: $10\times10=100$.' }
   - id: c2
     type: idee
-    fr: 'La complexité compte des opérations en fonction de la taille $n$, dans un modèle où chaque opération choisie coûte une unité. Dire $T(n)=O(f(n))$ signifie que des constantes $C>0$ et $n_0$ existent avec $T(n)\leq C f(n)$ pour tout $n\geq n_0$. Parcourir, diviser par deux et comparer toutes les paires donnent respectivement des croissances linéaire, logarithmique et quadratique.'
-    en: 'Complexity counts operations as a function of size $n$, in a model where each chosen operation costs one unit. Writing $T(n)=O(f(n))$ means that constants $C>0$ and $n_0$ exist with $T(n)\leq C f(n)$ for every $n\geq n_0$. Scanning, repeatedly halving, and comparing every pair give linear, logarithmic, and quadratic growth respectively.'
+    fr: 'La **complexité** compte combien d’opérations fait un programme quand la taille $n$ des données grandit. Chaque opération choisie (lire, comparer…) coûte une unité.'
+    en: '**Complexity** counts how many operations a program does as the size $n$ of the data grows. Each chosen operation (read, compare…) costs one unit.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Parcourir : $n$', en: 'Scan: $n$' }, { fr: 'Couper en deux : $\log_2 n$', en: 'Halve: $\log_2 n$' }, { fr: 'Toutes les paires : $n^2$', en: 'All pairs: $n^2$' }]
+      cellules:
+        - ['$16$', { fr: '$4$', en: '$4$', ton: ok }, '$256$']
+        - ['$1024$', { fr: '$10$', en: '$10$', ton: ok }, { fr: '$1\,048\,576$', en: '$1\,048\,576$', ton: bad }]
+      legende: { fr: 'Linéaire, logarithmique, quadratique : quand $n$ est multiplié par $64$, le coût quadratique est multiplié par $4096$.', en: 'Linear, logarithmic, quadratic: when $n$ is multiplied by $64$, the quadratic cost is multiplied by $4096$.' }
+  - id: c2a
+    type: idee
+    fr: '$T(n)=O(f(n))$ se lit « $T$ est un **grand O** de $f$ ». Cela veut dire : à partir d’un certain $n_0$, $T(n)\leq C\,f(n)$ pour une constante $C>0$. On ne garde que la croissance.'
+    en: '$T(n)=O(f(n))$ is read “$T$ is **big O** of $f$”. It means: from some $n_0$ on, $T(n)\leq C\,f(n)$ for a constant $C>0$. Only the growth is kept.'
+    exemple: { fr: '$T(n)=2n+10$. Pour $n\geq10$, $2n+10\leq3n$ : avec $C=3$ et $n_0=10$, $T(n)=O(n)$.', en: '$T(n)=2n+10$. For $n\geq10$, $2n+10\leq3n$: with $C=3$ and $n_0=10$, $T(n)=O(n)$.' }
   - id: c3
     type: exemple
     lang: python

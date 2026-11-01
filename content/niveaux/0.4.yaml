@@ -21,8 +21,19 @@ cartes:
     explication: { fr: 'Au plus un message par dossier ne logerait que $4$ messages ; la répartition $2,1,1,1$ montre qu’on ne peut pas garantir $3$.', en: 'At most one message per folder would hold only $4$ messages; the distribution $2,1,1,1$ shows that $3$ cannot be guaranteed.' }
   - id: c2
     type: idee
-    fr: 'Le principe des tiroirs affirme que $m+1$ objets répartis dans $m\geq1$ tiroirs imposent un doublon. Plus généralement, $qm+1$ objets imposent au moins $q+1$ objets dans un même tiroir : sinon le total serait au plus $qm$. Chaque objet doit appartenir à un seul tiroir parmi ceux comptés.'
-    en: 'The pigeonhole principle says that placing $m+1$ objects into $m\geq1$ boxes forces a shared box. More generally, $qm+1$ objects force at least $q+1$ objects into one box: otherwise the total would be at most $qm$. Each object must belong to exactly one of the counted boxes.'
+    fr: '**Principe des tiroirs** : si l’on range plus d’objets qu’il n’y a de tiroirs, au moins un tiroir contient **deux** objets ou plus. On ne sait pas lequel, mais on est sûr qu’il existe.'
+    en: '**Pigeonhole principle**: if you put more objects than there are drawers, at least one drawer holds **two** objects or more. We do not know which one, but we are sure it exists.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: '$4$ chaussettes, $3$ tiroirs : on remplit au mieux', en: '$4$ socks, $3$ drawers: spread them out as much as possible' }
+          noeuds: [{ fr: 'tiroir 1 : $1$', en: 'drawer 1: $1$' }, { fr: 'tiroir 2 : $1$', en: 'drawer 2: $1$' }, { fr: 'tiroir 3 : $1$', en: 'drawer 3: $1$' }, { fr: 'la 4e : doublon forcé', en: 'the 4th: forced double', ton: bad }]
+      legende: { fr: 'Même en évitant les doublons le plus longtemps possible, la 4e chaussette tombe dans un tiroir déjà occupé.', en: 'Even avoiding doubles as long as possible, the 4th sock lands in an occupied drawer.' }
+  - id: c2a
+    type: idee
+    fr: '**Version générale** : avec $m$ tiroirs, $qm+1$ objets imposent au moins $q+1$ objets dans un même tiroir. Sinon, chaque tiroir en aurait au plus $q$, soit au plus $qm$ objets en tout.'
+    en: '**General version**: with $m$ drawers, $qm+1$ objects force at least $q+1$ objects into one drawer. Otherwise each drawer would hold at most $q$, so at most $qm$ objects in total.'
+    exemple: { fr: '$m=3$ tiroirs et $q=2$ : avec $2\times3+1=7$ objets, un tiroir en contient au moins $3$. Avec $6$ objets, $2+2+2$ l’évite.', en: '$m=3$ drawers and $q=2$: with $2\times3+1=7$ objects, some drawer holds at least $3$. With $6$ objects, $2+2+2$ avoids it.' }
   - id: c3
     type: exemple
     titre: { fr: 'Dimensionner des étiquettes', en: 'Sizing a label system' }
@@ -94,5 +105,12 @@ cartes:
     explication: { fr: 'Il y a $2^3=8$ codes ; $16$ messages peuvent en utiliser chacun deux fois, mais $17$ imposent un troisième message pour un code.', en: 'There are $2^3=8$ codes; $16$ messages can use each twice, but $17$ force a third message for some code.' }
   - id: c11
     type: idee
-    fr: 'Récap : nomme objets et tiroirs, calcule la capacité sans le regroupement recherché, puis dépasse-la d’une unité. Pour prouver qu’un seuil est minimal, construis aussi une répartition juste en dessous qui évite ce regroupement.'
-    en: 'Recap: identify objects and boxes, compute the capacity without the desired grouping, then exceed it by one. To prove a threshold is minimal, also construct a distribution just below it that avoids the grouping.'
+    fr: 'Récap : nomme les objets et les tiroirs, calcule combien on peut en ranger **sans** le regroupement cherché, puis ajoute un objet.'
+    en: 'Recap: name the objects and the drawers, count how many fit **without** the grouping you look for, then add one object.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Question', en: 'Question' }, { fr: 'Capacité sans regroupement', en: 'Capacity without grouping' }, { fr: 'Seuil', en: 'Threshold' }]
+      cellules:
+        - [{ fr: 'un doublon parmi $m$ tiroirs', en: 'a double among $m$ drawers' }, '$m$', { fr: '$m+1$', en: '$m+1$', ton: ok }]
+        - [{ fr: '$q+1$ dans un même tiroir', en: '$q+1$ in one drawer' }, '$qm$', { fr: '$qm+1$', en: '$qm+1$', ton: ok }]
+      legende: { fr: 'Pour montrer que le seuil est le plus petit possible, donne aussi une répartition juste en dessous qui évite le regroupement.', en: 'To show the threshold is the smallest possible, also give a distribution just below it that avoids the grouping.' }

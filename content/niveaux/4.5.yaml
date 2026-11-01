@@ -21,8 +21,16 @@ cartes:
     explication: { fr: 'La flèche reste sur le même axe et quadruple : $(4,0)=4(1,0)$.', en: 'The arrow stays on the same axis and quadruples: $(4,0)=4(1,0)$.' }
   - id: c2
     type: idee
-    fr: 'Une flèche non nulle qui reste sur sa droite après transformation est un vecteur propre : $Av=\lambda v$, où $\lambda$ est la valeur propre. Pour $A=\operatorname{diag}(4,2)$, la flèche $(1,0)$ est multipliée par $4$, et $(0,1)$ par $2$. Un facteur négatif inverse le sens ; un facteur nul écrase la flèche.'
-    en: 'A nonzero arrow that stays on its line after a transformation is an eigenvector: $Av=\lambda v$, where $\lambda$ is the eigenvalue. For $A=\operatorname{diag}(4,2)$, the arrow $(1,0)$ is scaled by $4$, and $(0,1)$ by $2$. A negative factor reverses its direction; a zero factor collapses it.'
+    fr: 'Un **vecteur propre** de $A$ est une flèche non nulle que $A$ ne fait pas tourner : $Av=\lambda v$. La **valeur propre** $\lambda$ dit de combien elle est étirée. Négative, elle la retourne ; nulle, elle l’écrase.'
+    en: 'An **eigenvector** of $A$ is a nonzero arrow that $A$ does not rotate: $Av=\lambda v$. The **eigenvalue** $\lambda$ says how much it is stretched. Negative, it flips it; zero, it crushes it.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: '$v$', en: '$v$' }, { fr: '$Av$ pour $A=\operatorname{diag}(3,1)$', en: '$Av$ for $A=\operatorname{diag}(3,1)$' }, { fr: 'Propre ?', en: 'Eigen?' }]
+      cellules:
+        - ['$(1,0)$', '$(3,0)=3\,v$', { fr: 'oui, $\lambda=3$', en: 'yes, $\lambda=3$', ton: ok }]
+        - ['$(0,1)$', '$(0,1)=1\,v$', { fr: 'oui, $\lambda=1$', en: 'yes, $\lambda=1$', ton: ok }]
+        - ['$(1,1)$', '$(3,1)$', { fr: 'non : la flèche a tourné', en: 'no: the arrow turned', ton: bad }]
+      legende: { fr: '$(3,1)$ n’est pas un multiple de $(1,1)$ : il ne reste pas sur la même droite.', en: '$(3,1)$ is not a multiple of $(1,1)$: it does not stay on the same line.' }
   - id: c3
     type: exemple
     lang: python

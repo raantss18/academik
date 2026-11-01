@@ -21,21 +21,30 @@ cartes:
     explication: { fr: 'Les erreurs au carré valent $4$ et $36$ ; leur moyenne vaut $20$.', en: 'The squared errors are $4$ and $36$; their mean is $20$.' }
   - id: c2
     type: idee
-    fr: 'Les moindres carrés choisissent les paramètres qui minimisent une somme ou une moyenne d’erreurs au carré. Ici, développer donne $J(w)=w^2-8w+20=(w-4)^2+4$. Le carré montre que la meilleure perte possible est positive : une constante ne peut égaler deux observations différentes.'
-    en: 'Least squares chooses parameters that minimize a sum or mean of squared errors. Here, expanding gives $J(w)=w^2-8w+20=(w-4)^2+4$. The square shows that the best possible loss is positive: one constant cannot match two different observations.'
+    fr: 'Les **moindres carrés** choisissent le réglage qui rend la moyenne des erreurs au carré la plus petite. Pour les observations $2$ et $6$ : $J(w)=w^2-8w+20=(w-4)^2+4$.'
+    en: '**Least squares** pick the setting that makes the mean of squared errors smallest. For observations $2$ and $6$: $J(w)=w^2-8w+20=(w-4)^2+4$.'
+    figure:
+      kind: tableau
+      entetes: ['$w$', '$J(w)$']
+      cellules:
+        - ['$0$', '$20$']
+        - ['$3$', '$5$']
+        - ['$4$', { fr: '$4$ : le minimum', en: '$4$: the minimum', ton: ok }]
+        - ['$5$', '$5$']
+      legende: { fr: 'La meilleure perte vaut $4$, pas $0$ : une seule valeur ne peut pas égaler à la fois $2$ et $6$.', en: 'The best loss is $4$, not $0$: a single value cannot equal both $2$ and $6$.' }
   - id: c3
     type: exemple
     titre: { fr: 'Un autre départ pour voir la méthode', en: 'Another starting point to see the method' }
     lang: python
     etapes:
       - { code: 'w, eta = 8, 0.25', fr: 'Sur cette perte, essaie le départ $w=8$ avec $\eta=1/4$.', en: 'For this loss, try starting at $w=8$ with $\eta=1/4$.' }
-      - { code: 'g = sum(2*(w-y) for y in [2,6])/2', fr: 'La moyenne des dérivées vaut $J\prime(w)=2w-8$, donc $8$ ici.', en: 'The mean of the derivatives is $J\prime(w)=2w-8$, hence $8$ here.' }
+      - { code: 'g = sum(2*(w-y) for y in [2,6])/2', fr: 'La moyenne des dérivées vaut $J''(w)=2w-8$, donc $8$ ici.', en: 'The mean of the derivatives is $J''(w)=2w-8$, hence $8$ here.' }
       - { code: 'w -= eta*g', fr: 'Le réglage devient $6$ ; la perte passe de $20$ à $8$.', en: 'The setting becomes $6$; the loss falls from $20$ to $8$.' }
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
-    fr: 'À toi : repars de $w_0=0$. Calcule $J\prime(0)$ pour $J(w)=((w-2)^2+(w-6)^2)/2$.'
-    en: 'Your turn: restart at $w_0=0$. Compute $J\prime(0)$ for $J(w)=((w-2)^2+(w-6)^2)/2$.'
+    fr: 'À toi : repars de $w_0=0$. Calcule $J''(0)$ pour $J(w)=((w-2)^2+(w-6)^2)/2$.'
+    en: 'Your turn: restart at $w_0=0$. Compute $J''(0)$ for $J(w)=((w-2)^2+(w-6)^2)/2$.'
     reponses: ['-8']
     verif: |
       from fractions import Fraction
@@ -46,8 +55,8 @@ cartes:
   - id: c5
     type: saisie
     note: { kind: exercise, poids: 1 }
-    fr: 'Avec $w_0=0$, $J\prime(0)=-8$ et $\eta=1/4$, calcule $w_1$.'
-    en: 'With $w_0=0$, $J\prime(0)=-8$ and $\eta=1/4$, compute $w_1$.'
+    fr: 'Avec $w_0=0$, $J''(0)=-8$ et $\eta=1/4$, calcule $w_1$.'
+    en: 'With $w_0=0$, $J''(0)=-8$ and $\eta=1/4$, compute $w_1$.'
     reponses: ['2']
     verif: 'from fractions import Fraction; print(0-Fraction(1,4)*(-8))'
     explication: { fr: '$w_1=0-(1/4)(-8)=2$ ; soustraire une dérivée négative augmente le paramètre.', en: '$w_1=0-(1/4)(-8)=2$; subtracting a negative derivative increases the parameter.' }
@@ -62,8 +71,8 @@ cartes:
   - id: c7
     type: saisie
     note: { kind: exercise, poids: 1 }
-    fr: 'Pour $J(w)=w^2-8w+20$, calcule $J\prime\prime(w)$ afin de certifier la stricte convexité.'
-    en: 'For $J(w)=w^2-8w+20$, compute $J\prime\prime(w)$ to certify strict convexity.'
+    fr: 'Pour $J(w)=w^2-8w+20$, calcule $J''''(w)$ afin de certifier la stricte convexité.'
+    en: 'For $J(w)=w^2-8w+20$, compute $J''''(w)$ to certify strict convexity.'
     reponses: ['2']
     verif: 'J=lambda w: w*w-8*w+20; print(J(1)-2*J(0)+J(-1))'
     explication: { fr: 'La dérivée seconde vaut $2>0$ partout ; le point stationnaire $w=4$ est donc l’unique minimiseur global.', en: 'The second derivative is $2>0$ everywhere; the stationary point $w=4$ is therefore the unique global minimizer.' }

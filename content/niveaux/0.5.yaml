@@ -21,8 +21,31 @@ cartes:
     explication: { fr: '$24+5=29=26+3$ : on enlève un tour complet et on arrive en position $3$.', en: '$24+5=29=26+3$: remove one full turn to reach position $3$.' }
   - id: c2
     type: idee
-    fr: 'Pour un entier $m\geq2$, $a\equiv b\pmod m$ signifie que $m$ divise $a-b$ : les deux nombres ont le même reste. On peut additionner ou multiplier des congruences de même module ; on choisit ici les restes entre $0$ et $m-1$. Un inverse de $a$ est un entier $u$ tel que $au\equiv1\pmod m$ ; il existe exactement quand $\operatorname{pgcd}(a,m)=1$, c’est-à-dire sans diviseur commun positif autre que $1$.'
-    en: 'For an integer $m\geq2$, $a\equiv b\pmod m$ means that $m$ divides $a-b$: the two numbers have the same remainder. Congruences with the same modulus can be added or multiplied; here we choose remainders from $0$ to $m-1$. An inverse of $a$ is an integer $u$ with $au\equiv1\pmod m$; it exists exactly when $\gcd(a,m)=1$, meaning there is no common positive divisor other than $1$.'
+    fr: '$a\equiv b\pmod m$ se lit « $a$ est **congru** à $b$ modulo $m$ ». Cela veut dire que $a$ et $b$ ont le **même reste** dans la division par $m$, autrement dit que $m$ divise $a-b$.'
+    en: '$a\equiv b\pmod m$ is read “$a$ is **congruent** to $b$ modulo $m$”. It means that $a$ and $b$ have the **same remainder** when divided by $m$, in other words that $m$ divides $a-b$.'
+    figure:
+      kind: nombres
+      liste: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+      groupes:
+        - { valeurs: [3, 10, 17], ton: ok, label: { fr: 'reste $3$ dans la division par $7$', en: 'remainder $3$ when divided by $7$' } }
+        - { valeurs: [0, 7, 14], ton: bad, label: { fr: 'reste $0$ : les multiples de $7$', en: 'remainder $0$: the multiples of $7$' } }
+      legende: { fr: 'Tous les $7$ pas, le reste revient : $3\equiv10\equiv17\pmod 7$, car $17-3=14=2\times7$.', en: 'Every $7$ steps the remainder comes back: $3\equiv10\equiv17\pmod 7$, since $17-3=14=2\times7$.' }
+  - id: c2a
+    type: idee
+    fr: 'On peut **remplacer un nombre par son reste** avant d’additionner ou de multiplier : le reste du résultat ne change pas. Les calculs restent petits.'
+    en: 'You can **replace a number by its remainder** before adding or multiplying: the remainder of the result does not change. Computations stay small.'
+    exemple: { fr: 'Modulo $7$ : $17\equiv3$ et $5\equiv5$. Donc $17\times5\equiv3\times5=15\equiv1$. Vérification : $85=12\times7+1$.', en: 'Modulo $7$: $17\equiv3$ and $5\equiv5$. So $17\times5\equiv3\times5=15\equiv1$. Check: $85=12\times7+1$.' }
+  - id: c2b
+    type: idee
+    fr: 'Un **inverse** de $a$ modulo $m$ est un entier $u$ tel que $au\equiv1\pmod m$ : multiplier par $u$ défait la multiplication par $a$. Il existe exactement quand $a$ et $m$ n’ont pas de diviseur commun autre que $1$.'
+    en: 'An **inverse** of $a$ modulo $m$ is an integer $u$ such that $au\equiv1\pmod m$: multiplying by $u$ undoes multiplying by $a$. It exists exactly when $a$ and $m$ have no common divisor other than $1$.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Cas', en: 'Case' }, { fr: 'Essais', en: 'Tries' }, { fr: 'Inverse ?', en: 'Inverse?' }]
+      cellules:
+        - [{ fr: '$a=3$, $m=7$', en: '$a=3$, $m=7$' }, '$3\times5=15\equiv1$', { fr: 'oui : $u=5$', en: 'yes: $u=5$', ton: ok }]
+        - [{ fr: '$a=2$, $m=4$', en: '$a=2$, $m=4$' }, { fr: '$2\times u$ vaut $0$ ou $2$ modulo $4$', en: '$2\times u$ is $0$ or $2$ modulo $4$' }, { fr: 'non : $2$ divise $2$ et $4$', en: 'no: $2$ divides $2$ and $4$', ton: bad }]
+      legende: { fr: 'C’est ce qui permettra à Kintana de déchiffrer un message, ou l’en empêchera.', en: 'This is what will let Kintana decrypt a message, or stop it from doing so.' }
   - id: c3
     type: exemple
     titre: { fr: 'Défaire une multiplication modulo $7$', en: 'Undo multiplication modulo $7$' }
@@ -95,5 +118,6 @@ cartes:
     explication: { fr: '$x\equiv21(4-7)=-63\equiv15\pmod{26}$ ; en retour, $5\times15+7=82\equiv4$.', en: '$x\equiv21(4-7)=-63\equiv15\pmod{26}$; checking forwards, $5\times15+7=82\equiv4$.' }
   - id: c11
     type: idee
-    fr: 'Récap : réduire un nombre revient à garder son reste ; addition et multiplication respectent les congruences. Pour défaire une multiplication, Kintana cherche un inverse, qui n’existe pas pour toutes les clés.'
-    en: 'Recap: reducing a number means keeping its remainder; addition and multiplication respect congruences. To undo multiplication, Kintana looks for an inverse, which does not exist for every key.'
+    fr: 'Récap : réduire un nombre, c’est garder son reste. Pour défaire une multiplication, Kintana cherche un inverse, qui n’existe pas pour toutes les clés.'
+    en: 'Recap: reducing a number means keeping its remainder. To undo a multiplication, Kintana looks for an inverse, which does not exist for every key.'
+    exemple: { fr: 'Modulo $7$, multiplier par $3$ se défait en multipliant par $5$ : $4\times3=12\equiv5$, puis $5\times5=25\equiv4$.', en: 'Modulo $7$, multiplying by $3$ is undone by multiplying by $5$: $4\times3=12\equiv5$, then $5\times5=25\equiv4$.' }

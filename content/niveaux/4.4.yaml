@@ -20,8 +20,21 @@ cartes:
     explication: { fr: 'Additionner les équations élimine $y$ : $2x=6$, puis $y=2$.', en: 'Adding the equations eliminates $y$: $2x=6$, then $y=2$.' }
   - id: c2
     type: idee
-    fr: 'Chaque équation linéaire à deux inconnues non toutes deux absentes décrit une droite : résoudre le système, c’est chercher leurs points communs. La forme $Aw=b$ regroupe toutes les contraintes sur le vecteur de poids $w$. Ajouter à une équation un multiple d’une autre conserve les solutions et permet d’éliminer une inconnue.'
-    en: 'Each linear equation in two unknowns, with at least one nonzero coefficient, describes a line: solving the system means finding shared points. The form $Aw=b$ groups all constraints on the weight vector $w$. Adding a multiple of one equation to another preserves the solutions and can eliminate an unknown.'
+    fr: 'Une équation comme $x+y=4$ décrit une **droite** : tous les points $(x,y)$ qui la vérifient. **Résoudre un système**, c’est chercher les points communs à toutes ses droites.'
+    en: 'An equation like $x+y=4$ describes a **line**: all points $(x,y)$ that satisfy it. **Solving a system** means finding the points common to all its lines.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Système', en: 'System' }, { fr: 'Les droites', en: 'The lines' }, { fr: 'Solutions', en: 'Solutions' }]
+      cellules:
+        - ['$x+y=4$, $x-y=2$', { fr: 'se coupent en un point', en: 'cross at one point' }, { fr: 'une seule : $(3,1)$', en: 'exactly one: $(3,1)$', ton: ok }]
+        - ['$x+y=1$, $x+y=3$', { fr: 'parallèles', en: 'parallel' }, { fr: 'aucune', en: 'none', ton: bad }]
+        - ['$x+y=1$, $3x+3y=3$', { fr: 'confondues', en: 'identical' }, { fr: 'une infinité', en: 'infinitely many' }]
+      legende: { fr: 'Deux droites du plan : un point commun, aucun, ou toute la droite.', en: 'Two lines in the plane: one common point, none, or the whole line.' }
+  - id: c2a
+    type: idee
+    fr: '**Éliminer** : ajouter à une équation un multiple d’une autre ne change pas les solutions, et peut faire disparaître une inconnue. On écrit aussi le système $Aw=b$, avec $w$ le vecteur des inconnues.'
+    en: '**Eliminate**: adding a multiple of one equation to another does not change the solutions, and can make an unknown disappear. We also write the system $Aw=b$, with $w$ the vector of unknowns.'
+    exemple: { fr: '$x+y=4$ et $x-y=2$. On les additionne : $2x=6$, donc $x=3$, puis $y=4-3=1$. Vérification : $3-1=2$.', en: '$x+y=4$ and $x-y=2$. Add them: $2x=6$, so $x=3$, then $y=4-3=1$. Check: $3-1=2$.' }
   - id: c3
     type: exemple
     lang: python

@@ -4,6 +4,9 @@
 //   node scripts/codex.mjs start T-004 [--force]  worktree isolé + lancement (refusé si quota épuisé ou trop de tâches en parallèle)
 //   node scripts/codex.mjs check T-004            contrôle automatique : fichiers autorisés, schéma, tests, secrets
 //   node scripts/codex.mjs merge T-004            check, puis copie des fichiers autorisés dans la branche courante, tâche DONE, nettoyage
+//   node scripts/codex.mjs relay                  RELAIS (demande d'Antsa) : quota épuisé → Claude reprend les tâches arrêtées ;
+//                                                 quota revenu → les rendre à Codex (start), qui ne retouche pas ce que Claude a fait
+//   node scripts/codex.mjs took T-011 <fichier…>  Claude note les fichiers qu'il a terminés à la place de Codex
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, symlinkSync, copyFileSync, openSync } from 'node:fs';
 import { execFileSync, spawn } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
@@ -11,6 +14,14 @@ import { dirname, resolve } from 'node:path';
 const CODEX = '/usr/lib/chatgpt/resources/codex', RUNS = 'handoff/runs', MAX_PARALLEL = 2;
 
 // ---------------------------------------------------------------- fonctions pures (testées)
+/** Journal du dernier lancement seulement (un ancien message de quota ne doit pas bloquer une tâche relancée depuis). */
+export const lastRun = log => log.split('=== lancement ').at(-1);
+/** Que faire d'une tâche READY selon le quota : 'claude' (Codex bloqué, arrêtée par le quota), 'codex' (à lui rendre) ou null. */
+export function relayAction({ status, running, stoppedByQuota, quotaUntil, takenByClaude }, now = new Date()) {
+  if (status !== 'READY' || running) return null;
+  if (quotaUntil && quotaUntil > now) return stoppedByQuota || takenByClaude ? 'claude' : null;
+  return stoppedByQuota || takenByClaude ? 'codex' : null;
+}
 /** « You've hit your usage limit … try again at 6:29 PM » → date de retour (aujourd'hui, ou demain si l'heure est passée). */
 export function parseQuota(text, now = new Date()) {
   const m = /usage limit[^\n]*?try again at (\d{1,2}):(\d{2})\s*(AM|PM)?/i.exec(text);
@@ -38,6 +49,8 @@ const quota = () => { try { const q = JSON.parse(read(quotaFile)); return new Da
 const running = () => existsSync(RUNS) ? readdirSync(RUNS).filter(f => f.endsWith('.pid')).filter(f => alive(Number(read(`${RUNS}/${f}`)))).map(f => f.replace('.pid', '')) : [];
 function scanQuota(id) { const d = parseQuota(read(`${RUNS}/${id}.log`)); if (d) { writeFileSync(quotaFile, JSON.stringify({ until: d.toISOString(), seen: id })); return d; } return null; }
 const hhmm = d => d.toTimeString().slice(0, 5);
+const relayFile = id => `${RUNS}/${id}.relay.json`;
+const taken = id => { try { return JSON.parse(read(relayFile(id))).files ?? []; } catch { return []; } };
 
 function changed(id) {
   const out = sh('git', ['status', '--porcelain', '-uall'], { cwd: wt(id) });
@@ -50,7 +63,7 @@ function status() {
   const live = running(); console.log(`En cours : ${live.length ? live.join(', ') : 'aucune'} (max ${MAX_PARALLEL} en parallèle)\n`);
   for (const f of readdirSync('handoff/tasks').filter(f => /^T-\d+\.md$/.test(f)).sort()) {
     const id = f.replace('.md', ''), md = read(`handoff/tasks/${f}`), st = parseStatus(md), log = read(`${RUNS}/${id}.log`);
-    const files = existsSync(wt(id)) ? changed(id).length : '-', stop = parseQuota(log) ? ' · arrêtée par le quota' : '';
+    const files = existsSync(wt(id)) ? changed(id).length : '-', stop = parseQuota(lastRun(log)) ? ' · arrêtée par le quota' : '';
     console.log(`${id}  ${st.padEnd(8)} ${live.includes(id) ? 'EN COURS ' : '         '} fichiers modifiés : ${String(files).padEnd(3)} jetons : ${parseTokens(log) || '-'}${stop}`);
     if (!live.includes(id)) scanQuota(id);
   }
@@ -64,8 +77,9 @@ function start(id, force) {
   if (!parseAllowed(md).length) return fail(`${id} : ligne « Autorisés : … » manquante (sans elle, aucun contrôle automatique possible)`);
   if (!existsSync(wt(id))) { sh('git', ['worktree', 'add', '-q', wt(id), '-b', branch(id), 'main']); symlinkSync(resolve('node_modules'), `${wt(id)}/node_modules`); }
   mkdirSync(RUNS, { recursive: true });
-  const prompt = `Lis CONSIGNES.md, docs/CONTENU.md, docs/QUALITE-COURS.md puis handoff/tasks/${id}.md (statut READY) et exécute la tâche ${id}. Si des fichiers autorisés existent déjà dans ton dossier de travail, relis-les, corrige-les au besoin et ne produis que ce qui manque. Écris les fichiers un par un, en vérifiant chacun avec node scripts/build-content.mjs avant de passer au suivant (le travail déjà écrit est conservé si tu es interrompu : ne le refais jamais). Termine par handoff/results/${id}.md. Sois économe : ne relis pas ce que tu as déjà lu. Réponds en français.`;
-  const out = openSync(`${RUNS}/${id}.log`, 'a');
+  const mine = taken(id), relayNote = mine.length ? ` Pendant ton absence (quota), Claude a terminé ces fichiers : ${mine.join(', ')}. N'y touche pas et ne les relis pas, sauf pour t'en inspirer.` : '';
+  const prompt = `Lis CONSIGNES.md, docs/CONTENU.md, docs/QUALITE-COURS.md puis handoff/tasks/${id}.md (statut READY) et exécute la tâche ${id}.${relayNote} Si des fichiers autorisés existent déjà dans ton dossier de travail, relis-les, corrige-les au besoin et ne produis que ce qui manque. Écris les fichiers un par un, en vérifiant chacun avec node scripts/build-content.mjs avant de passer au suivant (le travail déjà écrit est conservé si tu es interrompu : ne le refais jamais). Termine par handoff/results/${id}.md. Sois économe : ne relis pas ce que tu as déjà lu. Réponds en français.`;
+  const out = openSync(`${RUNS}/${id}.log`, 'a'); writeFileSync(out, `\n=== lancement ${new Date().toISOString()} ===\n`);
   const p = spawn(CODEX, ['exec', '-C', wt(id), '-s', 'workspace-write', '-c', 'tools.web_search=true', '-o', `${RUNS}/${id}.last.txt`, prompt], { detached: true, stdio: ['ignore', out, out] });
   p.unref(); writeFileSync(`${RUNS}/${id}.pid`, String(p.pid)); console.log(`${id} lancée (pid ${p.pid}, journal ${RUNS}/${id}.log)`);
 }
@@ -96,9 +110,24 @@ function merge(id) {
   sh('git', ['worktree', 'remove', '--force', wt(id)]); sh('git', ['branch', '-D', branch(id)]);
   console.log(`${id} intégrée dans la branche courante (à relire puis commiter).`);
 }
+function relay() {
+  const q = quota(), live = running(); let any = false;
+  for (const f of readdirSync('handoff/tasks').filter(f => /^T-\d+\.md$/.test(f)).sort()) {
+    const id = f.replace('.md', ''), st = parseStatus(read(`handoff/tasks/${f}`)), log = read(`${RUNS}/${id}.log`);
+    const a = relayAction({ status: st, running: live.includes(id), stoppedByQuota: !!parseQuota(lastRun(log)), quotaUntil: q, takenByClaude: taken(id).length > 0 });
+    if (a === 'claude') { any = true; console.log(`🔁 ${id} → CLAUDE prend le relais jusqu'à ${hhmm(q)} (dossier ${wt(id)} ; déjà faits par Claude : ${taken(id).join(', ') || 'aucun'})`); }
+    if (a === 'codex') { any = true; console.log(`↩ ${id} → RENDRE À CODEX : node scripts/codex.mjs start ${id}  (Claude a fait : ${taken(id).join(', ') || 'rien'})`); }
+  }
+  if (!any) console.log('Aucun relais à faire.');
+}
+function took(id, files) {
+  if (!existsSync(wt(id))) return fail(`pas de dossier de travail pour ${id}`);
+  const all = [...new Set([...taken(id), ...files])]; mkdirSync(RUNS, { recursive: true });
+  writeFileSync(relayFile(id), JSON.stringify({ by: 'claude', files: all }, null, 1)); console.log(`${id} : faits par Claude → ${all.join(', ')}`);
+}
 function fail(m) { console.error('✗ ' + m); process.exitCode = 1; return false; }
 
 if (process.argv[1]?.endsWith('codex.mjs')) {
   const [cmd, id] = process.argv.slice(2), force = process.argv.includes('--force');
-  ({ status, start: () => start(id, force), check: () => check(id), merge: () => merge(id) }[cmd] ?? (() => fail('commandes : status | start T-00N | check T-00N | merge T-00N')))();
+  ({ status, relay, took: () => took(id, process.argv.slice(4).filter(a => !a.startsWith('--'))), start: () => start(id, force), check: () => check(id), merge: () => merge(id) }[cmd] ?? (() => fail('commandes : status | relay | took T-00N fichiers… | start T-00N | check T-00N | merge T-00N')))();
 }

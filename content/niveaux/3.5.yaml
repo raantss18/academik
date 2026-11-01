@@ -21,8 +21,22 @@ cartes:
     explication: { fr: 'Le chemin A → B → D utilise deux liens ; aucun lien direct A → D n’existe.', en: 'Path A → B → D uses two links; there is no direct A → D link.' }
   - id: c2
     type: idee
-    fr: 'Un graphe relie des sommets par des arêtes ; ici les listes d’adjacence donnent les voisins accessibles dans le sens des liens. Le parcours en largeur (BFS) utilise une file : premier entré, premier sorti, et marque chaque sommet dès son ajout. Il trouve les distances minimales en nombre d’arêtes dans un graphe non pondéré, en temps $O(V+E)$ avec listes d’adjacence et opérations de file et de marquage de coût constant.'
-    en: 'A graph connects vertices by edges; here adjacency lists give neighbours reachable in the direction of the links. Breadth-first search (BFS) uses a first-in, first-out queue and marks each vertex when it is enqueued. It finds shortest distances measured in edges in an unweighted graph in $O(V+E)$ time with adjacency lists and constant-time queue and marking operations.'
+    fr: 'Un **graphe** relie des **sommets** (pages, documents…) par des **arêtes** (liens). Le **parcours en largeur** (BFS) visite les sommets par distance croissante : d’abord les voisins, puis les voisins des voisins.'
+    en: 'A **graph** connects **vertices** (pages, documents…) with **edges** (links). **Breadth-first search** (BFS) visits vertices by increasing distance: neighbours first, then neighbours of neighbours.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Distance depuis Accueil', en: 'Distance from Home' }, { fr: 'Sommets', en: 'Vertices' }]
+      cellules:
+        - ['$0$', { fr: 'Accueil', en: 'Home' }]
+        - ['$1$', { fr: 'Cours, Quiz', en: 'Course, Quiz' }]
+        - ['$2$', { fr: 'Exercice', en: 'Exercise' }]
+        - ['$3$', { fr: 'Corrigé', en: 'Solution', ton: ok }]
+      legende: { fr: 'Liens : Accueil → Cours, Accueil → Quiz, Cours → Exercice, Quiz → Exercice, Exercice → Corrigé.', en: 'Links: Home → Course, Home → Quiz, Course → Exercise, Quiz → Exercise, Exercise → Solution.' }
+  - id: c2a
+    type: idee
+    fr: 'BFS range les sommets à visiter dans une **file** : premier entré, premier sorti. Il **marque** chaque sommet dès qu’il l’ajoute, pour ne jamais l’ajouter deux fois. Coût : $O(V+E)$ pour $V$ sommets et $E$ arêtes.'
+    en: 'BFS keeps the vertices to visit in a **queue**: first in, first out. It **marks** each vertex as soon as it adds it, so it is never added twice. Cost: $O(V+E)$ for $V$ vertices and $E$ edges.'
+    exemple: { fr: 'Ci-dessus, Exercice est atteint par Cours puis par Quiz : marqué dès la première fois, il n’entre qu’une fois dans la file.', en: 'Above, Exercise is reached through Course and then through Quiz: marked the first time, it enters the queue only once.' }
   - id: c3
     type: exemple
     lang: python
@@ -79,8 +93,8 @@ cartes:
   - id: c9
     type: qcm
     note: { kind: exercise, poids: 1 }
-    fr: 'Avec A → D de coût $9$, A → B de coût $1$ et B → D de coût $1$, quel coût total a le chemin choisi en minimisant seulement le nombre de liens ?'
-    en: 'With A → D costing $9$, A → B costing $1$, and B → D costing $1$, what total cost does the path minimizing only the number of links have?'
+    fr: 'Les liens coûtent : A → D $9$, A → B $1$, B → D $1$. BFS choisit le chemin avec le moins de liens. Quel est son coût total ?'
+    en: 'Links cost: A → D $9$, A → B $1$, B → D $1$. BFS picks the path with the fewest links. What is its total cost?'
     choix:
       - { fr: '2', en: '2' }
       - { fr: '9', en: '9', juste: true }

@@ -20,8 +20,20 @@ cartes:
     explication: { fr: 'Cet index inversé part du mot pour retrouver les documents qui le contiennent.', en: 'This inverted index starts from a word to retrieve the documents containing it.' }
   - id: c2
     type: idee
-    fr: 'Notre corpus est `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`, `4: ''eau riz sel''` : les mots sont déjà en minuscules et séparés par des espaces. Chaque entrée stocke un ensemble d’identifiants ; une requête « ET » intersecte deux ensembles. Construire cet index parcourt les $T$ occurrences en temps attendu $O(T)$ sous les hypothèses du hachage, puis on trie les résultats pour les afficher.'
-    en: 'Our corpus is `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`, `4: ''eau riz sel''`: words are already lowercase and space-separated. Each entry stores a set of IDs; an “AND” query intersects two sets. Building this index scans the $T$ occurrences in expected $O(T)$ time under the hashing assumptions, then results are sorted for display.'
+    fr: 'Un **index inversé** associe à chaque mot l’ensemble des documents qui le contiennent. Pour une requête « mot1 ET mot2 », on prend l’**intersection** des deux ensembles.'
+    en: 'An **inverted index** maps each word to the set of documents that contain it. For a query “word1 AND word2”, take the **intersection** of the two sets.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Mot', en: 'Word' }, { fr: 'Documents (A : « chat noir », B : « chat blanc », C : « noir »)', en: 'Documents (A: “chat noir”, B: “chat blanc”, C: “noir”)' }]
+      cellules:
+        - ['`chat`', '$\{A, B\}$']
+        - ['`noir`', '$\{A, C\}$']
+        - [{ fr: '`chat` ET `noir`', en: '`chat` AND `noir`' }, { fr: '$\{A,B\}\cap\{A,C\}=\{A\}$', en: '$\{A,B\}\cap\{A,C\}=\{A\}$', ton: ok }]
+      legende: { fr: 'On lit chaque document une seule fois pour construire l’index ; ensuite, une requête ne relit plus les textes.', en: 'Each document is read once to build the index; after that, a query never rereads the texts.' }
+  - id: c2a
+    type: idee
+    fr: 'Notre corpus : `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`, `4: ''eau riz sel''`. Les mots sont en minuscules, séparés par des espaces. Construire l’index parcourt les $T$ mots en temps moyen $O(T)$, grâce au hachage.'
+    en: 'Our corpus: `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`, `4: ''eau riz sel''`. Words are lowercase, separated by spaces. Building the index scans the $T$ words in average time $O(T)$, thanks to hashing.'
   - id: c3
     type: exemple
     lang: python
@@ -92,13 +104,13 @@ cartes:
     type: saisie
     defi: true
     note: { kind: quiz, poids: 1 }
-    fr: 'Défi. Dans le corpus, garde les documents contenant `riz` ET `sel`, puis ceux accessibles depuis 1 en au plus un lien (1 inclus), avec les liens de la carte précédente. Quel unique identifiant reste ?'
-    en: 'Challenge. In the corpus, keep documents containing `riz` AND `sel`, then those reachable from 1 in at most one link (including 1), using the previous card’s links. Which single ID remains?'
+    fr: 'Défi. Dans le corpus, garde les documents contenant `riz` ET `sel`. Garde ensuite ceux accessibles depuis 1 en au plus un lien (1 inclus), avec les liens de la carte précédente. Quel unique identifiant reste ?'
+    en: 'Challenge. In the corpus, keep documents containing `riz` AND `sel`. Then keep those reachable from 1 in at most one link (including 1), using the previous card’s links. Which single ID remains?'
     reponses: ['3']
     verif: "from collections import deque\ndocs = {1: 'riz eau riz', 2: 'eau sel', 3: 'riz sel', 4: 'eau riz sel'}\nindex = {}\nfor doc, text in docs.items():\n    for word in text.split():\n        index.setdefault(word, set()).add(doc)\ng = {1: [2, 3], 2: [4], 3: [4], 4: [1]}\nd = {1: 0}; q = deque([1])\nwhile q:\n    u = q.popleft()\n    for v in g[u]:\n        if v not in d:\n            d[v] = d[u]+1; q.append(v)\nresult = sorted(index['riz'] & index['sel'] & {v for v in d if d[v] <= 1})\nassert len(result) == 1\nprint(result[0])"
     indice: { fr: 'Construis séparément l’ensemble des réponses textuelles et celui des documents proches, puis intersecte-les.', en: 'Build the set of text matches and the set of nearby documents separately, then intersect them.' }
     explication: { fr: 'Le texte donne $\{3,4\}$ ; la distance donne $\{1,2,3\}$ ; leur intersection est $\{3\}$.', en: 'The text gives $\{3,4\}$; distance gives $\{1,2,3\}$; their intersection is $\{3\}$.' }
   - id: c12
     type: retenir
-    fr: 'Kintana sait retrouver un document vite : index inversé pour les mots, tri et dichotomie pour les listes, BFS pour les liens, complexité pour estimer le coût.'
-    en: 'Kintana can find a document quickly: an inverted index for words, sorting and binary search for lists, BFS for links, and complexity to estimate cost.'
+    fr: 'Kintana sait retrouver un document vite. Index inversé pour les mots, tri et dichotomie pour les listes, BFS pour les liens ; la complexité estime le coût.'
+    en: 'Kintana can find a document quickly. An inverted index for words, sorting and binary search for lists, BFS for links; complexity estimates the cost.'

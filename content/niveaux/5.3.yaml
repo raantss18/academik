@@ -18,8 +18,21 @@ cartes:
     explication: { fr: 'Une dérivée partielle fait varier une coordonnée en gardant les autres constantes, à leurs valeurs actuelles.', en: 'A partial derivative varies one coordinate while keeping the others constant at their current values.' }
   - id: c2
     type: idee
-    fr: 'Pour une fonction différentiable $L(w,b)$, le gradient regroupe les dérivées partielles : $\nabla L=(\partial_wL,\partial_bL)$. Un petit déplacement $d$ produit une variation approximative $\nabla L\cdot d$. Parmi les directions de norme euclidienne $1$, la baisse locale est maximale dans la direction $-\nabla L/\|\nabla L\|$ si le gradient est non nul.'
-    en: 'For a differentiable function $L(w,b)$, the gradient collects the partial derivatives: $\nabla L=(\partial_wL,\partial_bL)$. A small displacement $d$ produces an approximate change $\nabla L\cdot d$. Among directions of Euclidean norm $1$, the greatest local decrease is along $-\nabla L/\|\nabla L\|$ when the gradient is nonzero.'
+    fr: '$\partial_wL$ se lit « dérivée partielle de $L$ par rapport à $w$ » : on dérive en $w$ en gardant les autres réglages fixes. Le **gradient** $\nabla L=(\partial_wL,\partial_bL)$ range ces pentes dans un vecteur.'
+    en: '$\partial_wL$ is read “partial derivative of $L$ with respect to $w$”: differentiate in $w$ keeping the other settings fixed. The **gradient** $\nabla L=(\partial_wL,\partial_bL)$ stores these slopes in a vector.'
+    exemple: { fr: '$L(w,b)=w^2+5b$ : $\partial_wL=2w$ ($b$ fixe) et $\partial_bL=5$ ($w$ fixe). En $(1,0)$, $\nabla L=(2,5)$.', en: '$L(w,b)=w^2+5b$: $\partial_wL=2w$ ($b$ fixed) and $\partial_bL=5$ ($w$ fixed). At $(1,0)$, $\nabla L=(2,5)$.' }
+  - id: c2a
+    type: idee
+    fr: 'Un petit déplacement $d$ change $L$ d’environ $\nabla L\cdot d$. Pour une longueur de pas donnée, la **baisse la plus forte** est dans la direction $-\nabla L$, si le gradient est non nul.'
+    en: 'A small move $d$ changes $L$ by about $\nabla L\cdot d$. For a given step length, the **steepest decrease** is in the direction $-\nabla L$, if the gradient is nonzero.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Pas $d$ de longueur $0{,}1$', en: 'Step $d$ of length $0{,}1$' }, { fr: 'Variation prévue $\nabla L\cdot d$ pour $\nabla L=(2,4)$', en: 'Predicted change $\nabla L\cdot d$ for $\nabla L=(2,4)$' }]
+      cellules:
+        - ['$(0{,}1;\ 0)$', { fr: '$+0{,}2$ : hausse', en: '$+0{,}2$: increase', ton: bad }]
+        - ['$(0;\ -0{,}1)$', { fr: '$-0{,}4$ : baisse', en: '$-0{,}4$: decrease' }]
+        - [{ fr: '$0{,}1$ fois $-\nabla L/\|\nabla L\|$', en: '$0{,}1$ times $-\nabla L/\|\nabla L\|$' }, { fr: '$\approx-0{,}45$ : la plus forte baisse', en: '$\approx-0{,}45$: the steepest decrease', ton: ok }]
+      legende: { fr: '$-0{,}1\times\|(2,4)\|=-0{,}1\sqrt{20}\approx-0{,}45$.', en: '$-0{,}1\times\|(2,4)\|=-0{,}1\sqrt{20}\approx-0{,}45$.' }
   - id: c3
     type: exemple
     titre: { fr: 'Deux boutons, deux pentes', en: 'Two controls, two slopes' }

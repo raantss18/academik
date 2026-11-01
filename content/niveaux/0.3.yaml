@@ -19,8 +19,23 @@ cartes:
     explication: { fr: 'Sans départ vrai, la chaîne d’implications peut ne jamais établir une seule réussite.', en: 'Without a true starting point, the chain of implications may never establish a single success.' }
   - id: c2
     type: idee
-    fr: 'Pour prouver $P(n)$ pour tout entier $n\geq n_0$, vérifie d’abord $P(n_0)$ : l’initialisation. Fixe ensuite un entier quelconque $k\geq n_0$, suppose $P(k)$ et démontre $P(k+1)$ : l’hérédité. Les deux étapes permettent de conclure pour tous ces entiers, sans les tester un par un.'
-    en: 'To prove $P(n)$ for every integer $n\geq n_0$, first verify $P(n_0)$: the base case. Then fix an arbitrary integer $k\geq n_0$, assume $P(k)$ and prove $P(k+1)$: the inductive step. Together, these steps establish the result for all those integers without testing them individually.'
+    fr: 'On note $P(n)$ une **propriété** qui dépend d’un entier $n$ : pour chaque $n$, elle est vraie ou fausse. La **récurrence** prouve $P(n)$ pour tous les entiers à partir d’un premier, $n_0$, comme une file de dominos.'
+    en: 'We write $P(n)$ for a **property** that depends on an integer $n$: for each $n$, it is true or false. **Induction** proves $P(n)$ for all integers from a first one, $n_0$, like a row of dominoes.'
+    exemple: { fr: '$P(n)$ : « $u_n=2+3n$ ». $P(0)$ dit $u_0=2$ ; $P(1)$ dit $u_1=5$.', en: '$P(n)$: “$u_n=2+3n$”. $P(0)$ says $u_0=2$; $P(1)$ says $u_1=5$.' }
+  - id: c2a
+    type: idee
+    fr: 'Deux étapes suffisent. **Initialisation** : vérifier $P(n_0)$, le premier domino tombe. **Hérédité** : pour un $k\geq n_0$ quelconque, supposer $P(k)$ et en déduire $P(k+1)$, chaque domino fait tomber le suivant.'
+    en: 'Two steps are enough. **Base case**: check $P(n_0)$, the first domino falls. **Inductive step**: for any $k\geq n_0$, assume $P(k)$ and deduce $P(k+1)$, each domino knocks over the next.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Initialisation', en: 'Base case' }
+          noeuds: [{ fr: 'on vérifie $P(n_0)$', en: 'check $P(n_0)$' }, { fr: 'le 1er domino tombe', en: 'the 1st domino falls', ton: ok }]
+        - titre: { fr: 'Hérédité', en: 'Inductive step' }
+          noeuds: [{ fr: 'on suppose $P(k)$', en: 'assume $P(k)$' }, { fr: 'on montre $P(k+1)$', en: 'show $P(k+1)$' }, { fr: 'chaque domino pousse le suivant', en: 'each domino pushes the next', ton: ok }]
+        - titre: { fr: 'Conclusion', en: 'Conclusion' }
+          noeuds: ['$P(n_0)$', '$P(n_0+1)$', '$P(n_0+2)$', { fr: '… tous tombent', en: '… all fall', ton: ok }]
+      legende: { fr: 'Sans initialisation, rien ne tombe ; sans hérédité, la chaîne s’arrête.', en: 'Without a base case, nothing falls; without the inductive step, the chain stops.' }
   - id: c3
     type: exemple
     titre: { fr: 'Un compteur de messages', en: 'A message counter' }
@@ -96,5 +111,13 @@ cartes:
     explication: { fr: '$v_5=63$ ; pour prouver la formule, le départ vaut $2^1-1=1$ et le passage donne $2(2^{k+1}-1)+1=2^{k+2}-1$.', en: '$v_5=63$; to prove the formula, the base case gives $2^1-1=1$ and the transition gives $2(2^{k+1}-1)+1=2^{k+2}-1$.' }
   - id: c11
     type: idee
-    fr: 'Récap : départ, hypothèse au rang quelconque $k$, passage au rang suivant, puis conclusion sur le domaine. Calculer des termes aide Kintana à conjecturer ; la récurrence justifie tous les termes.'
-    en: 'Recap: base case, hypothesis at an arbitrary index $k$, transition to the next index, then a conclusion over the domain. Computing terms helps Kintana conjecture; induction justifies every term.'
+    fr: 'Récap : calculer quelques termes aide Kintana à **deviner** une formule ; la récurrence la **prouve** pour tous les entiers.'
+    en: 'Recap: computing a few terms helps Kintana **guess** a formula; induction **proves** it for all integers.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Étape', en: 'Step' }, { fr: 'Ce qu’on écrit', en: 'What we write' }]
+      cellules:
+        - [{ fr: 'Initialisation', en: 'Base case' }, { fr: '$P(n_0)$ est vraie (calcul direct)', en: '$P(n_0)$ is true (direct computation)' }]
+        - [{ fr: 'Hérédité', en: 'Inductive step' }, { fr: 'soit $k\geq n_0$ ; si $P(k)$, alors $P(k+1)$', en: 'let $k\geq n_0$; if $P(k)$, then $P(k+1)$' }]
+        - [{ fr: 'Conclusion', en: 'Conclusion' }, { fr: '$P(n)$ vraie pour tout $n\geq n_0$', en: '$P(n)$ true for every $n\geq n_0$', ton: ok }]
+      legende: { fr: 'Les trois lignes sont obligatoires dans une rédaction.', en: 'All three rows are required in a written proof.' }

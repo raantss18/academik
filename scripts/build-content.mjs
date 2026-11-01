@@ -25,7 +25,7 @@ function validateFigure(at, f) {
   if (!FIG.has(f?.kind)) return err(at, `figure : kind inconnu « ${f?.kind} »`);
   both(at, f, 'legende');
   if (f.kind === 'schema') { if (!f.lignes?.length) err(at, 'schema : lignes manquantes'); (f.lignes ?? []).forEach((l, i) => { if (l.titre) txt(`${at}.l${i}`, l.titre); if (!(l.noeuds?.length >= 2)) err(`${at}.l${i}`, 'au moins 2 nœuds'); (l.noeuds ?? []).forEach((n, j) => txt(`${at}.l${i}.n${j}`, n)); }); }
-  if (f.kind === 'tableau') { const w = f.entetes?.length ?? f.cellules?.[0]?.length; if (!f.cellules?.length) err(at, 'tableau : cellules manquantes'); (f.entetes ?? []).forEach((h, i) => txt(`${at}.h${i}`, h)); (f.cellules ?? []).forEach((r, i) => { if (r.length !== w) err(`${at}.r${i}`, 'nombre de colonnes différent'); r.forEach((c, j) => txt(`${at}.r${i}.c${j}`, c)); }); }
+  if (f.kind === 'tableau') { const w = f.entetes?.length ?? f.cellules?.[0]?.length; if (!f.cellules?.length) err(at, 'tableau : cellules manquantes'); if (w > 3) err(at, 'tableau : 3 colonnes au plus (sinon il déborde sur téléphone)'); (f.entetes ?? []).forEach((h, i) => txt(`${at}.h${i}`, h)); (f.cellules ?? []).forEach((r, i) => { if (r.length !== w) err(`${at}.r${i}`, 'nombre de colonnes différent'); r.forEach((c, j) => txt(`${at}.r${i}.c${j}`, c)); }); }
   if (f.kind === 'nombres') { if (!f.liste?.length || !f.liste.every(Number.isFinite)) err(at, 'nombres : liste manquante'); (f.groupes ?? []).forEach((g, i) => { if (!TONS.has(g.ton)) err(`${at}.g${i}`, 'ton inconnu'); txt(`${at}.g${i}`, g.label); if (!g.valeurs?.every(v => f.liste?.includes(v))) err(`${at}.g${i}`, 'valeur absente de la liste'); }); }
 }
 
