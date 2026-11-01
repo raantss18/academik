@@ -11,12 +11,12 @@
   "assets": {
    "android": {
     "url": "https://github.com/raantss18/academik/releases/download/v0.3.2/academik-0.3.2.apk",
-    "sha256": "cc3b6b65191c6cac177c35d70c4d659ce08e53387c0226d6a0810eeee182b1bb",
-    "bytes": 3646760
+    "sha256": "aef579e07511256c754c0b297721a961ee93cd3fa5d768e804cecfaa549f72d6",
+    "bytes": 3647064
    },
    "linux": {
     "url": "https://github.com/raantss18/academik/releases/download/v0.3.2/academik-0.3.2-x86_64.AppImage",
-    "sha256": "661d88eea1ca6847b8a7c52cde4b959a6eb636edb961f5d0f33576261bb2d161",
+    "sha256": "5aa9024efd27f55b73d84522b70b8964f477c0b7d2a92c70b24ce5e88978f171",
     "bytes": 108370424
    }
   }
