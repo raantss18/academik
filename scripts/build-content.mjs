@@ -1,7 +1,8 @@
 // Compile content/ (YAML) en src/generated/content.json et valide le schéma. Échoue (code 1) à la moindre erreur.
-import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { parse } from 'yaml';
 import { gzipSync } from 'node:zlib';
+import { createHash } from 'node:crypto';
 
 const TYPES = new Set(['tentative', 'idee', 'exemple', 'qcm', 'saisie', 'parsons']);
 const errors = [];
@@ -53,11 +54,28 @@ export function buildContent(root = '.') {
   return { cursus, levels };
 }
 
+const sha = b => createHash('sha256').update(b).digest('hex');
+
+/** Écrit les paquets publiés (public/content/v1/) et renvoie le paquet embarqué (même contenu, mêmes empreintes). */
+export function writePacks(out, rev, minBuild, dir = 'public/content/v1') {
+  rmSync(dir, { recursive: true, force: true }); mkdirSync(`${dir}/levels`, { recursive: true });
+  const ref = (name, obj) => { const text = JSON.stringify(obj), h = sha(text); const file = `${name}.${h.slice(0, 8)}.json`; writeFileSync(`${dir}/levels/${file}`, text); return { file, sha256: h, bytes: Buffer.byteLength(text) }; };
+  const levels = {}, shas = {};
+  for (const [id, lvl] of Object.entries(out.levels)) { levels[id] = ref(id, lvl); shas[id] = levels[id].sha256; }
+  const cursus = ref('cursus', out.cursus);
+  writeFileSync(`${dir}/index.json`, JSON.stringify({ format: 1, rev, minBuild, cursus, levels }, null, 1));
+  return { rev, minBuild, cursus: out.cursus, cursusSha: cursus.sha256, levels: out.levels, sha: shas };
+}
+/** Révision = date UTC de fabrication (monotone) ; l'app ne télécharge que les niveaux dont l'empreinte a changé. */
+export const revNow = () => Number(new Date().toISOString().replace(/\D/g, '').slice(0, 12));
+
 if (process.argv[1] && process.argv[1].endsWith('build-content.mjs')) {
   let out;
   try { out = buildContent('.'); } catch (e) { console.error(e.message); process.exit(1); }
   mkdirSync('src/generated', { recursive: true });
-  const json = JSON.stringify(out);
+  const compat = JSON.parse(readFileSync('content/compat.json', 'utf8'));
+  const pack = writePacks(out, Number(process.env.CONTENT_REV) || revNow(), compat.minBuild);
+  const json = JSON.stringify(pack);
   writeFileSync('src/generated/content.json', json);
-  console.log(`content.json : ${Object.keys(out.levels).length} niveau(x), ${(json.length / 1024).toFixed(1)} Ko, ${(gzipSync(json).length / 1024).toFixed(1)} Ko gzip`);
+  console.log(`content.json (rév. ${pack.rev}) : ${Object.keys(out.levels).length} niveau(x), ${(json.length / 1024).toFixed(1)} Ko, ${(gzipSync(json).length / 1024).toFixed(1)} Ko gzip`);
 }

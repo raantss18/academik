@@ -1,15 +1,17 @@
 <script lang="ts">
   import { i18n, ui } from '../lib/i18n.svelte';
   import { progress } from '../lib/progress.svelte';
-  import { cursus, levels, order, scoredItems, passedBeforeContent } from '../lib/level';
+  import { scoredItems } from '../lib/level';
+  import { content } from '../lib/content.svelte';
+  import UpdateBanner from './UpdateBanner.svelte';
   import { levelScore, stars } from '../engine/score';
   import { unlockedLevels } from '../engine/unlock';
 
   let { onplay, onrules }: { onplay: (id: string) => void; onrules: () => void } = $props();
 
-  const scores = $derived(Object.fromEntries(order.map(id => [id, levels[id] ? levelScore(scoredItems(levels[id]), progress.best(id)) : 0])));
-  const open = $derived(unlockedLevels(order, scores, undefined, passedBeforeContent));
-  const current = $derived(order.find(id => levels[id] && open.has(id) && scores[id] < 1) ?? order.find(id => levels[id]));
+  const scores = $derived(Object.fromEntries(content.order.map(id => [id, content.levels[id] ? levelScore(scoredItems(content.levels[id]), progress.best(id)) : 0])));
+  const open = $derived(unlockedLevels(content.order, scores, undefined, content.passed));
+  const current = $derived(content.order.find(id => content.levels[id] && open.has(id) && scores[id] < 1) ?? content.order.find(id => content.levels[id]));
   const fr = $derived(i18n.lang === 'fr');
 </script>
 
@@ -22,19 +24,20 @@
     <button class="chip" onclick={onrules}>{fr ? 'Consignes' : 'Rules'}</button>
   </header>
 
+  <UpdateBanner />
   {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}</button>{/if}
   <p class="muted small">{ui('guest')}</p>
 
-  {#each cursus as m}
+  {#each content.modules as m}
     <section class="mod">
       <h2>{m.id} · {i18n.t(m.titre)}</h2>
       <ul>
         {#each m.niveaux as n}
-          {@const has = !!levels[n.id]} {@const isOpen = open.has(n.id)} {@const s = scores[n.id]}
+          {@const has = !!content.levels[n.id]} {@const isOpen = open.has(n.id)} {@const s = scores[n.id]}
           <li>
             <button class="lv" class:cur={n.id === current} disabled={!has || !isOpen} onclick={() => onplay(n.id)}>
               <span class="id">{n.boss ? '👑' : n.id}</span>
-              <span class="ti">{i18n.t(has ? levels[n.id].titre : (n.titre as { fr: string }))}</span>
+              <span class="ti">{i18n.t(has ? content.levels[n.id].titre : (n.titre as { fr: string }))}</span>
               <span class="st">
                 {#if !has}{ui('soon')}{:else if !isOpen}🔒{:else if s > 0}<span class="stars">{'★'.repeat(stars(s))}<span class="off">{'★'.repeat(3 - stars(s))}</span></span>{:else}{ui('play')}{/if}
               </span>

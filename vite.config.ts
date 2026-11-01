@@ -1,16 +1,20 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { VitePWA } from 'vite-plugin-pwa';
+import { readFileSync } from 'node:fs';
+
+const build = JSON.parse(readFileSync('build.json', 'utf8'));
 
 export default defineConfig({
   base: './',
+  define: { __APP_BUILD__: build.build, __APP_VERSION__: JSON.stringify(build.version) },
   plugins: [
     svelte(),
     // Hors ligne d'abord : tout le jeu (code, contenu, police, icônes) est précaché au premier chargement.
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',   // la mise à jour de l'app attend l'accord de l'élève (jamais en pleine leçon)
       includeAssets: ['icon.svg', 'icons/*.png'],
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,json,woff2}'], navigateFallback: 'index.html', cleanupOutdatedCaches: true },
+      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,json,woff2}'], globIgnores: ['content/**', 'app/**'], navigateFallback: 'index.html', cleanupOutdatedCaches: true },
       manifest: {
         name: 'academik', short_name: 'academik', lang: 'fr',
         description: 'Apprendre en jouant, du lycée à la recherche, en construisant sa propre IA — hors ligne.',

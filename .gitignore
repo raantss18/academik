@@ -15,3 +15,6 @@ android/.gradle/
 src-tauri/target/
 src-tauri/gen/
 release-out/
+public/content/
+public/app/release.json.sig.tmp
+src/generated/
