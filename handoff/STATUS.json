@@ -10,9 +10,10 @@
     "DECISIONS.md",
     "T-001 relecture croisée (Codex) intégrée",
     "volet quant (D-017)",
-    "maquette carte-ville isométrique (D-018)"
+    "maquette carte-ville isométrique (D-018)",
+    "ville v2 : quartiers à identité propre, rues organiques, ombres, végétation (D-018)"
   ],
   "in_progress": [],
   "blocked": [],
-  "next": "Phase 2 : squelette Svelte/Vite + carte-ville en composant, moteur (déblocage, FSRS, journal, synchro), niveau 2.1 ; T-002 (sources quant) à passer READY"
+  "next": "Tester la ville sur téléphone (375 px) ; puis phase 2 : squelette Svelte/Vite, moteur, niveau 2.1 ; T-002 à passer READY ; découper les livres d'Antsa (autorisé)"
 }

@@ -6,36 +6,40 @@
       "titre": "Mon livre d'algorithmique",
       "etablissement": "Antsa (auteur)",
       "url": "",
-      "licence": "auteur — à préciser — redistribution à confirmer par l'auteur (T-001)",
-      "verifie": "",
-      "mode": "embarque"
+      "licence": "Textes de l'auteur (Antsa) : autorisation de réutiliser, découper et mettre à jour (2026-11-01). Passages de tiers à l'intérieur : licence d'origine conservée.",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "remplace": "mettre à jour avec les résultats et sources plus récents (règle du plus moderne)"
     },
     {
       "id": "m1-ankatso",
       "titre": "M1 Info Ankatso (Linux, LaTeX, Python, données, Sage)",
       "etablissement": "Université d'Antananarivo",
       "url": "",
-      "licence": "auteur — à préciser — redistribution à confirmer par l'auteur (T-001)",
-      "verifie": "",
-      "mode": "embarque"
+      "licence": "Textes de l'auteur (Antsa) : autorisation de réutiliser, découper et mettre à jour (2026-11-01). Passages de tiers à l'intérieur : licence d'origine conservée.",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "remplace": "mettre à jour avec les résultats et sources plus récents (règle du plus moderne)"
     },
     {
       "id": "comima",
       "titre": "Cours et recueil COMIMa",
       "etablissement": "COMIMa",
       "url": "https://www.comima.mg",
-      "licence": "pédagogique non commercial (README COMIMa) — redistribution à confirmer par l'auteur (T-001)",
-      "verifie": "",
-      "mode": "embarque"
+      "licence": "Textes de l'auteur (Antsa) : autorisation de réutiliser, découper et mettre à jour (2026-11-01). Passages de tiers à l'intérieur : licence d'origine conservée.",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "remplace": "mettre à jour avec les résultats et sources plus récents (règle du plus moderne)"
     },
     {
       "id": "mada-boky",
       "titre": "Mada-Boky (manuels)",
       "etablissement": "Antsa",
       "url": "",
-      "licence": "voir Mada-Boky/LICENSE.md — redistribution à confirmer par l'auteur (T-001)",
-      "verifie": "",
-      "mode": "a-valider"
+      "licence": "Textes de l'auteur (Antsa) : autorisation de réutiliser, découper et mettre à jour (2026-11-01). Passages de tiers à l'intérieur : licence d'origine conservée.",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "remplace": "mettre à jour avec les résultats et sources plus récents (règle du plus moderne)"
     },
     {
       "id": "mit-1801sc",

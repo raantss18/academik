@@ -21,3 +21,12 @@
   aucune barre de défilement horizontale de page ; fiche de mission ouverte par « Continuer ».
 - **Risques** : licences des livres maison à confirmer avant de les embarquer ; poids de la carte quand les 21 quartiers
   seront dessinés (ne rendre que les quartiers visibles).
+
+### Ville v2 (2026-11-01)
+
+- **Fait** : chaque quartier a son identité (Haute-Ville, Docks, Jardins, Cité ordonnée, Cristal, Rizières, Foire,
+  Observatoire) : matériaux, tracé de rue, végétation (ravenala, baobab, jacaranda), repères uniques par niveau, ombres,
+  voitures animées, bouton « Mélanger » (autre tirage). Autorisation d'Antsa : réutiliser et découper tous ses livres,
+  en les mettant à jour (`CONSIGNES.md` § 7, manifeste).
+- **Vérifié** : ouverture sans erreur de console, 48 épingles, rendu bureau. **Non vérifié** : téléphone (375 px) et poids
+  (≈ 4 250 éléments SVG pour 8 quartiers : il faudra ne rendre que les quartiers proches).

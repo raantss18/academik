@@ -80,6 +80,11 @@ Public : l'auteur (Antsa), les étudiants L1–M1, les lycéens COMIMa (module 0
 
 ## 7. Sources de contenu
 
+**Autorisation d'Antsa (2026-11-01) : tous ses livres peuvent être pris, découpés et réutilisés, à condition de les
+mettre à jour avec les résultats récents trouvés en ligne** (la source la plus moderne gagne). Réserve : les passages
+**de tiers** dans ces livres (énoncés IMO, extraits d'ouvrages, figures) gardent leur licence d'origine ; on les
+réécrit, on les remplace par une source libre, ou on les cite en lien.
+
 Livres maison : `~/GitHub/Mon_livre_d_algo`, `~/GitHub/M1-info-Ankatso` (+ `Projets-InfoM1Maths-2025`),
 `~/GitHub/comima/content` et `~/GitHub/COMIMa-Solving-Problem-Technique`, `~/GitHub/Mada-Boky/Livres`.
 Cours ouverts (à valider un par un, licence vérifiée) : voir `content/manifest.json`. MIT OCW = CC BY-NC-SA (non
