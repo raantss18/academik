@@ -140,11 +140,11 @@
     </footer>
   {:else}
     <section class="card end">
-      <h1>{t(level.titre)}</h1>
+      <h1>{@html md(t(level.titre))}</h1>
       <p class="big">{Math.round(score * 100)} %</p>
       <p class="stars" aria-label={`${stars(score)} / 3`}>{'★'.repeat(stars(score))}<span class="off">{'★'.repeat(3 - stars(score))}</span></p>
       <p>{score + 1e-9 >= UNLOCK_THRESHOLD ? ui('unlocked') : ui('need')}</p>
-      <div class="ia"><strong>{ui('your_ai')}</strong> — {t(level.ia)}</div>
+      <div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(t(level.ia))}</div>
       <div class="foot"><button class="btn" onclick={replay}>{ui('replay')}</button><button class="btn primary" onclick={onexit}>{ui('back')}</button></div>
     </section>
   {/if}
@@ -169,5 +169,5 @@
   .foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; position: sticky; bottom: 0; padding: 10px 0 calc(var(--sab) + 10px); background: linear-gradient(transparent, var(--c-bg) 30%); }
   .prev { margin-right: auto; }
   .end { text-align: center; } .end .foot { justify-content: center; position: static; background: none; }
-  .big { font-size: 3rem; font-weight: 800; margin: 0; } .off { opacity: .25; } .ia { background: var(--c-surface-2); border-radius: 16px; padding: 12px 16px; margin: 14px 0; text-align: left; }
+  .end h1 :global(p), .ia :global(p) { margin: 0; } .big { font-size: 3rem; font-weight: 800; margin: 0; } .off { opacity: .25; } .ia { background: var(--c-surface-2); border-radius: 16px; padding: 12px 16px; margin: 14px 0; text-align: left; }
 </style>
