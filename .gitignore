@@ -19,3 +19,4 @@ public/content/
 public/app/release.json.sig.tmp
 src/generated/
 handoff/runs/
+public/py/

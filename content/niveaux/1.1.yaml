@@ -1,0 +1,129 @@
+# Niveau 1.1 — Le terminal 1 : se repérer. Original academik ; notions vérifiées dans le manuel GNU Coreutils (pwd, ls) et le manuel de Bash (cd).
+id: '1.1'
+module: 1
+duree_min: 12
+titre: { fr: 'Se repérer', en: 'Finding your way' }
+ia: { fr: 'Kintana sait où elle se trouve et se déplace dans ses dossiers.', en: 'Kintana knows where she is and moves around her folders.' }
+sources:
+  - { titre: 'GNU Coreutils — pwd, ls', url: 'https://www.gnu.org/software/coreutils/manual/html_node/index.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+  - { titre: 'GNU Bash Reference Manual — cd', url: 'https://www.gnu.org/software/bash/manual/bash.html#index-cd', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana vit dans un dossier de ton ordinateur. Quelle commande lui demande **où elle se trouve** ?'
+    en: 'Kintana lives in a folder on your computer. Which command asks her **where she is**?'
+    choix:
+      - { fr: '`ls`', en: '`ls`' }
+      - { fr: '`pwd`', en: '`pwd`', juste: true }
+      - { fr: '`cd`', en: '`cd`' }
+    explication: { fr: '`pwd` veut dire « print working directory » : afficher le dossier de travail.', en: '`pwd` means “print working directory”: show the current folder.' }
+  - id: c2
+    type: idee
+    fr: 'Le **terminal** est une fenêtre où l’on tape des **commandes**. Il est toujours « dans » un dossier, le **dossier courant**. Trois commandes suffisent pour s’y repérer.'
+    en: 'The **terminal** is a window where you type **commands**. It is always “in” one folder, the **current folder**. Three commands are enough to find your way.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Commande', en: 'Command' }, { fr: 'Elle répond à…', en: 'It answers…' }, { fr: 'Exemple', en: 'Example' }]
+      cellules:
+        - ['`pwd`', { fr: 'Où suis-je ?', en: 'Where am I?' }, '`/home/kintana`']
+        - ['`ls`', { fr: 'Que contient ce dossier ?', en: 'What is in this folder?' }, '`docs/  photos/`']
+        - ['`cd docs`', { fr: 'Entrer dans « docs »', en: 'Go into “docs”' }, { fr: '(rien ne s’affiche)', en: '(nothing is shown)' }]
+      legende: { fr: 'Un nom suivi de « / » est un dossier ; sans « / », c’est un fichier.', en: 'A name followed by “/” is a folder; without “/”, it is a file.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Une balade dans les dossiers', en: 'A walk through the folders' }
+    lang: bash
+    etapes:
+      - { code: 'pwd', fr: 'On demande où l’on est : la réponse est `/home/kintana`, ton dossier personnel.', en: 'We ask where we are: the answer is `/home/kintana`, your home folder.' }
+      - { code: 'ls', fr: 'On liste son contenu : on voit `docs/`, `photos/` et `projets/`.', en: 'We list its content: we see `docs/`, `photos/` and `projets/`.' }
+      - { code: 'cd projets', fr: 'On entre dans `projets`. Rien ne s’affiche : c’est normal, la commande a réussi.', en: 'We go into `projets`. Nothing is shown: that is normal, the command succeeded.' }
+      - { code: 'pwd', fr: 'On vérifie : `/home/kintana/projets`. Le dossier courant a changé.', en: 'We check: `/home/kintana/projets`. The current folder has changed.' }
+  - id: c4
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. Tu es dans ton dossier personnel. **Entre dans le dossier `docs`.**'
+    en: 'Your turn. You are in your home folder. **Go into the `docs` folder.**'
+    fs:
+      home:
+        kintana:
+          docs: { 'notes.txt': "idées pour Kintana\n", 'plan.md': "# Plan\n" }
+          photos: { 'tana.jpg': 'x' }
+          projets: { kintana: { 'README.md': "# Kintana\n", 'main.py': "print('bonjour')\n" }, jeux: {} }
+    cwd: /home/kintana
+    attendu: { cwd: /home/kintana/docs }
+    solution: ['cd docs']
+    indice: { fr: 'Tape `ls` pour voir les dossiers, puis `cd` suivi du nom du dossier.', en: 'Type `ls` to see the folders, then `cd` followed by the folder name.' }
+    explication: { fr: '`cd docs` entre dans `docs` : le dossier courant est maintenant `/home/kintana/docs`.', en: '`cd docs` goes into `docs`: the current folder is now `/home/kintana/docs`.' }
+  - id: c5
+    type: idee
+    fr: 'Un **chemin** dit où se trouve un dossier. Il est **absolu** s’il commence par `/` (depuis la racine), **relatif** sinon (depuis le dossier courant). Deux raccourcis : `..` est le dossier parent, `~` est ton dossier personnel.'
+    en: 'A **path** says where a folder is. It is **absolute** if it starts with `/` (from the root), **relative** otherwise (from the current folder). Two shortcuts: `..` is the parent folder, `~` is your home folder.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Depuis `/home/kintana/docs`', en: 'From `/home/kintana/docs`' }, { fr: 'Tu arrives dans…', en: 'You arrive in…' }]
+      cellules:
+        - ['`cd ..`', '`/home/kintana`']
+        - ['`cd ../photos`', '`/home/kintana/photos`']
+        - ['`cd ~`', '`/home/kintana`']
+        - ['`cd /home`', '`/home`']
+      legende: { fr: '`cd ../photos` : remonte d’un cran, puis descends dans `photos`.', en: '`cd ../photos`: go up one level, then down into `photos`.' }
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Tu es dans `/home/kintana/projets/kintana`. Tu tapes `cd ..` puis `pwd`. Que s’affiche-t-il ?'
+    en: 'You are in `/home/kintana/projets/kintana`. You type `cd ..` then `pwd`. What is shown?'
+    choix:
+      - { fr: '`/home/kintana`', en: '`/home/kintana`' }
+      - { fr: '`/home/kintana/projets`', en: '`/home/kintana/projets`', juste: true }
+      - { fr: '`/home/kintana/projets/kintana/..`', en: '`/home/kintana/projets/kintana/..`' }
+    explication: { fr: '`..` remonte d’un seul cran : de `kintana` vers son parent, `projets`.', en: '`..` goes up one level only: from `kintana` to its parent, `projets`.' }
+  - id: c7
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Va **directement** dans `projets/kintana`, avec une seule commande `cd`.'
+    en: 'Go **straight** into `projets/kintana`, with a single `cd` command.'
+    fs:
+      home:
+        kintana:
+          docs: { 'notes.txt': "idées pour Kintana\n" }
+          projets: { kintana: { 'README.md': "# Kintana\n", 'main.py': "print('bonjour')\n" }, jeux: {} }
+    cwd: /home/kintana
+    attendu: { cwd: /home/kintana/projets/kintana }
+    solution: ['cd projets/kintana']
+    indice: { fr: 'On peut écrire plusieurs dossiers dans un même chemin, séparés par `/`.', en: 'You can write several folders in one path, separated by `/`.' }
+    explication: { fr: 'Le chemin relatif `projets/kintana` traverse deux dossiers d’un coup.', en: 'The relative path `projets/kintana` goes through two folders at once.' }
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quelle commande te fait **remonter** d’un dossier ? Écris `cd` suivi de ce qu’il faut.'
+    en: 'Which command takes you **up** one folder? Write `cd` followed by what is needed.'
+    reponses: ['cd ..']
+    verif: 'print("cd ..")'
+    indice: { fr: 'Le dossier parent s’écrit avec deux points.', en: 'The parent folder is written with two dots.' }
+    explication: { fr: '`cd ..` remonte vers le dossier parent.', en: '`cd ..` goes up to the parent folder.' }
+  - id: c9
+    type: piege
+    fr: 'Les **majuscules comptent** : `Docs` et `docs` sont deux noms différents. Et `cd` tout seul te ramène dans ton dossier personnel.'
+    en: '**Capital letters matter**: `Docs` and `docs` are two different names. And `cd` alone takes you back to your home folder.'
+  - id: c10
+    type: terminal
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Tu es dans `~/projets/kintana`. Rends-toi dans `~/photos` **en une seule commande**, sans passer par `~` ni `/home`.'
+    en: 'Challenge. You are in `~/projets/kintana`. Get to `~/photos` **in one command**, without using `~` or `/home`.'
+    fs:
+      home:
+        kintana:
+          docs: { 'notes.txt': "idées\n" }
+          photos: { 'tana.jpg': 'x' }
+          projets: { kintana: { 'main.py': "print('bonjour')\n" } }
+    cwd: /home/kintana/projets/kintana
+    attendu: { cwd: /home/kintana/photos }
+    solution: ['cd ../../photos']
+    indice: { fr: 'Remonte deux fois, puis redescends. Les `..` peuvent s’enchaîner : `../..`.', en: 'Go up twice, then down. The `..` can be chained: `../..`.' }
+    explication: { fr: '`../..` remonte de deux crans (jusqu’à `/home/kintana`), puis `photos` descend.', en: '`../..` goes up two levels (to `/home/kintana`), then `photos` goes down.' }
+  - id: c11
+    type: retenir
+    fr: '`pwd` : où suis-je ? `ls` : que contient ce dossier ? `cd chemin` : y aller. `..` monte, `~` ramène chez soi.'
+    en: '`pwd`: where am I? `ls`: what is in this folder? `cd path`: go there. `..` goes up, `~` brings you home.'

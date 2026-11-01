@@ -36,7 +36,8 @@
 - ⏳ Lecteur de leçon v2 : deux volets (texte | atelier) sur tablette/bureau, fil d'Ariane, précédent/suivant (`docs/REFERENCES-PRESENTATION.md`)
 - ✅ **Révisions espacées à l'écran** (0.3.7) : FSRS rejoué depuis le journal (rien à synchroniser), 10 cartes max, jamais le jour même, réponse jamais montrée, sans XP ; bouton « Révision du jour · n » sur l'accueil ; ⏳ réglage de la rétention cible, rappel (notification)
 - ⏳ Difficulté adaptative (Elo) ; réparation de prérequis (2 min)
-- ⏳ Éditeur Python exécutable (Pyodide en Web Worker, délai limite, tests par exercice) ; terminal simulé (modules 1 et 14) ; cartes interactives (curseur, glisser, ordonner)
+- ✅ **Éditeur Python exécutable** (0.3.8, D-026) et **terminal simulé** (D-025) ; ⏳ coloration dans l'éditeur, essai sur appareil réel (WebView Android), préchargement de Python sur le site
+- ⏳ Cartes interactives (curseur, glisser, ordonner)
 - ⏳ Figures d'intuition (SVG générés, sans équation dans l'image)
 - ⏳ Comptes et **synchronisation** : écran de connexion, RxDB + `replication-supabase` (schéma `academik` déjà en ligne, voir D-019) ; test d'accès `supabase/tests/academik_rls.sql` à exécuter
 - ⏳ Mise à jour **du site** (service worker : rechargement automatique sur la carte) : non testée dans un vrai navigateur (le navigateur de test n'a pas de service worker) ; mises à jour 0.3.3 → 0.3.4 : la 0.3.3 renvoie encore vers GitHub, une installation manuelle est nécessaire une dernière fois
@@ -49,8 +50,8 @@
 | Module | État |
 | --- | --- |
 | 0 Raisonner | ✅ 6 niveaux (T-003) |
-| 1 Le terminal | ⏳ attend le terminal simulé |
-| 2 Python | 🔄 2.1 fait ; 2.2 à 2.5 + boss ⏳ (attend Pyodide pour les exercices de code) |
+| 1 Le terminal | 🔄 1.1 fait ; 1.2 à 1.5 + boss ⏳ (cartes `terminal` prêtes) |
+| 2 Python | 🔄 2.1, 2.2 faits ; 2.3 à 2.5 + boss ⏳ (cartes `code` prêtes) |
 | 3 Algorithmes | ✅ 6 niveaux (T-004) |
 | 4 Algèbre linéaire | ✅ 6 niveaux (T-005) ; barre de clarté (T-012) |
 | 5 Analyse | ✅ 6 niveaux (T-006) |

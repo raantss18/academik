@@ -44,3 +44,48 @@ describe('contenu : chaque réponse est vérifiée en exécutant Python', () => 
   }
   it('au moins une carte vérifiée par niveau', () => { for (const { L } of levels) expect(L.cartes.some((c: any) => c.verif)).toBe(true); });
 });
+
+describe('cartes « terminal » : chaque solution écrite réussit vraiment dans le simulateur', () => {
+  it('solution → état attendu atteint ; état de départ → pas déjà réussi', async () => {
+    const { newTerm, run, check } = await import('../src/lib/terminal');
+    const bad: string[] = [];
+    for (const f of readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'))) {
+      const L = parse(readFileSync(`content/niveaux/${f}`, 'utf8'));
+      for (const c of L.cartes.filter((x: { type: string }) => x.type === 'terminal')) {
+        const t = newTerm(c.fs ?? {}, c.cwd); if (check(t, c.attendu).length === 0) bad.push(`${f} ${c.id} : déjà réussi au départ`);
+        for (const cmd of c.solution) run(t, cmd);
+        const miss = check(t, c.attendu); if (miss.length) bad.push(`${f} ${c.id} : la solution échoue (${miss.join(', ')})`);
+        if (!c.indice) bad.push(`${f} ${c.id} : indice manquant`);
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+});
+
+describe('cartes « code » : la solution passe les tests, le programme de départ ne les passe pas', () => {
+  it('exécuté avec le vrai Python (mêmes aides que le moteur)', async () => {
+    const { PY_HELPERS } = await import('../src/lib/py-helpers');
+    const harness = `import sys, json, io, contextlib
+d = json.load(sys.stdin)
+def essai(code, tests):
+    buf = io.StringIO(); g = {}
+    try:
+        with contextlib.redirect_stdout(buf): exec(code, g)
+        g["_sortie"] = buf.getvalue().strip(); g["_code"] = code
+        exec(${JSON.stringify(PY_HELPERS)}, g); exec(tests, g)
+        return "ok"
+    except BaseException as e: return "echec:" + type(e).__name__
+print(json.dumps([essai(d["solution"], d["tests"]), essai(d["depart"], d["tests"])]))`;
+    const bad: string[] = [];
+    for (const f of readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'))) {
+      const L = parse(readFileSync(`content/niveaux/${f}`, 'utf8'));
+      for (const c of L.cartes.filter((x: { type: string }) => x.type === 'code')) {
+        const [sol, dep] = JSON.parse(execFileSync('python3', ['-I', '-c', harness], { input: JSON.stringify({ solution: c.solutionCode, depart: c.depart ?? '', tests: c.tests }), encoding: 'utf8', timeout: 20000 }));
+        if (sol !== 'ok') bad.push(`${f} ${c.id} : la solution échoue (${sol})`);
+        if (dep === 'ok') bad.push(`${f} ${c.id} : le programme de départ passe déjà les tests`);
+        if (/\b(print|return)\b/.test(c.indice?.fr ?? '') && c.indice.fr.includes(c.solutionCode.trim())) bad.push(`${f} ${c.id} : l'indice donne la solution`);
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+});

@@ -1,0 +1,199 @@
+# Niveau 2.2 — Python 2 : décider. Original academik ; notions vérifiées dans le tutoriel officiel Python (instructions if) et la référence (comparaisons).
+id: '2.2'
+module: 2
+duree_min: 14
+titre: { fr: 'Décider', en: 'Deciding' }
+ia: { fr: 'Kintana sait choisir entre plusieurs réponses selon une condition.', en: 'Kintana can choose between several answers depending on a condition.' }
+sources:
+  - { titre: 'Python — Tutoriel, instructions if', url: 'https://docs.python.org/3/tutorial/controlflow.html#if-statements', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — Référence, comparaisons', url: 'https://docs.python.org/3/reference/expressions.html#comparisons', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      age = 15
+      if age >= 18:
+          print("majeur")
+      else:
+          print("mineur")
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      age = 15
+      if age >= 18:
+          print("majeur")
+      else:
+          print("mineur")
+      ```
+    choix:
+      - { fr: 'Il affiche `majeur`.', en: 'It displays `majeur`.' }
+      - { fr: 'Il affiche `mineur`.', en: 'It displays `mineur`.', juste: true }
+      - { fr: 'Il n’affiche rien.', en: 'It displays nothing.' }
+    explication: { fr: '$15\geq18$ est faux : Python exécute la branche `else`.', en: '$15\geq18$ is false: Python runs the `else` branch.' }
+  - id: c2
+    type: idee
+    fr: 'Une **condition** est une question dont la réponse est `True` (vrai) ou `False` (faux). L’instruction `if` n’exécute ses lignes que si la condition est vraie ; `else` prend la suite sinon.'
+    en: 'A **condition** is a question whose answer is `True` or `False`. The `if` statement runs its lines only if the condition is true; `else` takes over otherwise.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Condition', en: 'Condition' }, { fr: 'Se lit', en: 'Read as' }, { fr: 'Si `age = 15`', en: 'If `age = 15`' }]
+      cellules:
+        - ['`age >= 18`', { fr: 'âge supérieur ou égal à 18', en: 'age greater than or equal to 18' }, { fr: '`False`', en: '`False`', ton: bad }]
+        - ['`age < 18`', { fr: 'âge strictement inférieur à 18', en: 'age strictly less than 18' }, { fr: '`True`', en: '`True`', ton: ok }]
+        - ['`age == 15`', { fr: 'âge égal à 15', en: 'age equal to 15' }, { fr: '`True`', en: '`True`', ton: ok }]
+      legende: { fr: 'Autres comparaisons : `<=` (inférieur ou égal), `>` (strictement supérieur), `!=` (différent).', en: 'Other comparisons: `<=` (less or equal), `>` (strictly greater), `!=` (different).' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un programme qui décide', en: 'A program that decides' }
+    lang: python
+    etapes:
+      - { code: 'note = 12', fr: 'On range la note `12` dans la variable `note`.', en: 'We store the mark `12` in the variable `note`.' }
+      - { code: 'if note >= 10:', fr: 'La condition `note >= 10` est vraie. Les deux-points `:` ouvrent le bloc.', en: 'The condition `note >= 10` is true. The colon `:` opens the block.' }
+      - { code: '    print("admis")', fr: 'Ce décalage de quatre espaces, l’**indentation**, dit que la ligne appartient au `if`. Elle s’exécute.', en: 'This four-space shift, the **indentation**, says the line belongs to the `if`. It runs.' }
+      - { code: 'else:', fr: 'Le `else` ne s’exécute que si la condition était fausse : ici, on le saute.', en: 'The `else` only runs if the condition was false: here, it is skipped.' }
+      - { code: '    print("refusé")', fr: 'Cette ligne est sautée. Le programme affiche donc seulement `admis`.', en: 'This line is skipped. The program therefore displays only `admis`.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. La variable `age` est déjà écrite. **Affiche `majeur` si `age` vaut au moins 18, sinon `mineur`.** Ne change pas la ligne `age = …` : le jeu essaie plusieurs âges.'
+    en: 'Your turn. The variable `age` is already written. **Display `majeur` if `age` is at least 18, otherwise `mineur`.** Do not change the `age = …` line: the game tries several ages.'
+    depart: |
+      age = 15
+
+      # écris ton if / else ici
+    tests: |
+      for a, attendu in [(15, "mineur"), (18, "majeur"), (40, "majeur"), (0, "mineur")]:
+          assert _essai(age=a) == attendu
+    solutionCode: |
+      age = 15
+      if age >= 18:
+          print("majeur")
+      else:
+          print("mineur")
+    indice: { fr: 'Compare `age` à `18` avec `>=`. Après `if …:` et `else:`, décale la ligne `print` de quatre espaces.', en: 'Compare `age` with `18` using `>=`. After `if …:` and `else:`, shift the `print` line by four spaces.' }
+    explication: { fr: 'Le programme choisit la branche selon `age >= 18`, pour tous les âges essayés.', en: 'The program picks the branch according to `age >= 18`, for every age tried.' }
+  - id: c5
+    type: idee
+    fr: 'Pour plus de deux réponses, ajoute des `elif` (« sinon si »). Python teste les conditions **dans l’ordre** et exécute la **première** qui est vraie, puis saute le reste.'
+    en: 'For more than two answers, add `elif` (“else if”). Python tests the conditions **in order** and runs the **first** true one, then skips the rest.'
+    exemple:
+      fr: |
+        ```python
+        if note >= 16: print("très bien")
+        elif note >= 12: print("bien")
+        else: print("à revoir")
+        ```
+        Avec `note = 14` : le premier test est faux, le deuxième est vrai, on affiche `bien`.
+      en: |
+        ```python
+        if note >= 16: print("très bien")
+        elif note >= 12: print("bien")
+        else: print("à revoir")
+        ```
+        With `note = 14`: the first test is false, the second is true, so `bien` is displayed.
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      note = 14
+      if note >= 16:
+          print("très bien")
+      elif note >= 12:
+          print("bien")
+      elif note >= 10:
+          print("passable")
+      else:
+          print("insuffisant")
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      note = 14
+      if note >= 16:
+          print("très bien")
+      elif note >= 12:
+          print("bien")
+      elif note >= 10:
+          print("passable")
+      else:
+          print("insuffisant")
+      ```
+    choix:
+      - { fr: 'Il affiche `bien`.', en: 'It displays `bien`.', juste: true }
+      - { fr: 'Il affiche `bien` puis `passable`.', en: 'It displays `bien` then `passable`.' }
+      - { fr: 'Il affiche `passable`.', en: 'It displays `passable`.' }
+    explication: { fr: '`14 >= 12` est la première condition vraie : Python n’examine plus les suivantes.', en: '`14 >= 12` is the first true condition: Python no longer looks at the next ones.' }
+  - id: c7
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'La variable `note` est déjà écrite. **Affiche `insuffisant` si `note < 10`, `passable` si `note < 14`, sinon `bien`.**'
+    en: 'The variable `note` is already written. **Display `insuffisant` if `note < 10`, `passable` if `note < 14`, otherwise `bien`.**'
+    depart: |
+      note = 12
+
+      # écris ton if / elif / else ici
+    tests: |
+      for n, attendu in [(0, "insuffisant"), (9, "insuffisant"), (10, "passable"), (13, "passable"), (14, "bien"), (20, "bien")]:
+          assert _essai(note=n) == attendu
+    solutionCode: |
+      note = 12
+      if note < 10:
+          print("insuffisant")
+      elif note < 14:
+          print("passable")
+      else:
+          print("bien")
+    indice: { fr: 'Commence par le cas le plus petit. Un `elif` n’est testé que si les conditions d’avant étaient fausses.', en: 'Start with the smallest case. An `elif` is only tested if the conditions before were false.' }
+    explication: { fr: 'L’ordre des tests fait le travail : on arrive à `elif note < 14` seulement si `note >= 10`.', en: 'The order of the tests does the work: we only reach `elif note < 14` if `note >= 10`.' }
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Qu’affiche `print(10 == 10.0)` ? Écris exactement ce qui s’affiche.'
+    en: 'What does `print(10 == 10.0)` display? Write exactly what is shown.'
+    reponses: ['True']
+    verif: 'print(10 == 10.0)'
+    indice: { fr: '`==` compare des valeurs, pas des écritures. Dix entier et dix décimal sont-ils le même nombre ?', en: '`==` compares values, not spellings. Are integer ten and decimal ten the same number?' }
+    explication: { fr: '`10 == 10.0` est vrai : même valeur. Python affiche `True`, avec une majuscule.', en: '`10 == 10.0` is true: same value. Python displays `True`, with a capital letter.' }
+  - id: c9
+    type: piege
+    fr: 'Un seul `=` **range** une valeur (`age = 15`). Deux `==` **comparent** (`age == 15`). Écrire `if age = 15:` est une erreur.'
+    en: 'A single `=` **stores** a value (`age = 15`). Two `==` **compare** (`age == 15`). Writing `if age = 15:` is an error.'
+  - id: c10
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Une année est **bissextile** si elle est divisible par 4. Exception : un multiple de 100 ne l’est que s’il est aussi multiple de 400. **Affiche `bissextile` ou `normale`** pour la variable `annee`.'
+    en: 'Challenge. A year is a **leap year** if it is divisible by 4. Exception: a multiple of 100 is leap only if it is also a multiple of 400. **Display `bissextile` or `normale`** for the variable `annee`.'
+    depart: |
+      annee = 2024
+
+      # indice : n % 4 == 0 teste « n est divisible par 4 »
+    tests: |
+      for a, attendu in [(2024, "bissextile"), (2023, "normale"), (1900, "normale"), (2000, "bissextile"), (2100, "normale"), (2400, "bissextile"), (1, "normale")]:
+          assert _essai(annee=a) == attendu
+    solutionCode: |
+      annee = 2024
+      if annee % 400 == 0:
+          print("bissextile")
+      elif annee % 100 == 0:
+          print("normale")
+      elif annee % 4 == 0:
+          print("bissextile")
+      else:
+          print("normale")
+    indice: { fr: 'Teste d’abord la règle la plus rare : la divisibilité par 400. Puis 100, puis 4. Le reste de la division se calcule avec `%`.', en: 'Test the rarest rule first: divisibility by 400. Then 100, then 4. The remainder of a division is computed with `%`.' }
+    explication: { fr: 'Du plus rare au plus courant : 400, puis 100, puis 4. La première condition vraie décide.', en: 'From rarest to most common: 400, then 100, then 4. The first true condition decides.' }
+  - id: c11
+    type: retenir
+    fr: '`if` teste une condition, `elif` en essaie une autre, `else` prend le reste ; l’indentation dit ce qui appartient à chaque bloc.'
+    en: '`if` tests a condition, `elif` tries another, `else` takes the rest; indentation says what belongs to each block.'

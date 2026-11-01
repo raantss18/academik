@@ -2,6 +2,19 @@
 
 ## [Non publié]
 
+## [0.3.8] — 2026-11-01
+
+### Message fr
+Tu peux maintenant écrire du vrai code Python dans les leçons et t'entraîner dans un terminal simulé, sans rien risquer sur ton ordinateur. Deux nouveaux niveaux : « Se repérer » (terminal) et « Décider » (Python).
+
+### Message en
+You can now write real Python code in lessons and practise in a simulated terminal, without risking anything on your computer. Two new levels: “Finding your way” (terminal) and “Deciding” (Python).
+
+### Ajouts / Added
+- Éditeur Python (Pyodide, en tâche de fond, arrêt automatique d'une boucle infinie). / Python editor (Pyodide in the background, automatic stop of infinite loops).
+- Terminal simulé : 17 commandes, tuyaux et redirections, dans un système de fichiers virtuel. / Simulated terminal: 17 commands, pipes and redirections, in a virtual file system.
+- Niveaux 1.1 « Se repérer » et 2.2 « Décider ». / Levels 1.1 and 2.2.
+
 ## [0.3.7] — 2026-11-01
 
 ### Message fr

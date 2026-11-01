@@ -6,8 +6,8 @@ import { join, relative } from 'node:path';
 const dist = process.argv[2] || 'dist', bad = [];
 const walk = d => readdirSync(d).flatMap(f => { const p = join(d, f); return statSync(p).isDirectory() ? walk(p) : [p]; });
 const all = walk(dist).map(f => relative(dist, f).split('\\').join('/'));
-// Publiés à part et téléchargés à la demande (jamais précachés) : paquets de contenu et release.json.
-const files = all.filter(f => !/^(content|app)\//.test(f));
+// Publiés à part et téléchargés à la demande (jamais précachés) : paquets de contenu, release.json, et Python (py/, mis en cache à l'usage).
+const files = all.filter(f => !/^(content|app|py)\//.test(f));
 
 const sw = readFileSync(join(dist, 'sw.js'), 'utf8'), wb = files.find(f => /^workbox-.*\.js$/.test(f));
 const precached = new Set([...sw.matchAll(/url:"([^"]+)"/g)].map(m => m[1].replace(/^\.\//, '')));

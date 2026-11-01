@@ -1,6 +1,6 @@
 [package]
 name = "academik"
-version = "0.3.7"
+version = "0.3.8"
 description = "Apprendre en jouant, du lycée à la recherche, en construisant sa propre IA — hors ligne"
 authors = ["academik"]
 license = "Apache-2.0"

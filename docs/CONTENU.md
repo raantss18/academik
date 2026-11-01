@@ -53,6 +53,9 @@
 Un texte de figure est une chaîne (identique en fr et en) ou `{ fr, en, ton? }` ; `ton` : `ok` (vert), `bad` (rouge), `neutre`. Les formules `$…$` y sont rendues par KaTeX.
 **Barre de clarté** (`docs/QUALITE-COURS.md`, C1–C7) : une idée par carte, le concret d'abord, rien d'utilisé avant d'être défini, un exemple résolu avant chaque nouvelle méthode.
 
+**Carte `terminal`** (app 0.3.8) : shell simulé, sans vrai système. `fs` : arbre de départ (texte = fichier, objet = dossier), `cwd`, `attendu` (`cwd`, `fichiers`, `existent`, `absents`, `modes`, `sortie`), `solution` : liste de commandes **vérifiée à la compilation**, `indice` obligatoire. Commandes : pwd ls cd cat echo mkdir touch rm cp mv head tail wc grep sort uniq chmod, `|`, `>`, `>>`, `&&`.
+**Carte `code`** (app 0.3.8) : `depart` (programme de départ), `tests` (Python ; `AssertionError` si faux ; `_sortie` = ce que le programme a affiché ; `_essai(age=15)` relance le programme avec d'autres valeurs des affectations de premier niveau), `solutionCode` **testée avec le vrai Python** (elle doit passer, le départ doit échouer), `indice` obligatoire : l'élève ne voit jamais la solution ni le message des tests (D-021).
+
 **Cartes d'encadré** (non notées) : `type: retenir` (une phrase à retenir), `piege` (erreur fréquente), `plus` (pour aller plus loin, avec source). Texte `fr` / `en`.
 
 **Formules** : LaTeX entre `$…$` (en ligne) ou `$$…$$` (centré), rendu par KaTeX hors ligne. Un `$` isolé (prix) n'est pas une formule ; écris `\$` n'est pas géré : évite le signe `$` seul. **Code** : `` `…` `` en ligne, blocs ```` ```python ```` colorés.
