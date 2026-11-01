@@ -227,24 +227,93 @@
       "note": "paquet distinct, licence 3.0 conservée"
     },
     {
+      "id": "mit-18642",
+      "titre": "18.642 Topics in Mathematics with Applications in Finance (2024)",
+      "etablissement": "MIT OCW",
+      "url": "https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/",
+      "licence": "CC BY-NC-SA 4.0",
+      "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "mise à jour 2024 du 18.S096 ; exclure le jeu de données externe lié (licence non vérifiée)",
+      "remplace": "mit-18s096"
+    },
+    {
       "id": "mit-18s096",
       "titre": "18.S096 Topics in Mathematics with Applications in Finance (2013)",
       "etablissement": "MIT OCW",
       "url": "https://ocw.mit.edu/courses/18-s096-topics-in-mathematics-with-applications-in-finance-fall-2013/",
-      "licence": "CC BY-NC-SA 4.0 (à vérifier, T-002)",
+      "licence": "CC BY-NC-SA 4.0",
       "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
       "verifie": "2026-11-01",
-      "mode": "a-valider"
+      "mode": "lien",
+      "note": "remplacé par 18.642 (2024) ; garder seulement pour comparaison"
+    },
+    {
+      "id": "mit-15401",
+      "titre": "15.401 Finance Theory I (2008)",
+      "etablissement": "MIT OCW",
+      "url": "https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/",
+      "licence": "CC BY-NC-SA 4.0",
+      "preuve_licence": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "verifie": "2026-11-01",
+      "mode": "embarque",
+      "note": "fondations du module 17 ; ne couvre pas la validation moderne des backtests"
     },
     {
       "id": "fpp3",
-      "titre": "Forecasting: Principles and Practice, 3e éd.",
-      "etablissement": "R. Hyndman, G. Athanasopoulos",
+      "titre": "Forecasting: Principles and Practice, 3e éd. (2021)",
+      "etablissement": "R. Hyndman, G. Athanasopoulos (OTexts)",
       "url": "https://otexts.com/fpp3/",
-      "licence": "non vérifiée (T-002)",
+      "licence": "non vérifiée (© OTexts, lecture gratuite)",
       "preuve_licence": "",
       "verifie": "2026-11-01",
-      "mode": "lien"
+      "mode": "lien",
+      "note": "réécrire en Python, ne pas embarquer ; GARCH et cointégration non couverts"
+    },
+    {
+      "id": "shreve",
+      "titre": "Stochastic Calculus for Finance I et II (2004)",
+      "etablissement": "S. Shreve (Springer)",
+      "url": "https://link.springer.com/book/10.1007/978-0-387-22527-2",
+      "licence": "tous droits réservés (© Springer)",
+      "preuve_licence": "",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "ISBN I : 978-0-387-40100-3 ; II : 978-0-387-40101-0"
+    },
+    {
+      "id": "bailey-2014",
+      "titre": "The Deflated Sharpe Ratio (JPM 40(5), 94–107)",
+      "etablissement": "D. Bailey, M. López de Prado",
+      "url": "https://doi.org/10.3905/jpm.2014.40.5.094",
+      "licence": "tous droits réservés",
+      "preuve_licence": "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "produire textes, données et code originaux"
+    },
+    {
+      "id": "harvey-2016",
+      "titre": "…and the Cross-Section of Expected Returns (RFS 29(1), 5–68)",
+      "etablissement": "C. Harvey, Y. Liu, H. Zhu",
+      "url": "https://doi.org/10.1093/rfs/hhv059",
+      "licence": "tous droits réservés (© OUP)",
+      "preuve_licence": "",
+      "verifie": "2026-11-01",
+      "mode": "lien",
+      "note": "le seuil de t-statistique n'est pas universel"
+    },
+    {
+      "id": "bce-fx",
+      "titre": "Taux de change de référence de l'euro (séries quotidiennes)",
+      "etablissement": "Banque centrale européenne",
+      "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
+      "licence": "conditions BCE (reproduction avec attribution et mention des transformations)",
+      "preuve_licence": "https://www.ecb.europa.eu/services/using-our-site/disclaimer/html/index.en.html",
+      "verifie": "2026-11-01",
+      "mode": "a-valider",
+      "note": "fichier, empreinte et période à figer avant embarquement ; cours de référence, pas des prix exécutables"
     }
   ]
 }
