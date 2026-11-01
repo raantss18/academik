@@ -22,6 +22,8 @@
 | E11 | 1 nov. (constatée par Claude à l'essai) | une app 0.3.1 ne montre pas la bannière « nouvelle version 0.3.2 » après redémarrage | la mise à jour trouvée n'était gardée qu'en mémoire alors que la vérification réseau est limitée à 1 fois / 6 h | mise à jour mémorisée et revalidée (`revalidate`) ; statut « en attente d'une version plus récente » mémorisé ; pas de bannière de téléchargement sur le site | `updates.test`, `invariants` E11 | 0.3.3 |
 | E12 | 1 nov. | la vue des réponses n'est pas uniforme (certaines options en police de code, d'autres en texte) | le style dépendait de la présence d'une formule dans l'option | toutes les options : même rendu (texte normal) ; le code seulement s'il est balisé par des accents graves, et alors pour **toutes** les options de la carte ; champ de saisie dans la même police | `invariants` E8/E12 | 0.3.4 |
 | E13 | 1 nov. | mise à jour de l'app : renvoi vers GitHub au lieu d'être automatique et intégrée | l'app ouvrait le lien de téléchargement dans le navigateur | téléchargement, vérification SHA-256 et installation **dans l'app** (Android : plugin natif + installateur système ; Linux : commandes Rust, remplacement de l'AppImage et redémarrage ; site : rechargement tout seul sur la carte) ; **essais réels** : émulateur Android (0.0.1 → 0.3.3 via l'installateur) et AppImage (remplacée et relancée) | `invariants` E13, `installer.test` | 0.3.4 |
+| E14 | 1 nov. | cartes de théorie en texte dense, sans illustration ni exemple (0.2 « Démontrer ») | le format des cartes ne permettait **aucune figure** (Codex ne pouvait pas en ajouter) et rien n'exigeait d'exemple concret | champ `figure` (schéma, tableau, nombres ; HTML/CSS, formules rendues par KaTeX) et encadré « Par exemple » sur toute carte ; 0.2 réécrit (contre-exemple colorié, trois chemins de preuve, deux exemples résolus, tableau récapitulatif) ; vérifié sur téléphone (375 px) ; **24 autres niveaux** en attente (T-011) | `invariants` E14/E15 (liste d'attente qui ne fait que rétrécir), `content.test` (figures) | 0.3.5 |
+| E15 | 1 nov. | « le cours n'est pas assez clair » | aucune règle **vérifiable** de clarté : symboles ($\neg$, $\Rightarrow$) utilisés sans être lus en mots, plusieurs idées par carte, abstrait avant concret | recherches (Mayer ; Rosenshine 2012 ; Fyfe et al. 2014 ; Barbieri et al. 2023 ; Titsworth et al. 2015) → **barre de clarté C1–C7** dans `docs/QUALITE-COURS.md` ; 0.2 : carte « notations » (se lit…, exemple) | `invariants` E15 (C1, C2, C4, C5 automatiques) | 0.3.5 |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | 🔄 intégration en cours (voir § 1) | — | à venir |
 
 ## 1. Application et site
@@ -63,6 +65,7 @@
 ## 4. Codex / ChatGPT (`docs/CODEX.md`)
 - ✅ Outil `scripts/codex.mjs` : quota, 2 tâches max, périmètre, contrôle, fusion sûre
 - ✅ T-005, T-006 intégrées ; ⏳ T-007 (probabilités), T-008 (statistique), T-009 (traductions EN du cursus)
+- 🔄 **T-011** : mettre les 24 niveaux de la liste d'attente E14/E15 à la barre de clarté (figures, « Par exemple », notations définies) ; puis 6.* et 7.* (T-007/T-008) avant fusion
 - ⏳ Tâche de **relecture croisée** : Codex résout les exercices de Claude sans voir les solutions
 
 ## 5. Publication

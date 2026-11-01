@@ -86,3 +86,36 @@ describe('E13 · les mises à jour se font DANS l\u2019app, automatiquement, san
     expect(read('android/app/src/main/java/app/academik/learn/MainActivity.java')).toContain('registerPlugin(UpdaterPlugin.class)');
   });
 });
+
+describe('E14 / E15 · cours illustrés et clairs (barre de clarté C1–C5, docs/QUALITE-COURS.md)', () => {
+  const plain = (s: string) => s.replace(/\$[^$]*\$/g, 'X').replace(/`[^`]*`/g, 'X');
+  const sentences = (s: string) => plain(s).split(/(?<=[.;!?])\s+/).filter(x => x.trim());
+  type C = { id: string; type: string; fr?: string; figure?: unknown; exemple?: unknown };
+  /** Ce qu'un niveau ne respecte pas encore (vide = conforme). */
+  function gaps(cartes: C[]): string[] {
+    const g: string[] = [];
+    if (!cartes.some(c => c.figure)) g.push('C5 aucune figure');
+    if (!cartes.some(c => c.type === 'exemple')) g.push('C4 aucun exemple résolu');
+    for (const c of cartes.filter(c => c.type === 'idee' && c.fr)) {
+      const t = plain(c.fr!);
+      if (t.length > 300 || sentences(c.fr!).length > 4) g.push(`C1 ${c.id} trop dense`);
+      if (t.length > 200 && !c.figure && !c.exemple) g.push(`C2 ${c.id} sans exemple ni figure`);
+    }
+    for (const c of cartes) for (const s of c.fr ? sentences(c.fr) : []) if (s.split(/\s+/).length > 25) g.push(`C1 ${c.id} phrase > 25 mots`);
+    return g;
+  }
+  // Niveaux à réécrire (tâche Codex T-011). Cette liste ne fait que RÉTRÉCIR : un niveau conforme doit en sortir.
+  const PENDING = new Set(['0.1', '0.3', '0.4', '0.5', '0.boss', '2.1', '3.1', '3.2', '3.3', '3.4', '3.5', '3.boss', '4.1', '4.2', '4.3', '4.4', '4.5', '4.boss', '5.1', '5.2', '5.3', '5.4', '5.5', '5.boss']);
+  const levels = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => parse(read(`content/niveaux/${f}`)) as { id: string; cartes: C[] });
+  it('chaque niveau hors liste d’attente passe la barre de clarté', () => {
+    expect(Object.fromEntries(levels.filter(l => !PENDING.has(l.id)).map(l => [l.id, gaps(l.cartes)]).filter(([, g]) => g.length))).toEqual({});
+  });
+  it('la liste d’attente ne contient que des niveaux existants et encore non conformes', () => {
+    const ids = new Set(levels.map(l => l.id));
+    expect([...PENDING].filter(id => !ids.has(id) || !gaps(levels.find(l => l.id === id)!.cartes).length)).toEqual([]);
+  });
+  it('figures et « Par exemple » sont affichés sur toute carte, formules rendues', () => {
+    expect(lesson).toContain('{#if card.figure}<Figure fig={card.figure} />{/if}'); expect(lesson).toContain("ui('k_exemple')");
+    const fig = read('src/ui/Figure.svelte'); expect(fig).toContain('use:typeset'); expect([...fig.matchAll(/\{tx\(/g)].length).toBe(0);
+  });
+});

@@ -2,6 +2,18 @@
 
 ## [Non publié]
 
+## [0.3.5] — 2026-11-01
+
+### Message fr
+Les cours deviennent plus clairs : des schémas, des tableaux et des exemples concrets accompagnent la théorie, et chaque notation est expliquée avant d'être utilisée. Le niveau « Démontrer » est le premier à en profiter.
+
+### Message en
+Lessons get clearer: diagrams, tables and concrete examples now go with the theory, and every notation is explained before it is used. The “Proving” level is the first to benefit.
+
+### Ajouts / Added
+- Illustrations dans les cartes (schémas, tableaux, nombres coloriés) et encadré « Par exemple ». / Illustrations in cards (diagrams, tables, coloured numbers) and a “For example” box.
+- Niveau 0.2 réécrit : notations, contre-exemple illustré, deux exemples résolus, récapitulatif. / Level 0.2 rewritten: notations, illustrated counterexample, two worked examples, recap table.
+
 ## [0.3.4] — 2026-11-01
 
 ### Message fr

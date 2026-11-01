@@ -19,7 +19,7 @@ const UI: Record<string, Text> = {
   soon: { fr: 'Bientôt', en: 'Soon' }, play: { fr: 'Jouer', en: 'Play' }, locked: { fr: 'Fermé', en: 'Locked' }, xp: { fr: 'XP', en: 'XP' }, streak: { fr: 'jours', en: 'days' },
   challenge: { fr: 'Défi', en: 'Challenge' }, today: { fr: 'Aujourd’hui', en: 'Today' }, boss: { fr: 'Boss', en: 'Boss' }, guest: { fr: 'Mode invité : tout reste sur cet appareil.', en: 'Guest mode: everything stays on this device.' },
   retry_later: { fr: 'Tu pourras retenter en rejouant le niveau : on garde ton meilleur score.', en: 'You can try again by replaying the level: your best score is kept.' }, prev: { fr: 'Précédent', en: 'Previous' }, resume: { fr: 'reprendre', en: 'resume' }, card: { fr: 'carte', en: 'card' },
-  k_retenir: { fr: 'À retenir', en: 'Key takeaway' }, k_piege: { fr: 'Piège', en: 'Pitfall' }, k_plus: { fr: 'Pour aller plus loin', en: 'Going further' },
+  k_retenir: { fr: 'À retenir', en: 'Key takeaway' }, k_piege: { fr: 'Piège', en: 'Pitfall' }, k_plus: { fr: 'Pour aller plus loin', en: 'Going further' }, k_exemple: { fr: 'Par exemple', en: 'For example' },
   order_hint: { fr: 'Touche les lignes dans le bon ordre.', en: 'Tap the lines in the right order.' }, minutes: { fr: 'min', en: 'min' },
 };
 export const ui = (k: string) => i18n.t(UI[k]);
