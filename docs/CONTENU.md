@@ -36,7 +36,14 @@
   indice:      { fr: "…", en: "…" }
   explication: { fr: "…", en: "…" }
 ```
-`exemple` : `titre: {fr,en}` + `etapes: [{ code?, fr, en }]`.
+`exemple` : `titre: {fr,en}` + `etapes: [{ code?, fr, en }]` (le code s'affiche en un seul programme, la ligne de l'étape courante est surlignée ; `lang: python|bash` sur la carte).
+
+**Cartes d'encadré** (non notées) : `type: retenir` (une phrase à retenir), `piege` (erreur fréquente), `plus` (pour aller plus loin, avec source). Texte `fr` / `en`.
+
+**Formules** : LaTeX entre `$…$` (en ligne) ou `$$…$$` (centré), rendu par KaTeX hors ligne. Un `$` isolé (prix) n'est pas une formule ; écris `\$` n'est pas géré : évite le signe `$` seul. **Code** : `` `…` `` en ligne, blocs ```` ```python ```` colorés.
+Un niveau avec formules ou encadrés exige l'app 0.3.0 : le build minimal est **calculé automatiquement** (une app plus ancienne l'ignore, sans erreur).
+
+**Vérification** : seule la **bibliothèque standard** de Python est disponible (CI GitHub) : `fractions`, `math`, `itertools`, `statistics`… pas de numpy/sympy.
 
 ## Vérifier avant de proposer
 ```bash
