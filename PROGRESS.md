@@ -44,3 +44,15 @@
 - **Pas encore fait** : synchro RxDB ↔ Supabase (la migration doit d'abord être appliquée par Antsa) ; carte-ville
   isométrique dans l'app (aujourd'hui liste) ; cartes de code Python (Pyodide, phase 3) ; hors-ligne PWA (service worker) ;
   traductions EN des titres du cursus (T-003) ; aucun test réseau coupé.
+
+### Préparation de la v0.1.0 (2026-11-01)
+
+- **Fait** : PWA hors ligne (16 fichiers précachés, aucune ressource externe) ; APK signé 3,2 Mo (`app.academik.learn`) ;
+  AppImage 102 Mo (WebKitGTK embarqué) ; audit des licences (11 paquets embarqués, tous OSI) ; CI et déploiement du site ;
+  migration Supabase appliquée au projet de Tontolo ; rapports Codex T-001 et T-002 intégrés.
+- **Vérifié** : 54 tests ; `npm run verify` ; APK installé sur l'émulateur Android 36 **en mode avion** : leçon jouée, app
+  fermée de force et relancée, 10 XP et série conservés ; AppImage lancée sur EndeavourOS (fenêtre affichée, niveau jouable).
+- **Non vérifié** : service worker dans un vrai navigateur réseau coupé (le navigateur de test sans interface plante ici ;
+  seul l'audit statique du précache a été fait) ; AppImage sur Linux Mint ; APK sur Xiaomi Pad 7 et Samsung S20+ réels ;
+  l'accès Supabase par un vrai compte (le test `supabase/tests/academik_rls.sql` n'a pas été exécuté) ; accessibilité WCAG AA
+  (pas d'audit outillé) ; poids de la carte-ville.

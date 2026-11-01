@@ -13,12 +13,16 @@
     "maquette carte-ville isométrique (D-018)",
     "ville v2 : quartiers à identité propre, rues organiques, ombres, végétation (D-018)",
     "moteur + stockage COMIMa + niveau 2.1 jouable (branche phase-2/squelette-moteur)",
-    "T-002 lancée (Codex)"
+    "T-002 lancée (Codex)",
+    "PWA hors ligne + audit",
+    "APK Capacitor signé (testé hors ligne sur émulateur)",
+    "AppImage Tauri (lancée sur Arch)",
+    "migration Supabase appliquée au projet de Tontolo (D-019)",
+    "T-002 intégré"
   ],
   "in_progress": [
-    "PR phase 2 à relire",
-    "T-002 : rapport Codex à intégrer"
+    "v0.1.0 : fusion de la PR #1 puis publication (attend l'accord d'Antsa)"
   ],
   "blocked": [],
-  "next": "Appliquer la migration Supabase (Antsa) → synchro RxDB ; carte-ville dans l'app ; PWA hors ligne ; phase 3 Pyodide ; T-003 traductions"
+  "next": "Fusionner PR #1, tag v0.1.0, release GitHub avec APK + AppImage + web.zip + SHA256SUMS ; ensuite v0.2 : comptes + synchro RxDB, carte-ville dans l'app, Pyodide"
 }

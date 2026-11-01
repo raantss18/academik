@@ -1,0 +1,21 @@
+[package]
+name = "academik"
+version = "0.1.0"
+description = "Apprendre en jouant, du lycée à la recherche, en construisant sa propre IA — hors ligne"
+authors = ["academik"]
+license = "Apache-2.0"
+edition = "2021"
+rust-version = "1.77"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
