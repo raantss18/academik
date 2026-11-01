@@ -1,0 +1,149 @@
+# Niveau 2.1 — Python 1. Sources : cours maison M1-info-Ankatso (chap. 3), mis à jour avec la documentation Python 3.14
+# (f-strings : https://docs.python.org/3/tutorial/inputoutput.html). Original academik.
+id: "2.1"
+module: 2
+duree_min: 12
+titre: { fr: "Kintana dit bonjour", en: "Kintana says hello" }
+ia:
+  fr: "Kintana sait maintenant afficher un message et le personnaliser avec un prénom."
+  en: "Kintana can now display a message and personalise it with a first name."
+sources:
+  - { titre: "Python Tutorial — Input and Output", url: "https://docs.python.org/3/tutorial/inputoutput.html", licence: "PSF" }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: "Ton assistant Kintana doit afficher **Bonjour Rakoto** à l'écran. Quelle ligne de Python fait ça ?"
+    en: "Your assistant Kintana must display **Hello Rakoto** on screen. Which line of Python does that?"
+    choix:
+      - { fr: 'print("Bonjour Rakoto")', en: 'print("Hello Rakoto")', juste: true }
+      - { fr: 'echo Bonjour Rakoto', en: 'echo Hello Rakoto' }
+      - { fr: 'say("Bonjour Rakoto")', en: 'say("Hello Rakoto")' }
+      - { fr: 'Bonjour Rakoto', en: 'Hello Rakoto' }
+    explication:
+      fr: "`print(...)` affiche ce qu'on lui donne. Le texte se met entre guillemets. `echo` existe dans le terminal, pas en Python."
+      en: "`print(...)` displays what you give it. Text goes between quotes. `echo` exists in the terminal, not in Python."
+
+  - id: c2
+    type: idee
+    fr: "Une **variable** est une étiquette collée sur une valeur : `nom = \"Rakoto\"`. Ensuite, écrire `nom` revient à écrire `\"Rakoto\"`. Les guillemets disent « ceci est du texte » ; sans guillemets, Python cherche une variable."
+    en: "A **variable** is a label stuck on a value: `name = \"Rakoto\"`. Afterwards, writing `name` is the same as writing `\"Rakoto\"`. Quotes mean “this is text”; without quotes, Python looks for a variable."
+
+  - id: c3
+    type: exemple
+    titre: { fr: "Exemple résolu : saluer quelqu'un", en: "Worked example: greet someone" }
+    etapes:
+      - { code: 'nom = "Rakoto"', fr: "On crée la variable `nom`.", en: "We create the variable `nom`." }
+      - { code: 'print("Bonjour", nom)', fr: "`print` accepte plusieurs valeurs, séparées par un espace. Affiche : `Bonjour Rakoto`.", en: "`print` accepts several values, separated by a space. Shows: `Bonjour Rakoto`." }
+      - { code: 'print(f"Bonjour {nom} !")', fr: "Une **f-string** (le `f` devant les guillemets) remplace `{nom}` par sa valeur. Affiche : `Bonjour Rakoto !`.", en: "An **f-string** (the `f` before the quotes) replaces `{nom}` with its value. Shows: `Bonjour Rakoto !`." }
+
+  - id: c4
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: "Après `age = 15`, qu'affiche `print(age + 1)` ?"
+    en: "After `age = 15`, what does `print(age + 1)` display?"
+    verif: "age = 15\nprint(age + 1)"
+    sortie: "16"
+    choix:
+      - { fr: "16", en: "16", juste: true }
+      - { fr: "age + 1", en: "age + 1" }
+      - { fr: "15", en: "15" }
+      - { fr: "Une erreur", en: "An error" }
+    explication:
+      fr: "`age` vaut 15, donc `age + 1` vaut 16. Sans guillemets, `age` est une variable, pas du texte."
+      en: "`age` is 15, so `age + 1` is 16. Without quotes, `age` is a variable, not text."
+
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: "Qu'affiche ce programme ?\n```python\nx = 3\nx = x + 2\nprint(x)\n```"
+    en: "What does this program display?\n```python\nx = 3\nx = x + 2\nprint(x)\n```"
+    verif: "x = 3\nx = x + 2\nprint(x)"
+    reponses: ["5"]
+    indice:
+      fr: "Lis ligne par ligne : à droite du `=`, on calcule avec l'ancienne valeur de `x`."
+      en: "Read line by line: right of the `=`, we compute with the old value of `x`."
+    explication:
+      fr: "`x` vaut 3, puis `x + 2` vaut 5 et devient la nouvelle valeur de `x`. `=` signifie « range dans », pas « égale »."
+      en: "`x` is 3, then `x + 2` is 5 and becomes the new value of `x`. `=` means “store in”, not “equals”."
+
+  - id: c6
+    type: parsons
+    note: { kind: exercise, poids: 1 }
+    fr: "Remets ces lignes dans l'ordre pour afficher `Bonjour Soa`."
+    en: "Put these lines in order to display `Bonjour Soa`."
+    lignes: ['nom = "Soa"', 'message = f"Bonjour {nom}"', 'print(message)']
+    verif: "nom = \"Soa\"\nmessage = f\"Bonjour {nom}\"\nprint(message)"
+    sortie: "Bonjour Soa"
+    explication:
+      fr: "Une variable doit exister avant d'être utilisée : `nom`, puis `message` qui s'en sert, puis l'affichage."
+      en: "A variable must exist before it is used: `nom`, then `message` which uses it, then the display."
+
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: "Lequel de ces noms est un nom de variable **valide** ?"
+    en: "Which of these is a **valid** variable name?"
+    choix:
+      - { fr: "nom_1", en: "name_1", juste: true }
+      - { fr: "1nom", en: "1name" }
+      - { fr: "mon-nom", en: "my-name" }
+      - { fr: "class", en: "class" }
+    explication:
+      fr: "Un nom ne commence pas par un chiffre, ne contient ni tiret ni espace, et ne peut pas être un mot réservé comme `class`."
+      en: "A name cannot start with a digit, contain a hyphen or a space, or be a reserved word like `class`."
+
+  - id: c8
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: "Qu'affiche `print(f\"{2 + 3} ans\")` ? (écris exactement ce qui s'affiche)"
+    en: "What does `print(f\"{2 + 3} ans\")` display? (write exactly what is displayed)"
+    verif: "print(f\"{2 + 3} ans\")"
+    reponses: ["5 ans"]
+    explication:
+      fr: "Dans une f-string, ce qui est entre accolades est **calculé** : `2 + 3` donne 5."
+      en: "In an f-string, what is between braces is **computed**: `2 + 3` gives 5."
+
+  - id: c9
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: "Complète : `prenom = \"Hery\"` puis `print(f\"Salut ___\")` pour afficher `Salut Hery`."
+    en: "Complete: `prenom = \"Hery\"` then `print(f\"Salut ___\")` to display `Salut Hery`."
+    verif: "prenom = \"Hery\"\nprint(f\"Salut {prenom}\")"
+    sortie: "Salut Hery"
+    choix:
+      - { fr: "{prenom}", en: "{prenom}", juste: true }
+      - { fr: "prenom", en: "prenom" }
+      - { fr: "\"prenom\"", en: "\"prenom\"" }
+      - { fr: "(prenom)", en: "(prenom)" }
+    explication:
+      fr: "Les accolades `{}` demandent à Python de mettre la **valeur** de la variable. Sans elles, on écrirait le mot `prenom`."
+      en: "Braces `{}` ask Python to insert the variable's **value**. Without them, we would write the word `prenom`."
+
+  - id: c10
+    type: saisie
+    note: { kind: quiz, poids: 1 }
+    fr: "Récap. Avec `nom = \"Soa\"`, qu'affiche `print(\"nom\")` ?"
+    en: "Recap. With `nom = \"Soa\"`, what does `print(\"nom\")` display?"
+    verif: "nom = \"Soa\"\nprint(\"nom\")"
+    reponses: ["nom"]
+    explication:
+      fr: "Entre guillemets, c'est du texte : Python affiche les lettres `nom`. `print(nom)` afficherait `Soa`."
+      en: "Between quotes it is text: Python displays the letters `nom`. `print(nom)` would display `Soa`."
+
+  - id: c11
+    type: qcm
+    note: { kind: quiz, poids: 1 }
+    defi: true
+    fr: "Défi. Qu'affiche ce programme ?\n```python\na = \"2\"\nb = \"3\"\nprint(a + b)\n```"
+    en: "Challenge. What does this program display?\n```python\na = \"2\"\nb = \"3\"\nprint(a + b)\n```"
+    verif: "a = \"2\"\nb = \"3\"\nprint(a + b)"
+    sortie: "23"
+    choix:
+      - { fr: "23", en: "23", juste: true }
+      - { fr: "5", en: "5" }
+      - { fr: "\"2\" + \"3\"", en: "\"2\" + \"3\"" }
+      - { fr: "Une erreur", en: "An error" }
+    explication:
+      fr: "Entre guillemets, `\"2\"` est du **texte**. Pour du texte, `+` colle les morceaux : `\"2\" + \"3\"` donne `23`."
+      en: "In quotes, `\"2\"` is **text**. For text, `+` glues the pieces together: `\"2\" + \"3\"` gives `23`."

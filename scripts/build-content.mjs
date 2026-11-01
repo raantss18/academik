@@ -1,0 +1,63 @@
+// Compile content/ (YAML) en src/generated/content.json et valide le schéma. Échoue (code 1) à la moindre erreur.
+import { readFileSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
+import { parse } from 'yaml';
+import { gzipSync } from 'node:zlib';
+
+const TYPES = new Set(['tentative', 'idee', 'exemple', 'qcm', 'saisie', 'parsons']);
+const errors = [];
+const err = (where, msg) => errors.push(`${where}: ${msg}`);
+const both = (where, o, k) => { if (!o || typeof o[k] !== 'object' || !o[k].fr || !o[k].en) err(where, `« ${k} » doit avoir fr et en`); };
+const bi = (where, o) => { if (!o || !o.fr || !o.en) err(where, 'texte fr et en requis'); };
+
+/** Valide un niveau et renvoie la liste des NOUVELLES erreurs (vide = valide). */
+export function validateLevel(L, file) {
+  const before = errors.length;
+  const w = (s = '') => `${file}${s}`;
+  for (const k of ['id', 'module', 'duree_min']) if (L[k] == null) err(w(), `champ « ${k} » manquant`);
+  both(w(), L, 'titre'); both(w(), L, 'ia');
+  if (!Array.isArray(L.sources) || !L.sources.length) err(w(), 'au moins une source (contenu sourcé)');
+  const ids = new Set(); let scored = 0;
+  for (const c of L.cartes ?? []) {
+    const at = w(`#${c.id}`);
+    if (!c.id || ids.has(c.id)) err(at, 'identifiant manquant ou en double'); ids.add(c.id);
+    if (!TYPES.has(c.type)) err(at, `type inconnu « ${c.type} »`);
+    if (c.type === 'exemple') { both(at, c, 'titre'); if (!c.etapes?.length) err(at, 'étapes manquantes'); (c.etapes ?? []).forEach((e, i) => bi(`${at}.etape${i}`, e)); }
+    else bi(at, c);
+    if (c.note) { if (!['exercise', 'quiz'].includes(c.note.kind) || !(c.note.poids > 0)) err(at, 'note invalide'); scored++; }
+    if (['qcm', 'saisie', 'parsons'].includes(c.type) && !c.note) err(at, 'une carte à réponse doit être notée');
+    if (c.type === 'qcm') {
+      if (!(c.choix?.length >= 2)) err(at, 'au moins 2 choix');
+      if ((c.choix ?? []).filter(x => x.juste).length !== 1) err(at, 'exactement un choix juste');
+      (c.choix ?? []).forEach((x, i) => bi(`${at}.choix${i}`, x));
+    }
+    if (c.type === 'saisie' && !(c.reponses?.length)) err(at, 'réponses acceptées manquantes');
+    if (c.type === 'parsons' && !(c.lignes?.length >= 3)) err(at, 'au moins 3 lignes');
+    if (c.note) { both(at, c, 'explication'); if (c.indice) both(at, c, 'indice'); }
+    if (c.type === 'saisie' && !c.verif) err(at, 'verif (programme exécutable) manquant');
+  }
+  if (!scored) err(w(), 'aucune carte notée');
+  return errors.slice(before);
+}
+
+export function buildContent(root = '.') {
+  const cursus = parse(readFileSync(`${root}/content/cursus.yaml`, 'utf8'));
+  const levels = {};
+  for (const f of readdirSync(`${root}/content/niveaux`).filter(f => f.endsWith('.yaml'))) {
+    const L = parse(readFileSync(`${root}/content/niveaux/${f}`, 'utf8'));
+    validateLevel(L, f);
+    levels[L.id] = L;
+  }
+  const known = new Set(cursus.modules.flatMap(m => m.niveaux.map(n => n.id)));
+  for (const id of Object.keys(levels)) if (!known.has(id)) err(id, 'absent de content/cursus.yaml');
+  if (errors.length) throw new Error('Contenu invalide :\n- ' + errors.join('\n- '));
+  return { cursus, levels };
+}
+
+if (process.argv[1] && process.argv[1].endsWith('build-content.mjs')) {
+  let out;
+  try { out = buildContent('.'); } catch (e) { console.error(e.message); process.exit(1); }
+  mkdirSync('src/generated', { recursive: true });
+  const json = JSON.stringify(out);
+  writeFileSync('src/generated/content.json', json);
+  console.log(`content.json : ${Object.keys(out.levels).length} niveau(x), ${(json.length / 1024).toFixed(1)} Ko, ${(gzipSync(json).length / 1024).toFixed(1)} Ko gzip`);
+}

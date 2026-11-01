@@ -1,0 +1,75 @@
+# Ordre linéaire du cursus (extrait de démonstration : 8 modules). Les titres anglais manquants retombent sur le français
+# jusqu'à la tâche de traduction T-003.
+modules:
+  - id: 0
+    titre: { fr: "Raisonner", en: "Reasoning" }
+    niveaux:
+      - { id: "0.1", titre: { fr: "Vrai ou faux ?" } }
+      - { id: "0.2", titre: { fr: "Démontrer" } }
+      - { id: "0.3", titre: { fr: "Récurrence" } }
+      - { id: "0.4", titre: { fr: "Tiroirs" } }
+      - { id: "0.5", titre: { fr: "Congruences" } }
+      - { id: "0.boss", boss: true, titre: { fr: "Le message secret" } }
+  - id: 1
+    titre: { fr: "Le terminal", en: "The terminal" }
+    niveaux:
+      - { id: "1.1", titre: { fr: "Se repérer" } }
+      - { id: "1.2", titre: { fr: "Fichiers" } }
+      - { id: "1.3", titre: { fr: "Droits" } }
+      - { id: "1.4", titre: { fr: "Tuyaux" } }
+      - { id: "1.5", titre: { fr: "Git" } }
+      - { id: "1.boss", boss: true, titre: { fr: "Le fichier caché" } }
+  - id: 2
+    titre: { fr: "Python", en: "Python" }
+    niveaux:
+      - { id: "2.1", titre: { fr: "Kintana dit bonjour" } }
+      - { id: "2.2", titre: { fr: "Décider" } }
+      - { id: "2.3", titre: { fr: "Répéter" } }
+      - { id: "2.4", titre: { fr: "Fonctions" } }
+      - { id: "2.5", titre: { fr: "Listes et dictionnaires" } }
+      - { id: "2.boss", boss: true, titre: { fr: "Le chatbot à règles" } }
+  - id: 3
+    titre: { fr: "Algorithmes", en: "Algorithms" }
+    niveaux:
+      - { id: "3.1", titre: { fr: "Complexité" } }
+      - { id: "3.2", titre: { fr: "Trier" } }
+      - { id: "3.3", titre: { fr: "Dichotomie" } }
+      - { id: "3.4", titre: { fr: "Hachage" } }
+      - { id: "3.5", titre: { fr: "Graphes" } }
+      - { id: "3.boss", boss: true, titre: { fr: "L'index inversé" } }
+  - id: 4
+    titre: { fr: "Algèbre linéaire", en: "Linear algebra" }
+    niveaux:
+      - { id: "4.1", titre: { fr: "Vecteurs" } }
+      - { id: "4.2", titre: { fr: "Produit scalaire" } }
+      - { id: "4.3", titre: { fr: "Matrices" } }
+      - { id: "4.4", titre: { fr: "Systèmes" } }
+      - { id: "4.5", titre: { fr: "SVD" } }
+      - { id: "4.boss", boss: true, titre: { fr: "Le moteur de similarité" } }
+  - id: 5
+    titre: { fr: "Analyse", en: "Calculus" }
+    niveaux:
+      - { id: "5.1", titre: { fr: "Limites" } }
+      - { id: "5.2", titre: { fr: "Dérivées" } }
+      - { id: "5.3", titre: { fr: "Gradient" } }
+      - { id: "5.4", titre: { fr: "Convexité" } }
+      - { id: "5.5", titre: { fr: "Descente" } }
+      - { id: "5.boss", boss: true, titre: { fr: "La pente la plus raide" } }
+  - id: 6
+    titre: { fr: "Probabilités", en: "Probability" }
+    niveaux:
+      - { id: "6.1", titre: { fr: "Hasard" } }
+      - { id: "6.2", titre: { fr: "Bayes" } }
+      - { id: "6.3", titre: { fr: "Lois" } }
+      - { id: "6.4", titre: { fr: "Espérance" } }
+      - { id: "6.5", titre: { fr: "Entropie" } }
+      - { id: "6.boss", boss: true, titre: { fr: "Le modèle bigramme" } }
+  - id: 7
+    titre: { fr: "Statistique", en: "Statistics" }
+    niveaux:
+      - { id: "7.1", titre: { fr: "Estimer" } }
+      - { id: "7.2", titre: { fr: "Intervalles" } }
+      - { id: "7.3", titre: { fr: "Tester" } }
+      - { id: "7.4", titre: { fr: "Bootstrap" } }
+      - { id: "7.5", titre: { fr: "Tests multiples" } }
+      - { id: "7.boss", boss: true, titre: { fr: "Le faux signal" } }
