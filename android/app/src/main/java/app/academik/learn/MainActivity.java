@@ -1,5 +1,12 @@
 package app.academik.learn;
 
+import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
 
-public class MainActivity extends BridgeActivity {}
+public class MainActivity extends BridgeActivity {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        registerPlugin(UpdaterPlugin.class); // mise à jour intégrée de l'application
+        super.onCreate(savedInstanceState);
+    }
+}

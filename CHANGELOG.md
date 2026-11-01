@@ -2,6 +2,18 @@
 
 ## [Non publié]
 
+## [0.3.4] — 2026-11-01
+
+### Message fr
+Les mises à jour de l'application se téléchargent et s'installent maintenant toutes seules, dans l'app, sans passer par GitHub. Les réponses ont toutes la même présentation.
+
+### Message en
+App updates now download and install by themselves, inside the app, without going through GitHub. All answers now look the same.
+
+### Ajouts / Added
+- Mise à jour intégrée : téléchargement avec progression, vérification SHA-256, installation (Android : une autorisation unique puis l'installateur système ; Linux : remplacement de l'AppImage et redémarrage automatique ; site : rechargement automatique). / Built-in update: download with progress, SHA-256 check, install (Android: one-time permission then the system installer; Linux: AppImage replacement and automatic restart; web: automatic reload).
+- Réponses : même présentation pour toutes les options ; le code seulement s'il est balisé. / Answers: same look for all options; code only when marked up.
+
 ## [0.3.3] — 2026-11-01
 
 ### Message fr

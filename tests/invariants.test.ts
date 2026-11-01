@@ -70,3 +70,19 @@ describe('E11 · l\u2019état « mise à jour disponible » survit au redémarra
   it('« en attente d\u2019une version plus récente » est mémorisé aussi', () => { expect(upd).toContain("'academik.updateStatus'"); });
   it('le site ne montre pas de bannière de téléchargement (le service worker s\u2019en charge)', () => { expect(upd).toMatch(/platform\(\) !== 'web'/); });
 });
+
+describe('E13 · les mises à jour se font DANS l\u2019app, automatiquement, sans renvoi vers GitHub', () => {
+  const banner = read('src/ui/UpdateBanner.svelte'), upd = read('src/lib/updates.svelte.ts');
+  it('aucun lien, aucune ouverture de navigateur dans le parcours de mise à jour', () => {
+    for (const code of [banner, upd, read('src/lib/installer.ts'), read('src/lib/platform.ts')]) { expect(code).not.toContain('openExternal'); expect(code).not.toMatch(/window\.open|<a [^>]*href/); }
+    expect(read('package.json')).not.toContain('plugin-opener');
+  });
+  it('le téléchargement démarre tout seul dès qu\u2019une mise à jour est connue', () => { expect(upd).toMatch(/set\(APP, JSON\.stringify\(a\)\); void this\.autoPrepare\(\)/); expect(read('src/main.ts')).toContain('updates.autoPrepare()'); });
+  it('installation / rechargement automatiques seulement sur la carte, jamais en pleine leçon', () => { const app = read('src/ui/App.svelte'); expect(app).toMatch(/if \(view\.k !== 'map'\) return;/); expect(app).toContain('updates.applyWeb'); expect(app).toContain('updates.installNow()'); });
+  it('le code natif vérifie lui aussi l\u2019empreinte et limite le lien aux releases du dépôt', () => {
+    const java = read('android/app/src/main/java/app/academik/learn/UpdaterPlugin.java'), rust = read('src-tauri/src/main.rs');
+    for (const code of [java, rust]) { expect(code).toContain('https://github.com/raantss18/academik/releases/download/'); expect(code).toMatch(/SHA-256|Sha256/); expect(code).toContain('empreinte incorrecte'); }
+    expect(read('android/app/src/main/AndroidManifest.xml')).toContain('REQUEST_INSTALL_PACKAGES');
+    expect(read('android/app/src/main/java/app/academik/learn/MainActivity.java')).toContain('registerPlugin(UpdaterPlugin.class)');
+  });
+});

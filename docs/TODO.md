@@ -21,7 +21,7 @@
 | E10 | 1 nov. (constatée par Claude) | paquets APK/AppImage livrés en retard sur le code (2 fois) | construction manuelle en plusieurs commandes, sans contrôle | `scripts/build-release.sh` (une seule commande) ; `release.mjs` refuse des paquets plus anciens que les sources | `release.mjs` | 0.3.2 |
 | E11 | 1 nov. (constatée par Claude à l'essai) | une app 0.3.1 ne montre pas la bannière « nouvelle version 0.3.2 » après redémarrage | la mise à jour trouvée n'était gardée qu'en mémoire alors que la vérification réseau est limitée à 1 fois / 6 h | mise à jour mémorisée et revalidée (`revalidate`) ; statut « en attente d'une version plus récente » mémorisé ; pas de bannière de téléchargement sur le site | `updates.test`, `invariants` E11 | 0.3.3 |
 | E12 | 1 nov. | la vue des réponses n'est pas uniforme (certaines options en police de code, d'autres en texte) | le style dépendait de la présence d'une formule dans l'option | toutes les options : même rendu (texte normal) ; le code seulement s'il est balisé par des accents graves, et alors pour **toutes** les options de la carte ; champ de saisie dans la même police | `invariants` E8/E12 | 0.3.4 |
-| E13 | 1 nov. | mise à jour de l'app : renvoi vers GitHub au lieu d'être automatique et intégrée | l'app ouvrait le lien de téléchargement dans le navigateur | 🔄 téléchargement, vérification SHA-256 et installation **dans l'app** (Android : installateur système ; Linux : remplacement de l'AppImage et redémarrage ; site : rechargement tout seul) | à venir | 0.3.4 |
+| E13 | 1 nov. | mise à jour de l'app : renvoi vers GitHub au lieu d'être automatique et intégrée | l'app ouvrait le lien de téléchargement dans le navigateur | téléchargement, vérification SHA-256 et installation **dans l'app** (Android : plugin natif + installateur système ; Linux : commandes Rust, remplacement de l'AppImage et redémarrage ; site : rechargement tout seul sur la carte) ; **essais réels** : émulateur Android (0.0.1 → 0.3.3 via l'installateur) et AppImage (remplacée et relancée) | `invariants` E13, `installer.test` | 0.3.4 |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | 🔄 intégration en cours (voir § 1) | — | à venir |
 
 ## 1. Application et site
@@ -35,6 +35,7 @@
 - ⏳ Éditeur Python exécutable (Pyodide en Web Worker, délai limite, tests par exercice) ; terminal simulé (modules 1 et 14) ; cartes interactives (curseur, glisser, ordonner)
 - ⏳ Figures d'intuition (SVG générés, sans équation dans l'image)
 - ⏳ Comptes et **synchronisation** : écran de connexion, RxDB + `replication-supabase` (schéma `academik` déjà en ligne, voir D-019) ; test d'accès `supabase/tests/academik_rls.sql` à exécuter
+- ⏳ Mise à jour **du site** (service worker : rechargement automatique sur la carte) : non testée dans un vrai navigateur (le navigateur de test n'a pas de service worker) ; mises à jour 0.3.3 → 0.3.4 : la 0.3.3 renvoie encore vers GitHub, une installation manuelle est nécessaire une dernière fois
 - ⏳ Test « réseau coupé » avec un vrai service worker (le navigateur de test sans interface plante ici : à faire sur machine avec Chrome/Chromium)
 - ⏳ Accessibilité WCAG 2.2 AA (audit outillé), lecteur d'écran, clavier
 - ⏳ Titres du cursus en anglais (T-003 traductions), malgache non prévu

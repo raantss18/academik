@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from '../lib/i18n.svelte';
   import { updates } from '../lib/updates.svelte';
-  import { openExternal } from '../lib/platform';
   const fr = $derived(i18n.lang === 'fr');
   const app = $derived(updates.visibleApp);
   const t = (n: { fr: string; en: string }) => i18n.t(n);
@@ -11,16 +10,31 @@
   <div class="b" role="status"><span>{fr ? 'Une nouvelle version est prête.' : 'A new version is ready.'}</span><button class="btn primary" onclick={() => updates.applyWeb?.()}>{fr ? 'Recharger' : 'Reload'}</button></div>
 {/if}
 {#if app}
-  <div class="b" class:must={app.mandatory} role="status">
+  {@const f = updates.flow}
+  <div class="b" class:must={app.mandatory} role="status" aria-live="polite">
     <div class="tx">
       <strong>{fr ? 'Nouvelle version' : 'New version'} {app.version}{app.mandatory ? (fr ? ' — mise à jour importante' : ' — important update') : ''}</strong>
       <span>{t(app.notes[0].notes)}</span>
       {#if app.notes.length > 1}<details><summary>{fr ? `Nouveautés des ${app.notes.length - 1} version(s) précédente(s)` : `What's new in the ${app.notes.length - 1} previous version(s)`}</summary><ul>{#each app.notes.slice(1) as n}<li><strong>{n.version}</strong> — {t(n.notes)}</li>{/each}</ul></details>{/if}
-      {#if app.asset}<small class="muted">SHA-256 {app.asset.sha256.slice(0, 12)}… · {(app.asset.bytes / 1048576).toFixed(1)} {fr ? 'Mo' : 'MB'}</small>{/if}
+
+      {#if f.phase === 'downloading'}
+        <div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={f.pct}><div style="width:{f.pct}%"></div></div>
+        <small class="muted">{fr ? `Téléchargement et vérification… ${f.pct} %` : `Downloading and verifying… ${f.pct}%`}</small>
+      {:else if f.phase === 'needs-permission'}
+        <small>{fr ? 'Android demande ton accord, une seule fois, pour qu’academik installe ses propres mises à jour.' : 'Android asks for your consent, once, so academik can install its own updates.'}</small>
+      {:else if f.phase === 'installing'}
+        <small class="muted">{updates.installer?.kind === 'linux' ? (fr ? 'Installation… l’application va redémarrer.' : 'Installing… the app will restart.') : (fr ? 'Ouverture de l’installateur…' : 'Opening the installer…')}</small>
+      {:else if f.phase === 'ready'}
+        <small class="muted">{fr ? 'Téléchargée et vérifiée (empreinte SHA-256).' : 'Downloaded and verified (SHA-256).'}</small>
+      {:else if f.phase === 'error'}
+        <small class="err">{fr ? 'Échec :' : 'Failed:'} {f.error}</small>
+      {/if}
     </div>
     <div class="act">
-      {#if app.asset}<button class="btn primary" onclick={() => openExternal(app.asset!.url)}>{fr ? 'Télécharger' : 'Download'}</button>{/if}
-      {#if !app.mandatory}<button class="btn" onclick={() => updates.dismissApp()}>{fr ? 'Plus tard' : 'Later'}</button>{/if}
+      {#if f.phase === 'ready'}<button class="btn primary" onclick={() => updates.installNow()}>{fr ? 'Installer' : 'Install'}</button>
+      {:else if f.phase === 'needs-permission'}<button class="btn primary" onclick={() => updates.openPermission()}>{fr ? 'Autoriser' : 'Allow'}</button>
+      {:else if f.phase === 'error'}<button class="btn primary" onclick={() => updates.retry()}>{fr ? 'Réessayer' : 'Retry'}</button>{/if}
+      {#if !app.mandatory && f.phase !== 'installing'}<button class="btn" onclick={() => updates.dismissApp()}>{fr ? 'Plus tard' : 'Later'}</button>{/if}
     </div>
   </div>
 {/if}
@@ -35,5 +49,6 @@
   .b { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 12px 14px; margin: 8px 0; border-radius: 16px; background: var(--c-primary-soft); border: 1px solid var(--c-primary); }
   .b.must { background: var(--c-accent-soft); border-color: var(--c-accent); }
   details { font-size: .9rem; } summary { cursor: pointer; font-weight: 600; } details ul { margin: 6px 0 0; padding-left: 1.1em; }
+  .prog { height: 8px; background: var(--c-surface-2); border-radius: 99px; overflow: hidden; margin-top: 6px; } .prog div { height: 100%; background: var(--c-primary); transition: width .2s; } .err { color: var(--c-accent); }
   .tx { display: grid; gap: 2px; flex: 1; min-width: 200px; } .act { display: flex; gap: 8px; } .btn { min-height: 44px; padding: 0 16px; }
 </style>
