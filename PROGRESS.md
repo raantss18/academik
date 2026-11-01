@@ -28,5 +28,5 @@
   Observatoire) : matériaux, tracé de rue, végétation (ravenala, baobab, jacaranda), repères uniques par niveau, ombres,
   voitures animées, bouton « Mélanger » (autre tirage). Autorisation d'Antsa : réutiliser et découper tous ses livres,
   en les mettant à jour (`CONSIGNES.md` § 7, manifeste).
-- **Vérifié** : ouverture sans erreur de console, 48 épingles, rendu bureau. **Non vérifié** : téléphone (375 px) et poids
+- **Vérifié** : aucune erreur de console, 48 épingles, rendu bureau, téléphone 375 px (barre du haut corrigée, zones tactiles 50 px, pas de défilement horizontal), rendu en ≈ 320 ms. **Non vérifié** : poids
   (≈ 4 250 éléments SVG pour 8 quartiers : il faudra ne rendre que les quartiers proches).

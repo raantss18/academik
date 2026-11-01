@@ -36,7 +36,14 @@
     background: rgb(255 255 255 / .1); backdrop-filter: blur(8px); font-weight: 600; font-size: .9rem; color: #fff;
     border: 1px solid rgb(255 255 255 / .14);
   }
+  .chip { white-space: nowrap; }
   .chip svg { width: 18px; height: 18px; }
+  @media (max-width: 480px) {
+    .hud { gap: 5px; padding-left: 10px; padding-right: 10px; }
+    .brand { font-size: 1rem; }
+    .chip { padding: 6px 9px; font-size: .82rem; }
+    #shuffle span { display: none; }
+  }
   button.chip { cursor: pointer; font: inherit; font-weight: 600; font-size: .9rem; }
 
   .map { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain;
@@ -95,7 +102,7 @@
     <div class="brand">acad<span>e</span>mik</div>
     <span class="chip" title="Série de jours"><svg viewBox="0 0 24 24" fill="#ff9d3b"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-6 1-9.5z"/></svg>5</span>
     <span class="chip" title="Points d'expérience"><svg viewBox="0 0 24 24" fill="#ffd36b"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>1 240</span>
-    <button class="chip" id="shuffle" title="Autre tirage au sort de la ville (démo)">Mélanger</button>
+    <button class="chip" id="shuffle" title="Autre tirage au sort de la ville (démo)" aria-label="Mélanger la ville">🎲<span> Mélanger</span></button>
     <button class="chip" id="toggleList" aria-pressed="false">Vue liste</button>
   </header>
 
@@ -732,7 +739,7 @@ function render() {
     let g = `<g class="pin" tabindex="0" role="button" aria-label="${label}" data-d="${p.d}" data-l="${p.l}" transform="translate(${fx(p.px)},${fx(p.py)})">`;
     g += `<path d="M0 ${r + 9}L-5 ${r + 1}L5 ${r + 1}Z" fill="${fill}" opacity=".9"/>`;
     if (p.st === 'current') g += `<circle class="pulse" r="${r + 4}" fill="none" stroke="#ffd36b" stroke-width="3"/>`;
-    g += `<circle class="hit" r="24" fill="transparent"/><circle r="${r}" fill="${fill}" stroke="${p.st === 'current' ? '#ffd36b' : 'rgb(255 255 255 / .6)'}" stroke-width="2.5"/>`;
+    g += `<circle class="hit" r="28" fill="transparent"/><circle r="${r}" fill="${fill}" stroke="${p.st === 'current' ? '#ffd36b' : 'rgb(255 255 255 / .6)'}" stroke-width="2.5"/>`;
     if (p.st === 'locked') g += `<path d="M-4 -1v-3a4 4 0 0 1 8 0v3" fill="none" stroke="#8a90a8" stroke-width="2"/><rect x="-6" y="-1" width="12" height="9" rx="2" fill="#8a90a8"/>`;
     else if (p.isBoss) g += `<path d="M-8 4 l-2 -10 l6 5 l4 -8 l4 8 l6 -5 l-2 10z" fill="${p.st === 'current' ? D.color : '#fff'}"/>`;
     else g += `<text y="5" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="13" fill="${p.st === 'current' ? D.color : '#fff'}">${D.n}.${p.l + 1}</text>`;
