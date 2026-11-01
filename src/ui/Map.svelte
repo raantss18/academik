@@ -8,6 +8,8 @@
   import { levelScore, stars } from '../engine/score';
   import { unlockedLevels, nextLevel } from '../engine/unlock';
   import { resume } from '../lib/resume';
+  import City from './City.svelte';
+  import { buildDistricts } from '../lib/city/index';
 
   let { onplay, onrules }: { onplay: (id: string) => void; onrules: () => void } = $props();
 
@@ -18,18 +20,34 @@
   const fr = $derived(i18n.lang === 'fr');
   const ready = $derived(content.modules.filter(m => m.niveaux.some(n => content.levels[n.id])));
   const upcoming = $derived(content.modules.filter(m => !m.niveaux.some(n => content.levels[n.id])));
+  const districts = $derived(buildDistricts({ modules: content.modules, levels: content.levels, scores, open, current, t: x => i18n.t(x as { fr: string; en: string }), fr }));
+
+  // Vue « ville » par défaut (E9) ; la liste reste un choix mémorisé sur cet appareil.
+  const VIEW = 'academik.view';
+  let view = $state<'city' | 'list'>((() => { try { return localStorage.getItem(VIEW) === 'list' ? 'list' : 'city'; } catch { return 'city'; } })());
+  function toggle() { view = view === 'city' ? 'list' : 'city'; try { localStorage.setItem(VIEW, view); } catch { /* ignoré */ } }
+  let city: City | undefined = $state();
+  /** Bouton retour du téléphone : ferme la fiche d'un niveau ouverte sur la ville (false = rien à fermer). */
+  export function back(): boolean { return !!city?.close(); }
 </script>
 
-<div class="wrap">
+<div class="home" class:citymode={view === 'city'}>
+<div class="wrap top">
   <header class="hud">
     <LogoMenu {onrules} />
     <span class="chip" title={ui('streak')}>🔥 {progress.streak} {progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>
     <span class="chip">⭐ {progress.xp} {ui('xp')}</span>
+    <button class="chip view" onclick={toggle} aria-pressed={view === 'list'}>{view === 'city' ? (fr ? '☰ Liste' : '☰ List') : (fr ? '🏙 Ville' : '🏙 City')}</button>
   </header>
 
   <UpdateBanner />
   {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}{where > 0 ? ` (${ui('card')} ${where + 1}/${content.levels[current].cartes.length})` : ''}</button>{/if}
-  <p class="muted small">{ui('guest')}</p>
+  {#if view === 'list'}<p class="muted small">{ui('guest')}</p>{/if}
+</div>
+{#if view === 'city'}
+  <City bind:this={city} {districts} {current} {onplay} />
+{:else}
+<div class="wrap list">
 
   {#each ready as m}
     <section class="mod">
@@ -57,8 +75,13 @@
     </section>
   {/if}
 </div>
+{/if}
+</div>
 
 <style>
+  .home.citymode { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+  .citymode .top { flex: none; width: 100%; padding-bottom: 6px; } .wrap.list { padding-top: 0; }
+  .view { margin-left: auto; cursor: pointer; font: inherit; font-weight: 600; font-size: .9rem; color: var(--c-text); }
   .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }
   .hud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
   .chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; font-size: .9rem; }

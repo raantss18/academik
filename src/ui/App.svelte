@@ -11,7 +11,7 @@
   type View = { k: 'map' } | { k: 'rules' } | { k: 'lesson'; id: string };
   let run = $state(0);
   let view = $state<View>({ k: 'map' });
-  let lesson: Lesson | undefined = $state();
+  let lesson: Lesson | undefined = $state(), map: Map | undefined = $state();
 
   // Bouton retour du téléphone / du navigateur : une entrée d'historique « de garde » par écran ouvert.
   // Dans une leçon, retour = carte précédente ; au début de la leçon (ou ailleurs) = retour à la carte ; sur la carte, il quitte l'app.
@@ -22,7 +22,7 @@
   function goBack(): boolean {
     if (view.k === 'lesson') { if (!lesson?.back()) leave(); return true; }
     if (view.k === 'rules') { leave(); return true; }
-    return false;
+    return !!map?.back();   // sur la ville : ferme d'abord la fiche du niveau
   }
   // Android : le bouton retour est géré ici (Capacitor ne l'intercepte pas seul : sans cela l'app se fermerait).
   onMount(() => { if (platform() === 'android') void import('@capacitor/app').then(({ App }) => { void App.addListener('backButton', () => { if (!goBack()) void App.exitApp(); }); }); });
@@ -50,5 +50,5 @@
 {:else if view.k === 'rules'}
   <Consignes onexit={leave} />
 {:else}
-  <Map onplay={id => enter({ k: 'lesson', id })} onrules={() => enter({ k: 'rules' })} />
+  <Map bind:this={map} onplay={id => enter({ k: 'lesson', id })} onrules={() => enter({ k: 'rules' })} />
 {/if}

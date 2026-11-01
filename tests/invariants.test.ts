@@ -122,3 +122,14 @@ describe('E14 / E15 · cours illustrés et clairs (barre de clarté C1–C5, doc
     const fig = read('src/ui/Figure.svelte'); expect(fig).toContain('use:typeset'); expect([...fig.matchAll(/\{tx\(/g)].length).toBe(0);
   });
 });
+
+describe('E9 · la ville est l’accueil (la liste reste un choix)', () => {
+  const map = read('src/ui/Map.svelte'), city = read('src/ui/City.svelte');
+  it('vue « ville » par défaut, liste mémorisée seulement si l’élève la choisit', () => {
+    expect(map).toMatch(/localStorage\.getItem\(VIEW\) === 'list' \? 'list' : 'city'/); expect(map).toContain('<City bind:this={city}');
+  });
+  it('le générateur est chargé à la demande (hors du premier chargement) et un échec renvoie vers la liste', () => {
+    expect(city).toContain("import('../lib/city/gen.js')"); expect(map).not.toMatch(/import .* from '\.\.\/lib\/city\/gen/); expect(city).toContain('failed');
+  });
+  it('le bouton retour ferme la fiche d’un niveau avant de quitter', () => { expect(app).toContain('map?.back()'); expect(city).toContain('export function close()'); });
+});
