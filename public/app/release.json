@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 3,
-  "version": "0.3.0",
+  "build": 4,
+  "version": "0.3.1",
   "notes": {
-   "fr": "Les cours sont plus clairs : formules bien écrites, code en couleurs, encadrés « À retenir » et « Piège », exemples qui montrent la ligne expliquée. Un nouveau module arrive : Raisonner (logique, preuves, récurrence, congruences).",
-   "en": "Courses are clearer: properly typeset formulas, coloured code, “Key takeaway” and “Pitfall” boxes, examples that highlight the line being explained. A new module arrives: Reasoning (logic, proofs, induction, congruences)."
+   "fr": "Les boutons du haut ne sont plus cachés par la barre d'état du téléphone. Les réglages, la langue, le thème, la synchronisation et les mises à jour sont dans le logo academik. Nouvelle icône : le « e » rouge.",
+   "en": "The buttons at the top are no longer hidden by the phone's status bar. Settings, language, theme, sync and updates are in the academik logo. New icon: the red “e”."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.0/academik-0.3.0.apk",
-    "sha256": "6300409d40534cd9850c62e8efdc952dfb0c7dc061f774699da69b54f05d530e",
-    "bytes": 3717099
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.1/academik-0.3.1.apk",
+    "sha256": "49cf5592b507269eaf9108482f64c81a1aa382862ec4553f51a22749ee1170bf",
+    "bytes": 3607107
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.0/academik-0.3.0-x86_64.AppImage",
-    "sha256": "f9c7aacc2dfec4bdc217647946985d0676b411f488861cf693de80804c3288f7",
-    "bytes": 108321272
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.1/academik-0.3.1-x86_64.AppImage",
+    "sha256": "db4681b45c7d3ce87d36c3c3f744e5feb9f5a07a3db7b795961bfc54a605fd7d",
+    "bytes": 108329464
    }
   }
  },
  "history": [
+  {
+   "build": 3,
+   "version": "0.3.0",
+   "notes": {
+    "fr": "Les cours sont plus clairs : formules bien écrites, code en couleurs, encadrés « À retenir » et « Piège », exemples qui montrent la ligne expliquée. Un nouveau module arrive : Raisonner (logique, preuves, récurrence, congruences).",
+    "en": "Courses are clearer: properly typeset formulas, coloured code, “Key takeaway” and “Pitfall” boxes, examples that highlight the line being explained. A new module arrives: Reasoning (logic, proofs, induction, congruences)."
+   }
+  },
   {
    "build": 2,
    "version": "0.2.0",
