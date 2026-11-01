@@ -2,6 +2,17 @@
 
 ## [Non publié]
 
+## [0.3.6] — 2026-11-01
+
+### Message fr
+L'accueil devient une ville qui s'allume : chaque quartier est un module, chaque bâtiment un niveau, et il s'éclaire à mesure que tu gagnes des étoiles. Touche un bâtiment pour jouer. La liste reste disponible d'un geste.
+
+### Message en
+Home is now a city that lights up: each district is a module, each building a level, and it brightens as you earn stars. Tap a building to play. The list is still one tap away.
+
+### Ajouts / Added
+- Carte « ville qui s'allume » à l'accueil, fiche de chaque niveau, vue liste au choix. / “City that lights up” home map, a sheet for each level, optional list view.
+
 ## [0.3.5] — 2026-11-01
 
 ### Message fr
