@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 11,
-  "version": "0.3.8",
+  "build": 12,
+  "version": "0.3.9",
   "notes": {
-   "fr": "Tu peux maintenant écrire du vrai code Python dans les leçons et t'entraîner dans un terminal simulé, sans rien risquer sur ton ordinateur. Deux nouveaux niveaux : « Se repérer » (terminal) et « Décider » (Python).",
-   "en": "You can now write real Python code in lessons and practise in a simulated terminal, without risking anything on your computer. Two new levels: “Finding your way” (terminal) and “Deciding” (Python)."
+   "fr": "La ville devient un vrai panorama : des quartiers aux formes naturelles reliés par un chemin qui serpente, une rivière, des collines. Le logo, ta série et tes points flottent dans le décor, et chaque niveau s'allume petit à petit, puis complètement quand tu le termines. Le niveau à jouer est marqué par un repère rouge, comme sur une carte.",
+   "en": "The city is now a real panorama: naturally shaped districts linked by a winding path, a river, hills. The logo, your streak and your points float in the scenery, and each level lights up bit by bit, then completely when you finish it. The level to play is marked by a red pin, like on a map."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.8/academik-0.3.8.apk",
-    "sha256": "4fc272951d421f5605dac7531fab8bfb8818d236b49454b596950b5455f1a395",
-    "bytes": 10144684
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.9/academik-0.3.9.apk",
+    "sha256": "f0514691f7491314b38a2c498a29929eda29f84c08a69364d0bae8eaae1d51a1",
+    "bytes": 10146656
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.8/academik-0.3.8-x86_64.AppImage",
-    "sha256": "b0739263112c56ebe2dd6dd4a30a11136b4b582154cb4d34909e091145bc4e10",
-    "bytes": 114665976
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.9/academik-0.3.9-x86_64.AppImage",
+    "sha256": "45e3ce16af21b0ca945c9a380be9a1a94eb2970c5a04847852c61be39a7c0070",
+    "bytes": 114674168
    }
   }
  },
  "history": [
+  {
+   "build": 11,
+   "version": "0.3.8",
+   "notes": {
+    "fr": "Tu peux maintenant écrire du vrai code Python dans les leçons et t'entraîner dans un terminal simulé, sans rien risquer sur ton ordinateur. Deux nouveaux niveaux : « Se repérer » (terminal) et « Décider » (Python).",
+    "en": "You can now write real Python code in lessons and practise in a simulated terminal, without risking anything on your computer. Two new levels: “Finding your way” (terminal) and “Deciding” (Python)."
+   }
+  },
   {
    "build": 10,
    "version": "0.3.7",
