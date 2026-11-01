@@ -36,21 +36,27 @@
 </script>
 
 <div class="home" class:citymode={view === 'city'}>
-<div class="wrap top">
+<!-- Ville : l'en-tête flotte dans le décor (pas de bandeau) ; liste : en-tête classique. -->
+<div class={view === 'city' ? 'hudlayer' : 'wrap top'}>
   <header class="hud">
     <LogoMenu {onrules} />
-    <span class="chip" title={ui('streak')}>🔥 {progress.streak} {progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>
-    <span class="chip">⭐ {progress.xp} {ui('xp')}</span>
-    <button class="chip view" onclick={toggle} aria-pressed={view === 'list'}>{view === 'city' ? (fr ? '☰ Liste' : '☰ List') : (fr ? '🏙 Ville' : '🏙 City')}</button>
+    <span class="chip" title="{progress.streak} {ui('streak')}" aria-label="{progress.streak} {ui('streak')}">🔥 {progress.streak}{view === 'list' ? ` ${progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}` : ''}</span>
+    <span class="chip" title="{progress.xp} {ui('xp')}" aria-label="{progress.xp} {ui('xp')}">⭐ {progress.xp}{view === 'list' ? ` ${ui('xp')}` : ''}</span>
+    <button class="chip view" onclick={toggle} aria-pressed={view === 'list'} aria-label={view === 'city' ? (fr ? 'Vue liste' : 'List view') : (fr ? 'Vue ville' : 'City view')}>{view === 'city' ? '☰' : (fr ? '🏙 Ville' : '🏙 City')}</button>
   </header>
-
   <UpdateBanner />
-  {#if due > 0}<button class="btn review" onclick={onreview}>🔁 {ui('review_title')} · {due} {ui('review_n')}</button>{/if}
-  {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}{where > 0 ? ` (${ui('card')} ${where + 1}/${content.levels[current].cartes.length})` : ''}</button>{/if}
-  {#if view === 'list'}<p class="muted small">{ui('guest')}</p>{/if}
+  {#if view === 'list'}
+    {#if due > 0}<button class="btn review" onclick={onreview}>🔁 {ui('review_title')} · {due} {ui('review_n')}</button>{/if}
+    {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}{where > 0 ? ` (${ui('card')} ${where + 1}/${content.levels[current].cartes.length})` : ''}</button>{/if}
+    <p class="muted small">{ui('guest')}</p>
+  {/if}
 </div>
 {#if view === 'city'}
   <City bind:this={city} {districts} {current} {onplay} />
+  <div class="dock">
+    {#if due > 0}<button class="btn review" onclick={onreview}>🔁 {ui('review_title')} · {due} {ui('review_n')}</button>{/if}
+    {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}{where > 0 ? ` (${ui('card')} ${where + 1}/${content.levels[current].cartes.length})` : ''}</button>{/if}
+  </div>
 {:else}
 <div class="wrap list">
 
@@ -84,8 +90,15 @@
 </div>
 
 <style>
-  .home.citymode { height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-  .citymode .top { flex: none; width: 100%; padding-bottom: 6px; } .wrap.list { padding-top: 0; }
+  .wrap.list { padding-top: 0; }
+  /* Ville plein écran : l'en-tête et les boutons flottent sur le décor de nuit (toujours sombre, clair ou sombre). */
+  .hudlayer, .dock { --c-text: #f2f4ff; --c-text-muted: #b9bfe8; --c-surface: #171c3a; --c-surface-2: #20264a; --c-border: #3a4170; color: var(--c-text); }
+  .hudlayer { position: fixed; inset: 0 0 auto 0; z-index: 6; padding: calc(var(--sat) + 10px) calc(var(--sar) + 12px) 0 calc(var(--sal) + 12px); pointer-events: none; display: flex; flex-direction: column; gap: 8px; max-width: 760px; margin: 0 auto; }
+  .hudlayer > :global(*) { pointer-events: auto; } .hudlayer .hud { margin: 0; pointer-events: none; } .hudlayer .hud > :global(*) { pointer-events: auto; }
+  .hudlayer .chip { background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); border-color: rgb(255 255 255 / .18); text-shadow: 0 1px 2px rgb(0 0 0 / .5); }
+  .dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; gap: 8px; max-width: 520px; margin: 0 auto; padding: 0 calc(var(--sar) + 16px) calc(var(--sab) + 16px) calc(var(--sal) + 16px); pointer-events: none; }
+  .dock > :global(*) { pointer-events: auto; margin: 0; box-shadow: 0 8px 28px rgb(0 0 0 / .45); }
+  .dock .review { background: rgb(40 16 20 / .88); color: #fff; }
   .view { margin-left: auto; cursor: pointer; font: inherit; font-weight: 600; font-size: .9rem; color: var(--c-text); }
   .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }
   .hud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }

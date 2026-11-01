@@ -13,9 +13,9 @@ describe('carte « ville qui s’allume » (E9)', () => {
     expect(buildDistricts(input()).length).toBe(Math.min(modules.length, last + 2));
   });
   it('les états suivent la progression : réussi, à jouer, ouvert, fermé, bientôt', () => {
-    const d = buildDistricts(input({ scores: { '0.1': 1 }, open: new Set(['0.1', '0.2', '0.3']), current: '0.2' }));
+    const d = buildDistricts(input({ scores: { '0.1': 1, '0.3': .6 }, open: new Set(['0.1', '0.2', '0.3', '0.4']), current: '0.2' }));
     const st = Object.fromEntries(d.flatMap(x => x.levels).map(l => [l.id, l.st]));
-    expect([st['0.1'], st['0.2'], st['0.3'], st['0.4']]).toEqual(['done', 'current', 'open', 'locked']);
+    expect([st['0.1'], st['0.2'], st['0.3'], st['0.4'], st['0.5']]).toEqual(['done', 'current', 'started', 'open', 'locked']);
     expect(d.flatMap(x => x.levels).filter(l => !levels[l.id]).every(l => l.st === 'soon')).toBe(true);
     expect(d[0].reached).toBe(true);
   });
@@ -32,4 +32,20 @@ describe('carte « ville qui s’allume » (E9)', () => {
   it('assez rapide pour un téléphone modeste (< 400 ms ici)', () => {
     const ds = buildDistricts(input()), t0 = performance.now(); renderCity(ds); expect(performance.now() - t0).toBeLessThan(400);
   });
+  it('« terminé » seulement à 100 % ; en dessous, le niveau est « commencé »', () => {
+    const lv = (sc: number) => buildDistricts(input({ scores: { '0.1': sc }, open: new Set(['0.1', '0.2']), current: '0.2' }))[0].levels[0];
+    expect(lv(.99).st).toBe('started'); expect(lv(1).st).toBe('done'); expect(lv(.5).score).toBe(.5);
+  });
+  it('plus le score monte, plus de fenêtres s\u2019allument ; à 100 % tout s\u2019allume avec un halo', () => {
+    const lit = (sc: number) => { const ds = buildDistricts(input({ scores: { '0.1': sc }, open: new Set(['0.1', '0.2']), current: '0.2' })); return (renderCity(ds, { seed: 7 }).svg.match(/#ffd36b|#ffcf80|#ffe9a8|#ffb86b/g) ?? []).length; };
+    expect(lit(0)).toBeLessThan(lit(.5)); expect(lit(.5)).toBeLessThan(lit(1));
+  });
+  it('le niveau à jouer est un repère rouge « position » (goutte), pas une étoile', () => {
+    const svg = renderCity(buildDistricts(input())).svg; expect(svg).toContain('class="drop"'); expect(svg).toContain('#ea4335'); expect(svg).not.toContain('class="float"');
+  });
+  it('panorama libre : les quartiers n\u2019ont pas de contour rectangulaire et le tirage change la forme', () => {
+    const ds = buildDistricts(input()), a = renderCity(ds, { seed: 7 }).svg, b = renderCity(ds, { seed: 8 }).svg;
+    expect(a).not.toBe(b); expect(a).not.toContain('class="float"'); expect((a.match(/<polygon points="/g) ?? []).length).toBeGreaterThan(200);
+  });
+  it('la marque est une enseigne dans le décor quand on la demande', () => { expect(renderCity(buildDistricts(input()), { brand: 'academik' }).svg).toContain('>acad'); });
 });

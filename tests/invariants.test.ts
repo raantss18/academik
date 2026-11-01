@@ -155,3 +155,37 @@ describe('Terminal simulé et Python : sûrs, hors système, sans jamais montrer
     const vite = read('vite.config.ts'); expect(vite).toContain("'py/**'"); expect(vite).toContain("'pyodide.asm.wasm'"); expect(read('src-tauri/tauri.conf.json')).toContain("'wasm-unsafe-eval'");
   });
 });
+
+describe('E17 · profondeur des leçons (barre de clarté C8)', () => {
+  type C = { id: string; type: string; figure?: unknown; exemple?: unknown };
+  const depthGaps = (L: { duree_min: number; cartes: C[] }): string[] => {
+    const g: string[] = [], theory = L.cartes.filter(c => c.type === 'idee' || c.type === 'exemple').length;
+    if (theory < 6) g.push(`${theory}/6 cartes de théorie`);
+    if (L.cartes.filter(c => c.figure).length < 2) g.push('moins de 2 figures');
+    if (L.cartes.filter(c => c.type === 'exemple' || c.exemple).length < 2) g.push('moins de 2 exemples');
+    if (L.duree_min < 16) g.push(`durée ${L.duree_min} < 16 min`);
+    return g;
+  };
+  // Niveaux à approfondir (tâches Codex T-013 à T-015, relais Claude). Cette liste ne fait que RÉTRÉCIR.
+  const DEEP_PENDING = new Set<string>(['0.1', '0.2', '0.3', '0.4', '0.5', '0.boss', '1.1', '2.1', '2.2', '3.1', '3.2', '3.3', '3.4', '3.5', '3.boss', '4.1', '4.2', '4.3', '4.4', '4.5', '4.boss', '5.1', '5.2', '5.3', '5.4', '5.5', '5.boss']);
+  const all = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => parse(read(`content/niveaux/${f}`)) as { id: string; duree_min: number; cartes: C[] });
+  it('chaque niveau hors liste d’attente a des leçons détaillées et illustrées', () => {
+    expect(Object.fromEntries(all.filter(l => !DEEP_PENDING.has(l.id)).map(l => [l.id, depthGaps(l)]).filter(([, g]) => g.length))).toEqual({});
+  });
+  it('la liste d’attente ne contient que des niveaux existants et encore à approfondir', () => {
+    const ids = new Set(all.map(l => l.id));
+    expect([...DEEP_PENDING].filter(id => !ids.has(id) || !depthGaps(all.find(l => l.id === id)!).length)).toEqual([]);
+  });
+});
+
+describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, repère rouge (demande d’Antsa du 2 nov.)', () => {
+  const gen = read('src/lib/city/gen.js'), map = read('src/ui/Map.svelte'), cityUi = read('src/ui/City.svelte');
+  it('plus de quartiers rectangulaires ni de paliers : contours naturels le long d’un chemin sinueux', () => {
+    expect(gen).not.toMatch(/\bSIZE\b|\bRISE\b|districtGeom/); expect(gen).toContain('function layout('); expect(gen).toContain('const inside = ');
+  });
+  it('l’en-tête et les boutons flottent sur la ville, sans bandeau ; la marque et les quartiers sont des enseignes du décor', () => {
+    expect(map).toContain("view === 'city' ? 'hudlayer'"); expect(map).toContain('class="dock"'); expect(cityUi).toContain("brand: 'academik'"); expect(gen).toContain('brandSvg'); expect(gen).toMatch(/enseigne du quartier/);
+  });
+  it('l’étoile flottante est remplacée par un repère rouge façon carte', () => { expect(gen).toContain('class="drop"'); expect(gen).toContain('#ea4335'); expect(gen).not.toContain('class="float"'); });
+  it('allumage progressif selon le score, tout allumé seulement à 100 %', () => { expect(gen).toContain('.1 + .72 * Lv.score'); expect(read('src/lib/city/index.ts')).toContain('s >= 1 - 1e-9'); });
+});

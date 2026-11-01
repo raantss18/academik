@@ -7,7 +7,7 @@
 //   node scripts/codex.mjs relay                  RELAIS (demande d'Antsa) : quota épuisé → Claude reprend les tâches arrêtées ;
 //                                                 quota revenu → les rendre à Codex (start), qui ne retouche pas ce que Claude a fait
 //   node scripts/codex.mjs took T-011 <fichier…>  Claude note les fichiers qu'il a terminés à la place de Codex
-import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, symlinkSync, copyFileSync, openSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, symlinkSync, copyFileSync, openSync, statSync } from 'node:fs';
 import { execFileSync, spawn } from 'node:child_process';
 import { dirname, resolve } from 'node:path';
 
@@ -47,7 +47,8 @@ const read = p => existsSync(p) ? readFileSync(p, 'utf8') : '';
 const quotaFile = `${RUNS}/quota.json`;
 const quota = () => { try { const q = JSON.parse(read(quotaFile)); return new Date(q.until) > new Date() ? new Date(q.until) : null; } catch { return null; } };
 const running = () => existsSync(RUNS) ? readdirSync(RUNS).filter(f => f.endsWith('.pid')).filter(f => alive(Number(read(`${RUNS}/${f}`)))).map(f => f.replace('.pid', '')) : [];
-function scanQuota(id) { const d = parseQuota(read(`${RUNS}/${id}.log`)); if (d) { writeFileSync(quotaFile, JSON.stringify({ until: d.toISOString(), seen: id })); return d; } return null; }
+/** Un message de quota ne compte que s'il est récent : un vieux journal ne doit jamais bloquer Codex (E19). */
+function scanQuota(id) { try { if (Date.now() - statSync(`${RUNS}/${id}.log`).mtimeMs > 6 * 3600 * 1000) return null; } catch { return null; } const d = parseQuota(lastRun(read(`${RUNS}/${id}.log`))); if (d) { writeFileSync(quotaFile, JSON.stringify({ until: d.toISOString(), seen: id })); return d; } return null; }
 const hhmm = d => d.toTimeString().slice(0, 5);
 const relayFile = id => `${RUNS}/${id}.relay.json`;
 const taken = id => { try { return JSON.parse(read(relayFile(id))).files ?? []; } catch { return []; } };
@@ -65,7 +66,7 @@ function status() {
     const id = f.replace('.md', ''), md = read(`handoff/tasks/${f}`), st = parseStatus(md), log = read(`${RUNS}/${id}.log`);
     const files = existsSync(wt(id)) ? changed(id).length : '-', stop = parseQuota(lastRun(log)) ? ' · arrêtée par le quota' : '';
     console.log(`${id}  ${st.padEnd(8)} ${live.includes(id) ? 'EN COURS ' : '         '} fichiers modifiés : ${String(files).padEnd(3)} jetons : ${parseTokens(log) || '-'}${stop}`);
-    if (!live.includes(id)) scanQuota(id);
+    if (!live.includes(id) && st === 'READY') scanQuota(id);
   }
 }
 

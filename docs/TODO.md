@@ -25,6 +25,9 @@
 | E14 | 1 nov. | cartes de théorie en texte dense, sans illustration ni exemple (0.2 « Démontrer ») | le format des cartes ne permettait **aucune figure** (Codex ne pouvait pas en ajouter) et rien n'exigeait d'exemple concret | champ `figure` (schéma, tableau, nombres ; HTML/CSS, formules rendues par KaTeX) et encadré « Par exemple » sur toute carte ; 0.2 réécrit (contre-exemple colorié, trois chemins de preuve, deux exemples résolus, tableau récapitulatif) ; vérifié sur téléphone (375 px) ; **24 autres niveaux** en attente (T-011) | `invariants` E14/E15 (liste d'attente qui ne fait que rétrécir), `content.test` (figures) | 0.3.5 |
 | E15 | 1 nov. | « le cours n'est pas assez clair » | aucune règle **vérifiable** de clarté : symboles ($\neg$, $\Rightarrow$) utilisés sans être lus en mots, plusieurs idées par carte, abstrait avant concret | recherches (Mayer ; Rosenshine 2012 ; Fyfe et al. 2014 ; Barbieri et al. 2023 ; Titsworth et al. 2015) → **barre de clarté C1–C7** dans `docs/QUALITE-COURS.md` ; 0.2 : carte « notations » (se lit…, exemple) | `invariants` E15 (C1, C2, C4, C5 automatiques) | 0.3.5 |
 | E16 | 1 nov. (trouvée par Claude) | dérivées affichées « L// » au lieu de « L′′ » (module 5) ; tableaux à 4 colonnes qui débordent sur téléphone | `\prime` seul n'est pas un exposant en KaTeX ; aucune limite de colonnes | `f'` partout (62 dérivées) ; le schéma refuse plus de 3 colonnes | `invariants` E8 (`\prime` interdit), `content.test` (3 colonnes) | contenu 1 nov. |
+| E17 | 2 nov. | « les leçons sont trop concises : plus de détails et d'illustrations » | une idée tenait en une carte ; la barre de clarté (C1–C7) ne fixait ni nombre de cartes de théorie ni de figures | **barre C8** (2 à 3 cartes par notion, ≥ 6 cartes de théorie, 2 figures, 2 exemples, 16–20 min) ; liste d'attente `DEEP_PENDING` ; tâches Codex T-013 à T-015 (relais Claude si quota) | `invariants` E17 | contenu |
+| E18 | 2 nov. | la ville est « trop rectangulaire », zigzag uniforme ; en-tête en bannière ; étoile ; allumage | quartiers carrés posés en escalier ; en-tête et bouton dans une barre ; allumage binaire (étoiles) | panorama libre (contours naturels, chemin sinueux, rivière, collines), en-tête et boutons flottant dans le décor, enseignes plantées (marque, quartiers), allumage progressif par score et tout allumé à 100 %, repère rouge façon carte | `invariants` E18, `city.test` | 0.3.9 |
+| E19 | 2 nov. (trouvée par Claude) | Codex déclaré « en quota » alors qu'il ne l'était plus | un vieux message de quota dans un journal ancien était relu à chaque `status` | seuls les journaux récents de tâches non terminées comptent | `codex.test` | outil |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | générateur porté dans `src/lib/city/` (fonction pure, chargée à la demande, 15,6 Ko gzip) ; un quartier par module, un bâtiment par niveau, allumé selon les étoiles ; fiche du niveau (Jouer/Rejouer) ; liste en choix mémorisé ; retour Android ferme la fiche ; vérifié à 375 px | `city.test` (épingles, états, échappement, déterminisme, temps), `invariants` E9 | 0.3.6 |
 
 ## 1. Application et site
@@ -32,7 +35,7 @@
 - ✅ Hors ligne : site installable (PWA), APK signé (Capacitor), AppImage (Tauri) ; audit « hors ligne » automatique
 - ✅ Mises à jour séparées : contenu automatique (SHA-256, atomique, compatibilité **par niveau**) et application signée (`release.json` Ed25519)
 - ✅ Présentation : formules KaTeX, code coloré, encadrés, exemple à ligne surlignée ; menu du logo (réglages, à propos, synchro, langue, thème) ; icône « e » rouge ; marges de la barre d'état
-- ✅ **Carte « ville qui s'allume » à l'accueil** (E9) ; ⏳ ensuite : zoom/pincement, animation « le quartier s'allume » après une réussite
+- ✅ **Carte « ville qui s'allume » à l'accueil** (E9) et **panorama libre** (E18, 0.3.9) ; ⏳ ensuite : pincement pour zoomer, animation d'allumage après une réussite, ponts sur la rivière, thème d'ambiance par saison
 - ⏳ Lecteur de leçon v2 : deux volets (texte | atelier) sur tablette/bureau, fil d'Ariane, précédent/suivant (`docs/REFERENCES-PRESENTATION.md`)
 - ✅ **Révisions espacées à l'écran** (0.3.7) : FSRS rejoué depuis le journal (rien à synchroniser), 10 cartes max, jamais le jour même, réponse jamais montrée, sans XP ; bouton « Révision du jour · n » sur l'accueil ; ⏳ réglage de la rétention cible, rappel (notification)
 - ⏳ Difficulté adaptative (Elo) ; réparation de prérequis (2 min)
@@ -53,7 +56,7 @@
 | 1 Le terminal | 🔄 1.1 fait ; 1.2 à 1.5 + boss ⏳ (cartes `terminal` prêtes) |
 | 2 Python | 🔄 2.1, 2.2 faits ; 2.3 à 2.5 + boss ⏳ (cartes `code` prêtes) |
 | 3 Algorithmes | ✅ 6 niveaux (T-004) |
-| 4 Algèbre linéaire | ✅ 6 niveaux (T-005) ; barre de clarté (T-012) |
+| 4 Algèbre linéaire | ✅ 6 niveaux (T-005) ; barre de clarté (T-012) ; ⏳ approfondir (T-015) |
 | 5 Analyse | ✅ 6 niveaux (T-006) |
 | 6 Probabilités, 7 Statistique | ⏳ à lancer (T-007, T-008) après T-005/T-006 |
 | 8 à 20, R | ⏳ voir `CURSUS.md` (volet IA puis quant) |

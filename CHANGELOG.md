@@ -2,6 +2,18 @@
 
 ## [Non publié]
 
+## [0.3.9] — 2026-11-02
+
+### Message fr
+La ville devient un vrai panorama : des quartiers aux formes naturelles reliés par un chemin qui serpente, une rivière, des collines. Le logo, ta série et tes points flottent dans le décor, et chaque niveau s'allume petit à petit, puis complètement quand tu le termines. Le niveau à jouer est marqué par un repère rouge, comme sur une carte.
+
+### Message en
+The city is now a real panorama: naturally shaped districts linked by a winding path, a river, hills. The logo, your streak and your points float in the scenery, and each level lights up bit by bit, then completely when you finish it. The level to play is marked by a red pin, like on a map.
+
+### Ajouts / Added
+- Panorama libre, enseignes plantées dans le décor, en-tête flottant. / Free panorama, signs planted in the scenery, floating header.
+- Allumage progressif des niveaux et repère rouge « position ». / Progressive lighting of levels and a red “location” pin.
+
 ## [0.3.8] — 2026-11-01
 
 ### Message fr
