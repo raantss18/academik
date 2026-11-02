@@ -113,3 +113,10 @@
 - **Fait** : chemin du quartier à la place de la barre de progression ; silhouette (une par module) dont les fenêtres s'allument aux bonnes réponses ; version 0.3.21.
 - **Vérifié** : 634 tests, rendu au navigateur (22 fenêtres allumées après une bonne réponse), `npm run verify` vert.
 - **Non vérifié** : appareil réel ; étape 5 (lucioles de série, scène de fin de boss) non faite.
+
+### Module 11 et étape 5 de l'immersion (2026-11-02, 0.3.22)
+
+- **Fait** : module 11 « Réseaux de neurones » (11.1 à 11.5 et boss) avec un micrograd maison en Python standard ; XOR appris en 100 époques ; quartier et ambiance du Carrefour des Neurones ; luciole de série et fête du boss dans les leçons.
+- **Vérifié** : 647 tests, dont l'exécution réelle de chaque solution Python ; clarté, durées, liens.
+- **Non vérifié** : appareils réels ; durées de jeu mesurées ; relecture croisée par Codex (quota de retour).
+

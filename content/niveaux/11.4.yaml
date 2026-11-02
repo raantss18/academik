@@ -1,0 +1,537 @@
+# Niveau 11.4 — Réseaux de neurones 4 : apprendre XOR. Original academik ; notions vérifiées dans Goodfellow, Bengio et Courville, Deep Learning (chap. 6.1, le problème XOR, lecture en ligne, texte non repris) et la série « Zero to Hero » d'A. Karpathy (citée, code non repris : la classe Valeur est écrite pour academik).
+id: '11.4'
+module: 11
+duree_min: 16
+titre: { fr: 'Apprendre XOR', en: 'Learning XOR' }
+ia: { fr: 'Kintana entraîne un petit réseau qui apprend seul une règle qu’aucune droite ne peut représenter.', en: 'Kintana trains a small network that learns on its own a rule that no straight line can represent.' }
+sources:
+  - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, section 6.1 (apprendre XOR)', url: 'https://www.deeplearningbook.org/contents/mlp.html', licence: 'Lecture en ligne ; texte non repris' }
+  - { titre: 'A. Karpathy — Neural Networks: Zero to Hero (micrograd)', url: 'https://karpathy.ai/zero-to-hero.html', licence: 'Cours en ligne ; contenu cité, code non repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'La règle « OU exclusif » (XOR) donne `1` quand **exactement une** des deux entrées vaut `1`. Pour les entrées `(1, 1)`, que vaut-elle ?'
+    en: 'The “exclusive OR” rule (XOR) gives `1` when **exactly one** of the two inputs is `1`. For the inputs `(1, 1)`, what is it?'
+    choix:
+      - { fr: '`0`', en: '`0`', juste: true }
+      - { fr: '`1`', en: '`1`' }
+      - { fr: '`2`', en: '`2`' }
+    indice: { fr: 'Combien d’entrées valent `1` pour `(1, 1)` ? Exactement une ?', en: 'How many inputs are `1` for `(1, 1)`? Exactly one?' }
+    explication: { fr: 'Les deux valent `1` : ce n’est pas « exactement une ». La règle donne `0`.', en: 'Both are `1`: that is not “exactly one”. The rule gives `0`.' }
+  - id: c2
+    type: idee
+    fr: 'XOR est le cas d’école : **aucune droite** ne sépare les cas `1` des cas `0`. Un seul neurone (niveau 11.1) trace une frontière droite et échoue. Deux couches, avec une activation, y arrivent : la première plie le plan, la seconde sépare.'
+    en: 'XOR is the textbook case: **no straight line** separates the `1` cases from the `0` cases. A single neuron (level 11.1) draws a straight boundary and fails. Two layers, with an activation, succeed: the first folds the plane, the second separates.'
+    figure:
+      kind: tableau
+      entetes: ['$x_1$', '$x_2$', { fr: 'XOR', en: 'XOR' }]
+      cellules:
+        - ['$0$', '$0$', '$0$']
+        - ['$0$', '$1$', { fr: '$1$', en: '$1$', ton: ok }]
+        - ['$1$', '$0$', { fr: '$1$', en: '$1$', ton: ok }]
+        - ['$1$', '$1$', '$0$']
+      legende: { fr: 'On codera les sorties par $-1$ et $1$ (au lieu de $0$ et $1$) pour utiliser $\tanh$.', en: 'We will encode outputs as $-1$ and $1$ (instead of $0$ and $1$) to use $\tanh$.' }
+  - id: d_valeur
+    type: idee
+    fr: 'Pour ne pas écrire le graphe à la main, on utilise une petite classe **`Valeur`**, fournie. Elle garde un nombre (`data`), sa pente (`grad`) et retient comment elle a été fabriquée. Les opérations `+`, `*`, `-` et `tanh` construisent le graphe toutes seules.'
+    en: 'To avoid writing the graph by hand, we use a small **`Valeur`** class, provided. It keeps a number (`data`), its slope (`grad`) and remembers how it was made. The operations `+`, `*`, `-` and `tanh` build the graph by themselves.'
+    exemple: { fr: 'Avec `a = Valeur(2)`, `b = Valeur(3)` et `e = a * b + 4`, l’appel `e.retropropager()` remplit `a.grad` (`3`) et `b.grad` (`2`), exactement comme le niveau 11.3.', en: 'With `a = Valeur(2)`, `b = Valeur(3)` and `e = a * b + 4`, the call `e.retropropager()` fills `a.grad` (`3`) and `b.grad` (`2`), exactly as in level 11.3.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'La classe Valeur en action', en: 'The Valeur class in action' }
+    lang: python
+    etapes:
+      - { code: 'a, b = Valeur(2), Valeur(3)\ne = a * b + 4', fr: 'On écrit la formule normalement : `Valeur` construit le graphe.', en: 'We write the formula normally: `Valeur` builds the graph.' }
+      - { code: 'e.retropropager()', fr: 'Un seul appel parcourt le graphe à l’envers et remplit les pentes.', en: 'A single call walks the graph backwards and fills in the slopes.' }
+      - { code: 'print(e.data, a.grad, b.grad)', fr: 'On affiche `10 3.0 2.0` : la valeur, puis les deux pentes.', en: 'We display `10 3.0 2.0`: the value, then the two slopes.' }
+    verif: |-
+      import math
+      class Valeur:
+          def __init__(self, data, enfants=()):
+              self.data = data; self.grad = 0.0; self._enfants = enfants; self._retour = lambda: None
+          def __add__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data + autre.data, (self, autre))
+              def retour():
+                  self.grad += s.grad; autre.grad += s.grad
+              s._retour = retour; return s
+          def __mul__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data * autre.data, (self, autre))
+              def retour():
+                  self.grad += autre.data * s.grad; autre.grad += self.data * s.grad
+              s._retour = retour; return s
+          def tanh(self):
+              t = math.tanh(self.data); s = Valeur(t, (self,))
+              def retour():
+                  self.grad += (1 - t * t) * s.grad
+              s._retour = retour; return s
+          __radd__ = __add__; __rmul__ = __mul__
+          def __neg__(self): return self * -1
+          def __sub__(self, autre): return self + (-autre if isinstance(autre, Valeur) else -autre)
+          def retropropager(self):
+              ordre, vus = [], set()
+              def visiter(v):
+                  if id(v) in vus: return
+                  vus.add(id(v))
+                  for e in v._enfants: visiter(e)
+                  ordre.append(v)
+              visiter(self); self.grad = 1.0
+              for v in reversed(ordre): v._retour()
+      def init(n, graine):
+          s = graine; out = []
+          for _ in range(n):
+              s = (s * 1103515245 + 12345) % 2147483648
+              out.append((s / 2147483648) * 2 - 1)
+          return out
+      class Reseau:
+          def __init__(self, tailles, graine=7):
+              poids = iter(init(sum((a + 1) * b for a, b in zip(tailles, tailles[1:])), graine))
+              self.couches = [[([Valeur(next(poids)) for _ in range(a)], Valeur(next(poids))) for _ in range(b)] for a, b in zip(tailles, tailles[1:])]
+          def parametres(self): return [p for c in self.couches for w, b in c for p in w + [b]]
+          def __call__(self, x):
+              for c in self.couches:
+                  x = [sum((wi * xi for wi, xi in zip(w, x)), b).tanh() for w, b in c]
+              return x[0]
+      a, b = Valeur(2), Valeur(3)
+      e = a * b + 4
+      e.retropropager()
+      print(e.data, a.grad, b.grad)
+    sortie: '10 3.0 2.0'
+  - id: d_perte
+    type: idee
+    fr: 'Pour apprendre, il faut une **perte** : un nombre qui dit à quel point le réseau se trompe (niveau 9.1). On prend la somme, sur tous les exemples, du carré de l’écart entre la prédiction et la cible. Plus elle est petite, mieux le réseau a appris.'
+    en: 'To learn, we need a **loss**: a number telling how wrong the network is (level 9.1). We take the sum, over all examples, of the square of the gap between prediction and target. The smaller it is, the better the network has learned.'
+    exemple: { fr: 'Prédictions `0.5` et `-0.5` pour les cibles `1` et `-1` : écarts $-0{,}5$ et $0{,}5$, perte $0{,}25+0{,}25=0{,}5$.', en: 'Predictions `0.5` and `-0.5` for targets `1` and `-1`: gaps $-0.5$ and $0.5$, loss $0.25+0.25=0.5$.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `perte_quadratique(reseau, xs, ys)`** : une `Valeur` égale à la somme, pour chaque `(x, y)`, de `(reseau(x) - y) * (reseau(x) - y)`. Pars d’une `Valeur(0.0)` pour que le résultat soit bien une `Valeur`.'
+    en: 'Your turn. **Write `perte_quadratique(reseau, xs, ys)`**: a `Valeur` equal to the sum, for each `(x, y)`, of `(reseau(x) - y) * (reseau(x) - y)`. Start from a `Valeur(0.0)` so the result is indeed a `Valeur`.'
+    depart: |
+      import math
+      class Valeur:
+          def __init__(self, data, enfants=()):
+              self.data = data; self.grad = 0.0; self._enfants = enfants; self._retour = lambda: None
+          def __add__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data + autre.data, (self, autre))
+              def retour():
+                  self.grad += s.grad; autre.grad += s.grad
+              s._retour = retour; return s
+          def __mul__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data * autre.data, (self, autre))
+              def retour():
+                  self.grad += autre.data * s.grad; autre.grad += self.data * s.grad
+              s._retour = retour; return s
+          def tanh(self):
+              t = math.tanh(self.data); s = Valeur(t, (self,))
+              def retour():
+                  self.grad += (1 - t * t) * s.grad
+              s._retour = retour; return s
+          __radd__ = __add__; __rmul__ = __mul__
+          def __neg__(self): return self * -1
+          def __sub__(self, autre): return self + (-autre if isinstance(autre, Valeur) else -autre)
+          def retropropager(self):
+              ordre, vus = [], set()
+              def visiter(v):
+                  if id(v) in vus: return
+                  vus.add(id(v))
+                  for e in v._enfants: visiter(e)
+                  ordre.append(v)
+              visiter(self); self.grad = 1.0
+              for v in reversed(ordre): v._retour()
+      def init(n, graine):
+          s = graine; out = []
+          for _ in range(n):
+              s = (s * 1103515245 + 12345) % 2147483648
+              out.append((s / 2147483648) * 2 - 1)
+          return out
+      class Reseau:
+          def __init__(self, tailles, graine=7):
+              poids = iter(init(sum((a + 1) * b for a, b in zip(tailles, tailles[1:])), graine))
+              self.couches = [[([Valeur(next(poids)) for _ in range(a)], Valeur(next(poids))) for _ in range(b)] for a, b in zip(tailles, tailles[1:])]
+          def parametres(self): return [p for c in self.couches for w, b in c for p in w + [b]]
+          def __call__(self, x):
+              for c in self.couches:
+                  x = [sum((wi * xi for wi, xi in zip(w, x)), b).tanh() for w, b in c]
+              return x[0]
+      xs = [[0, 0], [0, 1], [1, 0], [1, 1]]
+      ys = [-1, 1, 1, -1]
+
+      # écris ta fonction perte_quadratique ici
+    tests: |
+      r = Reseau([2, 3, 1], 7)
+      p = perte_quadratique(r, xs, ys)
+      assert isinstance(p, Valeur) and abs(p.data - 6.406) < 0.01
+      p.retropropager()
+      assert any(q.grad != 0 for q in r.parametres())
+      assert abs(perte_quadratique(r, [[0, 0]], [r([0, 0]).data]).data) < 1e-12
+    solutionCode: |
+      import math
+      class Valeur:
+          def __init__(self, data, enfants=()):
+              self.data = data; self.grad = 0.0; self._enfants = enfants; self._retour = lambda: None
+          def __add__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data + autre.data, (self, autre))
+              def retour():
+                  self.grad += s.grad; autre.grad += s.grad
+              s._retour = retour; return s
+          def __mul__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data * autre.data, (self, autre))
+              def retour():
+                  self.grad += autre.data * s.grad; autre.grad += self.data * s.grad
+              s._retour = retour; return s
+          def tanh(self):
+              t = math.tanh(self.data); s = Valeur(t, (self,))
+              def retour():
+                  self.grad += (1 - t * t) * s.grad
+              s._retour = retour; return s
+          __radd__ = __add__; __rmul__ = __mul__
+          def __neg__(self): return self * -1
+          def __sub__(self, autre): return self + (-autre if isinstance(autre, Valeur) else -autre)
+          def retropropager(self):
+              ordre, vus = [], set()
+              def visiter(v):
+                  if id(v) in vus: return
+                  vus.add(id(v))
+                  for e in v._enfants: visiter(e)
+                  ordre.append(v)
+              visiter(self); self.grad = 1.0
+              for v in reversed(ordre): v._retour()
+      def init(n, graine):
+          s = graine; out = []
+          for _ in range(n):
+              s = (s * 1103515245 + 12345) % 2147483648
+              out.append((s / 2147483648) * 2 - 1)
+          return out
+      class Reseau:
+          def __init__(self, tailles, graine=7):
+              poids = iter(init(sum((a + 1) * b for a, b in zip(tailles, tailles[1:])), graine))
+              self.couches = [[([Valeur(next(poids)) for _ in range(a)], Valeur(next(poids))) for _ in range(b)] for a, b in zip(tailles, tailles[1:])]
+          def parametres(self): return [p for c in self.couches for w, b in c for p in w + [b]]
+          def __call__(self, x):
+              for c in self.couches:
+                  x = [sum((wi * xi for wi, xi in zip(w, x)), b).tanh() for w, b in c]
+              return x[0]
+      xs = [[0, 0], [0, 1], [1, 0], [1, 1]]
+      ys = [-1, 1, 1, -1]
+
+      def perte_quadratique(reseau, xs, ys):
+          total = Valeur(0.0)
+          for x, y in zip(xs, ys):
+              ecart = reseau(x) - y
+              total = total + ecart * ecart
+          return total
+    indice: { fr: 'Pour chaque exemple : `ecart = reseau(x) - y`, puis ajoute `ecart * ecart` à un total qui reste une `Valeur`.', en: 'For each example: `ecart = reseau(x) - y`, then add `ecart * ecart` to a total that stays a `Valeur`.' }
+    explication: { fr: 'Comme le total reste une `Valeur`, le graphe va des entrées jusqu’à la perte : on pourra rétropropager.', en: 'As the total stays a `Valeur`, the graph goes from the inputs to the loss: we will be able to backpropagate.' }
+  - id: d_boucle
+    type: idee
+    fr: 'Un pas d’apprentissage a quatre temps : calculer la perte, remettre les pentes à zéro, rétropropager, puis déplacer chaque réglage contre sa pente : $p\leftarrow p-\eta\,\text{pente}$ (niveau 5.5).'
+    en: 'A learning step has four beats: compute the loss, reset the slopes to zero, backpropagate, then move each setting against its slope: $p\leftarrow p-\eta\,\text{slope}$ (level 5.5).'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Un pas d’apprentissage', en: 'One learning step' }
+          noeuds: [{ fr: 'prédire et mesurer la perte', en: 'predict and measure the loss' }, { fr: 'pentes à zéro', en: 'slopes to zero' }, { fr: 'rétropropager', en: 'backpropagate' }, { fr: 'mettre à jour', en: 'update', ton: ok }]
+      legende: { fr: 'On répète ces quatre temps des dizaines de fois : c’est « entraîner ».', en: 'We repeat these four beats dozens of times: this is “training”.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `mettre_a_jour(parametres, eta)`** : pour chaque `Valeur` `p` de la liste, retranche `eta * p.grad` à `p.data`, puis remets `p.grad` à `0.0`.'
+    en: '**Write `mettre_a_jour(parametres, eta)`**: for each `Valeur` `p` in the list, subtract `eta * p.grad` from `p.data`, then reset `p.grad` to `0.0`.'
+    depart: |
+      import math
+      class Valeur:
+          def __init__(self, data, enfants=()):
+              self.data = data; self.grad = 0.0; self._enfants = enfants; self._retour = lambda: None
+          def __add__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data + autre.data, (self, autre))
+              def retour():
+                  self.grad += s.grad; autre.grad += s.grad
+              s._retour = retour; return s
+          def __mul__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data * autre.data, (self, autre))
+              def retour():
+                  self.grad += autre.data * s.grad; autre.grad += self.data * s.grad
+              s._retour = retour; return s
+          def tanh(self):
+              t = math.tanh(self.data); s = Valeur(t, (self,))
+              def retour():
+                  self.grad += (1 - t * t) * s.grad
+              s._retour = retour; return s
+          __radd__ = __add__; __rmul__ = __mul__
+          def __neg__(self): return self * -1
+          def __sub__(self, autre): return self + (-autre if isinstance(autre, Valeur) else -autre)
+          def retropropager(self):
+              ordre, vus = [], set()
+              def visiter(v):
+                  if id(v) in vus: return
+                  vus.add(id(v))
+                  for e in v._enfants: visiter(e)
+                  ordre.append(v)
+              visiter(self); self.grad = 1.0
+              for v in reversed(ordre): v._retour()
+      def init(n, graine):
+          s = graine; out = []
+          for _ in range(n):
+              s = (s * 1103515245 + 12345) % 2147483648
+              out.append((s / 2147483648) * 2 - 1)
+          return out
+      class Reseau:
+          def __init__(self, tailles, graine=7):
+              poids = iter(init(sum((a + 1) * b for a, b in zip(tailles, tailles[1:])), graine))
+              self.couches = [[([Valeur(next(poids)) for _ in range(a)], Valeur(next(poids))) for _ in range(b)] for a, b in zip(tailles, tailles[1:])]
+          def parametres(self): return [p for c in self.couches for w, b in c for p in w + [b]]
+          def __call__(self, x):
+              for c in self.couches:
+                  x = [sum((wi * xi for wi, xi in zip(w, x)), b).tanh() for w, b in c]
+              return x[0]
+      # écris ta fonction mettre_a_jour ici
+    tests: |
+      a, b = Valeur(2.0), Valeur(3.0)
+      a.grad, b.grad = 4.0, -2.0
+      mettre_a_jour([a, b], 0.5)
+      assert a.data == 0.0 and b.data == 4.0 and a.grad == 0.0 and b.grad == 0.0
+      mettre_a_jour([], 1.0)
+    solutionCode: |
+      import math
+      class Valeur:
+          def __init__(self, data, enfants=()):
+              self.data = data; self.grad = 0.0; self._enfants = enfants; self._retour = lambda: None
+          def __add__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data + autre.data, (self, autre))
+              def retour():
+                  self.grad += s.grad; autre.grad += s.grad
+              s._retour = retour; return s
+          def __mul__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data * autre.data, (self, autre))
+              def retour():
+                  self.grad += autre.data * s.grad; autre.grad += self.data * s.grad
+              s._retour = retour; return s
+          def tanh(self):
+              t = math.tanh(self.data); s = Valeur(t, (self,))
+              def retour():
+                  self.grad += (1 - t * t) * s.grad
+              s._retour = retour; return s
+          __radd__ = __add__; __rmul__ = __mul__
+          def __neg__(self): return self * -1
+          def __sub__(self, autre): return self + (-autre if isinstance(autre, Valeur) else -autre)
+          def retropropager(self):
+              ordre, vus = [], set()
+              def visiter(v):
+                  if id(v) in vus: return
+                  vus.add(id(v))
+                  for e in v._enfants: visiter(e)
+                  ordre.append(v)
+              visiter(self); self.grad = 1.0
+              for v in reversed(ordre): v._retour()
+      def init(n, graine):
+          s = graine; out = []
+          for _ in range(n):
+              s = (s * 1103515245 + 12345) % 2147483648
+              out.append((s / 2147483648) * 2 - 1)
+          return out
+      class Reseau:
+          def __init__(self, tailles, graine=7):
+              poids = iter(init(sum((a + 1) * b for a, b in zip(tailles, tailles[1:])), graine))
+              self.couches = [[([Valeur(next(poids)) for _ in range(a)], Valeur(next(poids))) for _ in range(b)] for a, b in zip(tailles, tailles[1:])]
+          def parametres(self): return [p for c in self.couches for w, b in c for p in w + [b]]
+          def __call__(self, x):
+              for c in self.couches:
+                  x = [sum((wi * xi for wi, xi in zip(w, x)), b).tanh() for w, b in c]
+              return x[0]
+      def mettre_a_jour(parametres, eta):
+          for p in parametres:
+              p.data -= eta * p.grad
+              p.grad = 0.0
+    indice: { fr: 'Une boucle sur la liste : deux lignes par réglage, la mise à jour puis la remise à zéro.', en: 'A loop over the list: two lines per setting, the update then the reset.' }
+    explication: { fr: 'On remet la pente à zéro **juste après** l’avoir utilisée, pour que le prochain pas parte de rien.', en: 'We reset the slope **right after** using it, so the next step starts from nothing.' }
+  - id: d_p_zero
+    type: piege
+    fr: 'Oublier de remettre les pentes à zéro est le piège classique : la rétropropagation **additionne** (`+=`), donc les pentes de tous les pas s’accumulent. Le réseau fait des bonds de plus en plus grands et diverge.'
+    en: 'Forgetting to reset the slopes is the classic trap: backpropagation **adds** (`+=`), so the slopes of all steps accumulate. The network makes ever larger leaps and diverges.'
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un réglage vaut `1.0`, sa pente `0.5`, le pas d’apprentissage `0.2`. Quelle valeur prend le réglage après la mise à jour ?'
+    en: 'A setting is `1.0`, its slope `0.5`, the learning step `0.2`. What value does the setting take after the update?'
+    reponses: ['0.9', '0,9']
+    verif: 'print(round(1.0 - 0.2 * 0.5, 2))'
+    indice: { fr: 'Applique $p-\eta\times\text{pente}$ avec les trois valeurs données.', en: 'Apply $p-\eta\times\text{slope}$ with the three given values.' }
+    explication: { fr: '$1{,}0-0{,}2\times0{,}5=0{,}9$ : on descend d’un petit pas.', en: '$1.0-0.2\times0.5=0.9$: we go down a small step.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `entrainer(reseau, xs, ys, epoques, eta)`** : répète `epoques` fois les quatre temps du pas (perte, pentes à zéro, rétropropagation, `mettre_a_jour`). Renvoie la liste des pertes (nombres) de chaque époque. `perte_quadratique` et `mettre_a_jour` sont fournies.'
+    en: 'Challenge. **Write `entrainer(reseau, xs, ys, epoques, eta)`**: repeat the four beats of the step `epoques` times (loss, slopes to zero, backpropagation, `mettre_a_jour`). Return the list of the losses (numbers) of each epoch. `perte_quadratique` and `mettre_a_jour` are provided.'
+    depart: |
+      import math
+      class Valeur:
+          def __init__(self, data, enfants=()):
+              self.data = data; self.grad = 0.0; self._enfants = enfants; self._retour = lambda: None
+          def __add__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data + autre.data, (self, autre))
+              def retour():
+                  self.grad += s.grad; autre.grad += s.grad
+              s._retour = retour; return s
+          def __mul__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data * autre.data, (self, autre))
+              def retour():
+                  self.grad += autre.data * s.grad; autre.grad += self.data * s.grad
+              s._retour = retour; return s
+          def tanh(self):
+              t = math.tanh(self.data); s = Valeur(t, (self,))
+              def retour():
+                  self.grad += (1 - t * t) * s.grad
+              s._retour = retour; return s
+          __radd__ = __add__; __rmul__ = __mul__
+          def __neg__(self): return self * -1
+          def __sub__(self, autre): return self + (-autre if isinstance(autre, Valeur) else -autre)
+          def retropropager(self):
+              ordre, vus = [], set()
+              def visiter(v):
+                  if id(v) in vus: return
+                  vus.add(id(v))
+                  for e in v._enfants: visiter(e)
+                  ordre.append(v)
+              visiter(self); self.grad = 1.0
+              for v in reversed(ordre): v._retour()
+      def init(n, graine):
+          s = graine; out = []
+          for _ in range(n):
+              s = (s * 1103515245 + 12345) % 2147483648
+              out.append((s / 2147483648) * 2 - 1)
+          return out
+      class Reseau:
+          def __init__(self, tailles, graine=7):
+              poids = iter(init(sum((a + 1) * b for a, b in zip(tailles, tailles[1:])), graine))
+              self.couches = [[([Valeur(next(poids)) for _ in range(a)], Valeur(next(poids))) for _ in range(b)] for a, b in zip(tailles, tailles[1:])]
+          def parametres(self): return [p for c in self.couches for w, b in c for p in w + [b]]
+          def __call__(self, x):
+              for c in self.couches:
+                  x = [sum((wi * xi for wi, xi in zip(w, x)), b).tanh() for w, b in c]
+              return x[0]
+      xs = [[0, 0], [0, 1], [1, 0], [1, 1]]
+      ys = [-1, 1, 1, -1]
+
+      def perte_quadratique(reseau, xs, ys):
+          total = Valeur(0.0)
+          for x, y in zip(xs, ys):
+              ecart = reseau(x) - y
+              total = total + ecart * ecart
+          return total
+
+      def mettre_a_jour(parametres, eta):
+          for p in parametres:
+              p.data -= eta * p.grad
+              p.grad = 0.0
+
+      # écris ta fonction entrainer ici
+    tests: |
+      r = Reseau([2, 3, 1], 7)
+      pertes = entrainer(r, xs, ys, 100, 0.2)
+      assert len(pertes) == 100 and abs(pertes[0] - 6.406) < 0.01
+      assert pertes[-1] < 0.05 and pertes[-1] < pertes[0] / 50
+      assert all((r(x).data > 0) == (y > 0) for x, y in zip(xs, ys))
+      assert entrainer(Reseau([2, 3, 1], 7), xs, ys, 0, 0.2) == []
+    solutionCode: |
+      import math
+      class Valeur:
+          def __init__(self, data, enfants=()):
+              self.data = data; self.grad = 0.0; self._enfants = enfants; self._retour = lambda: None
+          def __add__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data + autre.data, (self, autre))
+              def retour():
+                  self.grad += s.grad; autre.grad += s.grad
+              s._retour = retour; return s
+          def __mul__(self, autre):
+              autre = autre if isinstance(autre, Valeur) else Valeur(autre)
+              s = Valeur(self.data * autre.data, (self, autre))
+              def retour():
+                  self.grad += autre.data * s.grad; autre.grad += self.data * s.grad
+              s._retour = retour; return s
+          def tanh(self):
+              t = math.tanh(self.data); s = Valeur(t, (self,))
+              def retour():
+                  self.grad += (1 - t * t) * s.grad
+              s._retour = retour; return s
+          __radd__ = __add__; __rmul__ = __mul__
+          def __neg__(self): return self * -1
+          def __sub__(self, autre): return self + (-autre if isinstance(autre, Valeur) else -autre)
+          def retropropager(self):
+              ordre, vus = [], set()
+              def visiter(v):
+                  if id(v) in vus: return
+                  vus.add(id(v))
+                  for e in v._enfants: visiter(e)
+                  ordre.append(v)
+              visiter(self); self.grad = 1.0
+              for v in reversed(ordre): v._retour()
+      def init(n, graine):
+          s = graine; out = []
+          for _ in range(n):
+              s = (s * 1103515245 + 12345) % 2147483648
+              out.append((s / 2147483648) * 2 - 1)
+          return out
+      class Reseau:
+          def __init__(self, tailles, graine=7):
+              poids = iter(init(sum((a + 1) * b for a, b in zip(tailles, tailles[1:])), graine))
+              self.couches = [[([Valeur(next(poids)) for _ in range(a)], Valeur(next(poids))) for _ in range(b)] for a, b in zip(tailles, tailles[1:])]
+          def parametres(self): return [p for c in self.couches for w, b in c for p in w + [b]]
+          def __call__(self, x):
+              for c in self.couches:
+                  x = [sum((wi * xi for wi, xi in zip(w, x)), b).tanh() for w, b in c]
+              return x[0]
+      xs = [[0, 0], [0, 1], [1, 0], [1, 1]]
+      ys = [-1, 1, 1, -1]
+
+      def perte_quadratique(reseau, xs, ys):
+          total = Valeur(0.0)
+          for x, y in zip(xs, ys):
+              ecart = reseau(x) - y
+              total = total + ecart * ecart
+          return total
+
+      def mettre_a_jour(parametres, eta):
+          for p in parametres:
+              p.data -= eta * p.grad
+              p.grad = 0.0
+
+      def entrainer(reseau, xs, ys, epoques, eta):
+          pertes = []
+          for _ in range(epoques):
+              perte = perte_quadratique(reseau, xs, ys)
+              for p in reseau.parametres():
+                  p.grad = 0.0
+              perte.retropropager()
+              pertes.append(perte.data)
+              mettre_a_jour(reseau.parametres(), eta)
+          return pertes
+    indice: { fr: 'Dans la boucle : `perte = perte_quadratique(...)`, remets les pentes à zéro, `perte.retropropager()`, note `perte.data`, puis `mettre_a_jour`.', en: 'In the loop: `perte = perte_quadratique(...)`, reset the slopes to zero, `perte.retropropager()`, record `perte.data`, then `mettre_a_jour`.' }
+    explication: { fr: 'La perte passe d’environ 6,4 à moins de 0,05 : le réseau a **appris XOR tout seul**, ce qu’aucune droite n’aurait su faire.', en: 'The loss goes from about 6.4 to below 0.05: the network has **learned XOR on its own**, which no straight line could have done.' }
+  - id: d_lien
+    type: idee
+    fr: 'Tu as écrit l’essentiel d’un modèle de langage : graphe, rétropropagation, perte, descente de gradient. Seules la taille et les couches changent. Au niveau 11.5, tu verras de meilleurs moyens de descendre.'
+    en: 'You have written the core of a language model: graph, backpropagation, loss, gradient descent. Only the size and the layers change. In level 11.5, you will see better ways of descending.'
+    exemple: { fr: 'Le nombre de réglages ici : $(2+1)\times3+(3+1)\times1=13$. Un grand modèle en a des dizaines de milliards, mais chacun suit les mêmes quatre temps.', en: 'The number of settings here: $(2+1)\times3+(3+1)\times1=13$. A large model has tens of billions, but each follows the same four beats.' }
+  - id: c8
+    type: retenir
+    fr: 'XOR : aucune droite ne suffit, deux couches avec activation oui. Pas d’apprentissage : prédire et mesurer la perte, pentes à zéro, rétropropager, $p\leftarrow p-\eta\,\text{pente}$. Ne jamais oublier la remise à zéro.'
+    en: 'XOR: no straight line is enough, two layers with activation are. Learning step: predict and measure the loss, slopes to zero, backpropagate, $p\leftarrow p-\eta\,\text{slope}$. Never forget the reset.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [Deep Learning — Apprendre XOR](https://www.deeplearningbook.org/contents/mlp.html) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [Deep Learning — Learning XOR](https://www.deeplearningbook.org/contents/mlp.html); this optional reading needs a connection.'

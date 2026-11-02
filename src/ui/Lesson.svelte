@@ -26,7 +26,7 @@
   /* svelte-ignore state_referenced_locally */
   let idx = $state(clampIndex(startAt, level.cartes.length)), step = $state(0), selected = $state<number | null>(null), text = $state(level.cartes[clampIndex(startAt, level.cartes.length)].depart ?? ''), chosen = $state<number[]>([]);
   let hints = $state(0), showHint = $state(false), result = $state<null | { ok: boolean; credit: number }>(null), earned = $state(0);
-  let finished = $state(false), rightCount = $state(0);
+  let finished = $state(false), rightCount = $state(0), serie = $state(0), eclat = $state(0);
   // Carte « terminal » : un shell simulé dans un système de fichiers virtuel (D-016), recréé pour chaque carte.
   let term = $state.raw<Term | null>(null), cmd = $state(''), ran = $state(0);
   // Carte « code » : Python (Pyodide) dans un Web Worker ; `text` contient le programme de l'élève.
@@ -78,7 +78,7 @@
     startBest.set(card.id, Math.max(prev, credit));
     const src = source(card.id);
     progress.add({ level: src.level, item: src.item, credit, hints, xp: level.review ? 0 : xp });
-    earned += level.review ? 0 : xp; if (ok) rightCount++; result = { ok, credit };
+    earned += level.review ? 0 : xp; if (ok) { rightCount++; serie++; if (serie % 3 === 0) eclat++; } else serie = 0; result = { ok, credit };
   }
   // État de chaque carte déjà vue : « Précédent » la remet comme elle était (réponse, correction, étape).
   interface Snap { pyOut: PyResult | null; term: Term | null; ran: number; step: number; selected: number | null; text: string; chosen: number[]; hints: number; showHint: boolean; result: null | { ok: boolean; credit: number } }
@@ -104,7 +104,7 @@
   function key(e: KeyboardEvent) { if (e.key === 'Enter' && card.type === 'saisie' && !result && canCheck) check(); }
 </script>
 
-<Ambiance module={level.module ?? 0} lit={noted ? Math.min(1, rightCount / noted) : 0} />
+<Ambiance module={level.module ?? 0} lit={noted ? Math.min(1, rightCount / noted) : 0} {eclat} fete={finished && level.id.endsWith('.boss') && rightCount >= noted} />
 <div class="wrap">
   {#if !finished}
     <header class="top">

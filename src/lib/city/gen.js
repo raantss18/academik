@@ -104,6 +104,15 @@ const THEMES = [
     kinds: { hall: 3, tower: 2, house: 2, shop: 1 }, count: 24, align: .9,
     props: { lamp: 8, person: 4, car: 2, crate: 2 },
     lm: ['clock', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
+  { place: 'Le Carrefour des Neurones', blurb: 'Pylônes, fibres et nœuds lumineux : le signal passe, la correction revient.', path: 1, smooth: true,
+    top: '#3c3a5c', cliff: '#4a4570', lip: '#4f6a8a', road: '#2e2c48', roadHi: '#c9b8ff', dash: true, night: '#15122b',
+    patches: ['#4a4a78', '#38365a', '#55507f'],
+    walls: ['#d3cdee', '#bfb8e0', '#a79fd0', '#e4e0f5', '#9189bd'], roofs: ['#4a3f7a', '#37306a', '#5d4f94'],
+    roofW: { flat: 3, hip: 1, gable: 1 }, win: ['#d8c9ff', '#b9a4ff', '#ffe0a0'], leaf: ['#3a5f8a', '#4a74a3', '#5d8cc0'],
+    trees: { round: 1, conifer: 1, bush: 1 }, nTrees: 10,
+    kinds: { tower: 3, hall: 2, house: 1, shop: 1 }, count: 24, align: .9,
+    props: { lamp: 8, person: 3, car: 2, crate: 1 },
+    lm: ['tower', 'dome', 'tower', 'hall', 'tower'], boss: 'dome' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

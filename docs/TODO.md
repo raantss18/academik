@@ -43,6 +43,7 @@
 | E32 | 2 nov. (demande d'Antsa) | La carte « bugue » au zoom | le pincement redimensionnait le SVG (≈ 9 000 formes redessinées à chaque image) | `transform` pendant le geste (couche GPU), redimensionnement une seule fois à la fin ; mesure : 49,8 → 21,1 ms par image | `invariants.test` | performance |
 | E33 | 2 nov. (demande d'Antsa) | Fond de leçon sans lien avec l'accueil | un seul fond uni pour toutes les leçons | fond par module (nuit et jour) : dégradé + brume et lucioles WebGL, repli CSS ; contraste ≥ 4,5 vérifié par test | `invariants.test` | design |
 | E34 | 2 nov. (demande d'Antsa) | Pas de sensation de jeu dans les cartes | progression = simple barre ; rien ne rappelait l'accueil | chemin du quartier (repère rouge) + silhouette dont les fenêtres s'allument à chaque bonne réponse | `invariants.test` | design |
+| E35 | 2 nov. (demande d'Antsa) | Détails de jeu manquants dans les leçons | l'immersion s'arrêtait aux fenêtres allumées | luciole après 3 réussites de suite, halo de fête au boss réussi, réduit si mouvement réduit | `invariants.test` | design |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | générateur porté dans `src/lib/city/` (fonction pure, chargée à la demande, 15,6 Ko gzip) ; un quartier par module, un bâtiment par niveau, allumé selon les étoiles ; fiche du niveau (Jouer/Rejouer) ; liste en choix mémorisé ; retour Android ferme la fiche ; vérifié à 375 px | `city.test` (épingles, états, échappement, déterminisme, temps), `invariants` E9 | 0.3.6 |
 
 ## 1. Application et site
