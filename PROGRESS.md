@@ -66,3 +66,13 @@
 - **Vérifié** : 531 tests ; zoom et message d'info au navigateur (375 px) ; CI verte ; site servant 0.3.12.
 - **Non vérifié** : appareils réels (les captures d'Antsa montrent les défauts corrigés, pas la correction) ; relecture en ligne de
   chaque définition des cours ; AppImage sur Linux Mint ; service worker réel.
+
+### Modules 1, 2 et 8 écrits (2026-11-02)
+
+- **Fait** : module 1 complet (1.2 fichiers, 1.3 droits, 1.4 tuyaux, 1.5 Git, boss « Le fichier caché »), module 2 complet
+  (2.3 répéter, 2.4 fonctions, 2.5 listes et dictionnaires, boss « Le chatbot à règles »), module 8 « Données » (8.1 à 8.5 et boss
+  « La fuite d'information »), avec la bibliothèque standard seulement (D-030). Nouveau quartier « Les Archives ». Début de chaque
+  module toujours ouvert (D-029). Fiches de release générées (`scripts/release-notes.mjs`), README refait, section À propos.
+- **Vérifié** : 577 tests, dont les solutions des cartes `code` exécutées avec le vrai Python ; carte à 9 quartiers rendue au navigateur.
+- **Non vérifié** : appareils réels ; relecture croisée des nouveaux niveaux (Codex hors quota jusqu'à 18 h 29) .
+- **Poids** : la plus grosse leçon fait 6,5 Ko gzip (budget 30 Ko) ; paquet complet 192 Ko gzip.

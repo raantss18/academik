@@ -9,7 +9,7 @@ export interface CityLevel { id: string; short: string; aria: string; st: PinSta
 export interface CityDistrict { n: number; theme: number; name: string; label: string; color: string; reached: boolean; progress: number; levels: CityLevel[] }
 
 /** Couleur de chaque module (panneau du quartier, épingles réussies), reprise de la maquette. */
-export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B'];
+export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B', '#C0792B'];
 
 export interface CityInput {
   modules: CursusModule[]; levels: Record<string, Level>; scores: Record<string, number>;
@@ -44,4 +44,5 @@ export const THEMES_EN = [
   { place: 'The Rice Fields', blurb: 'Stepped terraces and windmills: the slope goes down.' },
   { place: 'The Fair', blurb: 'Tents, rides and lights: chance throws a party.' },
   { place: 'The Observatory', blurb: 'Domes, antennas and libraries: reading the data.' },
+  { place: 'The Archives', blurb: 'Shelves, registers and stamps: data gets tidied here.' },
 ];

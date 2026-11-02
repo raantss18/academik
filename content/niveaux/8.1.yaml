@@ -1,0 +1,198 @@
+# Niveau 8.1 — Données 1 : lire un tableau. Original academik ; notions vérifiées dans la documentation officielle Python (module csv, io.StringIO).
+id: '8.1'
+module: 8
+duree_min: 18
+titre: { fr: 'Lire un tableau', en: 'Reading a table' }
+ia: { fr: 'Kintana lit un tableau de données écrit en texte, pour pouvoir ensuite le nettoyer et le résumer.', en: 'Kintana reads a table of data written as text, so she can then clean and summarise it.' }
+sources:
+  - { titre: 'Python — module csv', url: 'https://docs.python.org/3/library/csv.html', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — io.StringIO', url: 'https://docs.python.org/3/library/io.html#io.StringIO', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      ligne = "ana,15,12.5"
+      print(ligne.split(",")[1])
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      ligne = "ana,15,12.5"
+      print(ligne.split(",")[1])
+      ```
+    choix:
+      - { fr: '`ana`', en: '`ana`' }
+      - { fr: '`15`', en: '`15`', juste: true }
+      - { fr: '`12.5`', en: '`12.5`' }
+    verif: |-
+      ligne = "ana,15,12.5"
+      print(ligne.split(",")[1])
+    sortie: '15'
+    explication: { fr: '`split(",")` coupe à chaque virgule ; l’indice 1 est le deuxième morceau : `15`.', en: '`split(",")` cuts at each comma; index 1 is the second piece: `15`.' }
+  - id: c2
+    type: idee
+    fr: 'Un **tableau de données** a des **lignes** (une par observation, par exemple une personne) et des **colonnes** (une par variable, par exemple l’âge). Un fichier **CSV** l’écrit en texte, une ligne par ligne.'
+    en: 'A **data table** has **rows** (one per observation, for example a person) and **columns** (one per variable, for example age). A **CSV** file writes it as text, one line per row.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Texte CSV', en: 'CSV text' }, { fr: 'Ce que ça représente', en: 'What it represents' }]
+      cellules:
+        - ['`nom,age`', { fr: 'la ligne d’en-têtes : noms des colonnes', en: 'the header row: column names' }]
+        - ['`ana,15`', { fr: 'une observation : Ana a 15 ans', en: 'one observation: Ana is 15' }]
+        - ['`rado,17`', { fr: 'une autre observation', en: 'another observation' }]
+      legende: { fr: 'Les valeurs d’une même ligne sont séparées par des virgules.', en: 'Values on the same row are separated by commas.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Lire un petit CSV', en: 'Reading a small CSV' }
+    lang: python
+    etapes:
+      - { code: 'import csv, io', fr: 'Le module `csv` lit les tableaux ; `io.StringIO` fait passer un texte pour un fichier.', en: 'The `csv` module reads tables; `io.StringIO` makes a text pass for a file.' }
+      - { code: 'texte = "nom,age\\nana,15\\nrado,17"', fr: 'Notre tableau est un texte : `\n` sépare les lignes.', en: 'Our table is a text: `\n` separates the rows.' }
+      - { code: 'lignes = list(csv.DictReader(io.StringIO(texte)))', fr: '`DictReader` lit la première ligne comme en-têtes, puis fabrique **un dictionnaire par ligne**.', en: '`DictReader` reads the first row as headers, then builds **one dictionary per row**.' }
+      - { code: 'print(lignes[1]["nom"], len(lignes))', fr: 'La deuxième observation est Rado ; il y a 2 lignes de données. On affiche `rado 2`.', en: 'The second observation is Rado; there are 2 data rows. We display `rado 2`.' }
+    verif: |-
+      import csv, io
+      texte = "nom,age\nana,15\nrado,17"
+      lignes = list(csv.DictReader(io.StringIO(texte)))
+      print(lignes[1]["nom"], len(lignes))
+    sortie: 'rado 2'
+  - id: d_str
+    type: idee
+    fr: 'Quand on lit un CSV, **toutes les valeurs sont du texte**, même les nombres : `"15"` n’est pas `15`. Pour calculer, il faut **convertir** avec `int()` ou `float()`.'
+    en: 'When reading a CSV, **every value is text**, even numbers: `"15"` is not `15`. To compute, you must **convert** with `int()` or `float()`.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Expression', en: 'Expression' }, { fr: 'Résultat', en: 'Result' }]
+      cellules:
+        - ['`"15" + "2"`', { fr: '`"152"` : du texte collé', en: '`"152"`: glued text', ton: bad }]
+        - ['`int("15") + 2`', { fr: '`17` : un calcul', en: '`17`: a computation', ton: ok }]
+        - ['`float("12.5") * 2`', '`25.0`']
+      legende: { fr: 'Sans conversion, additionner deux « nombres » colle leurs chiffres au lieu de les sommer.', en: 'Without conversion, adding two “numbers” glues their digits instead of summing them.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris une fonction `moyenne_age(texte)`** qui reçoit un texte CSV avec une colonne `age` et renvoie la moyenne des âges (un nombre).'
+    en: 'Your turn. **Write a function `moyenne_age(texte)`** that receives a CSV text with an `age` column and returns the average age (a number).'
+    depart: |
+      import csv, io
+
+      # écris ta fonction moyenne_age ici
+    tests: |
+      assert moyenne_age("nom,age\nana,15\nrado,17") == 16
+      assert moyenne_age("nom,age\nsoa,20") == 20
+      assert moyenne_age("age,nom\n10,a\n20,b\n30,c") == 20
+    solutionCode: |
+      import csv, io
+
+      def moyenne_age(texte):
+          lignes = list(csv.DictReader(io.StringIO(texte)))
+          total = 0
+          for ligne in lignes:
+              total = total + int(ligne["age"])
+          return total / len(lignes)
+    indice: { fr: '`DictReader` donne un dictionnaire par ligne ; lis `ligne["age"]`, convertis avec `int`, additionne, puis divise par le nombre de lignes.', en: '`DictReader` gives one dictionary per row; read `ligne["age"]`, convert with `int`, add up, then divide by the number of rows.' }
+    explication: { fr: 'La colonne est trouvée par son nom, donc l’ordre des colonnes n’a pas d’importance (3ᵉ test).', en: 'The column is found by its name, so column order does not matter (3rd test).' }
+  - id: d_entete
+    type: idee
+    fr: 'Lire une colonne **par son nom** (`ligne["age"]`) est plus sûr que par sa position (`ligne[1]`) : si l’ordre des colonnes change, le programme continue de marcher.'
+    en: 'Reading a column **by its name** (`ligne["age"]`) is safer than by its position (`ligne[1]`): if the column order changes, the program keeps working.'
+    exemple: { fr: 'Le fichier d’hier avait `nom,age`, celui d’aujourd’hui `age,nom`. Avec `["age"]`, aucun changement ; avec un indice, les âges deviendraient des noms.', en: 'Yesterday’s file had `nom,age`, today’s has `age,nom`. With `["age"]`, nothing changes; with an index, the ages would become names.' }
+  - id: d_guill
+    type: idee
+    fr: 'Une valeur peut contenir une virgule, par exemple `Dupont, Ana`. Le CSV la protège avec des **guillemets** : `"Dupont, Ana",15`. Le module `csv` les comprend ; un simple `split(",")` non.'
+    en: 'A value may contain a comma, for example `Dupont, Ana`. CSV protects it with **quotes**: `"Dupont, Ana",15`. The `csv` module understands them; a plain `split(",")` does not.'
+    exemple: { fr: 'Sur `"Dupont, Ana",15`, `split(",")` donne trois morceaux (faux) ; `csv` donne deux valeurs : `Dupont, Ana` et `15`.', en: 'On `"Dupont, Ana",15`, `split(",")` gives three pieces (wrong); `csv` gives two values: `Dupont, Ana` and `15`.' }
+  - id: d_filtre
+    type: exemple
+    titre: { fr: 'Garder certaines lignes', en: 'Keeping some rows' }
+    lang: python
+    etapes:
+      - { code: 'import csv, io', fr: 'Même début que précédemment.', en: 'Same start as before.' }
+      - { code: 'texte = "nom,age\\nana,15\\nrado,17\\nsoa,16"', fr: 'Trois personnes.', en: 'Three people.' }
+      - { code: 'lignes = list(csv.DictReader(io.StringIO(texte)))', fr: 'Une liste de trois dictionnaires.', en: 'A list of three dictionaries.' }
+      - { code: 'grands = [l["nom"] for l in lignes if int(l["age"]) >= 16]', fr: 'On garde les noms des lignes dont l’âge converti vaut au moins 16.', en: 'We keep the names of the rows whose converted age is at least 16.' }
+      - { code: 'print(grands)', fr: "On affiche `['rado', 'soa']`.", en: "We display `['rado', 'soa']`." }
+    verif: |-
+      import csv, io
+      texte = "nom,age\nana,15\nrado,17\nsoa,16"
+      lignes = list(csv.DictReader(io.StringIO(texte)))
+      grands = [l["nom"] for l in lignes if int(l["age"]) >= 16]
+      print(grands)
+    sortie: "['rado', 'soa']"
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le texte `"x,y\\na,1\\nb,2\\nc,3"` est lu avec `DictReader`. Combien de lignes de **données** obtient-on ?'
+    en: 'The text `"x,y\\na,1\\nb,2\\nc,3"` is read with `DictReader`. How many **data** rows do we get?'
+    reponses: ['3']
+    verif: |-
+      import csv, io
+      print(len(list(csv.DictReader(io.StringIO("x,y\na,1\nb,2\nc,3")))))
+    indice: { fr: 'La première ligne sert d’en-têtes : elle ne compte pas comme donnée.', en: 'The first row is the headers: it does not count as data.' }
+    explication: { fr: 'Quatre lignes de texte, dont une d’en-têtes : trois lignes de données.', en: 'Four lines of text, one of which is headers: three data rows.' }
+  - id: d_p_ordre
+    type: piege
+    fr: 'Un `DictReader` lit **tout en texte** et ne signale pas une valeur manquante : une case vide devient `""`, et `int("")` plante. Le nettoyage (niveau 8.2) est donc obligatoire.'
+    en: 'A `DictReader` reads **everything as text** and does not flag a missing value: an empty cell becomes `""`, and `int("")` crashes. Cleaning (level 8.2) is therefore a must.'
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris une fonction `colonne(texte, nom)`** qui renvoie la liste des valeurs de la colonne `nom`, converties en nombres décimaux (`float`).'
+    en: '**Write a function `colonne(texte, nom)`** that returns the list of values of the column `nom`, converted to decimal numbers (`float`).'
+    depart: |
+      import csv, io
+
+      # écris ta fonction colonne ici
+    tests: |
+      assert colonne("a,b\n1,2\n3,4", "a") == [1.0, 3.0]
+      assert colonne("a,b\n1,2\n3,4", "b") == [2.0, 4.0]
+      assert colonne("x\n1.5", "x") == [1.5]
+    solutionCode: |
+      import csv, io
+
+      def colonne(texte, nom):
+          lignes = csv.DictReader(io.StringIO(texte))
+          return [float(l[nom]) for l in lignes]
+    indice: { fr: 'Une liste construite avec `for l in …` : pour chaque ligne, `float(l[nom])`.', en: 'A list built with `for l in …`: for each row, `float(l[nom])`.' }
+    explication: { fr: 'On extrait une colonne entière, déjà convertie : c’est la base des résumés du niveau 8.3.', en: 'We extract a whole column, already converted: this is the basis of the summaries in level 8.3.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `plus_age(texte)`** : elle renvoie le **nom** de la personne la plus âgée d’un CSV `nom,age`. On suppose qu’il n’y a pas d’égalité.'
+    en: 'Challenge. **Write `plus_age(texte)`**: it returns the **name** of the oldest person in a `nom,age` CSV. Assume there is no tie.'
+    depart: |
+      import csv, io
+
+      # écris ta fonction plus_age ici
+    tests: |
+      assert plus_age("nom,age\nana,15\nrado,17\nsoa,16") == "rado"
+      assert plus_age("nom,age\nsoa,9") == "soa"
+      assert plus_age("nom,age\na,5\nb,30\nc,12") == "b"
+    solutionCode: |
+      import csv, io
+
+      def plus_age(texte):
+          meilleur = None
+          age_max = -1
+          for ligne in csv.DictReader(io.StringIO(texte)):
+              age = int(ligne["age"])
+              if age > age_max:
+                  age_max = age
+                  meilleur = ligne["nom"]
+          return meilleur
+    indice: { fr: 'Garde en mémoire le meilleur âge vu jusqu’ici et le nom qui va avec ; mets-les à jour dans la boucle.', en: 'Keep in memory the best age seen so far and its name; update them in the loop.' }
+    explication: { fr: 'On mémorise un maximum et son propriétaire : le schéma « accumulateur » du niveau 2.3.', en: 'We remember a maximum and its owner: the “accumulator” pattern from level 2.3.' }
+  - id: c8
+    type: retenir
+    fr: 'CSV = texte, une ligne par observation, en-têtes en première ligne. `csv.DictReader(io.StringIO(texte))` donne un dictionnaire par ligne ; tout est du texte : on convertit avec `int` ou `float`.'
+    en: 'CSV = text, one row per observation, headers on the first line. `csv.DictReader(io.StringIO(text))` gives one dictionary per row; everything is text: convert with `int` or `float`.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — module csv](https://docs.python.org/3/library/csv.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — csv module](https://docs.python.org/3/library/csv.html); this optional reading needs a connection.

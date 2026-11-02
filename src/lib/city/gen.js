@@ -77,6 +77,15 @@ const THEMES = [
     kinds: { dome: 3, tower: 2, hall: 2, house: 2 }, count: 24, align: .75,
     props: { lamp: 6, person: 3, car: 2, crate: 1 },
     lm: ['dome', 'tower', 'hall', 'dome', 'tower'], boss: 'dome' },
+  { place: 'Les Archives', blurb: 'Rayonnages, registres et tampons : on y met les données au propre.', path: 2, smooth: true,
+    top: '#4a4236', cliff: '#5a4a3a', lip: '#5e7a45', road: '#7a6a52', roadHi: '#e8dcc0', dash: false, night: '#1c1710',
+    patches: ['#5d6b3c', '#6e5d44', '#4f5a38'],
+    walls: ['#d9c9a3', '#c8b48a', '#b59a6a', '#e6dcc3', '#a68a5b'], roofs: ['#6b3f2a', '#7a4a32', '#4b3a2f'],
+    roofW: { flat: 2, hip: 3, gable: 3 }, win: ['#ffe9a8', '#ffd36b', '#ffcf80'], leaf: ['#3a6b3a', '#4f8a4b', '#6aa55a'],
+    trees: { round: 2, conifer: 1, bush: 2 }, nTrees: 22,
+    kinds: { hall: 3, house: 3, tower: 1.5, shop: 1 }, count: 24, align: .8,
+    props: { lamp: 6, person: 3, crate: 4, car: 1 },
+    lm: ['hall', 'clock', 'tower', 'hall', 'house'], boss: 'dome' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

@@ -73,3 +73,12 @@ modules:
       - { id: "7.4", titre: { fr: "Bootstrap" } }
       - { id: "7.5", titre: { fr: "Tests multiples" } }
       - { id: "7.boss", boss: true, titre: { fr: "Le faux signal" } }
+  - id: 8
+    titre: { fr: "Données", en: "Data" }
+    niveaux:
+      - { id: "8.1", titre: { fr: "Lire un tableau" } }
+      - { id: "8.2", titre: { fr: "Nettoyer" } }
+      - { id: "8.3", titre: { fr: "Résumer" } }
+      - { id: "8.4", titre: { fr: "Voir les données" } }
+      - { id: "8.5", titre: { fr: "Entraîner et tester" } }
+      - { id: "8.boss", boss: true, titre: { fr: "La fuite d’information" } }
