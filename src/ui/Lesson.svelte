@@ -1,6 +1,7 @@
 <script lang="ts">
   import { md } from '../lib/md';
   import Ambiance from './Ambiance.svelte';
+  import Route from './Route.svelte';
   import { highlight } from '../lib/highlight';
   import { typeset } from '../lib/typeset';
   import { shuffled } from '../lib/rand';
@@ -49,7 +50,7 @@
     return ui('hint_reread_generic');
   });
   /* svelte-ignore state_referenced_locally */
-  const total = level.cartes.length;
+  const total = level.cartes.length, noted = level.cartes.filter(c => c.note).length;
   const t = (x: Partial<{ fr: string; en: string }> | undefined) => i18n.t(x);
   const exLines = $derived(card.type === 'exemple' ? card.etapes!.map((e, k) => ({ k, code: e.code })).filter((x): x is { k: number; code: string } => !!x.code && x.k <= step) : []);
   const body = $derived(i18n.t(card as { fr?: string; en?: string }));
@@ -103,13 +104,13 @@
   function key(e: KeyboardEvent) { if (e.key === 'Enter' && card.type === 'saisie' && !result && canCheck) check(); }
 </script>
 
-<Ambiance module={level.module ?? 0} />
+<Ambiance module={level.module ?? 0} lit={noted ? Math.min(1, rightCount / noted) : 0} />
 <div class="wrap">
   {#if !finished}
     <header class="top">
       <button class="x" onclick={() => { if (!back()) onexit(); }} aria-label={ui('prev')} title={ui('prev')}>←</button>
       <LogoMenu compact onhome={onexit} />
-      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax={total} aria-valuenow={idx}><div style="width:{(idx / total) * 100}%"></div></div>
+      <Route valeur={idx / Math.max(1, total - 1)} module={level.module ?? 0} max={total} now={idx} />
       <span class="muted">{idx + 1}/{total}</span>
     </header>
 

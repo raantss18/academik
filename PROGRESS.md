@@ -107,3 +107,9 @@
 - **Fait** : zoom par `transform` (mesuré : 49,8 → 21,1 ms par image) ; fond de leçon par module (nuit et jour), WebGL discret avec repli CSS ; version 0.3.20.
 - **Vérifié** : 633 tests, rendu au navigateur en nuit et en jour à 390 px, `npm run verify` vert.
 - **Non vérifié** : sur téléphone réel (surtout les appareils d'entrée de gamme) ; étapes 3 (chemin du quartier) et 4 (silhouette qui s'allume) à faire.
+
+### Immersion, étapes 3 et 4 (2026-11-02)
+
+- **Fait** : chemin du quartier à la place de la barre de progression ; silhouette (une par module) dont les fenêtres s'allument aux bonnes réponses ; version 0.3.21.
+- **Vérifié** : 634 tests, rendu au navigateur (22 fenêtres allumées après une bonne réponse), `npm run verify` vert.
+- **Non vérifié** : appareil réel ; étape 5 (lucioles de série, scène de fin de boss) non faite.
