@@ -1,0 +1,295 @@
+# Niveau 12.3 — Transformers 3 : l’attention. Original academik ; notions vérifiées dans Vaswani et al. 2017 (arXiv 1706.03762, section 3.2) et la série « Zero to Hero » d’A. Karpathy (citée).
+id: '12.3'
+module: 12
+duree_min: 16
+titre:
+  fr: L’attention
+  en: Attention
+ia:
+  fr: Kintana regarde les bons mots du contexte en pesant chacun d’eux.
+  en: Kintana looks at the right words of the context by weighing each of them.
+sources:
+- titre: Vaswani et al. — Attention Is All You Need (section 3.2)
+  url: https://arxiv.org/abs/1706.03762
+  licence: Article en accès libre ; idées citées
+- titre: 'A. Karpathy — Let’s build GPT: from scratch'
+  url: https://karpathy.ai/zero-to-hero.html
+  licence: Cours en ligne ; contenu cité, code non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Dans « la banque de la rivière était calme », le mot « banque » ne désigne pas un établissement financier. Quel mot du contexte le dit au modèle ?
+  en: In “the bank of the river was calm”, the word “bank” does not mean a financial institution. Which context word tells the model?
+  choix:
+  - fr: '« rivière » : le modèle doit regarder ce mot pour comprendre « banque »'
+    en: '“river”: the model must look at this word to understand “bank”'
+    juste: true
+  - fr: '« la » : c’est le mot le plus proche'
+    en: '“the”: it is the nearest word'
+  - fr: 'Aucun : le sens ne dépend jamais du contexte'
+    en: 'None: meaning never depends on context'
+  indice:
+    fr: Pour lever l’ambiguïté de « banque », quel autre mot du texte est lié à un cours d’eau ?
+    en: To resolve the ambiguity of “bank”, which other word of the text relates to a watercourse?
+  explication:
+    fr: Le modèle doit **porter attention** aux bons mots du contexte, même éloignés. C’est le rôle du mécanisme d’attention.
+    en: The model must **pay attention** to the right context words, even distant ones. That is the role of the attention mechanism.
+- id: c2
+  type: idee
+  fr: Dans l’**attention**, chaque token pose une question (la **requête** $q$). Chaque autre token offre une étiquette (la **clé** $k$) et un contenu (la **valeur** $v$). Plus la clé ressemble à la requête, plus on lit la valeur.
+  en: In **attention**, each token asks a question (the **query** $q$). Each other token offers a label (the **key** $k$) and a content (the **value** $v$). The more the key resembles the query, the more we read the value.
+  exemple:
+    fr: 'Dans une bibliothèque : ta question est la requête, le titre sur le dos du livre est la clé, le contenu du livre est la valeur.'
+    en: 'In a library: your question is the query, the title on the spine is the key, the book’s content is the value.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Une tête d’attention
+        en: One attention head
+      noeuds:
+      - fr: scores $q\cdot k/\sqrt d$
+        en: scores $q\cdot k/\sqrt d$
+      - fr: softmax
+        en: softmax
+      - fr: poids de somme 1
+        en: weights summing to 1
+      - fr: mélange des valeurs
+        en: mix of the values
+        ton: ok
+    legende:
+      fr: Les poids disent à quel point on lit chaque valeur.
+      en: The weights say how much we read each value.
+- id: d_roles
+  type: idee
+  fr: Pourquoi trois rôles ? Séparer la question ($q$), l’étiquette ($k$) et le contenu ($v$) permet de chercher selon un critère. On peut alors lire autre chose que ce critère.
+  en: Why three roles? Separating the question ($q$), the label ($k$) and the content ($v$) allows searching by one criterion. We can then read something other than that criterion.
+  exemple:
+    fr: Dans une phrase, la clé d’un nom peut dire « je suis un sujet », et sa valeur porter son sens.
+    en: In a sentence, a noun’s key may say “I am a subject”, and its value carry its meaning.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Rôle
+      en: Role
+    - fr: Question posée
+      en: Question asked
+    cellules:
+    - - $q$
+      - fr: que cherche-t-on ?
+        en: what are we looking for?
+    - - $k$
+      - fr: qui suis-je ?
+        en: who am I?
+    - - $v$
+      - fr: qu’ai-je à dire ?
+        en: what do I have to say?
+        ton: ok
+    legende:
+      fr: Trois projections différentes du même plongement.
+      en: Three different projections of the same embedding.
+- id: c3
+  type: idee
+  fr: La ressemblance entre $q$ et $k$ est leur produit scalaire, divisé par $\sqrt d$ ($d$ est la taille des vecteurs). Sans cette division, de grands vecteurs donnent des scores énormes, et le softmax devient presque tout-ou-rien.
+  en: The similarity between $q$ and $k$ is their dot product, divided by $\sqrt d$ ($d$ is the vector size). Without this division, large vectors give huge scores, and the softmax becomes almost all-or-nothing.
+  exemple:
+    fr: 'Pour $q=(1,0)$ et $k=(1,1)$ : produit $=1$, $d=2$, score $=1/\sqrt2\approx0{,}707$.'
+    en: 'For $q=(1,0)$ and $k=(1,1)$: product $=1$, $d=2$, score $=1/\sqrt2\approx0.707$.'
+- id: c3b
+  type: exemple
+  titre:
+    fr: Une tête d’attention en Python
+    en: One attention head in Python
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      q = [1, 0]
+      K = [[1, 0], [0, 1]]
+      V = [[10, 0], [0, 10]]
+    fr: Une requête, deux clés, deux valeurs.
+    en: One query, two keys, two values.
+  - code: |-
+      s = [sum(a * b for a, b in zip(q, k)) / math.sqrt(2) for k in K]
+      e = [math.exp(v) for v in s]
+      w = [v / sum(e) for v in e]
+    fr: Scores, exponentielles puis poids.
+    en: Scores, exponentials, then weights.
+  - code: print(round(w[0], 2), round(w[1], 2))
+    fr: 'On affiche `0.67 0.33` : la première clé ressemble plus à la requête.'
+    en: 'We display `0.67 0.33`: the first key resembles the query more.'
+  verif: |-
+    import math
+    q = [1, 0]
+    K = [[1, 0], [0, 1]]
+    V = [[10, 0], [0, 10]]
+    s = [sum(a * b for a, b in zip(q, k)) / math.sqrt(2) for k in K]
+    e = [math.exp(v) for v in s]
+    w = [v / sum(e) for v in e]
+    print(round(w[0], 2), round(w[1], 2))
+  sortie: 0.67 0.33
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `scores(q, K)`** : pour chaque clé `k` de la liste `K`, le produit scalaire de `q` et `k` divisé par `math.sqrt(len(q))`. Renvoie la liste des scores.'
+  en: 'Your turn. **Write `scores(q, K)`**: for each key `k` of the list `K`, the dot product of `q` and `k` divided by `math.sqrt(len(q))`. Return the list of scores.'
+  depart: |
+    import math
+
+    # écris ta fonction scores ici
+  tests: |-
+    s = scores([1, 0], [[1, 1], [0, 1], [2, 0]])
+    assert abs(s[0] - 0.70710678) < 1e-6 and s[1] == 0 and abs(s[2] - 1.41421356) < 1e-6
+    assert scores([1, 2, 3], []) == []
+  solutionCode: |
+    import math
+
+    def scores(q, K):
+        d = len(q)
+        return [sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K]
+  indice:
+    fr: 'Une compréhension de liste : pour chaque `k`, `sum(a * b for a, b in zip(q, k)) / math.sqrt(d)`.'
+    en: 'A list comprehension: for each `k`, `sum(a * b for a, b in zip(q, k)) / math.sqrt(d)`.'
+  explication:
+    fr: Ces scores passent ensuite dans le softmax du niveau 12.2 pour devenir des poids.
+    en: These scores then go through the softmax of level 12.2 to become weights.
+- id: c5
+  type: idee
+  fr: 'Une fois les poids $w_i$ obtenus (softmax des scores), la sortie est le **mélange des valeurs** : $\sum_i w_i\,v_i$. Un poids fort fait ressembler la sortie à la valeur correspondante.'
+  en: 'Once the weights $w_i$ are obtained (softmax of the scores), the output is the **mix of the values**: $\sum_i w_i\,v_i$. A strong weight makes the output resemble the corresponding value.'
+  exemple:
+    fr: 'Avec les poids $(0{,}75;\,0{,}25)$ et les valeurs $(4,0)$ et $(0,4)$ : sortie $=(3;\,1)$.'
+    en: 'With weights $(0.75;\,0.25)$ and values $(4,0)$ and $(0,4)$: output $=(3;\,1)$.'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `melanger(poids, V)`** : la somme, sur les positions `i`, de `poids[i]` fois le vecteur `V[i]`. Renvoie un vecteur (liste) de la même taille que les valeurs.'
+  en: '**Write `melanger(poids, V)`**: the sum, over positions `i`, of `poids[i]` times the vector `V[i]`. Return a vector (list) of the same size as the values.'
+  depart: |
+    # écris ta fonction melanger ici
+  tests: |-
+    assert melanger([0.75, 0.25], [[4, 0], [0, 4]]) == [3.0, 1.0]
+    assert melanger([1.0], [[2, 3, 4]]) == [2.0, 3.0, 4.0]
+    assert melanger([0.5, 0.5], [[2, 0], [2, 4]]) == [2.0, 2.0]
+  solutionCode: |
+    def melanger(poids, V):
+        d = len(V[0])
+        sortie = [0.0] * d
+        for p, v in zip(poids, V):
+            for i in range(d):
+                sortie[i] += p * v[i]
+        return sortie
+  indice:
+    fr: Prépare une liste de zéros de la taille d’une valeur, puis ajoute `p * v[i]` pour chaque position et chaque coordonnée.
+    en: Prepare a list of zeros of the size of one value, then add `p * v[i]` for each position and each coordinate.
+  explication:
+    fr: 'C’est une combinaison linéaire : les poids de somme `1` en font une **moyenne pondérée**.'
+    en: 'It is a linear combination: weights summing to `1` make it a **weighted average**.'
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Deux clés ont les scores `0` et `0`. Quels poids le softmax donne-t-il à la première ?
+  en: Two keys have scores `0` and `0`. What weight does the softmax give to the first?
+  reponses:
+  - '0.5'
+  - 0,5
+  verif: print(0.5)
+  indice:
+    fr: Deux scores égaux reçoivent des poids égaux, et leur somme vaut `1`.
+    en: Two equal scores get equal weights, and their sum is `1`.
+  explication:
+    fr: 'Chaque clé reçoit `0.5` : la sortie est la moyenne simple des valeurs.'
+    en: 'Each key gets `0.5`: the output is the simple average of the values.'
+- id: c8
+  type: piege
+  fr: L’attention ne « comprend » rien toute seule. Les matrices qui produisent $q$, $k$ et $v$ à partir des plongements sont **apprises**. Au début, les poids sont presque uniformes ; l’entraînement leur apprend où regarder.
+  en: Attention does not “understand” anything by itself. The matrices that produce $q$, $k$ and $v$ from the embeddings are **learned**. At first, the weights are nearly uniform; training teaches them where to look.
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `attention(q, K, V)`** : calcule les `scores`, applique `softmax`, puis `melanger` les valeurs. Les trois fonctions sont fournies.'
+  en: 'Challenge. **Write `attention(q, K, V)`**: compute the `scores`, apply `softmax`, then `melanger` the values. The three functions are provided.'
+  depart: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def scores(q, K):
+        d = len(q)
+        return [sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K]
+
+    def melanger(poids, V):
+        d = len(V[0])
+        sortie = [0.0] * d
+        for p, v in zip(poids, V):
+            for i in range(d):
+                sortie[i] += p * v[i]
+        return sortie
+
+    # écris ta fonction attention ici
+  tests: |-
+    r = attention([1, 0], [[10, 0], [0, 10]], [[1, 0], [0, 1]])
+    assert r[0] > 0.99 and r[1] < 0.01
+    r = attention([1, 0], [[0, 0], [0, 0]], [[2, 0], [0, 2]])
+    assert abs(r[0] - 1) < 1e-9 and abs(r[1] - 1) < 1e-9
+    assert len(attention([1, 1], [[1, 0]], [[7, 8, 9]])) == 3
+  solutionCode: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def scores(q, K):
+        d = len(q)
+        return [sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K]
+
+    def melanger(poids, V):
+        d = len(V[0])
+        sortie = [0.0] * d
+        for p, v in zip(poids, V):
+            for i in range(d):
+                sortie[i] += p * v[i]
+        return sortie
+
+    def attention(q, K, V):
+        return melanger(softmax(scores(q, K)), V)
+  indice:
+    fr: 'Enchaîne : `melanger(softmax(scores(q, K)), V)`. Une seule ligne suffit.'
+    en: 'Chain: `melanger(softmax(scores(q, K)), V)`. A single line is enough.'
+  explication:
+    fr: Tu viens d’écrire l’opération centrale d’un transformer. Un vrai modèle l’exécute en parallèle pour tous les tokens et plusieurs têtes.
+    en: You have just written the central operation of a transformer. A real model runs it in parallel for all tokens and several heads.
+- id: c10
+  type: idee
+  fr: 'Un transformer répète cette opération avec **plusieurs têtes** : chaque tête apprend des questions différentes (grammaire, référence, thème). Les sorties des têtes sont ensuite recollées et mélangées par une dernière matrice.'
+  en: 'A transformer repeats this operation with **several heads**: each head learns different questions (grammar, reference, topic). The heads’ outputs are then glued together and mixed by a last matrix.'
+  exemple:
+    fr: Un petit modèle a souvent 4 à 8 têtes ; un grand en a plusieurs dizaines par couche, et plusieurs dizaines de couches.
+    en: A small model often has 4 to 8 heads; a large one has several dozen per layer, and several dozen layers.
+- id: c11
+  type: retenir
+  fr: 'Attention : scores $q\cdot k/\sqrt d$, softmax pour obtenir des poids, sortie $=\sum_i w_i v_i$. Plusieurs têtes regardent chacune ailleurs. Les matrices de $q$, $k$, $v$ sont apprises.'
+  en: 'Attention: scores $q\cdot k/\sqrt d$, softmax to get weights, output $=\sum_i w_i v_i$. Several heads each look elsewhere. The matrices for $q$, $k$, $v$ are learned.'
+- id: c12
+  type: plus
+  fr: Pour approfondir, consulte [Attention Is All You Need](https://arxiv.org/abs/1706.03762) ; cet article demande une connexion.
+  en: For further study, see [Attention Is All You Need](https://arxiv.org/abs/1706.03762); this paper needs a connection.

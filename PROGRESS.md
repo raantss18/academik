@@ -120,3 +120,8 @@
 - **Vérifié** : 647 tests, dont l'exécution réelle de chaque solution Python ; clarté, durées, liens.
 - **Non vérifié** : appareils réels ; durées de jeu mesurées ; relecture croisée par Codex (quota de retour).
 
+### Module 12 « Transformers » (2026-11-02, 0.3.23)
+
+- **Fait** : 12.1 à 12.5 et boss « Ton mini-GPT » (BPE, softmax, plongements, attention, masque et positions, échantillonnage) ; quartier « L’Atelier des Tisseurs » ; 660 tests.
+- **Non vérifié** : appareils réels ; durées mesurées ; relecture croisée par Codex.
+

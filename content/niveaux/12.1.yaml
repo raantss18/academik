@@ -1,0 +1,310 @@
+# Niveau 12.1 — Transformers 1 : tokens et BPE. Original academik ; notions vérifiées dans Sennrich et al. 2016 (arXiv 1508.07909) et la série « Zero to Hero » d’A. Karpathy (citée, code non repris).
+id: '12.1'
+module: 12
+duree_min: 16
+titre:
+  fr: Tokens et BPE
+  en: Tokens and BPE
+ia:
+  fr: Kintana découpe le texte en morceaux numérotés, comme le font tous les modèles de langage.
+  en: Kintana cuts text into numbered pieces, as every language model does.
+sources:
+- titre: Sennrich, Haddow, Birch — Neural Machine Translation of Rare Words with Subword Units (BPE)
+  url: https://arxiv.org/abs/1508.07909
+  licence: Article en accès libre ; idée citée, code non repris
+- titre: A. Karpathy — Let’s build the GPT Tokenizer
+  url: https://karpathy.ai/zero-to-hero.html
+  licence: Cours en ligne ; contenu cité, code non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un modèle de langage ne lit pas des lettres une à une ni des mots entiers. Pourquoi découper le texte en **morceaux** intermédiaires (les tokens) ?
+  en: A language model reads neither single letters nor whole words. Why cut the text into intermediate **pieces** (tokens)?
+  choix:
+  - fr: Pour garder un vocabulaire raisonnable et des séquences assez courtes
+    en: To keep a reasonable vocabulary and fairly short sequences
+    juste: true
+  - fr: Pour que le texte soit plus joli
+    en: So that the text looks nicer
+  - fr: Pour supprimer les mots rares
+    en: To delete rare words
+  indice:
+    fr: Un mot par entrée donne un vocabulaire énorme. Une lettre par entrée donne des séquences très longues.
+    en: One word per entry gives a huge vocabulary. One letter per entry gives very long sequences.
+  explication:
+    fr: 'Les morceaux fréquents sont un compromis : peu d’entrées, séquences courtes, et les mots rares restent écrivables.'
+    en: 'Frequent pieces are a compromise: few entries, short sequences, and rare words remain writable.'
+- id: c2
+  type: idee
+  fr: 'Un **token** est un morceau de texte que le modèle traite comme une seule unité : une lettre, une syllabe, un mot courant. Chaque token a un numéro. Le texte devient une liste de nombres.'
+  en: 'A **token** is a piece of text that the model treats as a single unit: a letter, a syllable, a common word. Each token has a number. The text becomes a list of numbers.'
+  exemple:
+    fr: « bonjour » peut devenir `[bon, jour]`, soit deux tokens ; « xylophone » plus rare peut en donner quatre.
+    en: “hello” may become `[hel, lo]`, two tokens; the rarer “xylophone” may give four.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Découpage
+      en: Split
+    - fr: Vocabulaire
+      en: Vocabulary
+    - fr: Séquence
+      en: Sequence
+    cellules:
+    - - fr: Lettres
+        en: Letters
+      - fr: très petit
+        en: very small
+      - fr: très longue
+        en: very long
+    - - fr: Mots
+        en: Words
+      - fr: énorme
+        en: huge
+      - fr: courte
+        en: short
+    - - fr: Morceaux (BPE)
+        en: Pieces (BPE)
+        ton: ok
+      - fr: moyen
+        en: medium
+        ton: ok
+      - fr: courte
+        en: short
+        ton: ok
+    legende:
+      fr: Le BPE vise le juste milieu.
+      en: BPE aims for the middle ground.
+- id: c3
+  type: idee
+  fr: Le **BPE** (byte-pair encoding) part des lettres. Il compte les paires voisines, fusionne la plus fréquente en un nouveau token, et recommence. Les morceaux fréquents deviennent des tokens.
+  en: '**BPE** (byte-pair encoding) starts from letters. It counts neighbouring pairs, merges the most frequent one into a new token, and repeats. Frequent pieces become tokens.'
+  exemple:
+    fr: 'Sur `aaabdaaabac`, la paire `aa` apparaît 4 fois : c’est la plus fréquente, on la fusionne.'
+    en: 'On `aaabdaaabac`, the pair `aa` appears 4 times: it is the most frequent, so we merge it.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Une étape de BPE
+        en: One BPE step
+      noeuds:
+      - fr: compter les paires
+        en: count the pairs
+      - fr: prendre la plus fréquente
+        en: take the most frequent
+      - fr: la fusionner
+        en: merge it
+      - fr: répéter
+        en: repeat
+        ton: ok
+    legende:
+      fr: Chaque fusion crée un token de plus.
+      en: Each merge creates one more token.
+- id: d_vocab
+  type: idee
+  fr: 'Le nombre de fusions règle la taille du vocabulaire : lettres de départ plus fusions. Avec plus de fusions, les séquences raccourcissent, mais la table de plongements grossit.'
+  en: 'The number of merges sets the vocabulary size: starting letters plus merges. With more merges, sequences get shorter, but the embedding table grows.'
+  exemple:
+    fr: Avec 100 caractères de départ et 900 fusions, le vocabulaire compte 1 000 tokens.
+    en: With 100 starting characters and 900 merges, the vocabulary has 1,000 tokens.
+- id: c4
+  type: exemple
+  titre:
+    fr: Compter les paires voisines
+    en: Counting neighbouring pairs
+  lang: python
+  etapes:
+  - code: |-
+      seq = list("aaabdaaabac")
+      c = {}
+    fr: On découpe en lettres et on prépare un dictionnaire de comptes.
+    en: We split into letters and prepare a dictionary of counts.
+  - code: |-
+      for a, b in zip(seq, seq[1:]):
+          c[(a, b)] = c.get((a, b), 0) + 1
+    fr: '`zip(seq, seq[1:])` donne chaque paire de voisins.'
+    en: '`zip(seq, seq[1:])` gives each pair of neighbours.'
+  - code: print(c[("a", "a")], c[("a", "b")])
+    fr: 'On affiche `4 2` : `aa` revient quatre fois, `ab` deux fois.'
+    en: 'We display `4 2`: `aa` comes back four times, `ab` twice.'
+  verif: |-
+    seq = list("aaabdaaabac")
+    c = {}
+    for a, b in zip(seq, seq[1:]):
+        c[(a, b)] = c.get((a, b), 0) + 1
+    print(c[("a", "a")], c[("a", "b")])
+  sortie: 4 2
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `paires(seq)`** : un dictionnaire qui associe à chaque paire de voisins `(a, b)` de la liste `seq` le nombre de fois où elle apparaît.'
+  en: 'Your turn. **Write `paires(seq)`**: a dictionary mapping each pair of neighbours `(a, b)` of the list `seq` to the number of times it appears.'
+  depart: |
+    # écris ta fonction paires ici
+  tests: |-
+    assert paires(list("aaab")) == {("a","a"): 2, ("a","b"): 1}
+    assert paires(["x"]) == {}
+    assert paires([]) == {}
+    assert paires(list("abab"))[("a","b")] == 2
+  solutionCode: |
+    def paires(seq):
+        compte = {}
+        for a, b in zip(seq, seq[1:]):
+            compte[(a, b)] = compte.get((a, b), 0) + 1
+        return compte
+  indice:
+    fr: Parcours `zip(seq, seq[1:])` et incrémente `compte[(a, b)]` avec `.get(..., 0) + 1`.
+    en: Walk through `zip(seq, seq[1:])` and increment `compte[(a, b)]` with `.get(..., 0) + 1`.
+  explication:
+    fr: 'Une liste de moins de deux éléments n’a aucune paire : le dictionnaire reste vide.'
+    en: 'A list of fewer than two elements has no pair: the dictionary stays empty.'
+- id: c6
+  type: idee
+  fr: 'Fusionner une paire `(a, b)` : on parcourt la liste, et chaque fois que `a` est suivi de `b`, on les remplace par **un seul** nouveau token. Après une fusion, la liste est plus courte.'
+  en: 'Merging a pair `(a, b)`: we walk through the list, and each time `a` is followed by `b`, we replace them with **one** new token. After a merge, the list is shorter.'
+  exemple:
+    fr: 'Fusionner `("a","a")` en `"Z"` dans `a a a b` donne `Z a b` : le premier `aa` est fusionné, le `a` restant reste seul.'
+    en: 'Merging `("a","a")` into `"Z"` in `a a a b` gives `Z a b`: the first `aa` is merged, the remaining `a` stays alone.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `fusionner(seq, paire, nouveau)`** : renvoie une nouvelle liste où chaque occurrence consécutive de `paire` (lue de gauche à droite, sans chevauchement) est remplacée par `nouveau`.'
+  en: '**Write `fusionner(seq, paire, nouveau)`**: return a new list where each consecutive occurrence of `paire` (read left to right, without overlap) is replaced by `nouveau`.'
+  depart: |
+    # écris ta fonction fusionner ici
+  tests: |-
+    assert fusionner(list("aaab"), ("a","a"), "Z") == ["Z","a","b"]
+    assert fusionner(list("abab"), ("a","b"), "X") == ["X","X"]
+    assert fusionner(list("xyz"), ("a","b"), "X") == ["x","y","z"]
+    assert fusionner([], ("a","b"), "X") == []
+  solutionCode: |
+    def fusionner(seq, paire, nouveau):
+        sortie, i = [], 0
+        while i < len(seq):
+            if i + 1 < len(seq) and (seq[i], seq[i + 1]) == paire:
+                sortie.append(nouveau)
+                i += 2
+            else:
+                sortie.append(seq[i])
+                i += 1
+        return sortie
+  indice:
+    fr: 'Avance avec un indice `i` : si `(seq[i], seq[i+1])` vaut `paire`, ajoute `nouveau` et saute deux places, sinon ajoute `seq[i]`.'
+    en: 'Move with an index `i`: if `(seq[i], seq[i+1])` equals `paire`, append `nouveau` and skip two places, otherwise append `seq[i]`.'
+  explication:
+    fr: 'Sauter deux places évite de réutiliser une lettre déjà fusionnée : c’est le « sans chevauchement ».'
+    en: 'Skipping two places avoids reusing a letter already merged: this is the “no overlap”.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Combien de fois la paire `("a","b")` apparaît-elle dans `abababc` ?
+  en: How many times does the pair `("a","b")` appear in `abababc`?
+  reponses:
+  - '3'
+  verif: print(sum(1 for p in zip("abababc", "abababc"[1:]) if p == ("a","b")))
+  indice:
+    fr: 'Écris les paires voisines : `ab`, `ba`, `ab`, `ba`, `ab`, `bc`.'
+    en: 'Write the neighbouring pairs: `ab`, `ba`, `ab`, `ba`, `ab`, `bc`.'
+  explication:
+    fr: '`ab` est en positions 0, 2 et 4 : trois fois.'
+    en: '`ab` is at positions 0, 2 and 4: three times.'
+- id: c9
+  type: piege
+  fr: Une paire qui ne se répète pas ne vaut pas une fusion. Fusionner une paire vue **une seule fois** n’apprend rien et grossit le vocabulaire. On s’arrête quand la meilleure paire apparaît moins de deux fois.
+  en: A pair that does not repeat is not worth a merge. Merging a pair seen **only once** teaches nothing and grows the vocabulary. We stop when the best pair appears fewer than twice.
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `bpe(texte, n)`** : pars de `list(texte)`, puis jusqu’à `n` fois, fusionne la paire la plus fréquente (la première rencontrée en cas d’égalité) en la concaténant. Arrête-toi si aucune paire n’apparaît au moins deux fois. `paires` et `fusionner` sont fournies.'
+  en: 'Challenge. **Write `bpe(texte, n)`**: start from `list(texte)`, then up to `n` times, merge the most frequent pair (the first met in case of a tie) by concatenating it. Stop if no pair appears at least twice. `paires` and `fusionner` are provided.'
+  depart: |
+    def paires(seq):
+        compte = {}
+        for a, b in zip(seq, seq[1:]):
+            compte[(a, b)] = compte.get((a, b), 0) + 1
+        return compte
+
+    def fusionner(seq, paire, nouveau):
+        sortie, i = [], 0
+        while i < len(seq):
+            if i + 1 < len(seq) and (seq[i], seq[i + 1]) == paire:
+                sortie.append(nouveau)
+                i += 2
+            else:
+                sortie.append(seq[i])
+                i += 1
+        return sortie
+
+    # écris ta fonction bpe ici
+  tests: |-
+    assert bpe("aaabdaaabac", 1) == ["aa","a","b","d","aa","a","b","a","c"]
+    assert bpe("aaabdaaabac", 2) == ["aaa","b","d","aaa","b","a","c"] or bpe("aaabdaaabac", 2) == ["aa","ab","d","aa","ab","a","c"]
+    assert bpe("abcd", 5) == ["a","b","c","d"]
+    assert bpe("", 3) == []
+    assert bpe("abab", 0) == ["a","b","a","b"]
+  solutionCode: |
+    def paires(seq):
+        compte = {}
+        for a, b in zip(seq, seq[1:]):
+            compte[(a, b)] = compte.get((a, b), 0) + 1
+        return compte
+
+    def fusionner(seq, paire, nouveau):
+        sortie, i = [], 0
+        while i < len(seq):
+            if i + 1 < len(seq) and (seq[i], seq[i + 1]) == paire:
+                sortie.append(nouveau)
+                i += 2
+            else:
+                sortie.append(seq[i])
+                i += 1
+        return sortie
+
+    def bpe(texte, n):
+        seq = list(texte)
+        for _ in range(n):
+            compte = paires(seq)
+            if not compte:
+                break
+            meilleure, m = None, 0
+            for p, c in compte.items():
+                if c > m:
+                    meilleure, m = p, c
+            if m < 2:
+                break
+            seq = fusionner(seq, meilleure, meilleure[0] + meilleure[1])
+        return seq
+  indice:
+    fr: 'Dans la boucle : `compte = paires(seq)`, cherche la paire de compte maximal (strictement supérieur, pour garder la première), arrête-toi si ce compte est < 2, puis `fusionner`.'
+    en: 'In the loop: `compte = paires(seq)`, find the pair with the maximal count (strictly greater, to keep the first), stop if that count is < 2, then `fusionner`.'
+  explication:
+    fr: Tu as écrit le cœur d’un vrai tokenizer. Les modèles font plusieurs dizaines de milliers de fusions sur des gigaoctets de texte.
+    en: You wrote the core of a real tokenizer. Models make tens of thousands of merges on gigabytes of text.
+- id: c11
+  type: idee
+  fr: 'Un vrai tokenizer garde la **liste ordonnée des fusions** apprises. Pour encoder un nouveau texte, on rejoue les mêmes fusions dans le même ordre. Pour décoder, on recolle les morceaux : on retrouve le texte exact.'
+  en: 'A real tokenizer keeps the **ordered list of learned merges**. To encode a new text, we replay the same merges in the same order. To decode, we glue the pieces back: we recover the exact text.'
+  exemple:
+    fr: 'Les modèles actuels travaillent sur des octets : aucun caractère n’est « inconnu », même un emoji ou une lettre malgache accentuée.'
+    en: 'Current models work on bytes: no character is “unknown”, even an emoji or an accented Malagasy letter.'
+- id: c12
+  type: retenir
+  fr: Un token est un morceau de texte numéroté. Le BPE compte les paires voisines, fusionne la plus fréquente, et répète. Encoder rejoue les fusions ; décoder recolle les morceaux.
+  en: A token is a numbered piece of text. BPE counts neighbouring pairs, merges the most frequent one, and repeats. Encoding replays the merges; decoding glues the pieces back.
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [Neural Machine Translation of Rare Words with Subword Units](https://arxiv.org/abs/1508.07909) ; cet article demande une connexion.
+  en: For further study, see [Neural Machine Translation of Rare Words with Subword Units](https://arxiv.org/abs/1508.07909); this paper needs a connection.

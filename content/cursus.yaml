@@ -118,3 +118,12 @@ modules:
       - { id: "11.4", titre: { fr: "Apprendre XOR" } }
       - { id: "11.5", titre: { fr: "Optimiseurs" } }
       - { id: "11.boss", boss: true, titre: { fr: "Ton micrograd" } }
+  - id: 12
+    titre: { fr: "Transformers", en: "Transformers" }
+    niveaux:
+      - { id: "12.1", titre: { fr: "Tokens et BPE" } }
+      - { id: "12.2", titre: { fr: "Softmax et plongements" } }
+      - { id: "12.3", titre: { fr: "L’attention" } }
+      - { id: "12.4", titre: { fr: "Masque et positions" } }
+      - { id: "12.5", titre: { fr: "Échantillonner" } }
+      - { id: "12.boss", boss: true, titre: { fr: "Ton mini-GPT" } }

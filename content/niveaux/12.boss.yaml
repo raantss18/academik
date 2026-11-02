@@ -1,0 +1,425 @@
+# Niveau 12.boss — Ton mini-GPT (mission : la boucle de génération complète). Original academik ; notions vérifiées dans Vaswani et al. 2017 (arXiv 1706.03762) et la série « Zero to Hero » d’A. Karpathy (citée, code non repris).
+id: 12.boss
+module: 12
+duree_min: 17
+titre:
+  fr: Ton mini-GPT
+  en: Your mini-GPT
+ia:
+  fr: 'Kintana génère du texte : tu as assemblé la boucle complète d’un transformer.'
+  en: 'Kintana generates text: you assembled the complete loop of a transformer.'
+sources:
+- titre: Vaswani et al. — Attention Is All You Need
+  url: https://arxiv.org/abs/1706.03762
+  licence: Article en accès libre ; idées citées
+- titre: 'A. Karpathy — Let’s build GPT: from scratch'
+  url: https://karpathy.ai/zero-to-hero.html
+  licence: Cours en ligne ; contenu cité, code non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Pour générer du texte, un transformer répète une boucle. Quel est l’ordre correct d’une étape de génération ?
+  en: To generate text, a transformer repeats a loop. What is the correct order of one generation step?
+  choix:
+  - fr: Plongements, attention masquée, scores, softmax, choix du token, ajout au contexte
+    en: Embeddings, masked attention, scores, softmax, token choice, append to context
+    juste: true
+  - fr: Softmax, plongements, choix du token, attention masquée
+    en: Softmax, embeddings, token choice, masked attention
+  - fr: Choix du token, attention masquée, plongements, softmax
+    en: Token choice, masked attention, embeddings, softmax
+  indice:
+    fr: Le token choisi dépend des probabilités ; les probabilités dépendent des scores ; les scores viennent de la lecture du contexte.
+    en: The chosen token depends on the probabilities; the probabilities depend on the scores; the scores come from reading the context.
+  explication:
+    fr: On lit le contexte, on calcule des scores, on les transforme en probabilités, on choisit, et on recommence avec un token de plus.
+    en: We read the context, compute scores, turn them into probabilities, choose, and start again with one more token.
+- id: c2
+  type: idee
+  fr: 'Mission : assembler un **mini-GPT** dont les poids sont fixés d’avance, sur un vocabulaire de 5 mots. Tu écris la boucle de génération avec les briques des niveaux 12.1 à 12.5 : plongements, attention, softmax, choix.'
+  en: 'Mission: assemble a **mini-GPT** whose weights are fixed in advance, on a vocabulary of 5 words. You write the generation loop with the bricks of levels 12.1 to 12.5: embeddings, attention, softmax, choice.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le mini-GPT
+        en: The mini-GPT
+      noeuds:
+      - fr: ids des tokens
+        en: token ids
+      - fr: plongements $E$
+        en: embeddings $E$
+      - fr: attention
+        en: attention
+      - fr: scores $h\cdot W$
+        en: scores $h\cdot W$
+      - fr: softmax puis choix
+        en: softmax then choice
+        ton: ok
+    legende:
+      fr: La sortie $h$ de l’attention est comparée à chaque ligne de $W$.
+      en: The attention output $h$ is compared with each row of $W$.
+- id: c3
+  type: exemple
+  titre:
+    fr: Un contexte et ses plongements
+    en: A context and its embeddings
+  lang: python
+  etapes:
+  - code: |-
+      ids = [0, 1]
+      cles = [E[i] for i in ids]
+    fr: Le contexte « le chat » est la liste `[0, 1]` ; on prend la ligne de `E` de chaque id.
+    en: The context “the cat” is the list `[0, 1]`; we take each id’s row of `E`.
+  - code: h = attention(E[ids[-1]], cles, cles)
+    fr: La requête est le dernier token ; les clés et les valeurs sont tout le contexte.
+    en: The query is the last token; the keys and values are the whole context.
+  - code: print([round(v, 3) for v in h])
+    fr: 'On affiche la sortie `h` : un vecteur de 2 nombres.'
+    en: 'We display the output `h`: a vector of 2 numbers.'
+  verif: |-
+    import math
+
+    MOTS = ["le", "chat", "dort", ".", "fin"]
+    E = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0], [0.7, 0.7]]
+    W = [[0.7, 0.7], [1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def attention(q, K, V):
+        d = len(q)
+        poids = softmax([sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K])
+        return [sum(poids[i] * V[i][j] for i in range(len(V))) for j in range(len(V[0]))]
+    ids = [0, 1]
+    cles = [E[i] for i in ids]
+    h = attention(E[ids[-1]], cles, cles)
+    print([round(v, 3) for v in h])
+  sortie: '[0.33, 0.67]'
+- id: c4
+  type: idee
+  fr: 'Le vecteur $h$ résume le contexte. Pour savoir quel mot vient ensuite, on compare $h$ à une ligne de $W$ par mot, avec un produit scalaire : c’est le **score** du mot. Le softmax donne ensuite les probabilités.'
+  en: 'The vector $h$ summarises the context. To know which word comes next, we compare $h$ with one row of $W$ per word, using a dot product: this is the word’s **score**. The softmax then gives the probabilities.'
+  exemple:
+    fr: 'Si $h$ ressemble à la ligne de « chat », le score de « chat » est grand : ce mot sera probablement choisi.'
+    en: 'If $h$ looks like the row of “cat”, the score of “cat” is large: this word will probably be chosen.'
+- id: d_ponts
+  type: idee
+  fr: 'Chaque brique du mini-GPT vient d’un niveau du module. Tu les reconnais : le BPE donne les ids, les plongements les vecteurs, l’attention le contexte, le softmax les probabilités, le tirage le mot.'
+  en: 'Each brick of the mini-GPT comes from a level of the module. You recognise them: BPE gives the ids, embeddings the vectors, attention the context, softmax the probabilities, sampling the word.'
+  exemple:
+    fr: Ici les ids sont donnés. Avec le BPE du niveau 12.1, tu pourrais les produire à partir de n’importe quel texte.
+    en: Here the ids are given. With the BPE of level 12.1, you could produce them from any text.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Brique
+      en: Brick
+    - fr: Niveau
+      en: Level
+    cellules:
+    - - fr: tokens
+        en: tokens
+      - '12.1'
+    - - fr: softmax, plongements
+        en: softmax, embeddings
+      - '12.2'
+    - - fr: attention
+        en: attention
+      - '12.3'
+    - - fr: masque, positions
+        en: mask, positions
+      - '12.4'
+    - - fr: température, tirage
+        en: temperature, sampling
+        ton: ok
+      - fr: '12.5'
+        en: '12.5'
+        ton: ok
+    legende:
+      fr: Le mini-GPT les assemble toutes.
+      en: The mini-GPT assembles them all.
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `probas_suivant(ids, T)`** : prends `cles = [E[i] for i in ids]`, calcule `h = attention(E[ids[-1]], cles, cles)`, les scores `sum(a * b for a, b in zip(h, w))` pour chaque `w` de `W`, puis renvoie `softmax` de ces scores divisés par `T`.'
+  en: 'Your turn. **Write `probas_suivant(ids, T)`**: take `cles = [E[i] for i in ids]`, compute `h = attention(E[ids[-1]], cles, cles)`, the scores `sum(a * b for a, b in zip(h, w))` for each `w` of `W`, then return `softmax` of those scores divided by `T`.'
+  depart: |
+    import math
+
+    MOTS = ["le", "chat", "dort", ".", "fin"]
+    E = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0], [0.7, 0.7]]
+    W = [[0.7, 0.7], [1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def attention(q, K, V):
+        d = len(q)
+        poids = softmax([sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K])
+        return [sum(poids[i] * V[i][j] for i in range(len(V))) for j in range(len(V[0]))]
+
+    # écris ta fonction probas_suivant ici
+  tests: |-
+    p = probas_suivant([0], 1)
+    assert len(p) == 5 and abs(sum(p) - 1) < 1e-9
+    assert abs(p[1] - 0.383) < 2e-3 and max(range(5), key=lambda i: p[i]) == 1
+    q = probas_suivant([0, 1], 1)
+    assert abs(q[0] - 0.306) < 2e-3
+    assert max(probas_suivant([0], 0.1)) > max(p)
+  solutionCode: |
+    import math
+
+    MOTS = ["le", "chat", "dort", ".", "fin"]
+    E = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0], [0.7, 0.7]]
+    W = [[0.7, 0.7], [1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def attention(q, K, V):
+        d = len(q)
+        poids = softmax([sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K])
+        return [sum(poids[i] * V[i][j] for i in range(len(V))) for j in range(len(V[0]))]
+
+    def probas_suivant(ids, T):
+        cles = [E[i] for i in ids]
+        h = attention(E[ids[-1]], cles, cles)
+        logits = [sum(a * b for a, b in zip(h, w)) for w in W]
+        return softmax([v / T for v in logits])
+  indice:
+    fr: 'Trois étapes : `cles`, `h` (avec `attention`), puis `softmax([v / T for v in logits])` où `logits` est la liste des scores.'
+    en: 'Three steps: `cles`, `h` (with `attention`), then `softmax([v / T for v in logits])` where `logits` is the list of scores.'
+  explication:
+    fr: 'Une température basse (`0.1`) rend la distribution plus pointue : le favori reçoit encore plus de probabilité.'
+    en: 'A low temperature (`0.1`) makes the distribution sharper: the favourite gets even more probability.'
+- id: c6
+  type: piege
+  fr: 'Ici, tout le contexte est visible et la requête est le **dernier** token seulement : le masque causal est donc automatique. Dans un vrai modèle, on calcule toutes les positions à la fois, et c’est alors le masque qui interdit le futur.'
+  en: 'Here, the whole context is visible and the query is only the **last** token: the causal mask is therefore automatic. In a real model, all positions are computed at once, and the mask is then what forbids the future.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `generer(ids, n, T)`** : fais `n` fois : calcule `p = probas_suivant(ids, T)`, ajoute à `ids` l’indice du plus grand `p`. Travaille sur une **copie** de `ids` et renvoie la liste complète. `probas_suivant` est fournie.'
+  en: '**Write `generer(ids, n, T)`**: do `n` times: compute `p = probas_suivant(ids, T)`, append to `ids` the index of the largest `p`. Work on a **copy** of `ids` and return the complete list. `probas_suivant` is provided.'
+  depart: |
+    import math
+
+    MOTS = ["le", "chat", "dort", ".", "fin"]
+    E = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0], [0.7, 0.7]]
+    W = [[0.7, 0.7], [1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def attention(q, K, V):
+        d = len(q)
+        poids = softmax([sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K])
+        return [sum(poids[i] * V[i][j] for i in range(len(V))) for j in range(len(V[0]))]
+
+    def probas_suivant(ids, T):
+        cles = [E[i] for i in ids]
+        h = attention(E[ids[-1]], cles, cles)
+        logits = [sum(a * b for a, b in zip(h, w)) for w in W]
+        return softmax([v / T for v in logits])
+
+    # écris ta fonction generer ici
+  tests: |-
+    assert generer([0], 4, 1) == [0, 1, 0, 1, 0]
+    a = [0]
+    assert generer(a, 2, 1) == [0, 1, 0] and a == [0]
+    assert generer([0, 1], 0, 1) == [0, 1]
+    assert len(generer([2], 7, 0.5)) == 8
+  solutionCode: |
+    import math
+
+    MOTS = ["le", "chat", "dort", ".", "fin"]
+    E = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0], [0.7, 0.7]]
+    W = [[0.7, 0.7], [1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def attention(q, K, V):
+        d = len(q)
+        poids = softmax([sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K])
+        return [sum(poids[i] * V[i][j] for i in range(len(V))) for j in range(len(V[0]))]
+
+    def probas_suivant(ids, T):
+        cles = [E[i] for i in ids]
+        h = attention(E[ids[-1]], cles, cles)
+        logits = [sum(a * b for a, b in zip(h, w)) for w in W]
+        return softmax([v / T for v in logits])
+
+    def generer(ids, n, T):
+        ids = list(ids)
+        for _ in range(n):
+            p = probas_suivant(ids, T)
+            ids.append(max(range(len(p)), key=lambda i: p[i]))
+        return ids
+  indice:
+    fr: 'Commence par `ids = list(ids)`, puis boucle `n` fois avec `max(range(len(p)), key=lambda i: p[i])` pour l’indice du favori.'
+    en: 'Start with `ids = list(ids)`, then loop `n` times with `max(range(len(p)), key=lambda i: p[i])` for the favourite’s index.'
+  explication:
+    fr: 'Copier `ids` évite de modifier la liste de l’appelant : une bonne habitude avec les listes.'
+    en: 'Copying `ids` avoids modifying the caller’s list: a good habit with lists.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Avec `generer([0], 4, 1)`, la suite est `[0, 1, 0, 1, 0]`. Quel mot est le deuxième token de cette liste (indice 1) ? Les mots sont `le, chat, dort, ., fin`.
+  en: With `generer([0], 4, 1)`, the result is `[0, 1, 0, 1, 0]`. Which word is the second token of this list (index 1)? The words are `le, chat, dort, ., fin`.
+  reponses:
+  - chat
+  verif: print(["le", "chat", "dort", ".", "fin"][[0, 1, 0, 1, 0][1]])
+  indice:
+    fr: Lis la valeur à l’indice 1 de la liste, puis trouve son mot dans `MOTS`.
+    en: Read the value at index 1 of the list, then find its word in `MOTS`.
+  explication:
+    fr: 'Le token d’indice 1 vaut 1, soit « chat » : le texte boucle sur « le chat le chat le ».'
+    en: 'The token at index 1 is 1, which is “chat”: the text loops on “the cat the cat the”.'
+- id: c9
+  type: idee
+  fr: 'Le texte boucle : « le chat le chat le ». C’est le défaut du décodage **glouton**. Les poids sont ici fixés à la main ; dans un vrai modèle ils sont appris sur des milliards de mots, et le tirage avec température évite en partie ces boucles.'
+  en: 'The text loops: “the cat the cat the”. This is the flaw of **greedy** decoding. The weights here are set by hand; in a real model they are learned on billions of words, and sampling with temperature partly avoids these loops.'
+  exemple:
+    fr: 'Remplace le choix du plus grand par `echantillonner` du niveau 12.5 : avec `T = 1` le texte n’est plus toujours le même.'
+    en: 'Replace the max choice with `echantillonner` of level 12.5: with `T = 1` the text is no longer always the same.'
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 2
+  fr: 'Défi final. **Écris `decoder(ids)`** : renvoie les mots correspondants de `MOTS`, séparés par un espace. Puis le texte généré se lit : `decoder(generer([0], 4, 1))` vaut `"le chat le chat le"`.'
+  en: 'Final challenge. **Write `decoder(ids)`**: return the matching words from `MOTS`, separated by a space. Then the generated text reads: `decoder(generer([0], 4, 1))` is `"le chat le chat le"`.'
+  depart: |
+    import math
+
+    MOTS = ["le", "chat", "dort", ".", "fin"]
+    E = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0], [0.7, 0.7]]
+    W = [[0.7, 0.7], [1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def attention(q, K, V):
+        d = len(q)
+        poids = softmax([sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K])
+        return [sum(poids[i] * V[i][j] for i in range(len(V))) for j in range(len(V[0]))]
+
+    def probas_suivant(ids, T):
+        cles = [E[i] for i in ids]
+        h = attention(E[ids[-1]], cles, cles)
+        logits = [sum(a * b for a, b in zip(h, w)) for w in W]
+        return softmax([v / T for v in logits])
+
+    def generer(ids, n, T):
+        ids = list(ids)
+        for _ in range(n):
+            p = probas_suivant(ids, T)
+            ids.append(max(range(len(p)), key=lambda i: p[i]))
+        return ids
+
+    # écris ta fonction decoder ici
+  tests: |-
+    assert decoder([0, 1]) == "le chat"
+    assert decoder([]) == ""
+    assert decoder(generer([0], 4, 1)) == "le chat le chat le"
+    assert decoder([4]) == "fin"
+  solutionCode: |
+    import math
+
+    MOTS = ["le", "chat", "dort", ".", "fin"]
+    E = [[1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0], [0.7, 0.7]]
+    W = [[0.7, 0.7], [1.0, 0.0], [0.0, 1.0], [-1.0, 0.0], [0.0, -1.0]]
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def attention(q, K, V):
+        d = len(q)
+        poids = softmax([sum(a * b for a, b in zip(q, k)) / math.sqrt(d) for k in K])
+        return [sum(poids[i] * V[i][j] for i in range(len(V))) for j in range(len(V[0]))]
+
+    def probas_suivant(ids, T):
+        cles = [E[i] for i in ids]
+        h = attention(E[ids[-1]], cles, cles)
+        logits = [sum(a * b for a, b in zip(h, w)) for w in W]
+        return softmax([v / T for v in logits])
+
+    def generer(ids, n, T):
+        ids = list(ids)
+        for _ in range(n):
+            p = probas_suivant(ids, T)
+            ids.append(max(range(len(p)), key=lambda i: p[i]))
+        return ids
+
+    def decoder(ids):
+        return " ".join(MOTS[i] for i in ids)
+  indice:
+    fr: Une compréhension `MOTS[i] for i in ids` à l’intérieur de `" ".join(...)`.
+    en: A comprehension `MOTS[i] for i in ids` inside `" ".join(...)`.
+  explication:
+    fr: 'Tu as parcouru tout le chemin : un texte devient des ids, des vecteurs, des scores, des probabilités, puis un nouveau mot. C’est exactement ce que fait un grand modèle de langage.'
+    en: 'You have gone the whole way: a text becomes ids, vectors, scores, probabilities, then a new word. This is exactly what a large language model does.'
+- id: c11
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Les plongements `E` ont 5 lignes de 2 nombres, et `W` aussi. Combien de nombres réglables ce mini-GPT a-t-il au total ?
+  en: The embeddings `E` have 5 rows of 2 numbers, and so does `W`. How many tunable numbers does this mini-GPT have in total?
+  reponses:
+  - '20'
+  verif: print(5 * 2 + 5 * 2)
+  indice:
+    fr: 'Compte chaque matrice : lignes × colonnes, puis additionne les deux.'
+    en: 'Count each matrix: rows × columns, then add the two.'
+  explication:
+    fr: $5\times2+5\times2=20$. Un grand modèle en a des dizaines de milliards, avec la même structure.
+    en: $5\times2+5\times2=20$. A large model has tens of billions, with the same structure.
+- id: c12
+  type: idee
+  fr: Le cursus continue avec les **LLM locaux**. Tu prendras un vrai modèle déjà entraîné et tu le feras tourner sur ton appareil. Tu verras la quantification, la mémoire nécessaire et les licences des poids.
+  en: The curriculum continues with **local LLMs**. You will take a real already-trained model and run it on your device. You will see quantisation, the memory needed and weight licences.
+  exemple:
+    fr: 'Un modèle de 7 milliards de nombres en 4 bits tient dans environ 4 Go de mémoire : assez pour un ordinateur ordinaire.'
+    en: 'A model of 7 billion numbers in 4 bits fits in about 4 GB of memory: enough for an ordinary computer.'
+- id: c13
+  type: retenir
+  fr: 'Une étape de génération : lire le contexte avec l’attention, calculer des scores, softmax avec température, choisir un token, l’ajouter. On répète. Le glouton boucle ; le tirage varie.'
+  en: 'One generation step: read the context with attention, compute scores, softmax with temperature, choose a token, append it. We repeat. Greedy loops; sampling varies.'
+- id: c14
+  type: plus
+  fr: 'Pour aller plus loin, consulte [Let’s build GPT: from scratch](https://karpathy.ai/zero-to-hero.html) ; ce cours en ligne demande une connexion.'
+  en: 'To go further, see [Let’s build GPT: from scratch](https://karpathy.ai/zero-to-hero.html); this online course needs a connection.'

@@ -144,3 +144,14 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **11.4** Apprendre XOR | Kintana entraîne un petit réseau qui apprend seul une règle qu’aucune droite ne peut représenter. | 5.5, 9.1, 11.1, 11.3 | 11.boss |
 | **11.5** Optimiseurs | Kintana descend plus vite et plus droit : elle garde la mémoire de ses pas précédents. | 5.5 | — |
 | **11.boss** Ton micrograd | Kintana apprend seule : tu as construit le moteur qui entraîne un réseau, de la passe avant à la mise à jour. | 11.4 | — |
+
+## 12 · Transformers
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **12.1** Tokens et BPE | Kintana découpe le texte en morceaux numérotés, comme le font tous les modèles de langage. | — | 12.boss |
+| **12.2** Softmax et plongements | Kintana transforme des scores en probabilités et des mots en vecteurs qu’elle sait comparer. | — | 12.3 |
+| **12.3** L’attention | Kintana regarde les bons mots du contexte en pesant chacun d’eux. | 12.2 | 12.4 |
+| **12.4** Masque et positions | Kintana sait où se trouve chaque mot et s’interdit de lire la suite du texte. | 12.3 | — |
+| **12.5** Échantillonner | Kintana choisit le mot suivant : sûr ou audacieux, selon un réglage de température. | — | 12.boss |
+| **12.boss** Ton mini-GPT | Kintana génère du texte : tu as assemblé la boucle complète d’un transformer. | 12.1, 12.5 | — |

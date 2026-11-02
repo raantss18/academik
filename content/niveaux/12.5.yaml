@@ -1,0 +1,349 @@
+# Niveau 12.5 — Transformers 5 : température, top-k et tirage. Original academik ; notions vérifiées dans Holtzman et al. 2020 (arXiv 1904.09751) et la série « Zero to Hero » d’A. Karpathy (citée).
+id: '12.5'
+module: 12
+duree_min: 19
+titre:
+  fr: Échantillonner
+  en: Sampling
+ia:
+  fr: 'Kintana choisit le mot suivant : sûr ou audacieux, selon un réglage de température.'
+  en: 'Kintana chooses the next word: safe or bold, depending on a temperature setting.'
+sources:
+- titre: Holtzman et al. — The Curious Case of Neural Text Degeneration (top-p)
+  url: https://arxiv.org/abs/1904.09751
+  licence: Article en accès libre ; idées citées
+- titre: 'A. Karpathy — Let’s build GPT: from scratch'
+  url: https://karpathy.ai/zero-to-hero.html
+  licence: Cours en ligne ; contenu cité, code non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Un modèle de langage termine sa phrase : il donne une probabilité à chaque mot possible. Que faire de ces probabilités pour choisir le mot suivant ?'
+  en: 'A language model finishes its sentence: it gives a probability to each possible word. What do we do with these probabilities to choose the next word?'
+  choix:
+  - fr: Soit prendre le plus probable, soit tirer au sort selon les probabilités
+    en: Either take the most probable, or draw at random according to the probabilities
+    juste: true
+  - fr: Toujours additionner tous les mots
+    en: Always add up all the words
+  - fr: Choisir le mot le plus long
+    en: Choose the longest word
+  indice:
+    fr: 'Il y a deux familles de stratégies : une qui ne laisse aucune place au hasard, et une qui en laisse.'
+    en: 'There are two families of strategies: one leaves no room for chance, and one does.'
+  explication:
+    fr: Prendre toujours le maximum (**décodage glouton**) est répétitif ; tirer au sort donne de la variété. Entre les deux, on règle le hasard.
+    en: Always taking the maximum (**greedy decoding**) is repetitive; drawing at random gives variety. Between the two, we tune the randomness.
+- id: c2
+  type: idee
+  fr: 'La **température** $T$ règle le hasard : on divise les scores par $T$ avant le softmax. Avec $T<1$, le favori domine (texte sûr, répétitif). Avec $T>1$, les probabilités s’aplatissent (texte varié, risqué).'
+  en: 'The **temperature** $T$ tunes the randomness: we divide the scores by $T$ before the softmax. With $T<1$, the favourite dominates (safe, repetitive text). With $T>1$, probabilities flatten (varied, risky text).'
+  exemple:
+    fr: 'Pour $z=(2,1,0)$ : à $T=1$ on obtient $p\approx(0{,}67;\,0{,}24;\,0{,}09)$ ; à $T=0{,}5$, $p\approx(0{,}87;\,0{,}12;\,0{,}02)$.'
+    en: 'For $z=(2,1,0)$: at $T=1$ we get $p\approx(0.67;\,0.24;\,0.09)$; at $T=0.5$, $p\approx(0.87;\,0.12;\,0.02)$.'
+  figure:
+    kind: tableau
+    entetes:
+    - $T$
+    - fr: Favori
+      en: Favourite
+    - fr: Style
+      en: Style
+    cellules:
+    - - $0{,}5$
+      - $0{,}87$
+      - fr: sûr
+        en: safe
+    - - $1$
+      - $0{,}67$
+      - fr: naturel
+        en: natural
+    - - $2$
+      - $0{,}51$
+      - fr: varié
+        en: varied
+    legende:
+      fr: Le favori est le premier score, $z=2$.
+      en: The favourite is the first score, $z=2$.
+- id: c2b
+  type: exemple
+  titre:
+    fr: La température à l’œuvre
+    en: Temperature at work
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      z = [2, 1, 0]
+      T = 0.5
+    fr: Les mêmes scores, avec une température basse.
+    en: The same scores, with a low temperature.
+  - code: |-
+      e = [math.exp(v / T) for v in z]
+      p = [v / sum(e) for v in e]
+    fr: On divise les scores par `T` avant l’exponentielle.
+    en: We divide the scores by `T` before the exponential.
+  - code: print([round(v, 2) for v in p])
+    fr: 'On affiche `[0.87, 0.12, 0.02]` : le favori domine davantage qu’à `T = 1`.'
+    en: 'We display `[0.87, 0.12, 0.02]`: the favourite dominates more than at `T = 1`.'
+  verif: |-
+    import math
+    z = [2, 1, 0]
+    T = 0.5
+    e = [math.exp(v / T) for v in z]
+    p = [v / sum(e) for v in e]
+    print([round(v, 2) for v in p])
+  sortie: '[0.87, 0.12, 0.02]'
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `avec_temperature(z, T)`** : divise chaque score de `z` par `T`, puis applique `softmax`. `softmax` est fournie.'
+  en: 'Your turn. **Write `avec_temperature(z, T)`**: divide each score of `z` by `T`, then apply `softmax`. `softmax` is provided.'
+  depart: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    # écris ta fonction avec_temperature ici
+  tests: |-
+    p = avec_temperature([2, 1, 0], 1)
+    assert abs(p[0] - 0.6652) < 1e-3
+    q = avec_temperature([2, 1, 0], 0.5)
+    assert abs(q[0] - 0.8668) < 1e-3
+    r = avec_temperature([2, 1, 0], 100)
+    assert max(r) - min(r) < 0.03
+  solutionCode: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def avec_temperature(z, T):
+        return softmax([v / T for v in z])
+  indice:
+    fr: 'Une ligne : `softmax([v / T for v in z])`.'
+    en: 'A single line: `softmax([v / T for v in z])`.'
+  explication:
+    fr: 'Quand $T$ tend vers `0`, le favori reçoit presque toute la probabilité : on retrouve le décodage glouton.'
+    en: 'As $T$ tends to `0`, the favourite gets almost all the probability: we recover greedy decoding.'
+- id: c4
+  type: idee
+  fr: Le **top-k** garde seulement les $k$ mots les plus probables, met les autres à $0$, puis renormalise pour que la somme fasse $1$. Cela évite de tirer par malchance un mot absurde de probabilité minuscule.
+  en: '**Top-k** keeps only the $k$ most probable words, sets the others to $0$, then renormalises so the sum is $1$. This avoids drawing, by bad luck, an absurd word of tiny probability.'
+  exemple:
+    fr: 'Pour $p=(0{,}5;\,0{,}3;\,0{,}2)$ et $k=2$ : on garde $0{,}5$ et $0{,}3$ (total $0{,}8$), d’où $(0{,}625;\,0{,}375;\,0)$.'
+    en: 'For $p=(0.5;\,0.3;\,0.2)$ and $k=2$: we keep $0.5$ and $0.3$ (total $0.8$), giving $(0.625;\,0.375;\,0)$.'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `top_k(p, k)`** : garde les `k` plus grandes probabilités de `p` (liste), met les autres à `0.0`, et divise les gardées par leur somme. Renvoie une liste de même taille.'
+  en: '**Write `top_k(p, k)`**: keep the `k` largest probabilities of `p` (list), set the others to `0.0`, and divide the kept ones by their sum. Return a list of the same size.'
+  depart: |
+    # écris ta fonction top_k ici
+  tests: |-
+    r = top_k([0.5, 0.3, 0.2], 2)
+    assert abs(r[0] - 0.625) < 1e-9 and abs(r[1] - 0.375) < 1e-9 and r[2] == 0.0
+    assert top_k([0.2, 0.8], 1) == [0.0, 1.0]
+    assert abs(sum(top_k([0.1, 0.2, 0.3, 0.4], 3)) - 1) < 1e-9
+  solutionCode: |
+    def top_k(p, k):
+        garde = sorted(range(len(p)), key=lambda i: -p[i])[:k]
+        total = sum(p[i] for i in garde)
+        return [p[i] / total if i in garde else 0.0 for i in range(len(p))]
+  indice:
+    fr: 'Trie les indices par probabilité décroissante avec `sorted(range(len(p)), key=lambda i: -p[i])[:k]`, puis renormalise.'
+    en: 'Sort indices by decreasing probability with `sorted(range(len(p)), key=lambda i: -p[i])[:k]`, then renormalise.'
+  explication:
+    fr: Le top-k coupe la « longue traîne » des mots improbables, qui ensemble pèsent parfois lourd.
+    en: Top-k cuts the “long tail” of improbable words, which together sometimes weigh a lot.
+- id: d_topp
+  type: idee
+  fr: 'Variante courante : le **top-p**. Au lieu de garder $k$ mots, on garde les plus probables jusqu’à ce que leur total atteigne $p$ (par exemple $0{,}9$). Le nombre de mots gardés s’adapte à la situation.'
+  en: 'A common variant: **top-p**. Instead of keeping $k$ words, we keep the most probable ones until their total reaches $p$ (for example $0.9$). The number of words kept adapts to the situation.'
+  exemple:
+    fr: Si un mot pèse déjà $0{,}95$, il reste seul ; si dix mots se partagent la probabilité, on en garde plusieurs.
+    en: If one word already weighs $0.95$, it stays alone; if ten words share the probability, we keep several.
+- id: c6
+  type: idee
+  fr: 'On tire un indice avec un nombre aléatoire $u$ entre $0$ et $1$. On cumule les probabilités et on prend le premier indice dont le cumul dépasse $u$ : c’est la **roue**.'
+  en: 'We draw an index with a random number $u$ between $0$ and $1$. We accumulate the probabilities and take the first index whose cumulative sum exceeds $u$: this is the **wheel**.'
+  exemple:
+    fr: 'Pour $p=(0{,}5;\,0{,}3;\,0{,}2)$ : $u=0{,}6$ tombe dans le deuxième secteur ($0{,}5\le u<0{,}8$), donc l’indice $1$.'
+    en: 'For $p=(0.5;\,0.3;\,0.2)$: $u=0.6$ falls in the second sector ($0.5\le u<0.8$), so index $1$.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: La roue des probabilités
+        en: The probability wheel
+      noeuds:
+      - fr: 'secteur 0 : $[0;\,0{,}5[$'
+        en: 'sector 0: $[0;\,0.5[$'
+      - fr: 'secteur 1 : $[0{,}5;\,0{,}8[$'
+        en: 'sector 1: $[0.5;\,0.8[$'
+      - fr: 'secteur 2 : $[0{,}8;\,1[$'
+        en: 'sector 2: $[0.8;\,1[$'
+        ton: ok
+    legende:
+      fr: Un secteur plus grand a plus de chances d’être touché.
+      en: A larger sector is more likely to be hit.
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `tirer(p, u)`** : parcours `p` en cumulant ; renvoie le premier indice `i` tel que le cumul dépasse strictement `u`. Si aucun, renvoie le dernier indice.'
+  en: '**Write `tirer(p, u)`**: walk through `p` while accumulating; return the first index `i` such that the cumulative sum strictly exceeds `u`. If none, return the last index.'
+  depart: |
+    # écris ta fonction tirer ici
+  tests: |-
+    p = [0.5, 0.3, 0.2]
+    assert tirer(p, 0.0) == 0 and tirer(p, 0.49) == 0
+    assert tirer(p, 0.5) == 1 and tirer(p, 0.6) == 1
+    assert tirer(p, 0.8) == 2 and tirer(p, 0.99) == 2
+    assert tirer([0.0, 1.0], 0.1) == 1
+  solutionCode: |
+    def tirer(p, u):
+        cumul = 0.0
+        for i, v in enumerate(p):
+            cumul += v
+            if u < cumul:
+                return i
+        return len(p) - 1
+  indice:
+    fr: Garde une variable `cumul` ; ajoute chaque probabilité et renvoie `i` dès que `u < cumul`.
+    en: Keep a `cumul` variable; add each probability and return `i` as soon as `u < cumul`.
+  explication:
+    fr: Avec `u` tiré uniformément, chaque indice sort avec sa probabilité exacte, et un secteur de taille `0.0` ne sort jamais.
+    en: With `u` drawn uniformly, each index comes out with its exact probability, and a sector of size `0.0` never comes out.
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Avec `p = [0.2, 0.5, 0.3]` et `u = 0.65`, quel indice renvoie la méthode de la roue ?
+  en: With `p = [0.2, 0.5, 0.3]` and `u = 0.65`, which index does the wheel method return?
+  reponses:
+  - '1'
+  verif: |-
+    p=[0.2,0.5,0.3]
+    u=0.65
+    c=0
+    for i,v in enumerate(p):
+        c+=v
+        if u<c:
+            print(i)
+            break
+  indice:
+    fr: 'Cumule : $0{,}2$, puis $0{,}7$. Quel est le premier cumul qui dépasse $0{,}65$ ?'
+    en: 'Accumulate: $0.2$, then $0.7$. Which is the first cumulative sum exceeding $0.65$?'
+  explication:
+    fr: 'Après l’indice 1 le cumul vaut $0{,}7>0{,}65$ : on renvoie `1`.'
+    en: 'After index 1 the cumulative sum is $0.7>0.65$: we return `1`.'
+- id: c9
+  type: piege
+  fr: 'Une température très basse ou nulle n’est pas « plus intelligente ». Elle donne souvent des boucles répétitives (« et et et »). À l’inverse, une température très haute donne du charabia. On règle $T$ selon l’usage : bas pour un calcul, plus haut pour une histoire.'
+  en: 'A very low or zero temperature is not “smarter”. It often gives repetitive loops (“and and and”). Conversely, a very high temperature gives gibberish. We tune $T$ for the use: low for a calculation, higher for a story.'
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `echantillonner(z, T, k, u)`** : calcule les probabilités avec la température `T`, garde les `k` meilleures (`top_k`), puis tire un indice avec `tirer(p, u)`. Les trois fonctions sont fournies.'
+  en: 'Challenge. **Write `echantillonner(z, T, k, u)`**: compute the probabilities with temperature `T`, keep the best `k` (`top_k`), then draw an index with `tirer(p, u)`. The three functions are provided.'
+  depart: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def avec_temperature(z, T):
+        return softmax([v / T for v in z])
+
+    def top_k(p, k):
+        garde = sorted(range(len(p)), key=lambda i: -p[i])[:k]
+        total = sum(p[i] for i in garde)
+        return [p[i] / total if i in garde else 0.0 for i in range(len(p))]
+
+    def tirer(p, u):
+        cumul = 0.0
+        for i, v in enumerate(p):
+            cumul += v
+            if u < cumul:
+                return i
+        return len(p) - 1
+
+    # écris ta fonction echantillonner ici
+  tests: |-
+    assert echantillonner([2, 1, 0], 1, 1, 0.99) == 0
+    assert echantillonner([2, 1, 0], 1, 3, 0.99) == 2
+    assert echantillonner([2, 1, 0], 1, 2, 0.99) == 1
+    assert echantillonner([0, 5, 0], 0.5, 3, 0.5) == 1
+  solutionCode: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def avec_temperature(z, T):
+        return softmax([v / T for v in z])
+
+    def top_k(p, k):
+        garde = sorted(range(len(p)), key=lambda i: -p[i])[:k]
+        total = sum(p[i] for i in garde)
+        return [p[i] / total if i in garde else 0.0 for i in range(len(p))]
+
+    def tirer(p, u):
+        cumul = 0.0
+        for i, v in enumerate(p):
+            cumul += v
+            if u < cumul:
+                return i
+        return len(p) - 1
+
+    def echantillonner(z, T, k, u):
+        p = avec_temperature(z, T)
+        p = top_k(p, k)
+        return tirer(p, u)
+  indice:
+    fr: 'Trois lignes : `p = avec_temperature(z, T)`, `p = top_k(p, k)`, puis `return tirer(p, u)`.'
+    en: 'Three lines: `p = avec_temperature(z, T)`, `p = top_k(p, k)`, then `return tirer(p, u)`.'
+  explication:
+    fr: 'Avec `k = 1`, quel que soit `u`, on retrouve le décodage glouton : toujours le favori.'
+    en: 'With `k = 1`, whatever `u`, we recover greedy decoding: always the favourite.'
+- id: c11
+  type: idee
+  fr: 'Dans la pratique, `u` vient d’un générateur aléatoire. Avec la même **graine**, on obtient les mêmes tirages, donc le même texte : c’est utile pour reproduire un résultat ou déboguer.'
+  en: 'In practice, `u` comes from a random generator. With the same **seed**, we get the same draws, hence the same text: this is useful for reproducing a result or debugging.'
+  exemple:
+    fr: Dans un vrai outil, un réglage « graine » (seed) permet de relancer exactement la même génération.
+    en: In a real tool, a “seed” setting lets you rerun exactly the same generation.
+- id: c12
+  type: retenir
+  fr: 'Température : softmax de $z/T$ ($T$ bas = sûr, $T$ haut = varié). Top-k : on garde les $k$ plus probables puis on renormalise. On tire avec la roue des probabilités et un nombre $u$.'
+  en: 'Temperature: softmax of $z/T$ (low $T$ = safe, high $T$ = varied). Top-k: we keep the $k$ most probable then renormalise. We draw with the probability wheel and a number $u$.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [The Curious Case of Neural Text Degeneration](https://arxiv.org/abs/1904.09751) ; cet article demande une connexion.
+  en: For further study, see [The Curious Case of Neural Text Degeneration](https://arxiv.org/abs/1904.09751); this paper needs a connection.

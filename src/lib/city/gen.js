@@ -113,6 +113,15 @@ const THEMES = [
     kinds: { tower: 3, hall: 2, house: 1, shop: 1 }, count: 24, align: .9,
     props: { lamp: 8, person: 3, car: 2, crate: 1 },
     lm: ['tower', 'dome', 'tower', 'hall', 'tower'], boss: 'dome' },
+  { place: 'L’Atelier des Tisseurs', blurb: 'Métiers à tisser, fils tendus et passerelles : chaque fil regarde tous les autres.', path: 2, smooth: true,
+    top: '#4a3a30', cliff: '#5a4636', lip: '#6a7a46', road: '#3a2e28', roadHi: '#f2d49a', dash: true, night: '#1a120f',
+    patches: ['#5b4a3a', '#46382c', '#6a5a3e'],
+    walls: ['#e3d3b8', '#d2bf9e', '#bba67f', '#f0e4cc', '#a69168'], roofs: ['#7a3f2a', '#5f3022', '#93513a'],
+    roofW: { flat: 1, hip: 2, gable: 3 }, win: ['#ffd98a', '#ffc766', '#ffe6b0'], leaf: ['#4a7a3a', '#5e9448', '#7aa95a'],
+    trees: { round: 2, conifer: 1, bush: 1 }, nTrees: 12,
+    kinds: { hall: 2, house: 2, tower: 2, shop: 2 }, count: 24, align: .9,
+    props: { lamp: 8, person: 4, car: 1, crate: 3 },
+    lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).
