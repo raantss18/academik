@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 20,
-  "version": "0.3.17",
+  "build": 22,
+  "version": "0.3.19",
   "notes": {
-   "fr": "Le cours s'agrandit encore : fin des modules 3, 4 et 5, et un nouveau module « Apprentissage automatique » (droite, biais et variance, classer, mesurer, régularisation, arbres). Les niveaux sont reliés entre eux, les durées affichées sont plus justes, et quand tu te trompes, une carte te renvoie vers l'explication à relire.",
-   "en": "The course grows again: end of modules 3, 4 and 5, and a new “Machine learning” module (line fitting, bias and variance, classifying, measuring, regularisation, trees). Levels are linked together, displayed durations are more accurate, and when you get something wrong, a card points you back to the explanation to reread."
+   "fr": "Nouveau module « Séries temporelles » : lire une série, stabilité, mémoire, prévoir avec un modèle simple, mesurer l'agitation et évaluer sans tricher. L'application démarre aussi plus vite : le premier chargement est cinq fois plus léger.",
+   "en": "New “Time series” module: reading a series, stability, memory, forecasting with a simple model, measuring agitation and evaluating without cheating. The app also starts faster: the first load is five times lighter."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.17/academik-0.3.17.apk",
-    "sha256": "588a4065f00719550c37ee1aa281684acb4519cfa090d6bd64f42dc2ea4d3060",
-    "bytes": 10585808
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.19/academik-0.3.19.apk",
+    "sha256": "8240622c26de3344e08e3f6dd5e6d55c5a2f4f35c93dad3f0c826012ad94f13c",
+    "bytes": 10679425
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.17/academik-0.3.17-x86_64.AppImage",
-    "sha256": "2f1fe058418f3cfc06e95d56486bec1fa0a90acd740f1efb1fa778ac1ac6585c",
-    "bytes": 115071480
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.19/academik-0.3.19-x86_64.AppImage",
+    "sha256": "ef30ace24906bbd70e7e3a7824c832be0b94941c37e5889c6a5d3e16d3e79039",
+    "bytes": 115149304
    }
   }
  },
  "history": [
+  {
+   "build": 20,
+   "version": "0.3.17",
+   "notes": {
+    "fr": "Le cours s'agrandit encore : fin des modules 3, 4 et 5, et un nouveau module « Apprentissage automatique » (droite, biais et variance, classer, mesurer, régularisation, arbres). Les niveaux sont reliés entre eux, les durées affichées sont plus justes, et quand tu te trompes, une carte te renvoie vers l'explication à relire.",
+    "en": "The course grows again: end of modules 3, 4 and 5, and a new “Machine learning” module (line fitting, bias and variance, classifying, measuring, regularisation, trees). Levels are linked together, displayed durations are more accurate, and when you get something wrong, a card points you back to the explanation to reread."
+   }
+  },
   {
    "build": 18,
    "version": "0.3.15",
