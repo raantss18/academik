@@ -56,3 +56,13 @@
   seul l'audit statique du précache a été fait) ; AppImage sur Linux Mint ; APK sur Xiaomi Pad 7 et Samsung S20+ réels ;
   l'accès Supabase par un vrai compte (le test `supabase/tests/academik_rls.sql` n'a pas été exécuté) ; accessibilité WCAG AA
   (pas d'audit outillé) ; poids de la carte-ville.
+
+### Leçons approfondies, modules 6 et 7 (2026-11-02)
+
+- **Fait** : les 39 niveaux passent la barre C8 (≥ 6 cartes de théorie, 2 figures, 2 exemples, ≥ 16 min) et la liste d'attente est
+  vide. Modules 0–3 : travail de Codex repris par Claude au relais (quota épuisé jusqu'à 18 h 29) ; modules 4–7 écrits par Claude.
+  Modules 6 et 7 (Codex T-007/T-008) intégrés après mise à la barre. Versions 0.3.10 à 0.3.12 : carte dégagée et zoomable,
+  repères sans chevauchement, liens cliquables (E20–E22).
+- **Vérifié** : 531 tests ; zoom et message d'info au navigateur (375 px) ; CI verte ; site servant 0.3.12.
+- **Non vérifié** : appareils réels (les captures d'Antsa montrent les défauts corrigés, pas la correction) ; relecture en ligne de
+  chaque définition des cours ; AppImage sur Linux Mint ; service worker réel.

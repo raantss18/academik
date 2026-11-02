@@ -1,0 +1,266 @@
+id: "7.3"
+module: 7
+duree_min: 17
+titre:
+  fr: Tester une hypothèse
+  en: Testing a hypothesis
+ia:
+  fr: Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs.
+  en: Kintana can distinguish a real signal from chance and reject false positives.
+sources:
+  - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
+    url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/
+    licence: CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux
+  - titre: American Statistical Association — Statement on Statistical Significance and P-Values (2016)
+    url: https://www.amstat.org/asa/files/pdfs/P-ValueStatement.pdf
+    licence: Aucune licence libre indiquée ; lien seulement, aucun extrait reproduit
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Avant de commencer : sous une pièce équilibrée lancée quatre fois indépendamment, les $16$ suites sont équiprobables. Combien donnent au moins trois succès ?"
+    en: "Before you start: with four independent tosses of a fair coin, the $16$ sequences are equally likely. How many give at least three successes?"
+    verif: |-
+      from itertools import product
+      print(sum(sum(x)>=3 for x in product([0,1],repeat=4)))
+    explication:
+      fr: Il y a quatre places possibles pour l’unique échec, plus la suite de quatre succès.
+      en: There are four possible positions for a single failure, plus the all-success sequence.
+    choix:
+      - fr: "4"
+        en: "4"
+      - fr: "5"
+        en: "5"
+        juste: true
+      - fr: "3"
+        en: "3"
+    sortie: "5"
+    id: c1
+  - type: idee
+    fr: La p-valeur mesure combien le résultat surprend sous une hypothèse précise, appelée hypothèse nulle. Elle compte les résultats au moins aussi extrêmes, dans le sens fixé avant les données.
+    en: The p-value measures how surprising the result is under a specific assumption, called the null hypothesis. It counts outcomes at least as extreme, in the direction fixed before seeing data.
+    id: c2
+    exemple:
+      fr: pour deux lancers indépendants d’une pièce équilibrée, deux succès sont aussi extrêmes que deux succès observés.
+      en: for two independent fair-coin tosses, two successes are as extreme as two observed successes.
+  - id: d_h0
+    type: idee
+    fr: Pour une p-valeur, on part de $H_0$ et on compte les suites au moins aussi extrêmes que l’observation. Puis on divise par le nombre total de suites équiprobables.
+    en: For a p-value, start from $H_0$ and count the sequences at least as extreme as the observation. Then divide by the total number of equally likely sequences.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Succès sur $5$ essais
+          en: Successes in $5$ trials
+        - fr: Nombre de suites
+          en: Number of sequences
+        - fr: Au moins aussi extrême que $4$ ?
+          en: At least as extreme as $4$?
+      cellules:
+        - - $5$
+          - $1$
+          - fr: oui
+            en: yes
+            ton: ok
+        - - $4$
+          - $5$
+          - fr: oui
+            en: yes
+            ton: ok
+        - - $3$
+          - $10$
+          - fr: non
+            en: no
+        - - fr: $2$ ou moins
+            en: $2$ or fewer
+          - $16$
+          - fr: non
+            en: no
+      legende:
+        fr: "Total : $1+5+10+16=32$ suites. La p-valeur est $\\frac{1+5}{32}=\\frac3{16}$."
+        en: "Total: $1+5+10+16=32$ sequences. The p-value is $\\frac{1+5}{32}=\\frac3{16}$."
+  - type: exemple
+    lang: python
+    titre:
+      fr: Énumérer le hasard sous l’hypothèse nulle
+      en: Enumerating chance under the null
+    etapes:
+      - code: from itertools import product
+        fr: L’hypothèse nulle, notée $H_0$, fixe la probabilité de succès à $0{,}5$. On cherche une probabilité supérieure, avec quatre essais indépendants.
+        en: The null hypothesis, written $H_0$, sets success probability to $0.5$. We look for a higher probability, using four independent trials.
+      - code: issues = list(product([0, 1], repeat=4))
+        fr: Un succès vaut $1$, un échec $0$. On construit les $16$ suites équiprobables sous cette hypothèse.
+        en: A success is $1$, a failure $0$. Build the $16$ equally likely sequences under this assumption.
+      - code: extremes = sum(sum(x) >= 3 for x in issues)
+        fr: Pour trois succès observés, on compte aussi les quatre succès.
+        en: For three observed successes, also count four successes.
+      - code: print(extremes / len(issues))
+        fr: La p-valeur est $5/16=0{,}3125$.
+        en: The p-value is $5/16=0.3125$.
+    verif: |-
+      from itertools import product
+      issues = list(product([0, 1], repeat=4))
+      extremes = sum(sum(x) >= 3 for x in issues)
+      print(extremes / len(issues))
+    sortie: "0.3125"
+    id: c3
+  - id: d_seuil
+    type: idee
+    fr: On fixe un seuil $\alpha$ avant de regarder les données, souvent $0{,}05$. Si la p-valeur est au plus $\alpha$, on rejette $H_0$ ; sinon, on ne rejette pas.
+    en: Fix a threshold $\alpha$ before looking at the data, often $0.05$. If the p-value is at most $\alpha$, reject $H_0$; otherwise, do not reject.
+    exemple:
+      fr: "Avec $\\frac3{16}=0{,}1875>0{,}05$, on ne rejette pas $H_0$ : cinq essais sont trop peu pour trancher."
+      en: "With $\\frac3{16}=0.1875>0.05$, do not reject $H_0$: five trials are too few to decide."
+  - id: d_unibi
+    type: idee
+    fr: Un test **unilatéral** regarde un seul sens d’écart ; un test **bilatéral** regarde les deux. Le sens se choisit avant les données, jamais après.
+    en: A **one-sided** test looks at one direction of deviation; a **two-sided** test looks at both. Choose the direction before the data, never after.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: $5$ succès sur $5$
+          en: $5$ successes out of $5$
+        - fr: Suites extrêmes
+          en: Extreme sequences
+        - fr: p-valeur
+          en: p-value
+      cellules:
+        - - fr: unilatéral
+            en: one-sided
+          - fr: $5$ succès
+            en: $5$ successes
+          - $\frac1{32}$
+        - - fr: bilatéral
+            en: two-sided
+          - fr: $5$ ou $0$ succès
+            en: $5$ or $0$ successes
+          - fr: $\frac2{32}=\frac1{16}$
+            en: $\frac2{32}=\frac1{16}$
+            ton: bad
+      legende:
+        fr: "Le test bilatéral double la p-valeur ici : il est plus exigeant."
+        en: "The two-sided test doubles the p-value here: it is more demanding."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Même test unilatéral, mais quatre succès observés. Quelle est la p-valeur ?
+    en: Same one-sided test, but four observed successes. What is the p-value?
+    reponses:
+      - "0.0625"
+      - 0,0625
+      - 1/16
+    verif: |-
+      from fractions import Fraction
+      from itertools import product
+      print(Fraction(sum(sum(x)>=4 for x in product([0,1],repeat=4)),16))
+    explication:
+      fr: Seule la suite de quatre succès est aussi extrême. Sa probabilité sous $H_0$ vaut $1/16$.
+      en: Only the all-success sequence is as extreme. Its probability under $H_0$ is $1/16$.
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Note $K$ le nombre de succès et $\alpha$ le seuil choisi avant les données. Pour $K=0,1,2,3,4$, les p-valeurs valent respectivement $1$, $15/16$, $11/16$, $5/16$, $1/16$. Combien sont au plus $\alpha=0{,}1$, donc conduisent au rejet ?
+    en: Write $K$ for the success count and $\alpha$ for the threshold chosen before seeing data. For $K=0,1,2,3,4$, the p-values are respectively $1$, $15/16$, $11/16$, $5/16$, $1/16$. How many are at most $\alpha=0.1$, hence lead to rejection?
+    reponses:
+      - "1"
+    verif: |-
+      from math import comb
+      ps=[sum(comb(4,j) for j in range(k,5))/16 for k in range(5)]
+      print(sum(p<=.1 for p in ps))
+    explication:
+      fr: Seul $K=4$ déclenche le rejet. On fixe le seuil avant de voir les résultats.
+      en: Only $K=4$ triggers rejection. Set the level before seeing results.
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Au seuil $\alpha=0{,}1$, on rejette seulement pour quatre succès. Si $H_0$ est vraie, quelle est la probabilité réelle de rejet ?
+    en: At level $\alpha=0.1$, reject only for four successes. If $H_0$ is true, what is the actual rejection probability?
+    reponses:
+      - "0.0625"
+      - 0,0625
+      - 1/16
+    verif: |-
+      from itertools import product
+      from fractions import Fraction
+      print(Fraction(sum(sum(x)==4 for x in product([0,1],repeat=4)),16))
+    explication:
+      fr: "C’est le risque de type I : rejeter une hypothèse nulle vraie. Ici $0{,}0625$ est inférieur au seuil $0{,}1$ car le test est discret."
+      en: "This is the type I risk: rejecting a true null hypothesis. Here $0.0625$ is below level $0.1$ because the test is discrete."
+    id: c6
+  - type: piege
+    fr: Une p-valeur n’est ni la probabilité que $H_0$ soit vraie, ni la taille de l’effet. Ne pas rejeter ne prouve pas l’absence d’effet (ASA, sources).
+    en: A p-value is neither the probability that $H_0$ is true nor the effect size. Not rejecting does not prove the absence of an effect (ASA, sources).
+    id: c7
+  - id: d_decision
+    type: exemple
+    titre:
+      fr: Décider avec prudence
+      en: Deciding with care
+    etapes:
+      - fr: "Une pièce supposée équilibrée donne $4$ « pile » sur $5$ lancers. On teste $H_0$ : $p=0{,}5$ contre $p>0{,}5$, avec $\\alpha=0{,}05$."
+        en: "A supposedly fair coin gives $4$ heads in $5$ flips. We test $H_0$: $p=0.5$ against $p>0.5$, with $\\alpha=0.05$."
+      - fr: "La p-valeur vaut $\\frac3{16}\\approx0{,}19$, supérieure à $0{,}05$ : on ne rejette pas $H_0$."
+        en: "The p-value is $\\frac3{16}\\approx0.19$, above $0.05$: do not reject $H_0$."
+      - fr: "Cela ne prouve pas que la pièce est équilibrée : les données ne suffisent pas pour dire le contraire."
+        en: "This does not prove the coin is fair: the data are not enough to say otherwise."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Type I = rejeter $H_0$ vraie. Dans quatre simulations, les indicateurs « $H_0$ vraie » valent $1,1,0,0$ et « rejet » valent $1,0,1,0$. Combien d’erreurs de type I ?
+    en: Type I = rejecting a true $H_0$. In four simulations, the “$H_0$ true” indicators are $1,1,0,0$ and the “reject” indicators are $1,0,1,0$. How many type I errors?
+    reponses:
+      - "1"
+    verif: |-
+      true_null=[True,True,False,False];reject=[True,False,True,False]
+      print(sum(h and r for h,r in zip(true_null,reject)))
+    explication:
+      fr: Seul le premier cas rejette à tort. Rejeter une hypothèse fausse dans le troisième cas n’est pas une erreur.
+      en: Only the first case rejects incorrectly. Rejecting a false hypothesis in the third case is not an error.
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Type II = ne pas rejeter $H_0$ fausse. Dans quatre simulations où $H_0$ est fausse, les indicateurs de rejet valent $0,1,0,0$. Combien d’erreurs de type II ?
+    en: Type II = not rejecting a false $H_0$. In four simulations where $H_0$ is false, the rejection indicators are $0,1,0,0$. How many type II errors?
+    reponses:
+      - "3"
+    verif: |-
+      true_null=[False]*4;reject=[False,True,False,False]
+      print(sum(not h and not r for h,r in zip(true_null,reject)))
+    explication:
+      fr: Les trois non-rejets manquent le signal. Ce comptage sur quatre essais n’est pas une estimation précise du risque.
+      en: The three non-rejections miss the signal. This count from four runs is not a precise risk estimate.
+    id: c9
+  - type: plus
+    fr: "Pour aller plus loin : la puissance est la probabilité de rejeter une hypothèse nulle fausse, pour une alternative précise. Elle dépend notamment de l’effet et de la taille de l’échantillon (MIT 18.650, sources)."
+    en: "Further exploration: power is the probability of rejecting a false null hypothesis, for a specific alternative. It depends on effect size and sample size, among other factors (MIT 18.650, sources)."
+    id: c10
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : on rejette seulement pour quatre succès indépendants. Si la vraie probabilité de succès est $0{,}8$, quelle est la puissance du test ?"
+    en: "Challenge: reject only for four independent successes. If the true success probability is $0.8$, what is the test’s power?"
+    reponses:
+      - "0.4096"
+      - 0,4096
+    verif: |-
+      from decimal import Decimal
+      print(Decimal("0.8")**4)
+    explication:
+      fr: La puissance est $0{,}8^4=0{,}4096$. Le risque de type II pour cette alternative vaut $1-0{,}4096=0{,}5904$.
+      en: Power is $0.8^4=0.4096$. The type II risk for this alternative is $1-0.4096=0.5904$.
+    defi: true
+    id: c11
+  - type: retenir
+    fr: "À retenir : Kintana fixe le test avant les données, distingue faux positif et signal manqué, et accompagne la p-valeur d’une estimation de l’effet."
+    en: "Remember: Kintana sets the test before seeing data, distinguishes a false positive from a missed signal, and reports an effect estimate alongside the p-value."
+    id: c12

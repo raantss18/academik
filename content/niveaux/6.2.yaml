@@ -1,0 +1,254 @@
+id: "6.2"
+module: 6
+duree_min: 17
+titre:
+  fr: Probabilité conditionnelle, indépendance et Bayes
+  en: Conditional probability, independence, and Bayes
+ia:
+  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
+  en: "Kintana can predict the next word: a bigram model built by hand."
+sources:
+  - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
+    url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf
+    licence: CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: Parmi 12 messages signalés, 9 sont utiles. Probabilité qu’un message choisi uniformément parmi les signalés soit utile ?
+    en: Of 12 flagged messages, 9 are useful. Probability that a message chosen uniformly from the flagged ones is useful?
+    verif: |-
+      from fractions import Fraction
+      print(Fraction(9,12))
+    explication:
+      fr: Le groupe de référence contient 12 messages, dont 9 utiles.
+      en: The reference group contains 12 messages, including 9 useful ones.
+    choix:
+      - fr: 3/4
+        en: 3/4
+        juste: true
+      - fr: 1/4
+        en: 1/4
+      - fr: 1/3
+        en: 1/3
+    sortie: 3/4
+    id: c1
+  - type: idee
+    fr: "Conditionner signifie choisir un groupe de référence. La notation $P(A\\mid B)$ se lit « probabilité de A sachant B » : on compte seulement dans B."
+    en: "Conditioning means choosing a reference group. The notation $P(A\\mid B)$ reads “probability of A given B”: count only within B."
+    id: c2
+    exemple:
+      fr: parmi les cinq messages signalés, deux sont utiles.
+      en: among five flagged messages, two are useful.
+  - id: d_formule
+    type: idee
+    fr: "La définition s’écrit $P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}$, avec $P(B)>0$. Le symbole $\\cap$ se lit « et » : on garde ce qui est à la fois dans $A$ et dans $B$."
+    en: "The definition is $P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}$, with $P(B)>0$. The symbol $\\cap$ reads “and”: keep what is in both $A$ and $B$."
+    figure:
+      kind: tableau
+      entetes:
+        - fr: "Dé : $A=$ « six », $B=$ « pair »"
+          en: "Die: $A=$ “six”, $B=$ “even”"
+        - fr: Issues
+          en: Outcomes
+        - fr: Probabilité
+          en: Probability
+      cellules:
+        - - $P(A\cap B)$
+          - $\{6\}$
+          - $\frac16$
+        - - $P(B)$
+          - $\{2,4,6\}$
+          - $\frac12$
+        - - $P(A\mid B)$
+          - $\frac{1/6}{1/2}$
+          - fr: $\frac13$
+            en: $\frac13$
+            ton: ok
+      legende:
+        fr: Sachant que le dé est pair, il reste trois issues équiprobables, dont un seul six.
+        en: Given that the die is even, three equally likely outcomes remain, only one of which is a six.
+  - type: exemple
+    lang: python
+    titre:
+      fr: Revenir aux effectifs
+      en: Return to counts
+    etapes:
+      - code: |-
+          from fractions import Fraction
+          useful, other = 20, 80
+        fr: Sur 100 messages, 20 sont utiles et 80 ne le sont pas.
+        en: Of 100 messages, 20 are useful and 80 are not.
+      - code: flag_useful, flag_other = 15, 10
+        fr: Le filtre signale 15 messages utiles et 10 autres.
+        en: The filter flags 15 useful messages and 10 others.
+      - code: print(Fraction(flag_useful, flag_useful + flag_other))
+        fr: Parmi les signalés, la part utile vaut $15/25=3/5$.
+        en: Among flagged messages, the useful share is $15/25=3/5$.
+    verif: |-
+      from fractions import Fraction
+      useful, other = 20, 80
+      flag_useful, flag_other = 15, 10
+      print(Fraction(flag_useful, flag_useful + flag_other))
+    sortie: 3/5
+    id: c3
+  - id: d_arbre
+    type: idee
+    fr: Un arbre de comptage suit un lot d’objets branche après branche. Pour inverser un conditionnement, lis les effectifs au bout des branches qui t’intéressent.
+    en: A counting tree follows a batch of items branch by branch. To invert a conditioning, read the counts at the ends of the branches you care about.
+    figure:
+      kind: schema
+      lignes:
+        - titre:
+            fr: Spam
+            en: Spam
+          noeuds:
+            - fr: $40$ spams
+              en: $40$ spams
+            - fr: $36$ signalés
+              en: $36$ flagged
+              ton: ok
+            - fr: $4$ non signalés
+              en: $4$ not flagged
+        - titre:
+            fr: Pas spam
+            en: Not spam
+          noeuds:
+            - fr: $160$ messages
+              en: $160$ messages
+            - fr: $16$ signalés
+              en: $16$ flagged
+              ton: bad
+            - fr: $144$ non signalés
+              en: $144$ not flagged
+      legende:
+        fr: Sur $200$ messages, $20\,\%$ sont des spams ; le filtre en signale $90\,\%$ et signale à tort $10\,\%$ des autres.
+        en: Out of $200$ messages, $20\,\%$ are spam; the filter flags $90\,\%$ of them and wrongly flags $10\,\%$ of the others.
+  - id: d_bayes
+    type: exemple
+    titre:
+      fr: Bayes avec des effectifs
+      en: Bayes with counts
+    etapes:
+      - fr: Dans l’arbre précédent, le filtre signale $36+16=52$ messages au total.
+        en: In the previous tree, the filter flags $36+16=52$ messages in total.
+      - fr: "Parmi eux, $36$ sont de vrais spams : $P(\\text{spam}\\mid\\text{signalé})=\\frac{36}{52}=\\frac9{13}\\approx0{,}69$."
+        en: "Among them, $36$ are real spam: $P(\\text{spam}\\mid\\text{flagged})=\\frac{36}{52}=\\frac9{13}\\approx0.69$."
+      - fr: "Le filtre attrape $90\\,\\%$ des spams, mais seulement $69\\,\\%$ des signalés sont des spams : ce n’est pas la même question."
+        en: "The filter catches $90\\,\\%$ of spam, yet only $69\\,\\%$ of flagged messages are spam: these are different questions."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Un dé équilibré donne $A=$ « pair » et $B=$ « supérieur à 3 ». Calcule $P(A\mid B)$ en fraction irréductible.
+    en: For a fair die, let $A=$ “even” and $B=$ “greater than 3”. Compute $P(A\mid B)$ as a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      B=[x for x in range(1,7) if x>3]
+      print(Fraction(sum(x%2==0 for x in B),len(B)))
+    explication:
+      fr: Dans $B=\{4,5,6\}$, deux issues sont paires.
+      en: In $B=\{4,5,6\}$, two outcomes are even.
+    reponses:
+      - 2/3
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: "Deux pièces équilibrées sont indépendantes : connaître l’une ne change pas les probabilités de l’autre. Quelle probabilité ont-elles de donner toutes deux pile ? Fraction irréductible."
+    en: "Two fair coins are independent: knowing one outcome does not change probabilities for the other. What is the probability of two heads? Give a reduced fraction."
+    verif: |-
+      from fractions import Fraction
+      from itertools import product
+      xs=list(product([0,1],repeat=2))
+      print(Fraction(sum(a==b==1 for a,b in xs),len(xs)))
+    explication:
+      fr: Une issue sur quatre ; cela vaut aussi $P(A)P(B)$.
+      en: One outcome out of four; this also equals $P(A)P(B)$.
+    reponses:
+      - 1/4
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: "Sur 100 messages, 20 sont utiles. Le filtre signale 15 utiles et 10 autres : quelle part de tous les messages est signalée ? Fraction irréductible."
+    en: "Of 100 messages, 20 are useful. The filter flags 15 useful messages and 10 others: what fraction of all messages is flagged? Give a reduced fraction."
+    verif: |-
+      from fractions import Fraction
+      print(Fraction(15+10,100))
+    explication:
+      fr: "Les deux catégories sont disjointes : on additionne leurs effectifs."
+      en: "The two categories are disjoint: add their counts."
+    reponses:
+      - 1/4
+    id: c6
+  - type: piege
+    fr: Inverser le conditionnement change le groupe de référence ; « utile parmi les signalés » diffère de « signalé parmi les utiles ».
+    en: Reversing the conditioning changes the reference group; “useful among flagged messages” differs from “flagged among useful messages”.
+    id: c7
+  - id: d_indep
+    type: idee
+    fr: "$A$ et $B$ sont **indépendants** si savoir $B$ ne change pas $P(A)$. On vérifie : $P(A\\cap B)=P(A)\\,P(B)$."
+    en: "$A$ and $B$ are **independent** if knowing $B$ does not change $P(A)$. Check: $P(A\\cap B)=P(A)\\,P(B)$."
+    exemple:
+      fr: "Deux dés : $A=$ « le premier est pair » ($\\frac12$), $B=$ « le second vaut $6$ » ($\\frac16$). Il y a $3$ couples sur $36$, soit $\\frac1{12}=\\frac12\\times\\frac16$ : indépendants."
+      en: "Two dice: $A=$ “the first is even” ($\\frac12$), $B=$ “the second is $6$” ($\\frac16$). There are $3$ pairs out of $36$, i.e. $\\frac1{12}=\\frac12\\times\\frac16$: independent."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Dans ce même lot (20 utiles, dont 15 signalés), quelle est la probabilité d’être signalé sachant que le message est utile ? Fraction irréductible.
+    en: In that same batch (20 useful, of which 15 flagged), what is the probability of being flagged given that the message is useful? Give a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      print(Fraction(15,20))
+    explication:
+      fr: On divise par les 20 utiles, pas par les 25 signalés.
+      en: Divide by the 20 useful messages, not the 25 flagged ones.
+    reponses:
+      - 3/4
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Dans ce même lot (15 utiles signalés et 10 autres signalés), probabilité qu’un message signalé soit inutile ? Fraction irréductible.
+    en: In that same batch (15 useful flagged and 10 other flagged messages), probability that a flagged message is not useful? Give a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      print(Fraction(10,15+10))
+    explication:
+      fr: Les 10 messages inutiles font partie des 25 signalés.
+      en: The 10 non-useful messages are part of the 25 flagged ones.
+    reponses:
+      - 2/5
+    id: c9
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : U signifie « utile », S signifie « signalé » et $\\neg U$ signifie « non utile ». On a $P(U)=1/10$, $P(S\\mid U)=4/5$ et $P(S\\mid\\neg U)=1/5$. Calcule $P(U\\mid S)$ en fraction irréductible."
+    en: "Challenge: U means “useful”, S means “flagged”, and $\\neg U$ means “not useful”. We have $P(U)=1/10$, $P(S\\mid U)=4/5$, and $P(S\\mid\\neg U)=1/5$. Compute $P(U\\mid S)$ as a reduced fraction."
+    verif: |-
+      from fractions import Fraction
+      u=Fraction(1,10)
+      a=Fraction(4,5)*u
+      b=Fraction(1,5)*(1-u)
+      print(a/(a+b))
+    explication:
+      fr: Sur 50 messages, 5 sont utiles ; 4 utiles et 9 autres sont signalés. Bayes donne donc $4/(4+9)=4/13$.
+      en: Among 50 messages, 5 are useful; 4 useful messages and 9 others are flagged. Bayes therefore gives $4/(4+9)=4/13$.
+    reponses:
+      - 4/13
+    defi: true
+    id: c10
+    indice:
+      fr: Sur 50 messages, compte les utiles signalés, puis tous les signalés ; divise ces effectifs.
+      en: Among 50 messages, count flagged useful messages, then all flagged messages; divide these counts.
+  - type: retenir
+    fr: "À retenir : choisis le bon groupe de référence et garde la fréquence de départ dans le calcul de Bayes pour Kintana."
+    en: "Remember: choose the correct reference group and retain the prior frequency in Kintana’s Bayes calculation."
+    id: c11

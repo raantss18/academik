@@ -1,0 +1,295 @@
+id: 6.boss
+module: 6
+duree_min: 18
+titre:
+  fr: Le modèle bigramme
+  en: The bigram model
+ia:
+  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
+  en: "Kintana can predict the next word: a bigram model built by hand."
+sources:
+  - titre: Zhang, Lipton, Li et Smola — Dive into Deep Learning, Language Models
+    url: https://d2l.ai/chapter_recurrent-neural-networks/language-model.html
+    licence: CC BY-SA 4.0 pour le texte ; aucun code source repris ; corpus et exercices originaux
+  - titre: Zhang, Lipton, Li et Smola — Dive into Deep Learning, Information Theory
+    url: https://en.d2l.ai/chapter_appendix-mathematics-for-deep-learning/information-theory.html
+    licence: CC BY-SA 4.0 pour le texte ; aucun code source repris ; exercices originaux
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: Un bigramme est un couple de mots voisins dans une phrase. Le corpus contient `le chat dort`, `le chat joue`, `le chien dort`, puis encore `le chat dort`. Combien d’occurrences de bigrammes internes contient-il ?
+    en: A bigram is a pair of adjacent words within a sentence. The corpus contains `le chat dort`, `le chat joue`, `le chien dort`, then `le chat dort` again. How many within-sentence bigram occurrences does it contain?
+    verif: |-
+      from collections import Counter
+      from fractions import Fraction
+      corpus=["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+      pairs=Counter((a,b) for s in corpus for a,b in zip(s.split(),s.split()[1:]))
+      print(sum(pairs.values()))
+    explication:
+      fr: "Chaque phrase fournit deux voisins : $4\\times2=8$ ; les répétitions comptent."
+      en: "Each sentence supplies two adjacent pairs: $4\\times2=8$; repetitions count."
+    choix:
+      - fr: "4"
+        en: "4"
+      - fr: "8"
+        en: "8"
+        juste: true
+      - fr: "11"
+        en: "11"
+    sortie: "8"
+    id: c1
+  - type: idee
+    fr: Pour prédire après un mot, compte ses successeurs, puis divise chaque effectif par leur total.
+    en: To predict after a word, count its successors, then divide each count by their total.
+    id: c2
+    exemple:
+      fr: après `elle`, on observe cinq successeurs. Quel mot choisirais-tu ?
+      en: after `elle`, we observe five successors. Which word would you choose?
+  - id: d_ligne
+    type: idee
+    fr: "Un bigramme se résume par un tableau : une ligne par mot, des effectifs par successeur. On divise chaque effectif par le total de sa ligne."
+    en: "A bigram model is summarized by a table: one row per word, counts per successor. Divide each count by its row total."
+    figure:
+      kind: tableau
+      entetes:
+        - fr: "Autre corpus : après…"
+          en: "Another corpus: after…"
+        - fr: "successeur : effectif"
+          en: "successor: count"
+        - fr: probabilités
+          en: probabilities
+      cellules:
+        - - "`un`"
+          - "`rat` : 3, `loup` : 1"
+          - $\frac34,\ \frac14$
+        - - "`rat`"
+          - "`court` : 2, `dort` : 1"
+          - $\frac23,\ \frac13$
+        - - "`loup`"
+          - "`court` : 1"
+          - fr: $1$
+            en: $1$
+            ton: ok
+      legende:
+        fr: "Corpus : `un rat court`, `un rat dort`, `un loup court`, `un rat court`. Chaque ligne totalise $1$."
+        en: "Corpus: `un rat court`, `un rat dort`, `un loup court`, `un rat court`. Each row totals $1$."
+  - type: exemple
+    lang: python
+    titre:
+      fr: Construire la ligne du mot le
+      en: Build the row for le
+    etapes:
+      - code: |-
+          from collections import Counter
+          from fractions import Fraction
+          corpus = ["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+        fr: Le corpus de la tentative reste fixe, répétitions comprises. Les mots sont séparés par des espaces ; aucun marqueur de début ou fin.
+        en: The opening question’s corpus stays fixed, including repetitions. Words are separated by spaces; there are no start or end markers.
+      - code: pairs = Counter((a,b) for s in corpus for a,b in zip(s.split(), s.split()[1:]))
+        fr: On compte les voisins dans chaque phrase, jamais entre deux phrases.
+        en: Count neighbors within each sentence, never across sentences.
+      - code: |-
+          row = {b:n for (a,b),n in pairs.items() if a=="le"}
+          print({b: str(Fraction(n,sum(row.values()))) for b,n in row.items()})
+        fr: La ligne `le` contient trois `chat` et un `chien` ; ses probabilités totalisent 1.
+        en: The `le` row contains three `chat` and one `chien`; its probabilities sum to 1.
+    verif: |-
+      from collections import Counter
+      from fractions import Fraction
+      corpus = ["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+      pairs = Counter((a,b) for s in corpus for a,b in zip(s.split(), s.split()[1:]))
+      row = {b:n for (a,b),n in pairs.items() if a=="le"}
+      print({b: str(Fraction(n,sum(row.values()))) for b,n in row.items()})
+    sortie: "{'chat': '3/4', 'chien': '1/4'}"
+    id: c3
+  - id: d_chaine
+    type: exemple
+    titre:
+      fr: Probabilité d’une phrase entière
+      en: Probability of a whole sentence
+    etapes:
+      - fr: Avec le tableau précédent, on veut la probabilité de la suite `un rat court`, en partant de `un`.
+        en: With the previous table, we want the probability of the sequence `un rat court`, starting from `un`.
+      - fr: "On multiplie les transitions : $P(\\text{rat}\\mid\\text{un})\\times P(\\text{court}\\mid\\text{rat})=\\frac34\\times\\frac23$."
+        en: "Multiply the transitions: $P(\\text{rat}\\mid\\text{un})\\times P(\\text{court}\\mid\\text{rat})=\\frac34\\times\\frac23$."
+      - fr: "Le résultat vaut $\\frac12$. Une phrase plus longue multiplie plus de fractions : sa probabilité baisse."
+        en: "The result is $\\frac12$. A longer sentence multiplies more fractions: its probability drops."
+  - id: d_hligne
+    type: idee
+    fr: L’entropie d’une ligne mesure combien le modèle hésite après ce mot. Une ligne à un seul successeur n’hésite pas ; une ligne partagée hésite plus.
+    en: A row’s entropy measures how much the model hesitates after that word. A row with a single successor does not hesitate; a split row hesitates more.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Ligne
+          en: Row
+        - fr: Probabilités
+          en: Probabilities
+        - fr: Entropie
+          en: Entropy
+      cellules:
+        - - "`loup`"
+          - $(1)$
+          - $0$ bit
+        - - "`un`"
+          - $(\frac34,\frac14)$
+          - $\approx0{,}81$ bit
+        - - "`rat`"
+          - $(\frac23,\frac13)$
+          - fr: $\approx0{,}92$ bit
+            en: $\approx0.92$ bit
+            ton: bad
+      legende:
+        fr: "Le mot `rat` laisse le plus de doute : ses deux successeurs sont assez équilibrés."
+        en: "The word `rat` leaves the most doubt: its two successors are fairly balanced."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Dans le corpus fixe, combien de fois `dort` suit-il immédiatement `chat` ?
+    en: In the fixed corpus, how many times does `dort` immediately follow `chat`?
+    verif: |-
+      from collections import Counter
+      from fractions import Fraction
+      corpus=["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+      pairs=Counter((a,b) for s in corpus for a,b in zip(s.split(),s.split()[1:]))
+      print(pairs["chat","dort"])
+    explication:
+      fr: Les première et quatrième phrases contiennent `chat dort`.
+      en: The first and fourth sentences contain `chat dort`.
+    reponses:
+      - "2"
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Dans le corpus fixe, calcule $P(\text{chat}\mid\text{le})$ en fraction irréductible.
+    en: In the fixed corpus, compute $P(\text{chat}\mid\text{le})$ as a reduced fraction.
+    verif: |-
+      from collections import Counter
+      from fractions import Fraction
+      corpus=["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+      pairs=Counter((a,b) for s in corpus for a,b in zip(s.split(),s.split()[1:]))
+      print(Fraction(pairs["le","chat"],sum(n for (a,b),n in pairs.items() if a=="le")))
+    explication:
+      fr: Trois des quatre successeurs de `le` sont `chat`.
+      en: Three of the four successors of `le` are `chat`.
+    reponses:
+      - 3/4
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Quel mot Kintana doit-il choisir pour maximiser la probabilité du prochain mot après `chat` ? Saisis le mot du corpus.
+    en: Which word should Kintana choose to maximize next-word probability after `chat`? Enter the corpus word.
+    verif: |-
+      from collections import Counter
+      from fractions import Fraction
+      corpus=["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+      pairs=Counter((a,b) for s in corpus for a,b in zip(s.split(),s.split()[1:]))
+      row={b:n for (a,b),n in pairs.items() if a=="chat"}
+      print(max(row,key=row.get))
+    explication:
+      fr: "`dort` a probabilité $2/3$, contre $1/3$ pour `joue`."
+      en: "`dort` has probability $2/3$, compared with $1/3$ for `joue`."
+    reponses:
+      - dort
+    id: c6
+  - id: d_unseen
+    type: idee
+    fr: 'Une transition jamais vue reçoit la probabilité $0$ dans ce modèle. Cela ne la rend pas impossible : le corpus est seulement trop petit pour l’avoir montrée.'
+    en: 'A transition never seen gets probability $0$ in this model. This does not make it impossible: the corpus is simply too small to have shown it.'
+    exemple: { fr: 'Dans l’autre corpus, `loup` n’est jamais suivi de `dort`, donc $P(\text{dort}\mid\text{loup})=0$ ; pourtant « le loup dort » est une phrase correcte.', en: 'In the other corpus, `loup` is never followed by `dort`, so $P(\text{dort}\mid\text{loup})=0$; yet “le loup dort” is a correct sentence.' }
+  - type: piege
+    fr: "Une transition non observée reçoit zéro, sans être impossible dans la langue. Sans successeur observé, le total est nul : ce modèle ne définit aucune prédiction."
+    en: "An unseen transition receives zero, without being impossible in the language. With no observed successor, the total is zero: this model defines no prediction."
+    id: c7
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: On échantillonne quatre fois indépendamment un successeur de `le` selon le modèle, en réinitialisant ce contexte chaque fois. Quel nombre moyen de `chat` attend-on ?
+    en: Sample a successor of `le` independently four times from the model, resetting this context each time. What is the expected number of `chat` tokens?
+    verif: |-
+      from collections import Counter
+      from fractions import Fraction
+      corpus=["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+      pairs=Counter((a,b) for s in corpus for a,b in zip(s.split(),s.split()[1:]))
+      from itertools import product
+      p=Fraction(pairs["le","chat"],sum(n for (a,b),n in pairs.items() if a=="le"))
+      print(sum(sum(xs)*p**sum(xs)*(1-p)**(4-sum(xs)) for xs in product([0,1],repeat=4)))
+    explication:
+      fr: Le compte suit une binomiale de paramètres $4$ et $3/4$ ; son espérance vaut $4(3/4)=3$.
+      en: The count is binomial with parameters $4$ and $3/4$; its expectation is $4(3/4)=3$.
+    reponses:
+      - "3"
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Pour un seul tirage après `le`, $X=1$ si le mot est `chat`, sinon $0$. Quelle est sa variance ? Fraction irréductible.
+    en: For one draw after `le`, $X=1$ if the word is `chat`, otherwise $0$. What is its variance? Give a reduced fraction.
+    verif: |-
+      from collections import Counter
+      from fractions import Fraction
+      corpus=["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+      pairs=Counter((a,b) for s in corpus for a,b in zip(s.split(),s.split()[1:]))
+      p=Fraction(pairs["le","chat"],sum(n for (a,b),n in pairs.items() if a=="le"))
+      print((0-p)**2*(1-p)+(1-p)**2*p)
+    explication:
+      fr: "C’est une Bernoulli : $p(1-p)=(3/4)(1/4)=3/16$."
+      en: "It is Bernoulli: $p(1-p)=(3/4)(1/4)=3/16$."
+    reponses:
+      - 3/16
+    id: c9
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Après `chien`, un seul mot a été observé. Quelle est l’entropie de cette distribution de prédiction, en bits ?
+    en: After `chien`, only one word was observed. What is the entropy of this predictive distribution in bits?
+    verif: |-
+      from collections import Counter
+      from fractions import Fraction
+      corpus=["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+      pairs=Counter((a,b) for s in corpus for a,b in zip(s.split(),s.split()[1:]))
+      from math import log2
+      row=[n for (a,b),n in pairs.items() if a=="chien"]
+      ps=[Fraction(n,sum(row)) for n in row]
+      print(int(-sum(p*log2(p) for p in ps)))
+    explication:
+      fr: Le modèle donne probabilité 1 à `dort`, donc zéro bit. Cela ne prouve pas que `chien` est toujours suivi de `dort` dans la langue.
+      en: The model assigns probability 1 to `dort`, hence zero bits. This does not prove that `chien` is always followed by `dort` in the language.
+    reponses:
+      - "0"
+    id: c10
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : en partant du mot `le`, quelle probabilité le modèle donne-t-il à la suite exacte `chat dort` ? Multiplie les transitions successives ; fraction irréductible."
+    en: "Challenge: starting from `le`, what probability does the model assign to the exact continuation `chat dort`? Multiply successive transitions; give a reduced fraction."
+    verif: |-
+      from collections import Counter
+      from fractions import Fraction
+      corpus=["le chat dort", "le chat joue", "le chien dort", "le chat dort"]
+      pairs=Counter((a,b) for s in corpus for a,b in zip(s.split(),s.split()[1:]))
+      def prob(a,b):
+          return Fraction(pairs[a,b],sum(n for (u,v),n in pairs.items() if u==a))
+      print(prob("le","chat")*prob("chat","dort"))
+    explication:
+      fr: Le modèle bigramme donne $(3/4)(2/3)=1/2$ ; c’est une probabilité de continuation conditionnée par `le`, sans facteur de fin de phrase.
+      en: The bigram model gives $(3/4)(2/3)=1/2$; this is a continuation probability conditioned on `le`, without an end-of-sentence factor.
+    reponses:
+      - 1/2
+    defi: true
+    id: c11
+  - type: retenir
+    fr: Kintana compte les voisins et prédit le successeur le plus probable ; son contexte se limite au mot précédent.
+    en: Kintana counts neighbors and predicts the most likely successor; its context is limited to the previous word.
+    id: c12

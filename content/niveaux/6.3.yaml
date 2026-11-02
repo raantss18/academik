@@ -1,0 +1,250 @@
+id: "6.3"
+module: 6
+duree_min: 17
+titre:
+  fr: Variables aléatoires et lois usuelles
+  en: Random variables and common distributions
+ia:
+  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
+  en: "Kintana can predict the next word: a bigram model built by hand."
+sources:
+  - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
+    url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf
+    licence: CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: Kintana prédit juste avec probabilité $3/4$. Si $X=1$ pour une réussite et $0$ sinon, combien vaut $P(X=0)$ ?
+    en: Kintana predicts correctly with probability $3/4$. If $X=1$ for success and $0$ otherwise, what is $P(X=0)$?
+    verif: |-
+      from fractions import Fraction
+      p=Fraction(3,4)
+      print(1-p)
+    explication:
+      fr: Les probabilités de 0 et 1 doivent totaliser 1.
+      en: The probabilities of 0 and 1 must sum to 1.
+    choix:
+      - fr: 3/4
+        en: 3/4
+      - fr: 1/4
+        en: 1/4
+        juste: true
+      - fr: 1/2
+        en: 1/2
+    sortie: 1/4
+    id: c1
+  - type: idee
+    fr: Une variable aléatoire associe un nombre à chaque issue ; sa loi donne les probabilités correspondantes. Une Bernoulli code une réussite par 1 et un échec par 0.
+    en: A random variable assigns a number to each outcome; its distribution gives the corresponding probabilities. A Bernoulli variable encodes success as 1 and failure as 0.
+    id: c2
+    exemple:
+      fr: cinq jetons équiprobables, dont une réussite.
+      en: five equally likely tokens, including one success.
+  - id: d_loi
+    type: idee
+    fr: La **loi** d’une variable aléatoire $X$ liste chaque valeur possible avec sa probabilité. Les probabilités totalisent toujours $1$.
+    en: The **distribution** of a random variable $X$ lists each possible value with its probability. The probabilities always add up to $1$.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: $X=$ nombre de « pile » en 2 lancers
+          en: $X=$ number of heads in 2 flips
+        - fr: Issues
+          en: Outcomes
+        - $P(X=x)$
+      cellules:
+        - - $0$
+          - FF
+          - $\frac14$
+        - - $1$
+          - FP, PF
+          - fr: $\frac12$
+            en: $\frac12$
+            ton: ok
+        - - $2$
+          - PP
+          - $\frac14$
+      legende:
+        fr: "$\\frac14+\\frac12+\\frac14=1$ : toutes les issues sont rangées sous une valeur."
+        en: "$\\frac14+\\frac12+\\frac14=1$: every outcome is filed under one value."
+  - type: exemple
+    lang: python
+    titre:
+      fr: Compter deux succès
+      en: Counting two successes
+    etapes:
+      - code: |-
+          from itertools import product
+          from fractions import Fraction
+        fr: Chaque succès est codé par 1, chaque échec par 0.
+        en: Each success is encoded as 1, each failure as 0.
+      - code: outcomes = list(product([0,1], repeat=3))
+        fr: Trois essais indépendants réussissent chacun avec probabilité $1/2$ ; leur nombre de succès suit une loi binomiale.
+        en: Three independent trials each succeed with probability $1/2$; their number of successes has a binomial distribution.
+      - code: print(Fraction(sum(sum(x)==2 for x in outcomes),len(outcomes)))
+        fr: "Les issues 110, 101 et 011 donnent exactement deux succès : $3/8$."
+        en: "Outcomes 110, 101, and 011 give exactly two successes: $3/8$."
+    verif: |-
+      from itertools import product
+      from fractions import Fraction
+      outcomes = list(product([0,1], repeat=3))
+      print(Fraction(sum(sum(x)==2 for x in outcomes),len(outcomes)))
+    sortie: 3/8
+    id: c3
+  - id: d_bern
+    type: idee
+    fr: Une **binomiale** compte les succès de $n$ essais indépendants de même probabilité $p$. Alors $P(X=k)=\binom{n}{k}p^k(1-p)^{n-k}$, où $\binom nk$ compte les places des succès.
+    en: A **binomial** counts the successes of $n$ independent trials with the same probability $p$. Then $P(X=k)=\binom{n}{k}p^k(1-p)^{n-k}$, where $\binom nk$ counts the places of the successes.
+    exemple:
+      fr: "Pour $n=3$, $p=\\frac13$, $k=1$ : $\\binom31=3$, donc $P(X=1)=3\\times\\frac13\\times\\left(\\frac23\\right)^2=\\frac49$."
+      en: "For $n=3$, $p=\\frac13$, $k=1$: $\\binom31=3$, so $P(X=1)=3\\times\\frac13\\times\\left(\\frac23\\right)^2=\\frac49$."
+  - id: d_binom
+    type: exemple
+    titre:
+      fr: Toute la loi d’une binomiale
+      en: The whole distribution of a binomial
+    etapes:
+      - fr: Trois essais, succès avec probabilité $\frac13$. On calcule $P(X=k)$ pour $k=0,1,2,3$.
+        en: Three trials, success probability $\frac13$. Compute $P(X=k)$ for $k=0,1,2,3$.
+      - fr: On trouve $\frac8{27}$, $\frac{12}{27}$, $\frac6{27}$ et $\frac1{27}$.
+        en: We get $\frac8{27}$, $\frac{12}{27}$, $\frac6{27}$ and $\frac1{27}$.
+      - fr: "La somme vaut $\\frac{27}{27}=1$ : bon réflexe pour vérifier un calcul de loi."
+        en: "The sum is $\\frac{27}{27}=1$: a good habit to check a distribution computation."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Trois essais indépendants réussissent chacun avec probabilité $1/2$. Probabilité de zéro succès ? Fraction irréductible.
+    en: Three independent trials each succeed with probability $1/2$. Probability of zero successes? Give a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      from itertools import product
+      xs=list(product([0,1],repeat=3))
+      print(Fraction(sum(sum(x)==0 for x in xs),len(xs)))
+    explication:
+      fr: "Il faut trois échecs : $(1/2)^3=1/8$."
+      en: "All three must fail: $(1/2)^3=1/8$."
+    reponses:
+      - 1/8
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Deux prédictions indépendantes réussissent chacune avec probabilité $3/4$. Probabilité d’exactement une réussite ? Fraction irréductible.
+    en: Two independent predictions each succeed with probability $3/4$. Probability of exactly one success? Give a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      from math import comb
+      p=Fraction(3,4)
+      print(comb(2,1)*p*(1-p))
+    explication:
+      fr: Les ordres réussite-échec et échec-réussite donnent $2(3/4)(1/4)=3/8$.
+      en: Success-failure and failure-success give $2(3/4)(1/4)=3/8$.
+    reponses:
+      - 3/8
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Une loi uniforme discrète choisit un entier parmi 2, 3, 4, 5 et 6. Probabilité d’obtenir au moins 5 ? Fraction irréductible.
+    en: A discrete uniform distribution chooses an integer from 2, 3, 4, 5, and 6. Probability of obtaining at least 5? Give a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      xs=range(2,7)
+      print(Fraction(sum(x>=5 for x in xs),len(xs)))
+    explication:
+      fr: Deux valeurs admissibles sur cinq valeurs équiprobables.
+      en: Two qualifying values out of five equally likely values.
+    reponses:
+      - 2/5
+    id: c6
+  - id: d_densite
+    type: idee
+    fr: Pour une variable continue, la probabilité d’un intervalle est une **aire** sous la densité. Pour une loi uniforme, c’est la longueur de l’intervalle divisée par la longueur totale.
+    en: For a continuous variable, the probability of an interval is an **area** under the density. For a uniform law, it is the interval length divided by the total length.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Uniforme sur $[0,10]$
+          en: Uniform on $[0,10]$
+        - fr: Longueur
+          en: Length
+        - fr: Probabilité
+          en: Probability
+      cellules:
+        - - $[0,2]$
+          - $2$
+          - $\frac15$
+        - - $[3,7]$
+          - $4$
+          - $\frac25$
+        - - fr: le point $5$
+            en: the point $5$
+          - $0$
+          - fr: $0$
+            en: $0$
+            ton: bad
+      legende:
+        fr: "Un point n’a pas de largeur, donc pas d’aire : sa probabilité est nulle."
+        en: "A point has no width, hence no area: its probability is zero."
+  - type: piege
+    fr: Pour une loi continue à densité, la probabilité se mesure par une aire sous la courbe. Un point isolé a une probabilité nulle.
+    en: For a continuous distribution with a density, probability is an area under the curve. A single point has zero probability.
+    id: c7
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: "Le délai T est uniforme sur $[0,8]$ : la probabilité d’un intervalle est sa longueur divisée par 8. Calcule la probabilité d’un délai entre 2 et 4. Fraction irréductible."
+    en: "Delay T is uniform on $[0,8]$: an interval’s probability is its length divided by 8. Compute the probability of a delay between 2 and 4. Give a reduced fraction."
+    verif: |-
+      from fractions import Fraction
+      print(Fraction(4-2,8-0))
+    explication:
+      fr: L’intervalle a longueur 2, donc son aire sous la densité vaut $2/8$.
+      en: The interval has length 2, so its area under the density is $2/8$.
+    reponses:
+      - 1/4
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: La loi normale centrée réduite $Z$ a une densité en cloche symétrique autour de 0. Combien vaut $P(Z\leq0)$ ? Fraction irréductible.
+    en: The standard normal variable $Z$ has a bell-shaped density symmetric about 0. What is $P(Z\leq0)$? Give a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      from statistics import NormalDist
+      print(Fraction(NormalDist().cdf(0)))
+    explication:
+      fr: La symétrie partage l’aire totale en deux moitiés ; un point a probabilité nulle.
+      en: Symmetry divides the total area into two halves; a point has zero probability.
+    reponses:
+      - 1/2
+    id: c9
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : quatre prédictions indépendantes réussissent chacune avec probabilité $1/2$. Probabilité d’au moins trois réussites ? Fraction irréductible."
+    en: "Challenge: four independent predictions each succeed with probability $1/2$. Probability of at least three successes? Give a reduced fraction."
+    verif: |-
+      from fractions import Fraction
+      from itertools import product
+      xs=list(product([0,1],repeat=4))
+      print(Fraction(sum(sum(x)>=3 for x in xs),len(xs)))
+    explication:
+      fr: "Parmi les 16 issues équiprobables, quatre donnent trois réussites et une donne quatre réussites : $(4+1)/16=5/16$."
+      en: "Among 16 equally likely outcomes, four give three successes and one gives four successes: $(4+1)/16=5/16$."
+    reponses:
+      - 5/16
+    defi: true
+    id: c10
+  - type: retenir
+    fr: "À retenir : Bernoulli décrit un succès, binomiale compte des succès indépendants de même probabilité, et une densité décrit des valeurs continues."
+    en: "Remember: Bernoulli describes one success, binomial counts independent successes with equal probability, and a density describes continuous values."
+    id: c11

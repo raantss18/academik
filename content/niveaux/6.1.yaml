@@ -1,0 +1,248 @@
+id: "6.1"
+module: 6
+duree_min: 17
+titre:
+  fr: Hasard et dénombrement
+  en: Chance and counting
+ia:
+  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
+  en: "Kintana can predict the next word: a bigram model built by hand."
+sources:
+  - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
+    url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf
+    licence: CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: Kintana choisit deux mots parmi trois, avec répétition ; leur ordre compte. Combien de couples sont possibles ?
+    en: Kintana chooses two words from three, allowing repetition; order matters. How many pairs are possible?
+    verif: |-
+      from itertools import product
+      print(len(list(product(range(3), repeat=2))))
+    explication:
+      fr: $3$ choix puis $3$ choix donnent $9$ couples.
+      en: $3$ choices followed by $3$ choices give $9$ pairs.
+    choix:
+      - fr: "6"
+        en: "6"
+      - fr: "9"
+        en: "9"
+        juste: true
+      - fr: "3"
+        en: "3"
+    sortie: "9"
+    id: c1
+  - type: idee
+    fr: Un univers liste les issues possibles ; un événement en rassemble certaines. Si chaque issue a la même probabilité, divise le nombre d’issues favorables par le total.
+    en: A sample space lists possible outcomes; an event collects some of them. When outcomes are equally likely, divide the number of favorable outcomes by the total.
+    id: c2
+    exemple:
+      fr: cinq jetons équiprobables, dont deux rouges.
+      en: five equally likely tokens, including two red ones.
+  - id: d_univers
+    type: idee
+    fr: Un **univers** liste toutes les issues. Un **événement** est une partie de cet univers. Si les issues sont équiprobables, $P(A)=\frac{\text{cas favorables}}{\text{cas possibles}}$.
+    en: A **sample space** lists all outcomes. An **event** is a part of that space. If outcomes are equally likely, $P(A)=\frac{\text{favorable cases}}{\text{possible cases}}$.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Notion
+          en: Concept
+        - fr: Pour un dé
+          en: For a die
+        - fr: Valeur
+          en: Value
+      cellules:
+        - - fr: univers
+            en: sample space
+          - $\{1,2,3,4,5,6\}$
+          - $6$
+        - - fr: événement « supérieur à 4 »
+            en: event “greater than 4”
+          - $\{5,6\}$
+          - $2$
+        - - fr: probabilité
+            en: probability
+          - $\frac26$
+          - fr: $\frac13$
+            en: $\frac13$
+            ton: ok
+      legende:
+        fr: On compte les cas favorables, puis on divise par le nombre de cas possibles.
+        en: Count the favorable cases, then divide by the number of possible cases.
+  - type: exemple
+    lang: python
+    titre:
+      fr: Énumérer avant de diviser
+      en: Enumerate before dividing
+    etapes:
+      - code: |-
+          from itertools import product
+          from fractions import Fraction
+        fr: On prépare les couples ordonnés et les fractions exactes.
+        en: Prepare ordered pairs and exact fractions.
+      - code: pairs = list(product(["a", "b", "c"], repeat=2))
+        fr: Chaque premier mot peut être suivi de chacun des trois mots.
+        en: Each first word can be followed by any of the three words.
+      - code: print(Fraction(sum(x == y for x, y in pairs), len(pairs)))
+        fr: "Trois couples répètent le même mot sur neuf : probabilité $1/3$."
+        en: "Three of nine pairs repeat the same word: probability $1/3$."
+    verif: |-
+      from itertools import product
+      from fractions import Fraction
+      pairs = list(product(["a", "b", "c"], repeat=2))
+      print(Fraction(sum(x == y for x, y in pairs), len(pairs)))
+    sortie: 1/3
+    id: c3
+  - id: d_ordre
+    type: idee
+    fr: Pour compter, demande-toi si l’ordre compte. Choisir un premier puis un second, sans répétition, donne $n(n-1)$ couples ordonnés. Sans ordre, on divise par $2$.
+    en: To count, ask whether order matters. Choosing a first then a second item, without repetition, gives $n(n-1)$ ordered pairs. Without order, divide by $2$.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Question avec $5$ mots
+          en: Question with $5$ words
+        - fr: Calcul
+          en: Computation
+        - fr: Résultat
+          en: Result
+      cellules:
+        - - fr: couples ordonnés
+            en: ordered pairs
+          - $5\times4$
+          - $20$
+        - - fr: paires sans ordre
+            en: unordered pairs
+          - $20\div2$
+          - fr: $10$
+            en: $10$
+            ton: ok
+      legende:
+        fr: "Chaque paire $\\{a,b\\}$ compte deux fois dans les couples : $(a,b)$ et $(b,a)$."
+        en: "Each pair $\\{a,b\\}$ is counted twice among ordered pairs: $(a,b)$ and $(b,a)$."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Parmi quatre mots distincts, choisis un premier puis un second différent. Combien de couples ?
+    en: From four distinct words, choose a first and then a different second word. How many ordered pairs?
+    verif: |-
+      from itertools import permutations
+      print(len(list(permutations(range(4),2))))
+    explication:
+      fr: $4\times3=12$ ; le second choix exclut le premier.
+      en: $4\times3=12$; the second choice excludes the first.
+    reponses:
+      - "12"
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Choisis deux mots parmi quatre distincts, sans ordre et sans répétition. Combien de paires ?
+    en: Choose two of four distinct words, without order or repetition. How many pairs?
+    verif: |-
+      from itertools import combinations
+      print(len(list(combinations(range(4),2))))
+    explication:
+      fr: "Les $4\\times3$ choix ordonnés comptent chaque paire deux fois : $(4\\times3)/2=6$."
+      en: "The $4\\times3$ ordered choices count each pair twice: $(4\\times3)/2=6$."
+    reponses:
+      - "6"
+    id: c5
+  - id: d_somme
+    type: exemple
+    titre:
+      fr: Deux dés, somme égale à 7
+      en: Two dice, sum equal to 7
+    etapes:
+      - fr: Deux dés donnent $6\times6=36$ couples équiprobables, car chaque dé a six faces.
+        en: Two dice give $6\times6=36$ equally likely pairs, since each die has six faces.
+      - fr: "Les couples de somme $7$ sont $(1,6)$, $(2,5)$, $(3,4)$, $(4,3)$, $(5,2)$ et $(6,1)$ : six couples."
+        en: "The pairs with sum $7$ are $(1,6)$, $(2,5)$, $(3,4)$, $(4,3)$, $(5,2)$ and $(6,1)$: six pairs."
+      - fr: "La probabilité vaut $\\frac6{36}=\\frac16$. Le couple $(1,6)$ diffère de $(6,1)$ : l’ordre compte ici."
+        en: "The probability is $\\frac6{36}=\\frac16$. The pair $(1,6)$ differs from $(6,1)$: order matters here."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Un dé équilibré porte les nombres de 1 à 6. Quelle est la probabilité d’un résultat pair ? Écris une fraction irréductible.
+    en: A fair die has faces numbered 1 to 6. What is the probability of an even result? Give a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      print(Fraction(sum(x%2==0 for x in range(1,7)),6))
+    explication:
+      fr: Trois faces sur six sont paires.
+      en: Three of six faces are even.
+    reponses:
+      - 1/2
+    id: c6
+  - type: piege
+    fr: Compter les cas favorables ne suffit que si les issues élémentaires sont équiprobables ; deux catégories ne sont pas forcément aussi probables.
+    en: Counting favorable outcomes works only when elementary outcomes are equally likely; two categories need not be equally likely.
+    id: c7
+  - id: d_compl
+    type: idee
+    fr: "Quand « au moins un » est dur à compter, passe au contraire : $P(A)=1-P(\\text{non }A)$. Le complémentaire est souvent un seul cas simple."
+    en: "When “at least one” is hard to count, switch to the opposite: $P(A)=1-P(\\text{not }A)$. The complement is often one simple case."
+    exemple:
+      fr: "Au moins un $6$ en deux lancers : aucun $6$ vaut $\\frac56\\times\\frac56=\\frac{25}{36}$, donc la probabilité cherchée est $1-\\frac{25}{36}=\\frac{11}{36}$."
+      en: "At least one $6$ in two rolls: no $6$ is $\\frac56\\times\\frac56=\\frac{25}{36}$, so the probability sought is $1-\\frac{25}{36}=\\frac{11}{36}$."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Deux tirages indépendants choisissent chacun uniformément un mot parmi quatre. Probabilité d’obtenir le même mot deux fois ? Fraction irréductible.
+    en: Two independent draws each choose uniformly from four words. Probability of getting the same word twice? Give a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      from itertools import product
+      pairs=list(product(range(4),repeat=2))
+      print(Fraction(sum(a==b for a,b in pairs),len(pairs)))
+    explication:
+      fr: Quatre couples égaux parmi seize donnent $1/4$.
+      en: Four equal pairs out of sixteen give $1/4$.
+    reponses:
+      - 1/4
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Une urne contient deux jetons rouges et un bleu, tous équiprobables. Probabilité de ne pas tirer bleu ? Fraction irréductible.
+    en: An urn contains two red tokens and one blue token, all equally likely. Probability of not drawing blue? Give a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      tokens=["r","r","b"]
+      print(Fraction(sum(t!="b" for t in tokens),len(tokens)))
+    explication:
+      fr: $P(\text{non bleu})=1-1/3=2/3$.
+      en: $P(\text{not blue})=1-1/3=2/3$.
+    reponses:
+      - 2/3
+    id: c9
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : deux dés équilibrés indépendants sont lancés. Probabilité que leur somme vaille 5 ? Fraction irréductible."
+    en: "Challenge: roll two independent fair dice. Probability that their sum is 5? Give a reduced fraction."
+    verif: |-
+      from fractions import Fraction
+      from itertools import product
+      pairs=list(product(range(1,7),repeat=2))
+      print(Fraction(sum(a+b==5 for a,b in pairs),len(pairs)))
+    explication:
+      fr: Les couples $(1,4),(2,3),(3,2),(4,1)$ donnent $4/36=1/9$.
+      en: Pairs $(1,4),(2,3),(3,2),(4,1)$ give $4/36=1/9$.
+    reponses:
+      - 1/9
+    defi: true
+    id: c10
+  - type: retenir
+    fr: "À retenir : précise l’ordre, les répétitions et les probabilités avant de compter les choix de Kintana."
+    en: "Remember: specify order, repetition, and probabilities before counting Kintana’s choices."
+    id: c11

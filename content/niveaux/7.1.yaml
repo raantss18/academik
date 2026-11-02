@@ -1,0 +1,254 @@
+id: "7.1"
+module: 7
+duree_min: 17
+titre:
+  fr: Estimer
+  en: Estimation
+ia:
+  fr: Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs.
+  en: Kintana can distinguish a real signal from chance and reject false positives.
+sources:
+  - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
+    url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/
+    licence: CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Avant de commencer : cinq mesures synthétiques valent $2,4,4,0,2$. Quelle est leur moyenne ?"
+    en: "Before you start: five synthetic measurements are $2,4,4,0,2$. What is their mean?"
+    verif: |-
+      import random, statistics
+      r = random.Random(71)
+      x = [r.randint(0, 4) for _ in range(5)]
+      print(statistics.mean(x))
+    explication:
+      fr: La somme vaut $12$. On divise par les cinq mesures, y compris zéro.
+      en: The sum is $12$. Divide by all five measurements, including zero.
+    choix:
+      - fr: "3"
+        en: "3"
+      - fr: "2.4"
+        en: "2.4"
+        juste: true
+      - fr: "12"
+        en: "12"
+    sortie: "2.4"
+    id: c1
+  - type: idee
+    fr: Un estimateur utilise un échantillon pour approcher une quantité inconnue. La moyenne additionne les mesures, puis divise par leur nombre.
+    en: An estimator uses a sample to approximate an unknown quantity. The mean adds measurements, then divides by their count. Hypothetical
+    id: c2
+    exemple:
+      fr: répartir également les mesures $1,3,8$ donne $4$ par mesure.
+      en: sharing measurements $1,3,8$ equally gives $4$ per measurement.
+  - id: d_estim
+    type: idee
+    fr: Un **estimateur** est une formule appliquée à l’échantillon. Sa valeur change d’un échantillon à l’autre, alors que le paramètre à estimer reste fixe.
+    en: An **estimator** is a formula applied to the sample. Its value changes from one sample to another, while the parameter being estimated stays fixed.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Échantillon
+          en: Sample
+        - fr: Moyenne
+          en: Mean
+        - fr: Écart à $5$
+          en: Gap to $5$
+      cellules:
+        - - $2,\ 6$
+          - $4$
+          - $-1$
+        - - $5,\ 7$
+          - $6$
+          - $+1$
+        - - $4,\ 5,\ 6$
+          - $5$
+          - fr: $0$
+            en: $0$
+            ton: ok
+      legende:
+        fr: "Population fictive de moyenne $5$ : chaque échantillon donne une moyenne un peu différente."
+        en: "Fictitious population with mean $5$: each sample gives a slightly different mean."
+  - id: d_biais
+    type: idee
+    fr: Un estimateur est **sans biais** si, en moyenne sur tous les échantillons possibles, il tombe sur le paramètre. La moyenne empirique l’est pour la moyenne de la population.
+    en: An estimator is **unbiased** if, averaged over all possible samples, it hits the parameter. The sample mean is unbiased for the population mean.
+    exemple:
+      fr: "Dans le tableau précédent, les écarts $-1$, $+1$ et $0$ se compensent : l’erreur moyenne est nulle."
+      en: "In the previous table, the gaps $-1$, $+1$ and $0$ cancel out: the average error is zero."
+  - type: exemple
+    lang: python
+    titre:
+      fr: Une moyenne reproductible
+      en: A reproducible mean
+    etapes:
+      - code: import random, statistics
+        fr: Les données sont entièrement synthétiques.
+        en: The data are entirely synthetic.
+      - code: r = random.Random(71)
+        fr: Une graine fixe rend la simulation reproductible.
+        en: A fixed seed makes the simulation reproducible.
+      - code: x = [r.randint(0, 4) for _ in range(5)]
+        fr: On obtient $2,4,4,0,2$ ; chaque valeur compte une fois.
+        en: We obtain $2,4,4,0,2$; each value counts once.
+      - code: print(statistics.mean(x))
+        fr: La moyenne vaut $2{,}4$, sans garantir la moyenne inconnue.
+        en: The mean is $2.4$, without guaranteeing the unknown mean.
+    verif: |-
+      import random, statistics
+      r = random.Random(71)
+      x = [r.randint(0, 4) for _ in range(5)]
+      print(statistics.mean(x))
+    sortie: "2.4"
+    id: c3
+  - id: d_extreme
+    type: exemple
+    titre:
+      fr: Une valeur extrême
+      en: An extreme value
+    etapes:
+      - fr: Les mesures $2$, $4$, $6$ ont pour moyenne $4$ et pour médiane $4$.
+        en: The measurements $2$, $4$, $6$ have mean $4$ and median $4$.
+      - fr: "On ajoute une mesure aberrante $40$ : la moyenne devient $\\frac{52}{4}=13$."
+        en: "Add an outlier measurement $40$: the mean becomes $\\frac{52}{4}=13$."
+      - fr: "La médiane devient $\\frac{4+6}{2}=5$ : elle bouge peu. Une moyenne est sensible aux valeurs extrêmes."
+        en: "The median becomes $\\frac{4+6}{2}=5$: it barely moves. A mean is sensitive to extreme values."
+  - id: d_vrais
+    type: idee
+    fr: La **vraisemblance** $L(p)$ évalue chaque valeur de $p$ avec les données fixées. On préfère le $p$ qui rend les données observées le plus probables.
+    en: The **likelihood** $L(p)$ scores each value of $p$ with the data fixed. We prefer the $p$ that makes the observed data most probable.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: $p$ essayé
+          en: Tried $p$
+        - fr: $L(p)=4p^3(1-p)$
+          en: $L(p)=4p^3(1-p)$
+        - fr: Valeur
+          en: Value
+      cellules:
+        - - $\frac14$
+          - $\frac{3}{64}$
+          - $\approx0{,}05$
+        - - $\frac12$
+          - $\frac14$
+          - $0{,}25$
+        - - $\frac34$
+          - $\frac{27}{64}$
+          - fr: $\approx0{,}42$
+            en: $\approx0.42$
+            ton: ok
+      legende:
+        fr: "$3$ succès sur $4$ essais : parmi ces trois valeurs, $p=\\frac34$ rend les données les plus probables."
+        en: "$3$ successes out of $4$ trials: among these three values, $p=\\frac34$ makes the data most probable."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: On ajoute la mesure $3$ aux cinq valeurs précédentes. Quelle est la nouvelle moyenne ?
+    en: Add measurement $3$ to the five previous values. What is the new mean?
+    reponses:
+      - "2.5"
+      - 2,5
+    verif: |-
+      import statistics
+      print(statistics.mean([2,4,4,0,2,3]))
+    explication:
+      fr: "La somme devient $15$, avec six valeurs : $15/6=2{,}5$."
+      en: "The sum becomes $15$, with six values: $15/6=2.5$."
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: La vraisemblance, notée $L(p)$, est la probabilité des observations pour une probabilité de succès proposée $p$. Trois essais indépendants donnent succès, succès, échec. Calcule $L(0{,}5)=0{,}5^2(1-0{,}5)$ en décimal.
+    en: The likelihood, written $L(p)$, is the probability of the observations for a proposed success probability $p$. Three independent trials give success, success, failure. Compute $L(0.5)=0.5^2(1-0.5)$ as a decimal.
+    reponses:
+      - "0.125"
+      - 0,125
+    verif: |-
+      p=.5
+      print(p**2*(1-p))
+    explication:
+      fr: "On multiplie les probabilités : $0{,}5^2\\times0{,}5=0{,}125$."
+      en: "Multiply the probabilities: $0.5^2\\times0.5=0.125$."
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: "Même suite : parmi $p=0{,}25$ et $p=0{,}5$, quelle valeur maximise la vraisemblance ?"
+    en: For the same sequence, which of $p=0.25$ and $p=0.5$ maximizes the likelihood?
+    reponses:
+      - "0.5"
+      - 0,5
+    verif: print(max([.25,.5], key=lambda p:p**2*(1-p)))
+    explication:
+      fr: On compare $0{,}046875$ à $0{,}125$. Ce choix ne cherche que parmi les deux candidats.
+      en: Compare $0.046875$ with $0.125$. This choice searches only the two candidates.
+    id: c6
+  - type: piege
+    fr: "La vraisemblance n’est pas la probabilité que le paramètre soit vrai : les données sont fixées et le paramètre varie."
+    en: "Likelihood is not the probability that a parameter is true: the data are fixed and the parameter varies."
+    id: c7
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Pour des essais indépendants de même probabilité, note $k$ le nombre de succès et $n$ le nombre d’essais. L’estimation maximisant la vraisemblance est $\hat p=k/n$. Avec $6$ succès sur $10$, que vaut cette estimation ?
+    en: For independent trials with the same probability, write $k$ for successes and $n$ for trials. The estimate maximizing likelihood is $\hat p=k/n$. With $6$ successes out of $10$, what is this estimate?
+    reponses:
+      - "0.6"
+      - 0,6
+    verif: |-
+      from fractions import Fraction
+      k,n=6,10
+      p=Fraction(k,n)
+      assert k/p == (n-k)/(1-p)
+      print(float(p))
+    explication:
+      fr: La proportion observée vaut $6/10=0{,}6$. Pour ces essais indépendants, elle maximise la vraisemblance sur toutes les probabilités possibles.
+      en: The observed proportion is $6/10=0.6$. For these independent trials, it maximizes likelihood over all possible probabilities.
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Si les dix essais sont tous des succès, quel est le maximum de vraisemblance de $p$ sur $[0,1]$ ?
+    en: If all ten trials are successes, what is the maximum likelihood estimate of $p$ over $[0,1]$?
+    reponses:
+      - "1"
+    verif: |-
+      from fractions import Fraction
+      print(max((Fraction(i,100) for i in range(101)),key=lambda p:p**10))
+    explication:
+      fr: La vraisemblance $p^{10}$ augmente sur $[0,1]$. Le maximum est au bord, sans prouver que tout essai futur réussira.
+      en: The likelihood $p^{10}$ increases on $[0,1]$. Its maximum is at the boundary, without proving every future trial will succeed.
+    id: c9
+  - type: plus
+    fr: "Pour aller plus loin : suppose des observations indépendantes, de même loi et de variance finie. La moyenne se stabilise quand leur nombre augmente (MIT 18.650, sources)."
+    en: "Further exploration: assume independent, identically distributed observations with finite variance. The mean stabilizes as their number increases (MIT 18.650, sources)."
+    id: c10
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : un lot compte $2$ succès sur $4$ essais, un autre $10$ sur $16$. Même paramètre, essais indépendants. Estime $p$ en regroupant les lots."
+    en: "Challenge: one batch has $2$ successes out of $4$ trials, another $10$ out of $16$. Same parameter, independent trials. Estimate $p$ by pooling the batches."
+    reponses:
+      - "0.6"
+      - 0,6
+    verif: |-
+      successes=[2,10]; sizes=[4,16]
+      print(sum(successes)/sum(sizes))
+    explication:
+      fr: "On additionne succès et essais : $(2+10)/(4+16)=0{,}6$. Les tailles des lots déterminent les poids."
+      en: "Add successes and trials: $(2+10)/(4+16)=0.6$. Batch sizes determine the weights."
+    defi: true
+    id: c11
+  - type: retenir
+    fr: "À retenir : Kintana estime à partir des observations, compare les vraisemblances sous un modèle explicite et garde l’incertitude pour la suite."
+    en: "Remember: Kintana estimates from observations, compares likelihoods under an explicit model, and keeps uncertainty in view."
+    id: c12
