@@ -1,0 +1,167 @@
+# Niveau 4.6 — Algèbre linéaire 6 : applications linéaires. Original academik ; notions vérifiées dans MIT 18.06 (applications linéaires, matrices comme transformations) et dans la série « Essence of linear algebra » citée pour l’intuition géométrique.
+id: '4.6'
+module: 4
+duree_min: 18
+titre: { fr: 'Applications linéaires', en: 'Linear maps' }
+ia: { fr: 'Kintana comprend qu’une matrice est une machine qui transforme des vecteurs, et sait en enchaîner plusieurs.', en: 'Kintana understands that a matrix is a machine that transforms vectors, and knows how to chain several.' }
+sources:
+  - { titre: 'Gilbert Strang — MIT 18.06, Linear Algebra', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+  - { titre: '3Blue1Brown — Essence of linear algebra (linear transformations)', url: 'https://www.3blue1brown.com/topics/linear-algebra', licence: 'CC BY-NC-SA 4.0 (source citée, texte non repris)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'La matrice $A=\begin{pmatrix}2&0\\0&3\end{pmatrix}$ agit sur le vecteur $(1,1)$. Quel vecteur obtient-on ?'
+    en: 'The matrix $A=\begin{pmatrix}2&0\\0&3\end{pmatrix}$ acts on the vector $(1,1)$. Which vector do we get?'
+    choix:
+      - { fr: '$(2,3)$', en: '$(2,3)$', juste: true }
+      - { fr: '$(3,2)$', en: '$(3,2)$' }
+      - { fr: '$(5,5)$', en: '$(5,5)$' }
+    explication: { fr: 'Première ligne : $2\times1+0\times1=2$ ; seconde : $0\times1+3\times1=3$.', en: 'First row: $2\times1+0\times1=2$; second: $0\times1+3\times1=3$.' }
+  - id: c2
+    type: idee
+    fr: 'Une **application linéaire** $f$ transforme des vecteurs en respectant deux règles : $f(u+v)=f(u)+f(v)$ et $f(ku)=k\,f(u)$. Elle garde donc les additions et les proportions.'
+    en: 'A **linear map** $f$ transforms vectors while respecting two rules: $f(u+v)=f(u)+f(v)$ and $f(ku)=k\,f(u)$. It therefore preserves sums and proportions.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Transformation de nombres', en: 'Transformation of numbers' }, { fr: 'Test', en: 'Test' }, { fr: 'Linéaire ?', en: 'Linear?' }]
+      cellules:
+        - ['$f(x)=2x$', '$f(1+2)=6=f(1)+f(2)$', { fr: 'oui', en: 'yes', ton: ok }]
+        - ['$f(x)=x+1$', '$f(0)=1\neq0$', { fr: 'non', en: 'no', ton: bad }]
+        - ['$f(x)=x^2$', '$f(1+1)=4\neq2$', { fr: 'non', en: 'no', ton: bad }]
+      legende: { fr: 'Une application linéaire envoie toujours $0$ sur $0$ : $f(0)=f(0\cdot u)=0\cdot f(u)=0$.', en: 'A linear map always sends $0$ to $0$: $f(0)=f(0\cdot u)=0\cdot f(u)=0$.' }
+  - id: d_colonnes
+    type: idee
+    fr: 'Une application linéaire du plan est **entièrement connue** par l’image de deux vecteurs : $e_1=(1,0)$ et $e_2=(0,1)$. Ces deux images sont les **colonnes** de sa matrice.'
+    en: 'A linear map of the plane is **entirely known** from the image of two vectors: $e_1=(1,0)$ and $e_2=(0,1)$. These two images are the **columns** of its matrix.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Vecteur', en: 'Vector' }, { fr: 'Image par $M=\begin{pmatrix}2&1\\0&3\end{pmatrix}$', en: 'Image by $M=\begin{pmatrix}2&1\\0&3\end{pmatrix}$' }, { fr: 'Colonne', en: 'Column' }]
+      cellules:
+        - ['$e_1=(1,0)$', '$(2,0)$', { fr: 'première', en: 'first', ton: ok }]
+        - ['$e_2=(0,1)$', '$(1,3)$', { fr: 'seconde', en: 'second', ton: ok }]
+      legende: { fr: 'Lire une matrice colonne par colonne dit où vont les deux flèches de base.', en: 'Reading a matrix column by column tells where the two basis arrows go.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Reconstituer l’image d’un vecteur', en: 'Rebuilding the image of a vector' }
+    lang: python
+    etapes:
+      - { code: 'M = [[2, 1], [0, 3]]', fr: 'La matrice : première ligne `[2, 1]`, seconde ligne `[0, 3]`.', en: 'The matrix: first row `[2, 1]`, second row `[0, 3]`.' }
+      - { code: 'v = (4, 5)', fr: 'On veut l’image de $(4,5)=4e_1+5e_2$.', en: 'We want the image of $(4,5)=4e_1+5e_2$.' }
+      - { code: 'x = M[0][0] * v[0] + M[0][1] * v[1]\ny = M[1][0] * v[0] + M[1][1] * v[1]', fr: 'Chaque coordonnée du résultat est le produit d’une **ligne** de `M` par `v`.', en: 'Each coordinate of the result is the product of a **row** of `M` by `v`.' }
+      - { code: 'print((x, y))', fr: 'On affiche `(13, 15)`. Vérification par les colonnes : $4(2,0)+5(1,3)=(8+5,\,0+15)=(13,15)$.', en: 'We display `(13, 15)`. Check by columns: $4(2,0)+5(1,3)=(8+5,\,0+15)=(13,15)$.' }
+    verif: |-
+      M = [[2, 1], [0, 3]]
+      v = (4, 5)
+      x = M[0][0] * v[0] + M[0][1] * v[1]
+      y = M[1][0] * v[0] + M[1][1] * v[1]
+      print((x, y))
+    sortie: '(13, 15)'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `appliquer(M, v)`** : elle reçoit une matrice carrée (liste de lignes) et un vecteur (liste) et renvoie le vecteur image, sous forme de liste.'
+    en: 'Your turn. **Write `appliquer(M, v)`**: it receives a square matrix (list of rows) and a vector (list) and returns the image vector as a list.'
+    depart: |
+      # écris ta fonction appliquer ici
+    tests: |
+      assert appliquer([[2, 1], [0, 3]], [4, 5]) == [13, 15]
+      assert appliquer([[1, 0], [0, 1]], [7, -2]) == [7, -2]
+      assert appliquer([[0, -1], [1, 0]], [2, 3]) == [-3, 2]
+      assert appliquer([[1, 2, 3], [0, 1, 0], [0, 0, 2]], [1, 1, 1]) == [6, 1, 2]
+    solutionCode: |
+      def appliquer(M, v):
+          return [sum(a * b for a, b in zip(ligne, v)) for ligne in M]
+    indice: { fr: 'Pour chaque ligne de `M`, fais la somme des produits terme à terme avec `v` : c’est un produit scalaire (niveau 4.2).', en: 'For each row of `M`, sum the term-by-term products with `v`: it is a dot product (level 4.2).' }
+    explication: { fr: 'Chaque coordonnée de l’image est le produit scalaire d’une ligne par le vecteur.', en: 'Each coordinate of the image is the dot product of a row with the vector.' }
+  - id: d_geo
+    type: exemple
+    titre: { fr: 'Un quart de tour', en: 'A quarter turn' }
+    etapes:
+      - { fr: 'La matrice $R=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$ a pour colonnes $(0,1)$ et $(-1,0)$.', en: 'The matrix $R=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$ has columns $(0,1)$ and $(-1,0)$.' }
+      - { fr: 'Elle envoie $e_1=(1,0)$ sur $(0,1)$ et $e_2=(0,1)$ sur $(-1,0)$ : les deux flèches de base tournent d’un quart de tour vers la gauche.', en: 'It sends $e_1=(1,0)$ to $(0,1)$ and $e_2=(0,1)$ to $(-1,0)$: both basis arrows turn a quarter turn to the left.' }
+      - { fr: 'Le vecteur $(2,3)$ devient $2(0,1)+3(-1,0)=(-3,2)$ : tourné aussi, avec la même longueur.', en: 'The vector $(2,3)$ becomes $2(0,1)+3(-1,0)=(-3,2)$: also turned, with the same length.' }
+  - id: d_p_trans
+    type: piege
+    fr: 'Une **translation** (ajouter un vecteur fixe, comme $(x,y)\mapsto(x+1,y)$) **n’est pas linéaire** : elle déplace l’origine. Aucune matrice ne peut la représenter seule.'
+    en: 'A **translation** (adding a fixed vector, such as $(x,y)\mapsto(x+1,y)$) **is not linear**: it moves the origin. No matrix alone can represent it.'
+  - id: d_compo
+    type: idee
+    fr: 'Enchaîner deux applications, c’est **multiplier** leurs matrices : $A(Bv)=(AB)v$. On lit de droite à gauche : $B$ agit d’abord, puis $A$. L’ordre compte (niveau 4.3).'
+    en: 'Chaining two maps means **multiplying** their matrices: $A(Bv)=(AB)v$. Read right to left: $B$ acts first, then $A$. Order matters (level 4.3).'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: '$v\mapsto A(Bv)$', en: '$v\mapsto A(Bv)$' }
+          noeuds: [{ fr: 'vecteur $v$', en: 'vector $v$' }, { fr: '$B$ : étirer', en: '$B$: stretch' }, { fr: '$A$ : tourner', en: '$A$: turn' }, { fr: 'résultat $(AB)v$', en: 'result $(AB)v$', ton: ok }]
+      legende: { fr: 'Étirer puis tourner n’est pas toujours la même chose que tourner puis étirer.', en: 'Stretching then turning is not always the same as turning then stretching.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec $B=\begin{pmatrix}2&0\\0&2\end{pmatrix}$ (doubler) puis $R=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$ (quart de tour), que devient le vecteur $(1,0)$ ? Donne la **seconde** coordonnée du résultat.'
+    en: 'With $B=\begin{pmatrix}2&0\\0&2\end{pmatrix}$ (doubling) then $R=\begin{pmatrix}0&-1\\1&0\end{pmatrix}$ (quarter turn), what becomes of the vector $(1,0)$? Give the **second** coordinate of the result.'
+    reponses: ['2']
+    verif: |-
+      v = (1, 0)
+      b = (2 * v[0], 2 * v[1])
+      r = (0 * b[0] - 1 * b[1], 1 * b[0] + 0 * b[1])
+      print(r[1])
+    indice: { fr: 'Double d’abord : $(2,0)$. Puis applique le quart de tour : $(2,0)\mapsto(0,2)$.', en: 'Double first: $(2,0)$. Then apply the quarter turn: $(2,0)\mapsto(0,2)$.' }
+    explication: { fr: '$(1,0)\to(2,0)\to(0,2)$ : la seconde coordonnée vaut $2$.', en: '$(1,0)\to(2,0)\to(0,2)$: the second coordinate is $2$.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `produit(A, B)`** : le produit de deux matrices carrées de même taille (listes de lignes). Le coefficient `(i, j)` est le produit scalaire de la ligne `i` de `A` par la colonne `j` de `B`.'
+    en: '**Write `produit(A, B)`**: the product of two square matrices of the same size (lists of rows). The `(i, j)` entry is the dot product of row `i` of `A` by column `j` of `B`.'
+    depart: |
+      # écris ta fonction produit ici
+    tests: |
+      assert produit([[1, 2], [3, 4]], [[1, 0], [0, 1]]) == [[1, 2], [3, 4]]
+      assert produit([[0, -1], [1, 0]], [[2, 0], [0, 2]]) == [[0, -2], [2, 0]]
+      assert produit([[1, 1], [0, 1]], [[2, 0], [0, 3]]) == [[2, 3], [0, 3]]
+      assert produit([[2, 0], [0, 2]], [[0, -1], [1, 0]]) == [[0, -2], [2, 0]]
+    solutionCode: |
+      def produit(A, B):
+          n = len(A)
+          return [[sum(A[i][k] * B[k][j] for k in range(n)) for j in range(n)] for i in range(n)]
+    indice: { fr: 'Deux boucles `i` et `j`, et une somme sur `k` de `A[i][k] * B[k][j]`.', en: 'Two loops `i` and `j`, and a sum over `k` of `A[i][k] * B[k][j]`.' }
+    explication: { fr: 'Les tests 2 et 4 donnent le même résultat : doubler et tourner commutent. Ce n’est pas vrai pour toutes les matrices.', en: 'Tests 2 and 4 give the same result: doubling and turning commute. This is not true for all matrices.' }
+  - id: d_kintana
+    type: idee
+    fr: 'Pour Kintana, une matrice **diagonale** peut re-pondérer les mots d’un vecteur de comptage. Multiplier la coordonnée de « chat » par 2 la rend plus importante dans la comparaison de textes (niveau 4.2).'
+    en: 'For Kintana, a **diagonal** matrix can re-weight the words of a count vector. Multiplying the “chat” coordinate by 2 makes it count more in text comparison (level 4.2).'
+    exemple: { fr: 'Avec $D=\operatorname{diag}(2,1)$ et le comptage $(3,4)$ pour (chat, lune), on obtient $(6,4)$ : « chat » pèse deux fois plus.', en: 'With $D=\operatorname{diag}(2,1)$ and the count $(3,4)$ for (chat, lune), we get $(6,4)$: “chat” weighs twice as much.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `lineaire_sur(f, u, v, k)`** : renvoie `True` si `f(u + v) == f(u) + f(v)` **et** `f(k * u) == k * f(u)`, où `u` et `v` sont des **couples** de nombres. Écris les opérations coordonnée par coordonnée.'
+    en: 'Challenge. **Write `lineaire_sur(f, u, v, k)`**: return `True` if `f(u + v) == f(u) + f(v)` **and** `f(k * u) == k * f(u)`, where `u` and `v` are **pairs** of numbers. Write the operations coordinate by coordinate.'
+    depart: |
+      # écris ta fonction lineaire_sur ici
+    tests: |
+      f = lambda p: (2 * p[0] + p[1], 3 * p[1])
+      g = lambda p: (p[0] + 1, p[1])
+      h = lambda p: (p[0] * p[0], p[1])
+      assert lineaire_sur(f, (1, 2), (3, -1), 4) is True
+      assert lineaire_sur(g, (1, 2), (3, -1), 4) is False
+      assert lineaire_sur(h, (1, 2), (3, -1), 4) is False
+    solutionCode: |
+      def lineaire_sur(f, u, v, k):
+          somme = (u[0] + v[0], u[1] + v[1])
+          a, b, c = f(somme), f(u), f(v)
+          if a != (b[0] + c[0], b[1] + c[1]):
+              return False
+          m = f((k * u[0], k * u[1]))
+          fu = f(u)
+          return m == (k * fu[0], k * fu[1])
+    indice: { fr: 'Calcule `f(u+v)` et la somme de `f(u)` et `f(v)` ; puis `f(k*u)` et `k*f(u)`. Compare les couples avec `==`.', en: 'Compute `f(u+v)` and the sum of `f(u)` and `f(v)`; then `f(k*u)` and `k*f(u)`. Compare the pairs with `==`.' }
+    explication: { fr: 'Un test numérique peut **réfuter** la linéarité, mais ne peut pas la **prouver** pour toutes les entrées.', en: 'A numeric test can **refute** linearity, but cannot **prove** it for all inputs.' }
+  - id: c8
+    type: retenir
+    fr: 'Application linéaire : garde les sommes et les proportions, envoie 0 sur 0. Sa matrice a pour colonnes les images de $e_1$ et $e_2$ ; enchaîner = multiplier les matrices (de droite à gauche).'
+    en: 'Linear map: preserves sums and proportions, sends 0 to 0. Its matrix has the images of $e_1$ and $e_2$ as columns; chaining = multiplying matrices (right to left).'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [3Blue1Brown — Essence of linear algebra](https://www.3blue1brown.com/topics/linear-algebra) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [3Blue1Brown — Essence of linear algebra](https://www.3blue1brown.com/topics/linear-algebra); this optional reading needs a connection.

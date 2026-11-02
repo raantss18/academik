@@ -36,6 +36,9 @@ modules:
       - { id: "3.3", titre: { fr: "Dichotomie" } }
       - { id: "3.4", titre: { fr: "Hachage" } }
       - { id: "3.5", titre: { fr: "Graphes" } }
+      - { id: "3.6", titre: { fr: "Récursivité" } }
+      - { id: "3.7", titre: { fr: "Piles" } }
+      - { id: "3.8", titre: { fr: "Plus courts chemins" } }
       - { id: "3.boss", boss: true, titre: { fr: "L'index inversé" } }
   - id: 4
     titre: { fr: "Algèbre linéaire", en: "Linear algebra" }
@@ -45,6 +48,8 @@ modules:
       - { id: "4.3", titre: { fr: "Matrices" } }
       - { id: "4.4", titre: { fr: "Systèmes" } }
       - { id: "4.5", titre: { fr: "SVD" } }
+      - { id: "4.6", titre: { fr: "Applications linéaires" } }
+      - { id: "4.7", titre: { fr: "Rang, noyau et bases" } }
       - { id: "4.boss", boss: true, titre: { fr: "Le moteur de similarité" } }
   - id: 5
     titre: { fr: "Analyse", en: "Calculus" }
@@ -54,6 +59,9 @@ modules:
       - { id: "5.3", titre: { fr: "Gradient" } }
       - { id: "5.4", titre: { fr: "Convexité" } }
       - { id: "5.5", titre: { fr: "Descente" } }
+      - { id: "5.6", titre: { fr: "Exponentielle et logarithme" } }
+      - { id: "5.7", titre: { fr: "Règle de chaîne" } }
+      - { id: "5.8", titre: { fr: "Intégrales" } }
       - { id: "5.boss", boss: true, titre: { fr: "La pente la plus raide" } }
   - id: 6
     titre: { fr: "Probabilités", en: "Probability" }

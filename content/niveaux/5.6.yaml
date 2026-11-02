@@ -1,0 +1,182 @@
+# Niveau 5.6 — Analyse 6 : exponentielle et logarithme. Original academik ; notions vérifiées dans MIT 18.01 (exponentielle, logarithme naturel, dérivées) et la documentation officielle Python (module math).
+id: '5.6'
+module: 5
+duree_min: 18
+titre: { fr: 'Exponentielle et logarithme', en: 'Exponential and logarithm' }
+ia: { fr: 'Kintana transforme des produits en sommes avec le logarithme, pour ne plus perdre de petits nombres.', en: 'Kintana turns products into sums with the logarithm, so she stops losing small numbers.' }
+sources:
+  - { titre: 'MIT 18.01 — Single Variable Calculus (exponentielle et logarithme)', url: 'https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+  - { titre: 'Python — module math (exp, log)', url: 'https://docs.python.org/3/library/math.html#power-and-logarithmic-functions', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      import math
+      print(math.exp(0))
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      import math
+      print(math.exp(0))
+      ```
+    choix:
+      - { fr: '`1.0`', en: '`1.0`', juste: true }
+      - { fr: '`0.0`', en: '`0.0`' }
+      - { fr: '`2.718281828459045`', en: '`2.718281828459045`' }
+    verif: |-
+      import math
+      print(math.exp(0))
+    sortie: '1.0'
+    explication: { fr: 'Tout nombre à la puissance 0 vaut 1 : $e^0=1$.', en: 'Any number to the power 0 is 1: $e^0=1$.' }
+  - id: c2
+    type: idee
+    fr: 'L’**exponentielle** $e^x$, avec $e\approx2{,}718$, est la fonction de la croissance « proportionnelle à elle-même » : plus elle est grande, plus elle grandit vite. Elle transforme une somme en produit : $e^{a+b}=e^a\,e^b$.'
+    en: 'The **exponential** $e^x$, with $e\approx2.718$, is the function of growth “proportional to itself”: the larger it is, the faster it grows. It turns a sum into a product: $e^{a+b}=e^a\,e^b$.'
+    figure:
+      kind: tableau
+      entetes: ['$x$', '$e^x$', { fr: 'Lecture', en: 'Reading' }]
+      cellules:
+        - ['$-1$', '$\approx0{,}368$', { fr: 'positive, petite', en: 'positive, small' }]
+        - ['$0$', '$1$', { fr: 'le point de départ', en: 'the starting point', ton: ok }]
+        - ['$1$', '$\approx2{,}718$', '$e$']
+        - ['$2$', '$\approx7{,}389$', { fr: 'déjà presque ×3 de plus', en: 'already almost ×3 more', ton: bad }]
+      legende: { fr: '$e^x$ est toujours **strictement positive** : jamais 0, jamais négative.', en: '$e^x$ is always **strictly positive**: never 0, never negative.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Une croissance continue', en: 'Continuous growth' }
+    lang: python
+    etapes:
+      - { code: 'import math', fr: 'Le module `math` fournit `exp` et `log`.', en: 'The `math` module provides `exp` and `log`.' }
+      - { code: 'capital, taux, annees = 100, 0.05, 10', fr: 'Un capital de 100, qui croît de façon continue à 5 % par an pendant 10 ans.', en: 'A capital of 100, growing continuously at 5% a year for 10 years.' }
+      - { code: 'final = capital * math.exp(taux * annees)', fr: 'Croissance continue : on multiplie par $e^{0{,}05\times10}=e^{0{,}5}$.', en: 'Continuous growth: we multiply by $e^{0.05\times10}=e^{0.5}$.' }
+      - { code: 'print(round(final, 2))', fr: 'On affiche `164.87`.', en: 'We display `164.87`.' }
+    verif: |-
+      import math
+      capital, taux, annees = 100, 0.05, 10
+      final = capital * math.exp(taux * annees)
+      print(round(final, 2))
+    sortie: '164.87'
+  - id: d_ln
+    type: idee
+    fr: 'Le **logarithme népérien** $\ln$ est la fonction **réciproque** de l’exponentielle : $\ln(e^x)=x$. Il transforme un **produit en somme** : $\ln(ab)=\ln a+\ln b$. Il n’est défini que pour les nombres $>0$.'
+    en: 'The **natural logarithm** $\ln$ is the **inverse** function of the exponential: $\ln(e^x)=x$. It turns a **product into a sum**: $\ln(ab)=\ln a+\ln b$. It is only defined for numbers $>0$.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Règle', en: 'Rule' }, { fr: 'Exemple', en: 'Example' }]
+      cellules:
+        - ['$\ln(ab)=\ln a+\ln b$', '$\ln1000=3\ln10\approx6{,}908$']
+        - ['$\ln(a^n)=n\ln a$', '$\ln8=3\ln2$']
+        - ['$\ln(e^x)=x$', { fr: '$\ln(e^5)=5$', en: '$\ln(e^5)=5$', ton: ok }]
+        - ['$\ln1=0$', { fr: 'et $\ln x<0$ si $0<x<1$', en: 'and $\ln x<0$ if $0<x<1$' }]
+      legende: { fr: 'Le logarithme en base deux du niveau 3.1 suit les mêmes règles ; seule la base change.', en: 'The base-two logarithm from level 3.1 follows the same rules; only the base changes.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `croissance(capital, taux, annees)`** qui renvoie `capital * exp(taux * annees)` pour une croissance continue. Importe `math` toi-même.'
+    en: 'Your turn. **Write `croissance(capital, taux, annees)`** that returns `capital * exp(taux * annees)` for continuous growth. Import `math` yourself.'
+    depart: |
+      # écris ta fonction croissance ici
+    tests: |
+      assert abs(croissance(100, 0.05, 10) - 164.8721) < 1e-3
+      assert croissance(50, 0, 7) == 50
+      assert abs(croissance(1, 1, 1) - 2.718281828) < 1e-6
+    solutionCode: |
+      import math
+
+      def croissance(capital, taux, annees):
+          return capital * math.exp(taux * annees)
+    indice: { fr: 'Une seule ligne dans la fonction, avec `math.exp`. N’oublie pas `import math`.', en: 'A single line in the function, with `math.exp`. Do not forget `import math`.' }
+    explication: { fr: 'Un taux de 0 ne change rien : $e^0=1$, donc le capital reste le même.', en: 'A rate of 0 changes nothing: $e^0=1$, so the capital stays the same.' }
+  - id: d_deriv
+    type: idee
+    fr: 'Deux dérivées à retenir : $(e^x)''=e^x$ (l’exponentielle est sa propre pente) et $(\ln x)''=\dfrac1x$. Plus $x$ est grand, plus le logarithme monte lentement.'
+    en: 'Two derivatives to remember: $(e^x)''=e^x$ (the exponential is its own slope) and $(\ln x)''=\dfrac1x$. The larger $x$ is, the more slowly the logarithm rises.'
+    exemple: { fr: 'En $x=1$, la pente de $e^x$ vaut $e\approx2{,}72$. La pente de $\ln x$ en $x=1$ vaut $1$ ; en $x=10$, seulement $0{,}1$.', en: 'At $x=1$, the slope of $e^x$ is $e\approx2.72$. The slope of $\ln x$ at $x=1$ is $1$; at $x=10$, only $0.1$.' }
+  - id: d_p_neg
+    type: piege
+    fr: 'Le logarithme d’un nombre **négatif ou nul** n’existe pas : `math.log(0)` et `math.log(-1)` donnent une erreur. Vérifie toujours que ton argument est strictement positif.'
+    en: 'The logarithm of a **negative or zero** number does not exist: `math.log(0)` and `math.log(-1)` give an error. Always check that your argument is strictly positive.'
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Que vaut $\ln(e^7)$ ?'
+    en: 'What is $\ln(e^7)$?'
+    reponses: ['7']
+    verif: |-
+      import math
+      print(round(math.log(math.exp(7))))
+    indice: { fr: 'Le logarithme annule l’exponentielle : ce sont deux fonctions réciproques.', en: 'The logarithm cancels the exponential: they are inverse functions.' }
+    explication: { fr: '$\ln(e^x)=x$ pour tout $x$ : ici $7$.', en: '$\ln(e^x)=x$ for every $x$: here $7$.' }
+  - id: d_underflow
+    type: exemple
+    titre: { fr: 'Quand un produit s’effondre', en: 'When a product collapses' }
+    lang: python
+    etapes:
+      - { code: 'import math', fr: 'On veut la probabilité de 400 événements indépendants, chacun de probabilité 0,1.', en: 'We want the probability of 400 independent events, each of probability 0.1.' }
+      - { code: 'produit = 0.1 ** 400', fr: 'Le produit vaut $10^{-400}$, bien plus petit que le plus petit nombre que Python peut stocker : il devient `0.0`.', en: 'The product is $10^{-400}$, far smaller than the smallest number Python can store: it becomes `0.0`.' }
+      - { code: 'somme_logs = 400 * math.log(0.1)', fr: 'Avec les logarithmes, le produit devient une **somme** : 400 fois $\ln0{,}1$. Elle reste un nombre raisonnable.', en: 'With logarithms, the product becomes a **sum**: 400 times $\ln0.1$. It stays a reasonable number.' }
+      - { code: 'print(produit, round(somme_logs, 1))', fr: 'On affiche `0.0 -921.0` : le produit s’est perdu, le logarithme garde l’information.', en: 'We display `0.0 -921.0`: the product was lost, the logarithm keeps the information.' }
+    verif: |-
+      import math
+      produit = 0.1 ** 400
+      somme_logs = 400 * math.log(0.1)
+      print(produit, round(somme_logs, 1))
+    sortie: '0.0 -921.0'
+  - id: d_ml
+    type: idee
+    fr: 'C’est pourquoi l’apprentissage automatique travaille presque toujours avec des **logarithmes de probabilités** : on additionne au lieu de multiplier. On l’a déjà vu avec l’entropie (niveau 6.5), et on le retrouvera au module 9.'
+    en: 'This is why machine learning almost always works with **logarithms of probabilities**: we add instead of multiplying. We have already seen it with entropy (level 6.5), and we will find it again in module 9.'
+    exemple: { fr: 'Comparer deux modèles revient à comparer leurs sommes de logarithmes : la plus grande (la moins négative) correspond au modèle le plus probable.', en: 'Comparing two models comes down to comparing their sums of logarithms: the largest (the least negative) corresponds to the most probable model.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `log_vraisemblance(probas)`** : la somme des logarithmes népériens d’une liste de probabilités (nombres entre 0 exclu et 1). Sur une liste vide, renvoie `0`.'
+    en: '**Write `log_vraisemblance(probas)`**: the sum of the natural logarithms of a list of probabilities (numbers from 0 excluded to 1). On an empty list, return `0`.'
+    depart: |
+      # écris ta fonction log_vraisemblance ici
+    tests: |
+      assert log_vraisemblance([]) == 0
+      assert log_vraisemblance([1, 1]) == 0
+      assert abs(log_vraisemblance([0.5, 0.5]) - 2 * -0.693147) < 1e-5
+      assert abs(log_vraisemblance([0.1] * 400) + 921.0) < 0.1
+    solutionCode: |
+      import math
+
+      def log_vraisemblance(probas):
+          return sum(math.log(p) for p in probas)
+    indice: { fr: '`sum(...)` d’une expression avec `math.log(p)` pour chaque `p` de la liste.', en: '`sum(...)` of an expression with `math.log(p)` for each `p` in the list.' }
+    explication: { fr: 'Le 4ᵉ test fonctionne là où le produit direct aurait donné `0.0` : c’est tout l’intérêt.', en: 'The 4th test works where the direct product would have given `0.0`: that is the whole point.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `temps_doublement(taux)`** : au bout de combien d’années un capital double-t-il avec une croissance continue au taux `taux` (par an) ? Il faut résoudre $e^{t\cdot taux}=2$.'
+    en: 'Challenge. **Write `temps_doublement(taux)`**: after how many years does a capital double with continuous growth at rate `taux` (per year)? You must solve $e^{t\cdot taux}=2$.'
+    depart: |
+      # écris ta fonction temps_doublement ici
+    tests: |
+      import math
+      assert abs(temps_doublement(math.log(2)) - 1) < 1e-9
+      assert abs(temps_doublement(0.05) - 13.8629) < 1e-3
+      assert abs(temps_doublement(1) - 0.693147) < 1e-5
+    solutionCode: |
+      import math
+
+      def temps_doublement(taux):
+          return math.log(2) / taux
+    indice: { fr: 'Applique $\ln$ aux deux côtés de $e^{t\cdot taux}=2$ : $t\cdot taux=\ln2$.', en: 'Apply $\ln$ to both sides of $e^{t\cdot taux}=2$: $t\cdot taux=\ln2$.' }
+    explication: { fr: 'Le logarithme défait l’exponentielle : $t=\ln2/taux$. À 5 %, il faut environ $13{,}9$ ans.', en: 'The logarithm undoes the exponential: $t=\ln2/taux$. At 5%, it takes about $13.9$ years.' }
+  - id: c8
+    type: retenir
+    fr: '$e^x>0$ et $e^{a+b}=e^ae^b$ ; $\ln$ est sa réciproque, défini pour $x>0$, et $\ln(ab)=\ln a+\ln b$. Les logarithmes évitent de perdre de petits produits : on additionne des $\ln$.'
+    en: '$e^x>0$ and $e^{a+b}=e^ae^b$; $\ln$ is its inverse, defined for $x>0$, and $\ln(ab)=\ln a+\ln b$. Logarithms avoid losing small products: we add $\ln$ values.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [MIT 18.01 — Calcul à une variable](https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [MIT 18.01 — Single variable calculus](https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/); this optional reading needs a connection.

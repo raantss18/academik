@@ -1,0 +1,157 @@
+# Niveau 5.7 — Analyse 7 : règle de chaîne. Original academik ; notions vérifiées dans MIT 18.01 (règle de chaîne) et MIT 18.02 (dérivées de fonctions composées).
+id: '5.7'
+module: 5
+duree_min: 18
+titre: { fr: 'Règle de chaîne', en: 'Chain rule' }
+ia: { fr: 'Kintana sait dériver une fonction construite en plusieurs étapes, ce qui permettra d’apprendre à travers plusieurs couches.', en: 'Kintana can differentiate a function built in several steps, which will allow learning through several layers.' }
+sources:
+  - { titre: 'MIT 18.01 — Single Variable Calculus (chain rule)', url: 'https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+  - { titre: 'MIT 18.02 — Multivariable Calculus', url: 'https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Soit $f(x)=(2x+1)^2$. Combien vaut sa pente en $x=0$ ?'
+    en: 'Let $f(x)=(2x+1)^2$. What is its slope at $x=0$?'
+    choix:
+      - { fr: '$4$', en: '$4$', juste: true }
+      - { fr: '$2$', en: '$2$' }
+      - { fr: '$1$', en: '$1$' }
+    verif: 'print(round(((2 * 1e-6 + 1) ** 2 - (-2 * 1e-6 + 1) ** 2) / (2 * 1e-6)))'
+    sortie: '4'
+    explication: { fr: 'On dérive l’extérieur (le carré) **puis** on multiplie par la pente de l’intérieur : $2(2x+1)\times2$, soit $4$ en $x=0$.', en: 'We differentiate the outside (the square) **then** multiply by the slope of the inside: $2(2x+1)\times2$, i.e. $4$ at $x=0$.' }
+  - id: c2
+    type: idee
+    fr: 'Une fonction **composée** enchaîne deux étapes : $h(x)=f(g(x))$. La **règle de chaîne** dit que sa pente est le **produit** des deux pentes : $h''(x)=f''(g(x))\times g''(x)$.'
+    en: 'A **composite** function chains two steps: $h(x)=f(g(x))$. The **chain rule** says its slope is the **product** of the two slopes: $h''(x)=f''(g(x))\times g''(x)$.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: '$h(x)=(2x+1)^2$', en: '$h(x)=(2x+1)^2$' }
+          noeuds: [{ fr: '$x$', en: '$x$' }, { fr: '$g(x)=2x+1$ (pente $2$)', en: '$g(x)=2x+1$ (slope $2$)' }, { fr: '$f(u)=u^2$ (pente $2u$)', en: '$f(u)=u^2$ (slope $2u$)' }, { fr: 'pente totale $2u\times2$', en: 'total slope $2u\times2$', ton: ok }]
+      legende: { fr: 'Chaque étape amplifie ou réduit la variation de la précédente : on multiplie les amplifications.', en: 'Each step amplifies or reduces the variation of the previous one: we multiply the amplifications.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Dériver $(x^2+1)^3$', en: 'Differentiating $(x^2+1)^3$' }
+    lang: python
+    etapes:
+      - { fr: 'L’intérieur est $g(x)=x^2+1$, de pente $g''(x)=2x$. L’extérieur est $f(u)=u^3$, de pente $f''(u)=3u^2$.', en: 'The inside is $g(x)=x^2+1$, with slope $g''(x)=2x$. The outside is $f(u)=u^3$, with slope $f''(u)=3u^2$.' }
+      - { fr: 'La règle donne $h''(x)=3(x^2+1)^2\times2x$. En $x=1$ : $3\times4\times2=24$.', en: 'The rule gives $h''(x)=3(x^2+1)^2\times2x$. At $x=1$: $3\times4\times2=24$.' }
+      - { code: 'h = lambda x: (x * x + 1) ** 3\neps = 1e-6', fr: 'On vérifie numériquement avec un petit pas `eps`.', en: 'We check numerically with a small step `eps`.' }
+      - { code: 'print(round((h(1 + eps) - h(1 - eps)) / (2 * eps), 2))', fr: 'La pente mesurée vaut `24.0` : le calcul et la mesure concordent.', en: 'The measured slope is `24.0`: calculation and measurement agree.' }
+    verif: |-
+      h = lambda x: (x * x + 1) ** 3
+      eps = 1e-6
+      print(round((h(1 + eps) - h(1 - eps)) / (2 * eps), 2))
+    sortie: '24.0'
+  - id: d_diff
+    type: idee
+    fr: 'Pour vérifier une dérivée, on mesure la pente avec un **petit pas** : $\dfrac{f(x+\varepsilon)-f(x-\varepsilon)}{2\varepsilon}$. C’est la **différence centrée**, précise pour un $\varepsilon$ petit mais pas trop (autour de $10^{-6}$).'
+    en: 'To check a derivative, measure the slope with a **small step**: $\dfrac{f(x+\varepsilon)-f(x-\varepsilon)}{2\varepsilon}$. This is the **central difference**, accurate for a small but not too small $\varepsilon$ (around $10^{-6}$).'
+    figure:
+      kind: tableau
+      entetes: [{ fr: '$\varepsilon$', en: '$\varepsilon$' }, { fr: 'Pente mesurée de $x^2$ en $3$', en: 'Measured slope of $x^2$ at $3$' }]
+      cellules:
+        - ['$1$', { fr: '$6$ (exact pour un carré)', en: '$6$ (exact for a square)', ton: ok }]
+        - ['$10^{-6}$', '$6{,}000\ldots$']
+        - ['$10^{-15}$', { fr: 'bruit d’arrondi possible', en: 'rounding noise possible', ton: bad }]
+      legende: { fr: 'Trop petit, $\varepsilon$ est noyé dans les erreurs d’arrondi de l’ordinateur.', en: 'Too small, $\varepsilon$ is drowned in the computer’s rounding errors.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `derivee(f, x)`** : la pente de `f` en `x` par différence centrée, avec `eps = 1e-6`. `f` est une fonction qui prend un nombre.'
+    en: 'Your turn. **Write `derivee(f, x)`**: the slope of `f` at `x` by central difference, with `eps = 1e-6`. `f` is a function taking a number.'
+    depart: |
+      # écris ta fonction derivee ici
+    tests: |
+      assert abs(derivee(lambda x: x * x, 3) - 6) < 1e-4
+      assert abs(derivee(lambda x: 5 * x + 2, 10) - 5) < 1e-4
+      assert abs(derivee(lambda x: (x * x + 1) ** 3, 1) - 24) < 1e-3
+    solutionCode: |
+      def derivee(f, x):
+          eps = 1e-6
+          return (f(x + eps) - f(x - eps)) / (2 * eps)
+    indice: { fr: 'Applique la formule de la différence centrée : $(f(x+\varepsilon)-f(x-\varepsilon))/(2\varepsilon)$.', en: 'Apply the central difference formula: $(f(x+\varepsilon)-f(x-\varepsilon))/(2\varepsilon)$.' }
+    explication: { fr: 'On a maintenant un **vérificateur universel** de dérivées : on l’utilisera pour contrôler les calculs à la main.', en: 'We now have a **universal checker** for derivatives: we will use it to check hand computations.' }
+  - id: d_chaine3
+    type: idee
+    fr: 'La règle s’étend à **trois étapes ou plus** : on multiplie toutes les pentes le long du chemin. $h(x)=f(g(k(x)))$ donne $h''=f''(g(k))\times g''(k)\times k''(x)$.'
+    en: 'The rule extends to **three or more steps**: multiply all the slopes along the path. $h(x)=f(g(k(x)))$ gives $h''=f''(g(k))\times g''(k)\times k''(x)$.'
+    exemple: { fr: 'Pour $h(x)=e^{(3x)^2}$ : étapes $3x$ (pente $3$), carré (pente $2\times3x$), exponentielle (pente $e^{(3x)^2}$). Produit : $e^{9x^2}\times6x\times3=18x\,e^{9x^2}$.', en: 'For $h(x)=e^{(3x)^2}$: steps $3x$ (slope $3$), square (slope $2\times3x$), exponential (slope $e^{(3x)^2}$). Product: $e^{9x^2}\times6x\times3=18x\,e^{9x^2}$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quelle est la pente de $h(x)=(3x-2)^2$ en $x=1$ ?'
+    en: 'What is the slope of $h(x)=(3x-2)^2$ at $x=1$?'
+    reponses: ['6']
+    verif: 'print(2 * (3 * 1 - 2) * 3)'
+    indice: { fr: 'Extérieur : $2u$ avec $u=3x-2$. Intérieur : pente $3$. Multiplie.', en: 'Outside: $2u$ with $u=3x-2$. Inside: slope $3$. Multiply.' }
+    explication: { fr: 'En $x=1$, $u=1$ : $2\times1\times3=6$.', en: 'At $x=1$, $u=1$: $2\times1\times3=6$.' }
+  - id: d_perte
+    type: exemple
+    titre: { fr: 'La pente d’une erreur par rapport à un réglage', en: 'The slope of an error with respect to a setting' }
+    lang: python
+    etapes:
+      - { fr: 'Kintana prédit $w\times x$ et se trompe de $w x - y$. L’erreur au carré est $L(w)=(wx-y)^2$, avec $x=3$ et $y=5$.', en: 'Kintana predicts $w\times x$ and is off by $wx-y$. The squared error is $L(w)=(wx-y)^2$, with $x=3$ and $y=5$.' }
+      - { fr: 'Extérieur : le carré, pente $2(wx-y)$. Intérieur : $wx-y$ vu comme fonction de $w$, pente $x$. Règle : $L''(w)=2(wx-y)\,x$.', en: 'Outside: the square, slope $2(wx-y)$. Inside: $wx-y$ seen as a function of $w$, slope $x$. Rule: $L''(w)=2(wx-y)\,x$.' }
+      - { code: 'w, x, y = 2, 3, 5\nprint(2 * (w * x - y) * x)', fr: 'En $w=2$ : $2\times(6-5)\times3=6$. On affiche `6`.', en: 'At $w=2$: $2\times(6-5)\times3=6$. We display `6`.' }
+    verif: |-
+      w, x, y = 2, 3, 5
+      print(2 * (w * x - y) * x)
+    sortie: '6'
+  - id: d_p_chaine
+    type: piege
+    fr: 'Oublier la pente de l’**intérieur** est l’erreur classique : dériver $(2x+1)^2$ en $2(2x+1)$ au lieu de $2(2x+1)\times2$ donne un résultat deux fois trop petit.'
+    en: 'Forgetting the slope of the **inside** is the classic mistake: differentiating $(2x+1)^2$ as $2(2x+1)$ instead of $2(2x+1)\times2$ gives a result twice too small.'
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `grad_perte(w, x, y)`** : la pente de $L(w)=(wx-y)^2$ par rapport à `w`, donnée par la règle de chaîne.'
+    en: '**Write `grad_perte(w, x, y)`**: the slope of $L(w)=(wx-y)^2$ with respect to `w`, given by the chain rule.'
+    depart: |
+      # écris ta fonction grad_perte ici
+    tests: |
+      assert grad_perte(2, 3, 5) == 6
+      assert grad_perte(0, 4, 8) == -64
+      assert grad_perte(1, 1, 1) == 0
+      def L(w, x, y):
+          return (w * x - y) ** 2
+      eps = 1e-6
+      mesure = (L(2.5 + eps, 3, 5) - L(2.5 - eps, 3, 5)) / (2 * eps)
+      assert abs(grad_perte(2.5, 3, 5) - mesure) < 1e-3
+    solutionCode: |
+      def grad_perte(w, x, y):
+          return 2 * (w * x - y) * x
+    indice: { fr: 'Extérieur : `2 * (w * x - y)`. Intérieur : la pente de `w * x - y` par rapport à `w` est `x`.', en: 'Outside: `2 * (w * x - y)`. Inside: the slope of `w * x - y` with respect to `w` is `x`.' }
+    explication: { fr: 'Le dernier test compare avec la mesure numérique : la règle de chaîne et la différence centrée concordent.', en: 'The last test compares with the numeric measure: the chain rule and the central difference agree.' }
+  - id: d_lien
+    type: idee
+    fr: 'Cette formule est le cœur de la **descente de gradient** (niveau 5.5) pour un modèle $w\times x$. Plus tard, un réseau de neurones aura des **dizaines de couches** : la rétropropagation n’est que la règle de chaîne appliquée couche par couche.'
+    en: 'This formula is the heart of **gradient descent** (level 5.5) for a model $w\times x$. Later, a neural network will have **dozens of layers**: backpropagation is just the chain rule applied layer by layer.'
+    exemple: { fr: 'Une mise à jour de descente : $w\leftarrow w-\eta\,L''(w)$. Avec $w=2$, $\eta=0{,}1$ et la pente $6$ : le nouveau $w$ vaut $2-0{,}6=1{,}4$, plus proche du bon réglage ($5/3$).', en: 'A descent update: $w\leftarrow w-\eta\,L''(w)$. With $w=2$, $\eta=0.1$ and slope $6$: the new $w$ is $2-0.6=1.4$, closer to the right setting ($5/3$).' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `pas_descente(w, x, y, eta)`** : le nouveau `w` après **un** pas de descente de gradient sur $L(w)=(wx-y)^2$, avec la pente de la règle de chaîne.'
+    en: 'Challenge. **Write `pas_descente(w, x, y, eta)`**: the new `w` after **one** gradient descent step on $L(w)=(wx-y)^2$, with the slope from the chain rule.'
+    depart: |
+      # écris ta fonction pas_descente ici
+    tests: |
+      assert abs(pas_descente(2, 3, 5, 0.1) - 1.4) < 1e-9
+      assert pas_descente(5 / 3, 3, 5, 0.1) == 5 / 3
+      assert abs(pas_descente(0, 2, 6, 0.05) - 1.2) < 1e-9
+    solutionCode: |
+      def pas_descente(w, x, y, eta):
+          pente = 2 * (w * x - y) * x
+          return w - eta * pente
+    indice: { fr: 'Calcule d’abord la pente par la règle de chaîne, puis retranche `eta * pente` à `w`.', en: 'First compute the slope with the chain rule, then subtract `eta * pente` from `w`.' }
+    explication: { fr: 'Au bon réglage $w=5/3$, la pente est nulle et le pas ne bouge plus : on a trouvé le minimum.', en: 'At the right setting $w=5/3$, the slope is zero and the step no longer moves: we found the minimum.' }
+  - id: c8
+    type: retenir
+    fr: 'Pente d’une composée = produit des pentes le long du chemin : $h''=f''(g(x))\times g''(x)$. N’oublie jamais la pente de l’intérieur ; vérifie avec la différence centrée ; c’est la base de la rétropropagation.'
+    en: 'Slope of a composite = product of the slopes along the path: $h''=f''(g(x))\times g''(x)$. Never forget the slope of the inside; check with the central difference; it is the basis of backpropagation.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [MIT 18.01 — Règle de chaîne](https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [MIT 18.01 — Chain rule](https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/); this optional reading needs a connection.

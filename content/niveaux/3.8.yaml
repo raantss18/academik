@@ -1,0 +1,203 @@
+# Niveau 3.8 — Algorithmes 8 : plus courts chemins. Original academik ; notions vérifiées dans la documentation officielle Python (module heapq) et dans Mon_livre_d_algo (graphes pondérés, Dijkstra, notions reprises et réécrites).
+id: '3.8'
+module: 3
+duree_min: 18
+titre: { fr: 'Plus courts chemins', en: 'Shortest paths' }
+ia: { fr: 'Kintana trouve le chemin le moins coûteux entre deux documents, quand chaque lien a un poids.', en: 'Kintana finds the cheapest path between two documents, when each link has a weight.' }
+sources:
+  - { titre: 'Python — module heapq', url: 'https://docs.python.org/3/library/heapq.html', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — Tutoriel, dictionnaires', url: 'https://docs.python.org/3/tutorial/datastructures.html#dictionaries', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Trois routes relient A à D : A→D coûte 9 ; A→B→D coûte 4 + 3 ; A→C→D coûte 2 + 2. Laquelle est la **moins coûteuse** ?'
+    en: 'Three routes link A to D: A→D costs 9; A→B→D costs 4 + 3; A→C→D costs 2 + 2. Which is the **cheapest**?'
+    choix:
+      - { fr: 'A→D (un seul lien)', en: 'A→D (a single link)' }
+      - { fr: 'A→B→D', en: 'A→B→D' }
+      - { fr: 'A→C→D', en: 'A→C→D', juste: true }
+    explication: { fr: 'Les coûts sont 9, 7 et 4. Le chemin le plus **court en liens** n’est pas le moins **coûteux**.', en: 'The costs are 9, 7 and 4. The path with the fewest **links** is not the **cheapest**.' }
+  - id: c2
+    type: idee
+    fr: 'Dans un **graphe pondéré**, chaque lien porte un **poids** : un coût, une durée, une distance. Le **coût d’un chemin** est la somme des poids de ses liens. On cherche le chemin de coût minimal.'
+    en: 'In a **weighted graph**, each link carries a **weight**: a cost, a duration, a distance. The **cost of a path** is the sum of the weights of its links. We look for the path of minimal cost.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Chemin de A à D', en: 'Path from A to D' }, { fr: 'Calcul', en: 'Computation' }, { fr: 'Coût', en: 'Cost' }]
+      cellules:
+        - ['`A → D`', '$9$', '$9$']
+        - ['`A → B → D`', '$4+3$', '$7$']
+        - ['`A → C → D`', '$2+2$', { fr: '$4$', en: '$4$', ton: ok }]
+      legende: { fr: 'Le parcours en largeur (3.5) compte les liens ; ici, on additionne des poids.', en: 'Breadth-first search (3.5) counts links; here we add weights.' }
+  - id: d_gloutonne
+    type: idee
+    fr: 'Idée de **Dijkstra** : toujours développer le sommet **le plus proche** du départ parmi ceux pas encore traités. Quand on le choisit, sa distance est définitive : aucun détour plus tard ne fera mieux.'
+    en: 'The idea of **Dijkstra**: always expand the **nearest** vertex to the start among those not yet processed. When we choose it, its distance is final: no later detour will do better.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Boucle de Dijkstra', en: 'Dijkstra loop' }
+          noeuds: [{ fr: 'prendre le plus proche', en: 'take the nearest' }, { fr: 'regarder ses voisins', en: 'look at its neighbours' }, { fr: 'distance moins chère trouvée ? la mettre à jour', en: 'cheaper distance found? update it' }, { fr: 'recommencer', en: 'repeat', ton: ok }]
+      legende: { fr: 'Condition essentielle : aucun poids négatif (voir le piège plus bas).', en: 'Essential condition: no negative weight (see the trap below).' }
+  - id: d_tas
+    type: idee
+    fr: 'Pour trouver vite « le plus proche », on utilise un **tas** (file de priorité) : `heapq.heappush` y ajoute un élément, `heapq.heappop` retire **le plus petit**. Chaque opération coûte $O(\log n)$.'
+    en: 'To find “the nearest” quickly, we use a **heap** (priority queue): `heapq.heappush` adds an element, `heapq.heappop` removes **the smallest**. Each operation costs $O(\log n)$.'
+    exemple: { fr: 'On pousse 5, 1, 3 dans un tas : le premier `heappop` renvoie `1`, le suivant `3`. L’ordre d’entrée n’a pas d’importance.', en: 'We push 5, 1, 3 into a heap: the first `heappop` returns `1`, the next `3`. Insertion order does not matter.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Dijkstra sur un petit graphe', en: 'Dijkstra on a small graph' }
+    lang: python
+    etapes:
+      - { code: 'import heapq\ng = {"A": {"B": 4, "C": 1}, "C": {"B": 2, "D": 7}, "B": {"D": 1}, "D": {}}', fr: 'Un graphe : `g["A"]` donne les voisins de A avec le poids de chaque lien.', en: 'A graph: `g["A"]` gives A’s neighbours with the weight of each link.' }
+      - { code: 'dist = {"A": 0}\ntas = [(0, "A")]', fr: 'Distance de A à lui-même : 0. Le tas contient des couples (distance, sommet).', en: 'Distance from A to itself: 0. The heap holds (distance, vertex) pairs.' }
+      - { code: 'while tas:\n    d, u = heapq.heappop(tas)\n    if d > dist[u]:\n        continue', fr: 'On sort le plus proche. Si une meilleure distance a été trouvée depuis, cette entrée est périmée : on l’ignore.', en: 'We take the nearest. If a better distance has been found since, this entry is stale: we skip it.' }
+      - { code: '    for v, w in g[u].items():\n        if d + w < dist.get(v, 10**9):\n            dist[v] = d + w\n            heapq.heappush(tas, (d + w, v))', fr: 'Pour chaque voisin, on regarde si passer par `u` est moins cher ; si oui, on met à jour et on pousse.', en: 'For each neighbour, we check whether going through `u` is cheaper; if so, we update and push.' }
+      - { code: 'print(sorted(dist.items()))', fr: "Distances depuis A : B = 3 (via C), C = 1, D = 4. On affiche `[('A', 0), ('B', 3), ('C', 1), ('D', 4)]`.", en: "Distances from A: B = 3 (via C), C = 1, D = 4. We display `[('A', 0), ('B', 3), ('C', 1), ('D', 4)]`." }
+    verif: |-
+      import heapq
+      g = {"A": {"B": 4, "C": 1}, "C": {"B": 2, "D": 7}, "B": {"D": 1}, "D": {}}
+      dist = {"A": 0}
+      tas = [(0, "A")]
+      while tas:
+          d, u = heapq.heappop(tas)
+          if d > dist[u]:
+              continue
+          for v, w in g[u].items():
+              if d + w < dist.get(v, 10**9):
+                  dist[v] = d + w
+                  heapq.heappush(tas, (d + w, v))
+      print(sorted(dist.items()))
+    sortie: "[('A', 0), ('B', 3), ('C', 1), ('D', 4)]"
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `dijkstra(g, depart)`** : elle renvoie le dictionnaire des distances minimales depuis `depart` vers tous les sommets atteignables. `g` est un dictionnaire de dictionnaires, comme dans l’exemple.'
+    en: 'Your turn. **Write `dijkstra(g, depart)`**: it returns the dictionary of minimal distances from `depart` to every reachable vertex. `g` is a dictionary of dictionaries, as in the example.'
+    depart: |
+      import heapq
+
+      # écris ta fonction dijkstra ici
+    tests: |
+      g = {"A": {"B": 4, "C": 1}, "C": {"B": 2, "D": 7}, "B": {"D": 1}, "D": {}}
+      assert dijkstra(g, "A") == {"A": 0, "B": 3, "C": 1, "D": 4}
+      assert dijkstra(g, "B") == {"B": 0, "D": 1}
+      assert dijkstra({"X": {}}, "X") == {"X": 0}
+    solutionCode: |
+      import heapq
+
+      def dijkstra(g, depart):
+          dist = {depart: 0}
+          tas = [(0, depart)]
+          while tas:
+              d, u = heapq.heappop(tas)
+              if d > dist[u]:
+                  continue
+              for v, w in g[u].items():
+                  if d + w < dist.get(v, float("inf")):
+                      dist[v] = d + w
+                      heapq.heappush(tas, (d + w, v))
+          return dist
+    indice: { fr: 'Reprends le schéma de l’exemple : un tas de couples (distance, sommet), un test `d > dist[u]` pour ignorer les entrées périmées, puis la mise à jour des voisins.', en: 'Reuse the pattern from the example: a heap of (distance, vertex) pairs, a test `d > dist[u]` to skip stale entries, then updating the neighbours.' }
+    explication: { fr: 'Un sommet absent du résultat est inatteignable depuis le départ, comme au niveau 3.5.', en: 'A vertex absent from the result is unreachable from the start, as in level 3.5.' }
+  - id: d_p_neg
+    type: piege
+    fr: 'Dijkstra **ne marche pas avec des poids négatifs** : un détour par un lien négatif pourrait améliorer une distance déjà jugée définitive. Il existe d’autres algorithmes pour ce cas.'
+    en: 'Dijkstra **does not work with negative weights**: a detour through a negative link could improve a distance already judged final. Other algorithms exist for that case.'
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans le graphe de l’exemple, quelle est la distance minimale de `A` à `D` ?'
+    en: 'In the example graph, what is the minimal distance from `A` to `D`?'
+    reponses: ['4']
+    verif: 'print(1 + 2 + 1)'
+    indice: { fr: 'Le meilleur chemin passe par C, puis B : additionne les trois poids.', en: 'The best path goes through C, then B: add the three weights.' }
+    explication: { fr: 'A→C (1), C→B (2), B→D (1) : $1+2+1=4$, mieux que A→B→D qui coûte $4+1=5$.', en: 'A→C (1), C→B (2), B→D (1): $1+2+1=4$, better than A→B→D which costs $4+1=5$.' }
+  - id: d_cout
+    type: idee
+    fr: 'Avec un tas, Dijkstra coûte $O((V+E)\log V)$ pour $V$ sommets et $E$ liens. Sans tas, chercher « le plus proche » à chaque tour coûterait bien davantage : le bon outil fait la différence.'
+    en: 'With a heap, Dijkstra costs $O((V+E)\log V)$ for $V$ vertices and $E$ links. Without a heap, finding “the nearest” at every turn would cost much more: the right tool makes the difference.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Outil', en: 'Tool' }, { fr: 'Trouver le plus proche', en: 'Find the nearest' }]
+      cellules:
+        - [{ fr: 'parcourir toute la liste', en: 'scan the whole list' }, { fr: '$O(V)$ à chaque tour', en: '$O(V)$ per turn', ton: bad }]
+        - [{ fr: 'tas (`heapq`)', en: 'heap (`heapq`)' }, { fr: '$O(\log V)$ à chaque tour', en: '$O(\log V)$ per turn', ton: ok }]
+      legende: { fr: 'On retrouve les logarithmes du niveau 3.1 : une division par deux fait gagner des étapes.', en: 'We find the logarithms of level 3.1: halving saves steps.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `cout_chemin(g, chemin)`** : la somme des poids le long de la liste de sommets `chemin` (par exemple `["A", "C", "B"]`). Renvoie `None` si un lien n’existe pas.'
+    en: '**Write `cout_chemin(g, chemin)`**: the sum of the weights along the list of vertices `chemin` (for example `["A", "C", "B"]`). Return `None` if a link does not exist.'
+    depart: |
+      # écris ta fonction cout_chemin ici
+    tests: |
+      g = {"A": {"B": 4, "C": 1}, "C": {"B": 2, "D": 7}, "B": {"D": 1}, "D": {}}
+      assert cout_chemin(g, ["A", "C", "B"]) == 3
+      assert cout_chemin(g, ["A", "C", "B", "D"]) == 4
+      assert cout_chemin(g, ["A"]) == 0
+      assert cout_chemin(g, ["A", "D"]) is None
+    solutionCode: |
+      def cout_chemin(g, chemin):
+          total = 0
+          for u, v in zip(chemin, chemin[1:]):
+              if v not in g[u]:
+                  return None
+              total = total + g[u][v]
+          return total
+    indice: { fr: '`zip(chemin, chemin[1:])` donne chaque couple de sommets consécutifs. Teste l’existence du lien avant d’ajouter.', en: '`zip(chemin, chemin[1:])` gives each pair of consecutive vertices. Test the link exists before adding.' }
+    explication: { fr: 'On vérifie un chemin avant de l’optimiser : un lien manquant rend le chemin invalide.', en: 'We check a path before optimising it: a missing link makes the path invalid.' }
+  - id: d_lien
+    type: idee
+    fr: 'Le **BFS** du niveau 3.5 est un cas particulier de Dijkstra où **tous les poids valent 1**. Pour Kintana, un poids peut être un « coût de saut » entre deux documents : plus il est faible, plus ils sont proches.'
+    en: 'The **BFS** from level 3.5 is a special case of Dijkstra where **all weights are 1**. For Kintana, a weight can be a “jump cost” between two documents: the lower it is, the closer they are.'
+    exemple: { fr: 'Deux documents très liés ont un lien de poids 1 ; deux documents éloignés, un lien de poids 8. Dijkstra trouve la suite de documents la plus proche entre deux sujets.', en: 'Two closely related documents have a link of weight 1; two distant ones, weight 8. Dijkstra finds the closest chain of documents between two topics.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `plus_proche(g, depart, cible)`** : le **chemin** le moins coûteux (liste de sommets) de `depart` à `cible`, ou `None` si `cible` est inatteignable. Garde un dictionnaire `precedent` pour le reconstruire.'
+    en: 'Challenge. **Write `plus_proche(g, depart, cible)`**: the cheapest **path** (list of vertices) from `depart` to `cible`, or `None` if `cible` is unreachable. Keep a `precedent` dictionary to rebuild it.'
+    depart: |
+      import heapq
+
+      # écris ta fonction plus_proche ici
+    tests: |
+      g = {"A": {"B": 4, "C": 1}, "C": {"B": 2, "D": 7}, "B": {"D": 1}, "D": {}, "Z": {}}
+      assert plus_proche(g, "A", "D") == ["A", "C", "B", "D"]
+      assert plus_proche(g, "A", "A") == ["A"]
+      assert plus_proche(g, "A", "Z") is None
+      assert plus_proche(g, "C", "D") == ["C", "B", "D"]
+    solutionCode: |
+      import heapq
+
+      def plus_proche(g, depart, cible):
+          dist = {depart: 0}
+          precedent = {}
+          tas = [(0, depart)]
+          while tas:
+              d, u = heapq.heappop(tas)
+              if d > dist[u]:
+                  continue
+              for v, w in g[u].items():
+                  if d + w < dist.get(v, float("inf")):
+                      dist[v] = d + w
+                      precedent[v] = u
+                      heapq.heappush(tas, (d + w, v))
+          if cible not in dist:
+              return None
+          chemin = [cible]
+          while chemin[-1] != depart:
+              chemin.append(precedent[chemin[-1]])
+          return chemin[::-1]
+    indice: { fr: 'À chaque mise à jour de `dist[v]`, note aussi `precedent[v] = u`. Reconstruis en remontant de `cible` à `depart`, puis inverse la liste.', en: 'At each update of `dist[v]`, also record `precedent[v] = u`. Rebuild by walking back from `cible` to `depart`, then reverse the list.' }
+    explication: { fr: 'On retrouve le chemin en remontant les « précédents » : c’est l’arbre des plus courts chemins.', en: 'We recover the path by walking back through the “predecessors”: this is the tree of shortest paths.' }
+  - id: c8
+    type: retenir
+    fr: 'Graphe pondéré : coût = somme des poids. Dijkstra développe toujours le sommet le plus proche, avec un tas ; poids positifs seulement. Le BFS en est le cas où tous les poids valent 1.'
+    en: 'Weighted graph: cost = sum of weights. Dijkstra always expands the nearest vertex, with a heap; positive weights only. BFS is the case where all weights are 1.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — module heapq](https://docs.python.org/3/library/heapq.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — heapq module](https://docs.python.org/3/library/heapq.html); this optional reading needs a connection.

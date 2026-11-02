@@ -1,0 +1,177 @@
+# Niveau 4.7 — Algèbre linéaire 7 : rang, noyau et bases. Original academik ; notions vérifiées dans MIT 18.06 (indépendance, base, rang, noyau) et Mon_livre_d_algo / M1 (élimination de Gauss, notions reprises et réécrites).
+id: '4.7'
+module: 4
+duree_min: 18
+titre: { fr: 'Rang, noyau et bases', en: 'Rank, kernel and bases' }
+ia: { fr: 'Kintana sait combien de directions vraiment différentes une matrice produit, et ce qu’elle écrase.', en: 'Kintana knows how many truly different directions a matrix produces, and what it crushes.' }
+sources:
+  - { titre: 'Gilbert Strang — MIT 18.06, Linear Algebra', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+  - { titre: 'Python — module fractions', url: 'https://docs.python.org/3/library/fractions.html', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Dans la matrice $\begin{pmatrix}1&2\\2&4\end{pmatrix}$, la seconde ligne est le **double** de la première. Combien de lignes vraiment différentes a-t-elle ?'
+    en: 'In the matrix $\begin{pmatrix}1&2\\2&4\end{pmatrix}$, the second row is **twice** the first. How many truly different rows does it have?'
+    choix:
+      - { fr: '$1$', en: '$1$', juste: true }
+      - { fr: '$2$', en: '$2$' }
+      - { fr: '$0$', en: '$0$' }
+    explication: { fr: 'La seconde ligne n’apporte rien de nouveau : c’est la première multipliée par 2.', en: 'The second row adds nothing new: it is the first multiplied by 2.' }
+  - id: c2
+    type: idee
+    fr: 'Des vecteurs sont **dépendants** si l’un d’eux est une combinaison des autres : il n’apporte aucune nouvelle direction. Le **rang** d’une matrice est le nombre de colonnes **indépendantes**.'
+    en: 'Vectors are **dependent** if one of them is a combination of the others: it brings no new direction. The **rank** of a matrix is the number of **independent** columns.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Matrice', en: 'Matrix' }, { fr: 'Pourquoi', en: 'Why' }, { fr: 'Rang', en: 'Rank' }]
+      cellules:
+        - ['$\begin{pmatrix}1&0\\0&1\end{pmatrix}$', { fr: 'deux colonnes indépendantes', en: 'two independent columns' }, { fr: '$2$', en: '$2$', ton: ok }]
+        - ['$\begin{pmatrix}1&2\\2&4\end{pmatrix}$', { fr: 'seconde colonne $=2\times$ la première', en: 'second column $=2\times$ the first' }, '$1$']
+        - ['$\begin{pmatrix}0&0\\0&0\end{pmatrix}$', { fr: 'aucune direction', en: 'no direction' }, { fr: '$0$', en: '$0$', ton: bad }]
+      legende: { fr: 'Le rang va de $0$ jusqu’au plus petit des nombres de lignes et de colonnes.', en: 'The rank goes from $0$ up to the smaller of the numbers of rows and columns.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Le déterminant détecte la dépendance', en: 'The determinant detects dependence' }
+    lang: python
+    etapes:
+      - { code: 'M = [[1, 2], [2, 4]]', fr: 'La matrice dont la seconde ligne double la première.', en: 'The matrix whose second row doubles the first.' }
+      - { code: 'det = M[0][0] * M[1][1] - M[0][1] * M[1][0]', fr: 'Pour une matrice $2\times2$, le déterminant vaut $ad-bc$ (niveau 4.4).', en: 'For a $2\times2$ matrix, the determinant is $ad-bc$ (level 4.4).' }
+      - { code: 'print(det)', fr: 'On affiche `0` : un déterminant nul signifie colonnes dépendantes, donc rang inférieur à 2.', en: 'We display `0`: a zero determinant means dependent columns, hence rank below 2.' }
+    verif: |-
+      M = [[1, 2], [2, 4]]
+      det = M[0][0] * M[1][1] - M[0][1] * M[1][0]
+      print(det)
+    sortie: '0'
+  - id: d_noyau
+    type: idee
+    fr: 'Le **noyau** d’une matrice $M$ est l’ensemble des vecteurs $v$ que $M$ **écrase en zéro** : $Mv=0$. Tout vecteur non nul du noyau est une direction perdue par la transformation.'
+    en: 'The **kernel** of a matrix $M$ is the set of vectors $v$ that $M$ **crushes to zero**: $Mv=0$. Any non-zero vector in the kernel is a direction lost by the transformation.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Pour $M=\begin{pmatrix}1&2\\2&4\end{pmatrix}$', en: 'For $M=\begin{pmatrix}1&2\\2&4\end{pmatrix}$' }, { fr: '$Mv$', en: '$Mv$' }, { fr: 'Dans le noyau ?', en: 'In the kernel?' }]
+      cellules:
+        - ['$v=(2,-1)$', '$(0,0)$', { fr: 'oui', en: 'yes', ton: ok }]
+        - ['$v=(4,-2)$', '$(0,0)$', { fr: 'oui', en: 'yes', ton: ok }]
+        - ['$v=(1,1)$', '$(3,6)$', { fr: 'non', en: 'no', ton: bad }]
+      legende: { fr: 'Tous les multiples de $(2,-1)$ sont écrasés : le noyau est une droite.', en: 'All multiples of $(2,-1)$ are crushed: the kernel is a line.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `dans_noyau(M, v)`** : renvoie `True` si la matrice `M` (liste de lignes) envoie le vecteur `v` (liste) sur le vecteur nul.'
+    en: 'Your turn. **Write `dans_noyau(M, v)`**: return `True` if the matrix `M` (list of rows) sends the vector `v` (list) to the zero vector.'
+    depart: |
+      # écris ta fonction dans_noyau ici
+    tests: |
+      assert dans_noyau([[1, 2], [2, 4]], [2, -1]) is True
+      assert dans_noyau([[1, 2], [2, 4]], [1, 1]) is False
+      assert dans_noyau([[1, 0], [0, 1]], [0, 0]) is True
+      assert dans_noyau([[1, 0], [0, 1]], [3, 0]) is False
+    solutionCode: |
+      def dans_noyau(M, v):
+          for ligne in M:
+              if sum(a * b for a, b in zip(ligne, v)) != 0:
+                  return False
+          return True
+    indice: { fr: 'Chaque ligne doit donner un produit scalaire nul avec `v`. Dès qu’une ligne donne autre chose que 0, la réponse est `False`.', en: 'Each row must give a zero dot product with `v`. As soon as one row gives something other than 0, the answer is `False`.' }
+    explication: { fr: 'Le noyau est défini par **toutes** les lignes à la fois : une seule ligne non nulle suffit à sortir du noyau.', en: 'The kernel is defined by **all** rows at once: a single non-zero row is enough to leave the kernel.' }
+  - id: d_theoreme
+    type: idee
+    fr: 'Le rang et le noyau se complètent : **rang + dimension du noyau = nombre de colonnes**. Ce qu’on garde en direction, plus ce qu’on écrase, redonne toutes les directions de départ.'
+    en: 'Rank and kernel complete each other: **rank + dimension of the kernel = number of columns**. What we keep in direction, plus what we crush, gives back all the starting directions.'
+    exemple: { fr: 'Pour $\begin{pmatrix}1&2\\2&4\end{pmatrix}$ : rang $1$, noyau d’une droite (dimension $1$), et $1+1=2$ colonnes. Pour l’identité $2\times2$ : $2+0=2$.', en: 'For $\begin{pmatrix}1&2\\2&4\end{pmatrix}$: rank $1$, kernel a line (dimension $1$), and $1+1=2$ columns. For the $2\times2$ identity: $2+0=2$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Une matrice a $5$ colonnes et un rang de $3$. Quelle est la dimension de son noyau ?'
+    en: 'A matrix has $5$ columns and a rank of $3$. What is the dimension of its kernel?'
+    reponses: ['2']
+    verif: 'print(5 - 3)'
+    indice: { fr: 'rang + dimension du noyau = nombre de colonnes.', en: 'rank + kernel dimension = number of columns.' }
+    explication: { fr: '$5-3=2$ : deux directions de départ sont perdues.', en: '$5-3=2$: two starting directions are lost.' }
+  - id: d_base
+    type: idee
+    fr: 'Une **base** du plan est une paire de vecteurs indépendants. Tout vecteur s’écrit alors **d’une seule façon** comme combinaison d’eux : ses coordonnées dans cette base.'
+    en: 'A **basis** of the plane is a pair of independent vectors. Every vector is then written **in exactly one way** as a combination of them: its coordinates in that basis.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Paire', en: 'Pair' }, { fr: 'Déterminant', en: 'Determinant' }, { fr: 'Base du plan ?', en: 'Basis of the plane?' }]
+      cellules:
+        - ['$(1,0),\ (0,1)$', '$1$', { fr: 'oui', en: 'yes', ton: ok }]
+        - ['$(1,1),\ (1,-1)$', '$-2$', { fr: 'oui', en: 'yes', ton: ok }]
+        - ['$(1,2),\ (2,4)$', '$0$', { fr: 'non : alignés', en: 'no: aligned', ton: bad }]
+      legende: { fr: 'Pour deux vecteurs $(a,b)$ et $(c,d)$ : base si et seulement si $ad-bc\neq0$.', en: 'For two vectors $(a,b)$ and $(c,d)$: basis if and only if $ad-bc\neq0$.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `est_base(u, v)`** : renvoie `True` si les deux vecteurs du plan `u` et `v` (listes de deux nombres) forment une base. C’est le cas quand leur déterminant est non nul.'
+    en: '**Write `est_base(u, v)`**: return `True` if the two plane vectors `u` and `v` (lists of two numbers) form a basis. This is the case when their determinant is non-zero.'
+    depart: |
+      # écris ta fonction est_base ici
+    tests: |
+      assert est_base([1, 0], [0, 1]) is True
+      assert est_base([1, 1], [1, -1]) is True
+      assert est_base([1, 2], [2, 4]) is False
+      assert est_base([0, 0], [1, 5]) is False
+    solutionCode: |
+      def est_base(u, v):
+          return u[0] * v[1] - u[1] * v[0] != 0
+    indice: { fr: 'Le déterminant des vecteurs $(a,b)$ et $(c,d)$ vaut $ad-bc$ : renvoie le test « différent de zéro ».', en: 'The determinant of the vectors $(a,b)$ and $(c,d)$ is $ad-bc$: return the test “different from zero”.' }
+    explication: { fr: 'Le vecteur nul ne peut jamais faire partie d’une base : le déterminant tombe à 0.', en: 'The zero vector can never be part of a basis: the determinant falls to 0.' }
+  - id: d_p_rect
+    type: piege
+    fr: 'Une matrice **carrée** de rang plein est inversible ; une matrice **rectangulaire** ne l’est jamais. Ne confonds pas « rang maximal » (le plus grand possible) et « rang égal à $n$ ».'
+    en: 'A **square** matrix of full rank is invertible; a **rectangular** matrix never is. Do not confuse “maximal rank” (the largest possible) with “rank equal to $n$”.'
+  - id: d_lien
+    type: idee
+    fr: 'Tu as déjà rencontré le rang sans le nommer. Au niveau 4.4, un déterminant nul voulait dire « aucune ou une infinité de solutions ». Au niveau 4.5, le nombre de valeurs singulières non nulles **est** le rang.'
+    en: 'You have already met rank without naming it. In level 4.4, a zero determinant meant “no solution or infinitely many”. In level 4.5, the number of non-zero singular values **is** the rank.'
+    exemple: { fr: 'Tronquer une SVD à $k$ valeurs singulières, c’est approcher la matrice par une matrice de rang $k$ : moins de directions, moins de place, un peu d’information perdue.', en: 'Truncating an SVD to $k$ singular values means approximating the matrix by a rank-$k$ matrix: fewer directions, less space, some information lost.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `rang(M)`** pour une matrice de n’importe quelle taille, par élimination de Gauss avec des `Fraction` (pour éviter les erreurs d’arrondi). Le rang est le nombre de pivots trouvés.'
+    en: 'Challenge. **Write `rang(M)`** for a matrix of any size, by Gaussian elimination with `Fraction` (to avoid rounding errors). The rank is the number of pivots found.'
+    depart: |
+      from fractions import Fraction
+
+      # écris ta fonction rang ici
+    tests: |
+      assert rang([[1, 2], [2, 4]]) == 1
+      assert rang([[1, 0, 0], [0, 1, 0], [0, 0, 1]]) == 3
+      assert rang([[1, 2, 3], [4, 5, 6], [7, 8, 9]]) == 2
+      assert rang([[0, 0], [0, 0]]) == 0
+      assert rang([[1, 2, 3], [2, 4, 7]]) == 2
+    solutionCode: |
+      from fractions import Fraction
+
+      def rang(M):
+          A = [[Fraction(x) for x in ligne] for ligne in M]
+          lignes = len(A)
+          colonnes = len(A[0]) if A else 0
+          r = 0
+          for c in range(colonnes):
+              p = None
+              for i in range(r, lignes):
+                  if A[i][c] != 0:
+                      p = i
+                      break
+              if p is None:
+                  continue
+              A[r], A[p] = A[p], A[r]
+              for i in range(r + 1, lignes):
+                  f = A[i][c] / A[r][c]
+                  A[i] = [a - f * b for a, b in zip(A[i], A[r])]
+              r = r + 1
+          return r
+    indice: { fr: 'Pour chaque colonne, cherche un pivot non nul sous la ligne `r` ; échange, annule en dessous, et compte un pivot de plus.', en: 'For each column, look for a non-zero pivot below row `r`; swap, clear below, and count one more pivot.' }
+    explication: { fr: 'Les lignes dépendantes deviennent des lignes nulles : elles ne fournissent aucun pivot, donc ne comptent pas.', en: 'Dependent rows become zero rows: they supply no pivot, hence do not count.' }
+  - id: c8
+    type: retenir
+    fr: 'Rang = nombre de directions indépendantes ; noyau = ce qui est écrasé en 0 ; rang + dimension du noyau = nombre de colonnes. Une base : des vecteurs indépendants qui donnent chaque vecteur d’une seule façon.'
+    en: 'Rank = number of independent directions; kernel = what is crushed to 0; rank + kernel dimension = number of columns. A basis: independent vectors that give each vector in exactly one way.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [MIT 18.06 — Algèbre linéaire](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [MIT 18.06 — Linear algebra](https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/); this optional reading needs a connection.

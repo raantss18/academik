@@ -1,0 +1,165 @@
+# Niveau 5.8 — Analyse 8 : intégrales. Original academik ; notions vérifiées dans MIT 18.01 (intégrale, sommes de Riemann, théorème fondamental) et lien avec le niveau 6.3 (densités).
+id: '5.8'
+module: 5
+duree_min: 18
+titre: { fr: 'Intégrales', en: 'Integrals' }
+ia: { fr: 'Kintana mesure une aire sous une courbe, ce qui lui servira à calculer des probabilités et des moyennes continues.', en: 'Kintana measures an area under a curve, which will serve her to compute probabilities and continuous averages.' }
+sources:
+  - { titre: 'MIT 18.01 — Single Variable Calculus (intégrales)', url: 'https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Une fonction vaut **2** partout entre $x=0$ et $x=3$. Quelle est l’aire du rectangle sous sa courbe ?'
+    en: 'A function equals **2** everywhere between $x=0$ and $x=3$. What is the area of the rectangle under its curve?'
+    choix:
+      - { fr: '$5$', en: '$5$' }
+      - { fr: '$6$', en: '$6$', juste: true }
+      - { fr: '$3$', en: '$3$' }
+    explication: { fr: 'Aire d’un rectangle : largeur × hauteur, soit $3\times2=6$.', en: 'Area of a rectangle: width × height, i.e. $3\times2=6$.' }
+  - id: c2
+    type: idee
+    fr: 'L’**intégrale** $\int_a^b f(x)\,dx$ mesure l’**aire signée** entre la courbe de $f$ et l’axe horizontal, de $x=a$ à $x=b$. Au-dessus de l’axe, l’aire compte positivement ; en dessous, négativement.'
+    en: 'The **integral** $\int_a^b f(x)\,dx$ measures the **signed area** between the curve of $f$ and the horizontal axis, from $x=a$ to $x=b$. Above the axis, area counts positively; below, negatively.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Fonction sur l’intervalle', en: 'Function on the interval' }, { fr: 'Forme', en: 'Shape' }, { fr: 'Intégrale', en: 'Integral' }]
+      cellules:
+        - ['$f(x)=2$ sur $[0,3]$', { fr: 'rectangle $3\times2$', en: 'rectangle $3\times2$' }, '$6$']
+        - ['$f(x)=x$ sur $[0,4]$', { fr: 'triangle $\frac{4\times4}{2}$', en: 'triangle $\frac{4\times4}{2}$' }, '$8$']
+        - ['$f(x)=-1$ sur $[0,2]$', { fr: 'rectangle sous l’axe', en: 'rectangle below the axis' }, { fr: '$-2$', en: '$-2$', ton: bad }]
+      legende: { fr: 'Pour ces formes simples, un calcul de géométrie suffit.', en: 'For these simple shapes, a geometry computation is enough.' }
+  - id: d_riemann
+    type: idee
+    fr: 'Pour une courbe quelconque, on découpe l’intervalle en $n$ **bandes** de même largeur $h=\frac{b-a}{n}$ et on additionne les aires de rectangles. Plus $n$ est grand, plus le résultat approche l’intégrale.'
+    en: 'For an arbitrary curve, cut the interval into $n$ **strips** of equal width $h=\frac{b-a}{n}$ and add up the areas of rectangles. The larger $n$ is, the closer the result gets to the integral.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Pour $f(x)=x$ sur $[0,1]$', en: 'For $f(x)=x$ on $[0,1]$' }, { fr: 'Somme de rectangles', en: 'Sum of rectangles' }]
+      cellules:
+        - ['$n=4$', '$0{,}375$']
+        - ['$n=10$', '$0{,}45$']
+        - ['$n=100$', { fr: '$0{,}495$ (limite : $0{,}5$)', en: '$0.495$ (limit: $0.5$)', ton: ok }]
+      legende: { fr: 'Chaque rectangle a pour hauteur la valeur de $f$ au **début** de sa bande.', en: 'Each rectangle’s height is the value of $f$ at the **start** of its strip.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Additionner des rectangles', en: 'Adding up rectangles' }
+    lang: python
+    etapes:
+      - { code: 'f = lambda x: x', fr: 'La fonction $f(x)=x$, écrite en une ligne.', en: 'The function $f(x)=x$, written in one line.' }
+      - { code: 'a, b, n = 0, 1, 4\nh = (b - a) / n', fr: 'On découpe $[0,1]$ en 4 bandes de largeur $h=0{,}25$.', en: 'We cut $[0,1]$ into 4 strips of width $h=0.25$.' }
+      - { code: 'total = sum(f(a + i * h) for i in range(n)) * h', fr: 'Pour chaque bande `i`, la hauteur est `f(a + i * h)` ; on additionne puis on multiplie par la largeur.', en: 'For each strip `i`, the height is `f(a + i * h)`; we add up then multiply by the width.' }
+      - { code: 'print(total)', fr: 'On affiche `0.375`, un peu moins que l’aire exacte $0{,}5$ : les rectangles sont sous la droite.', en: 'We display `0.375`, a bit less than the exact area $0.5$: the rectangles lie under the line.' }
+    verif: |-
+      f = lambda x: x
+      a, b, n = 0, 1, 4
+      h = (b - a) / n
+      total = sum(f(a + i * h) for i in range(n)) * h
+      print(total)
+    sortie: '0.375'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `riemann(f, a, b, n)`** : la somme de $n$ rectangles de largeur $(b-a)/n$, de hauteur $f$ au début de chaque bande.'
+    en: 'Your turn. **Write `riemann(f, a, b, n)`**: the sum of $n$ rectangles of width $(b-a)/n$, with height $f$ at the start of each strip.'
+    depart: |
+      # écris ta fonction riemann ici
+    tests: |
+      assert abs(riemann(lambda x: x, 0, 1, 4) - 0.375) < 1e-12
+      assert abs(riemann(lambda x: 2, 0, 3, 10) - 6) < 1e-9
+      assert abs(riemann(lambda x: x * x, 0, 3, 100000) - 9) < 1e-3
+      assert abs(riemann(lambda x: -1, 0, 2, 5) + 2) < 1e-9
+    solutionCode: |
+      def riemann(f, a, b, n):
+          h = (b - a) / n
+          return sum(f(a + i * h) for i in range(n)) * h
+    indice: { fr: 'Calcule la largeur `h`, puis la somme des `f(a + i * h)` pour `i` de 0 à `n - 1`, multipliée par `h`.', en: 'Compute the width `h`, then the sum of `f(a + i * h)` for `i` from 0 to `n - 1`, multiplied by `h`.' }
+    explication: { fr: 'Une fonction constante est intégrée exactement dès 1 rectangle ; une courbe demande beaucoup de bandes.', en: 'A constant function is integrated exactly from 1 rectangle; a curve needs many strips.' }
+  - id: d_primitive
+    type: idee
+    fr: 'Il existe un raccourci : si $F$ est une **primitive** de $f$ (c’est-à-dire $F''=f$), alors $\int_a^b f(x)\,dx=F(b)-F(a)$. C’est le **théorème fondamental** : intégrer, c’est dériver à l’envers.'
+    en: 'There is a shortcut: if $F$ is an **antiderivative** of $f$ (that is, $F''=f$), then $\int_a^b f(x)\,dx=F(b)-F(a)$. This is the **fundamental theorem**: integrating is differentiating backwards.'
+    figure:
+      kind: tableau
+      entetes: ['$f(x)$', { fr: 'Primitive $F(x)$', en: 'Antiderivative $F(x)$' }, { fr: '$\int_0^3 f$', en: '$\int_0^3 f$' }]
+      cellules:
+        - ['$2$', '$2x$', '$6-0=6$']
+        - ['$x$', '$\frac{x^2}{2}$', '$\frac92-0=4{,}5$']
+        - ['$x^2$', '$\frac{x^3}{3}$', { fr: '$9-0=9$', en: '$9-0=9$', ton: ok }]
+      legende: { fr: 'On vérifie une primitive en la dérivant (niveau 5.2) : $(x^3/3)''=x^2$.', en: 'We check an antiderivative by differentiating it (level 5.2): $(x^3/3)''=x^2$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Calcule $\int_0^2 3x^2\,dx$. Indice : une primitive de $3x^2$ est $x^3$.'
+    en: 'Compute $\int_0^2 3x^2\,dx$. Hint: an antiderivative of $3x^2$ is $x^3$.'
+    reponses: ['8']
+    verif: 'print(2 ** 3 - 0 ** 3)'
+    indice: { fr: 'Calcule $F(2)-F(0)$ avec $F(x)=x^3$.', en: 'Compute $F(2)-F(0)$ with $F(x)=x^3$.' }
+    explication: { fr: '$F(2)-F(0)=8-0=8$.', en: '$F(2)-F(0)=8-0=8$.' }
+  - id: d_p_signe
+    type: piege
+    fr: 'Une aire **signée** peut s’annuler : $\int_{-1}^{1}x\,dx=0$, car la partie sous l’axe compense celle au-dessus. Une intégrale nulle ne veut pas dire « courbe nulle ».'
+    en: 'A **signed** area can cancel out: $\int_{-1}^{1}x\,dx=0$, because the part below the axis offsets the part above. A zero integral does not mean “zero curve”.'
+  - id: d_proba
+    type: idee
+    fr: 'Le lien avec les probabilités (niveau 6.3) : pour une variable continue de **densité** $p$, la probabilité d’un intervalle est l’intégrale de la densité : $P(a\leq X\leq b)=\int_a^b p(x)\,dx$. L’aire totale vaut $1$.'
+    en: 'The link with probability (level 6.3): for a continuous variable with **density** $p$, the probability of an interval is the integral of the density: $P(a\leq X\leq b)=\int_a^b p(x)\,dx$. The total area is $1$.'
+    exemple: { fr: 'Loi uniforme sur $[0,8]$ : densité $\frac18$. La probabilité de $[2,6]$ est $\int_2^6\frac18\,dx=\frac{4}{8}=\frac12$. C’est exactement « longueur divisée par la longueur totale ».', en: 'Uniform law on $[0,8]$: density $\frac18$. The probability of $[2,6]$ is $\int_2^6\frac18\,dx=\frac{4}{8}=\frac12$. It is exactly “length divided by total length”.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `trapeze(f, a, b, n)`** : même découpage en $n$ bandes, mais chaque bande est un **trapèze** de hauteurs $f$ au début et à la fin de la bande. Aire d’un trapèze : $h\times\frac{f(x_i)+f(x_{i+1})}{2}$.'
+    en: '**Write `trapeze(f, a, b, n)`**: same cutting into $n$ strips, but each strip is a **trapezoid** with heights $f$ at the start and end of the strip. Area of a trapezoid: $h\times\frac{f(x_i)+f(x_{i+1})}{2}$.'
+    depart: |
+      # écris ta fonction trapeze ici
+    tests: |
+      assert abs(trapeze(lambda x: x, 0, 1, 1) - 0.5) < 1e-12
+      assert abs(trapeze(lambda x: x * x, 0, 3, 1000) - 9) < 1e-4
+      assert abs(trapeze(lambda x: 2, 0, 3, 7) - 6) < 1e-9
+    solutionCode: |
+      def trapeze(f, a, b, n):
+          h = (b - a) / n
+          total = 0
+          for i in range(n):
+              x0 = a + i * h
+              x1 = x0 + h
+              total = total + h * (f(x0) + f(x1)) / 2
+          return total
+    indice: { fr: 'À chaque bande, ajoute `h * (f(x0) + f(x1)) / 2`, avec `x1 = x0 + h`.', en: 'For each strip, add `h * (f(x0) + f(x1)) / 2`, with `x1 = x0 + h`.' }
+    explication: { fr: 'Pour $f(x)=x$, un seul trapèze suffit : la courbe est une droite, le trapèze est exact.', en: 'For $f(x)=x$, a single trapezoid is enough: the curve is a line, the trapezoid is exact.' }
+  - id: d_moyenne
+    type: idee
+    fr: 'L’intégrale donne aussi une **moyenne continue** : la valeur moyenne de $f$ sur $[a,b]$ vaut $\dfrac{1}{b-a}\int_a^b f(x)\,dx$. C’est la hauteur du rectangle de même aire.'
+    en: 'The integral also gives a **continuous average**: the mean value of $f$ over $[a,b]$ is $\dfrac{1}{b-a}\int_a^b f(x)\,dx$. It is the height of the rectangle with the same area.'
+    exemple: { fr: 'Pour $f(x)=x$ sur $[0,4]$ : l’intégrale vaut $8$, la longueur $4$, donc la moyenne vaut $2$, le milieu de $0$ et $4$.', en: 'For $f(x)=x$ on $[0,4]$: the integral is $8$, the length $4$, so the mean is $2$, the midpoint of $0$ and $4$.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `moyenne_continue(f, a, b)`** : la valeur moyenne de `f` sur $[a,b]$, en utilisant une somme de trapèzes avec $n=1000$ bandes divisée par $b-a$.'
+    en: 'Challenge. **Write `moyenne_continue(f, a, b)`**: the mean value of `f` over $[a,b]$, using a trapezoid sum with $n=1000$ strips divided by $b-a$.'
+    depart: |
+      # écris ta fonction moyenne_continue ici
+    tests: |
+      assert abs(moyenne_continue(lambda x: x, 0, 4) - 2) < 1e-6
+      assert abs(moyenne_continue(lambda x: 5, 1, 10) - 5) < 1e-9
+      assert abs(moyenne_continue(lambda x: x * x, 0, 3) - 3) < 1e-3
+    solutionCode: |
+      def moyenne_continue(f, a, b):
+          n = 1000
+          h = (b - a) / n
+          total = 0
+          for i in range(n):
+              x0 = a + i * h
+              total = total + h * (f(x0) + f(x0 + h)) / 2
+          return total / (b - a)
+    indice: { fr: 'Même boucle que `trapeze`, puis une division finale par `b - a`.', en: 'Same loop as `trapeze`, then a final division by `b - a`.' }
+    explication: { fr: 'Pour $x^2$ sur $[0,3]$ : l’intégrale vaut $9$, la moyenne $3$.', en: 'For $x^2$ on $[0,3]$: the integral is $9$, the mean $3$.' }
+  - id: c8
+    type: retenir
+    fr: 'Intégrale = aire signée sous la courbe, approchée par des rectangles ou des trapèzes ; $\int_a^bf=F(b)-F(a)$ si $F''=f$ ; une densité intégrée donne une probabilité ; divisée par $b-a$, une moyenne.'
+    en: 'Integral = signed area under the curve, approximated by rectangles or trapezoids; $\int_a^bf=F(b)-F(a)$ if $F''=f$; an integrated density gives a probability; divided by $b-a$, a mean.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [MIT 18.01 — Intégration](https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [MIT 18.01 — Integration](https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/); this optional reading needs a connection.
