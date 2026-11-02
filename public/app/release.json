@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 25,
-  "version": "0.3.22",
+  "build": 26,
+  "version": "0.3.23",
   "notes": {
-   "fr": "Un nouveau module t'attend : « Réseaux de neurones ». Tu construis un mini-micrograd, du neurone à un réseau qui apprend XOR tout seul. Pendant les leçons, une luciole traverse l'écran après trois réussites de suite, et le boss s'allume en fête.",
-   "en": "A new module awaits: “Neural networks”. You build a mini-micrograd, from a single neuron to a network that learns XOR on its own. During lessons, a firefly crosses the screen after three right answers in a row, and the boss lights up in celebration."
+   "fr": "Nouveau module « Transformers » : tu découpes du texte en tokens (BPE), tu écris le softmax, l'attention, le masque et le tirage avec température, puis tu assembles un mini-GPT qui génère du texte.",
+   "en": "New “Transformers” module: you split text into tokens (BPE), write the softmax, attention, mask and temperature sampling, then assemble a mini-GPT that generates text."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.22/academik-0.3.22.apk",
-    "sha256": "7e6bcf00c6ef09f7c3f6a8c094d4a86bbdcbee8643476ff8e97b4beaf3d67df0",
-    "bytes": 10744596
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.23/academik-0.3.23.apk",
+    "sha256": "978c7516d5f6ab08d34f516ffbbcce43bade04afdfc753bd123e6445f3e9343a",
+    "bytes": 10802803
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.22/academik-0.3.22-x86_64.AppImage",
-    "sha256": "529d63006e4ae74986872c40a9bdbc92a670bdc3c865cf72ff0f3e4480099af1",
-    "bytes": 115210744
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.23/academik-0.3.23-x86_64.AppImage",
+    "sha256": "da11ba0fe1e23727d8eb6dca7b1eaeca932e276e5cdc9e3cbc3847cc3c115825",
+    "bytes": 115259896
    }
   }
  },
  "history": [
+  {
+   "build": 25,
+   "version": "0.3.22",
+   "notes": {
+    "fr": "Un nouveau module t'attend : « Réseaux de neurones ». Tu construis un mini-micrograd, du neurone à un réseau qui apprend XOR tout seul. Pendant les leçons, une luciole traverse l'écran après trois réussites de suite, et le boss s'allume en fête.",
+    "en": "A new module awaits: “Neural networks”. You build a mini-micrograd, from a single neuron to a network that learns XOR on its own. During lessons, a firefly crosses the screen after three right answers in a row, and the boss lights up in celebration."
+   }
+  },
   {
    "build": 24,
    "version": "0.3.21",
