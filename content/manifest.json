@@ -2007,6 +2007,16 @@
       "verifie": "2026-11-02",
       "mode": "lien",
       "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens"
+    },
+    {
+      "id": "plato-stanford-edu-entries-paradox-simpson",
+      "titre": "Stanford Encyclopedia of Philosophy — Simpson’s Paradox",
+      "etablissement": "cité dans les niveaux 23.3",
+      "url": "https://plato.stanford.edu/entries/paradox-simpson/",
+      "licence": "Copyright SEP ; lien seulement, aucun extrait repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens"
     }
   ]
 }

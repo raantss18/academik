@@ -1,0 +1,389 @@
+# Niveau 23.5 — Enquêtes 5 : la faille dans l’agent. Original academik ; cybersécurité défensive : traces simulées, aucun outil offensif ; titre de la triade vérifié dans l’article de Willison (2025) ; tout le code exécuté.
+id: '23.5'
+module: 23
+duree_min: 20
+titre:
+  fr: La faille dans l’agent
+  en: The flaw in the agent
+ia:
+  fr: 'Kintana audite la trace d’un agent : outils hors liste, boucles et triade mortelle.'
+  en: 'Kintana audits an agent’s trace: off-list tools, loops and the lethal trifecta.'
+sources:
+- titre: 'Willison — The lethal trifecta for AI agents: private data, untrusted content, and external communication (2025)'
+  url: https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/
+  licence: Lien seulement ; texte non repris
+- titre: 'OWASP — LLM01 : Prompt Injection'
+  url: https://genai.owasp.org/llmrisk/llm01-prompt-injection/
+  licence: Lien seulement ; texte non repris
+- titre: 'Greshake et al. — Not what you’ve signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection'
+  url: https://arxiv.org/abs/2302.12173
+  licence: Article en accès libre ; idée citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un agent peut lire tes fichiers privés, ouvrir des pages web et envoyer des courriels. Quelle combinaison rend une attaque par injection **dangereuse** ?
+  en: An agent can read your private files, open web pages and send emails. Which combination makes an injection attack **dangerous**?
+  choix:
+  - fr: 'Les trois ensemble : données privées, contenu non fiable, envoi vers l’extérieur'
+    en: 'All three together: private data, untrusted content, sending outward'
+    juste: true
+  - fr: La lecture de fichiers seule
+    en: File reading alone
+  - fr: Les pages web seules
+    en: Web pages alone
+  indice:
+    fr: Que faut-il pour qu’un texte piégé fasse sortir un secret ?
+    en: What does it take for a booby-trapped text to get a secret out?
+  explication:
+    fr: 'Il faut un secret à lire, un texte piégé qui donne l’ordre, et un canal pour envoyer. Retire l’un des trois : l’attaque perd son effet.'
+    en: 'You need a secret to read, a booby-trapped text that gives the order, and a channel to send. Remove one of the three: the attack loses its effect.'
+- id: c2
+  type: idee
+  fr: 'Cette combinaison porte un nom : la **« lethal trifecta »**, la triade mortelle de Simon Willison. Un agent qui réunit **données privées**, **contenu non fiable** et **communication externe** peut être manipulé pour faire fuiter ses secrets.'
+  en: 'This combination has a name: the **“lethal trifecta”**, Simon Willison’s deadly triad. An agent that combines **private data**, **untrusted content** and **external communication** can be manipulated into leaking its secrets.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Les trois jambes
+        en: The three legs
+      noeuds:
+      - fr: données privées
+        en: private data
+      - fr: contenu non fiable
+        en: untrusted content
+      - fr: envoi externe
+        en: external sending
+      - fr: fuite possible
+        en: leak possible
+        ton: bad
+    legende:
+      fr: Un seul des trois, ou deux, ne suffit pas à faire fuiter.
+      en: One of the three, or two, are not enough to leak.
+- id: c3
+  type: exemple
+  titre:
+    fr: Lire une trace d’agent
+    en: Reading an agent trace
+  lang: python
+  etapes:
+  - code: |-
+      TR1 = [
+          {"outil": "lire_fichier", "args": "notes.txt"},
+          {"outil": "web_get", "args": "http://exemple.test/page"},
+          {"outil": "envoyer_mail", "args": "inconnu@exemple.test"},
+      ]
+    fr: 'Une **trace** liste, dans l’ordre, chaque appel d’outil de l’agent. Ici : lire un fichier, ouvrir une page, envoyer un courriel.'
+    en: 'A **trace** lists, in order, each tool call of the agent. Here: read a file, open a page, send an email.'
+  - code: 'CL = {"lire_fichier": "prive", "web_get": "non_fiable", "envoyer_mail": "externe", "calculer": None}'
+    fr: On range chaque outil dans une classe de risque. `calculer` n’en a aucune.
+    en: Each tool is sorted into a risk class. `calculer` has none.
+  - code: print(sorted({CL[a["outil"]] for a in TR1 if CL[a["outil"]]}))
+    fr: 'Les trois classes sont présentes : `[''externe'', ''non_fiable'', ''prive'']`. Cette trace réunit la triade.'
+    en: 'All three classes are present: `[''externe'', ''non_fiable'', ''prive'']`. This trace brings the triad together.'
+  verif: |-
+    TR1 = [
+        {"outil": "lire_fichier", "args": "notes.txt"},
+        {"outil": "web_get", "args": "http://exemple.test/page"},
+        {"outil": "envoyer_mail", "args": "inconnu@exemple.test"},
+    ]
+    CL = {"lire_fichier": "prive", "web_get": "non_fiable", "envoyer_mail": "externe", "calculer": None}
+    print(sorted({CL[a["outil"]] for a in TR1 if CL[a["outil"]]}))
+  sortie: '[''externe'', ''non_fiable'', ''prive'']'
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `capacites(trace, classes)`** : l’ensemble des classes de risque présentes dans `trace` (on ignore les outils sans classe, c’est-à-dire de valeur `None` ou absents de `classes`).'
+  en: 'Your turn. **Write `capacites(trace, classes)`**: the set of risk classes present in `trace` (ignore tools without a class, that is with value `None` or absent from `classes`).'
+  depart: |
+    # écris ta fonction capacites ici
+  tests: |-
+    TR1 = [
+        {"outil": "lire_fichier", "args": "notes.txt"},
+        {"outil": "web_get", "args": "http://exemple.test/page"},
+        {"outil": "envoyer_mail", "args": "inconnu@exemple.test"},
+    ]
+    CL = {"lire_fichier": "prive", "web_get": "non_fiable", "envoyer_mail": "externe", "calculer": None}
+    assert capacites(TR1, CL) == {"prive", "non_fiable", "externe"}
+    assert capacites([{"outil": "calculer", "args": "1+1"}], CL) == set()
+    assert capacites([], CL) == set()
+    assert capacites([{"outil": "inconnu", "args": ""}], CL) == set()
+  solutionCode: |
+    def capacites(trace, classes):
+        return {classes[a["outil"]] for a in trace if classes.get(a["outil"])}
+  indice:
+    fr: Une compréhension d’ensemble `{...}` sur les appels, avec `classes.get(a["outil"])` comme condition.
+    en: A set comprehension `{...}` over the calls, with `classes.get(a["outil"])` as the condition.
+  explication:
+    fr: '`classes.get` évite une erreur si l’outil est inconnu : un outil inconnu est traité comme sans classe, donc à surveiller ailleurs.'
+    en: '`classes.get` avoids an error if the tool is unknown: an unknown tool is treated as classless, so to be watched elsewhere.'
+- id: c5
+  type: idee
+  fr: 'Auditer une trace, c’est appliquer des **règles** à la liste des appels. Trois règles simples : les outils doivent être **autorisés**, aucun appel ne doit se **répéter en boucle**, et la **triade** ne doit pas être réunie.'
+  en: 'Auditing a trace means applying **rules** to the list of calls. Three simple rules: the tools must be **allowed**, no call must **repeat in a loop**, and the **triad** must not be brought together.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Règle
+      en: Rule
+    - fr: Ce qu’elle attrape
+      en: What it catches
+    cellules:
+    - - fr: liste d’outils autorisés
+        en: allowlist of tools
+      - fr: un outil jamais prévu
+        en: a tool never planned
+    - - fr: même appel répété
+        en: same call repeated
+      - fr: boucle ou acharnement
+        en: loop or hammering
+    - - fr: triade réunie
+        en: triad brought together
+      - fr: risque de fuite
+        en: leak risk
+    legende:
+      fr: Ces règles se testent sur les appels réels, pas sur ce que l’agent raconte.
+      en: These rules are tested on the real calls, not on what the agent says.
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `hors_liste(trace, autorises)`** : la liste des indices des appels dont l’outil n’est pas dans l’ensemble `autorises`.'
+  en: '**Write `hors_liste(trace, autorises)`**: the list of indices of the calls whose tool is not in the set `autorises`.'
+  depart: |
+    # écris ta fonction hors_liste ici
+  tests: |-
+    TR1 = [
+        {"outil": "lire_fichier", "args": "notes.txt"},
+        {"outil": "web_get", "args": "http://exemple.test/page"},
+        {"outil": "envoyer_mail", "args": "inconnu@exemple.test"},
+    ]
+    CL = {"lire_fichier": "prive", "web_get": "non_fiable", "envoyer_mail": "externe", "calculer": None}
+    assert hors_liste(TR1, {"lire_fichier", "web_get"}) == [2]
+    assert hors_liste(TR1, {"lire_fichier", "web_get", "envoyer_mail"}) == []
+    assert hors_liste(TR1, set()) == [0, 1, 2]
+    assert hors_liste([], {"a"}) == []
+  solutionCode: |
+    def hors_liste(trace, autorises):
+        return [i for i, a in enumerate(trace) if a["outil"] not in autorises]
+  indice:
+    fr: Une compréhension avec `enumerate(trace)` et la condition `a["outil"] not in autorises`.
+    en: A comprehension with `enumerate(trace)` and the condition `a["outil"] not in autorises`.
+  explication:
+    fr: 'Une liste d’**autorisation** vaut mieux qu’une liste d’interdiction : tout ce qui n’est pas prévu est refusé.'
+    en: 'An **allowlist** beats a blocklist: anything not planned is refused.'
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'Les outils autorisés sont `lire_fichier`, `calculer` et `web_get`. La trace appelle, dans l’ordre : `lire_fichier`, `calculer`, `web_get`, `supprimer`, `envoyer_mail`, `supprimer`. Combien d’appels sont hors liste ?'
+  en: 'The allowed tools are `lire_fichier`, `calculer` and `web_get`. The trace calls, in order: `lire_fichier`, `calculer`, `web_get`, `supprimer`, `envoyer_mail`, `supprimer`. How many calls are off the list?'
+  reponses:
+  - '3'
+  verif: |-
+    autorises = {"lire_fichier", "calculer", "web_get"}
+    noms = ["lire_fichier", "calculer", "web_get", "supprimer", "envoyer_mail", "supprimer"]
+    print(sum(n not in autorises for n in noms))
+  indice:
+    fr: Compte les appels dont le nom n’est pas l’un des trois autorisés. Un même outil appelé deux fois compte deux fois.
+    en: Count the calls whose name is not one of the three allowed ones. A tool called twice counts twice.
+  explication:
+    fr: '`supprimer` (deux fois) et `envoyer_mail` sont hors liste : $3$ appels.'
+    en: '`supprimer` (twice) and `envoyer_mail` are off the list: $3$ calls.'
+- id: c8
+  type: idee
+  fr: 'Un agent peut aussi s’acharner : le même appel, avec les mêmes arguments, répété sans fin. C’est un signe de **boucle**. On fixe un seuil `k` : au-delà de `k` appels identiques consécutifs, on arrête l’agent et on le signale.'
+  en: 'An agent can also hammer away: the same call, with the same arguments, repeated endlessly. This is a sign of a **loop**. We set a threshold `k`: beyond `k` identical consecutive calls, we stop the agent and flag it.'
+  exemple:
+    fr: 'Trois fois `web_get` sur la même adresse, d’affilée, avec `k = 3` : la boucle est signalée.'
+    en: 'Three times `web_get` on the same address, in a row, with `k = 3`: the loop is flagged.'
+- id: c9
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `boucle_suspecte(trace, k)`** : `True` si le même couple `(outil, args)` apparaît au moins `k` fois **de suite**.'
+  en: '**Write `boucle_suspecte(trace, k)`**: `True` if the same pair `(outil, args)` appears at least `k` times **in a row**.'
+  depart: |
+    # écris ta fonction boucle_suspecte ici
+  tests: |-
+    A = {"outil": "web_get", "args": "u"}
+    B = {"outil": "calculer", "args": "1"}
+    assert boucle_suspecte([A, A, A, B], 3) is True
+    assert boucle_suspecte([A, A, A, B], 4) is False
+    assert boucle_suspecte([A, B, A, B, A], 2) is False
+    assert boucle_suspecte([], 1) is False
+  solutionCode: |
+    def boucle_suspecte(trace, k):
+        serie = 0
+        prec = None
+        for a in trace:
+            cle = (a["outil"], a["args"])
+            serie = serie + 1 if cle == prec else 1
+            prec = cle
+            if serie >= k:
+                return True
+        return False
+  indice:
+    fr: Garde la `serie` en cours et la clé précédente ; remets la série à `1` quand la clé change.
+    en: Keep the current `serie` and the previous key; reset the run to `1` when the key changes.
+  explication:
+    fr: 'Les appels `A, B, A, B, A` ne sont pas une boucle consécutive : ils alternent. Un autre contrôle (budget total d’appels) les attrape.'
+    en: 'The calls `A, B, A, B, A` are not a consecutive loop: they alternate. Another check (total call budget) catches them.'
+- id: c10
+  type: exemple
+  titre:
+    fr: Un audit complet
+    en: A complete audit
+  lang: python
+  etapes:
+  - code: |-
+      trace = [
+          {"outil": "lire_fichier", "args": "notes.txt"},
+          {"outil": "web_get", "args": "http://exemple.test/p"},
+          {"outil": "web_get", "args": "http://exemple.test/p"},
+          {"outil": "web_get", "args": "http://exemple.test/p"},
+          {"outil": "envoyer_mail", "args": "inconnu@exemple.test"},
+      ]
+    fr: Une trace où l’agent lit un fichier, ouvre trois fois la même page, puis envoie un courriel.
+    en: A trace where the agent reads a file, opens the same page three times, then sends an email.
+  - code: |-
+      autorises = {"lire_fichier", "web_get"}
+      print([i for i, a in enumerate(trace) if a["outil"] not in autorises])
+    fr: 'Un appel hors liste, à l’indice `4` : `[4]`.'
+    en: 'One call off the list, at index `4`: `[4]`.'
+  - code: print(all(trace[i] == trace[1] for i in (1, 2, 3)))
+    fr: '`True` : trois appels identiques de suite, une boucle pour `k = 3`. La trace cumule trois alertes.'
+    en: '`True`: three identical calls in a row, a loop for `k = 3`. The trace piles up three alerts.'
+  verif: |-
+    trace = [
+        {"outil": "lire_fichier", "args": "notes.txt"},
+        {"outil": "web_get", "args": "http://exemple.test/p"},
+        {"outil": "web_get", "args": "http://exemple.test/p"},
+        {"outil": "web_get", "args": "http://exemple.test/p"},
+        {"outil": "envoyer_mail", "args": "inconnu@exemple.test"},
+    ]
+    autorises = {"lire_fichier", "web_get"}
+    print([i for i, a in enumerate(trace) if a["outil"] not in autorises])
+    print(all(trace[i] == trace[1] for i in (1, 2, 3)))
+  sortie: |-
+    [4]
+    True
+- id: c11
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un agent lit des courriels privés et des pages web. Quelle mesure **coupe** la triade à moindre coût ?
+  en: An agent reads private emails and web pages. Which measure **cuts** the triad at the lowest cost?
+  choix:
+  - fr: Supprimer l’envoi vers l’extérieur, ou l’exiger avec validation humaine
+    en: Remove sending outward, or require it with human approval
+    juste: true
+  - fr: Ajouter « n’obéis pas aux pages web » dans le prompt
+    en: Add “do not obey web pages” to the prompt
+  - fr: Utiliser un plus grand modèle
+    en: Use a larger model
+  indice:
+    fr: Quelle mesure ne dépend pas de la bonne volonté du modèle ?
+    en: Which measure does not depend on the model’s good will?
+  explication:
+    fr: Une consigne dans le prompt peut être contournée, un modèle plus grand aussi. Retirer ou verrouiller l’envoi supprime la troisième jambe.
+    en: An instruction in the prompt can be bypassed, and so can a larger model. Removing or locking the sending removes the third leg.
+- id: c12
+  type: piege
+  fr: Ne fais pas confiance au résumé que l’agent donne de ses actions. Audite les **appels réels** enregistrés par ton programme, pas son récit. Un agent manipulé peut très bien raconter qu’il n’a rien envoyé.
+  en: Do not trust the summary the agent gives of its actions. Audit the **real calls** recorded by your program, not its account. A manipulated agent may well claim it sent nothing.
+- id: c13
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `audit(trace, politique)`** : renvoie `{"hors_liste": …, "boucle": …, "trifecta": …}`. `politique` a les clés `"autorises"`, `"classes"` et `"k"`. La triade est réunie si `capacites(...)` contient `"prive"`, `"non_fiable"` et `"externe"`. Les trois fonctions d’aide sont fournies.'
+  en: 'Challenge. **Write `audit(trace, politique)`**: return `{"hors_liste": …, "boucle": …, "trifecta": …}`. `politique` has the keys `"autorises"`, `"classes"` and `"k"`. The triad is together if `capacites(...)` contains `"prive"`, `"non_fiable"` and `"externe"`. The three helper functions are provided.'
+  depart: |
+    def capacites(trace, classes):
+        return {classes[a["outil"]] for a in trace if classes.get(a["outil"])}
+
+    def hors_liste(trace, autorises):
+        return [i for i, a in enumerate(trace) if a["outil"] not in autorises]
+
+    def boucle_suspecte(trace, k):
+        serie = 0
+        prec = None
+        for a in trace:
+            cle = (a["outil"], a["args"])
+            serie = serie + 1 if cle == prec else 1
+            prec = cle
+            if serie >= k:
+                return True
+        return False
+
+    # écris ta fonction audit ici
+  tests: |-
+    TR1 = [
+        {"outil": "lire_fichier", "args": "notes.txt"},
+        {"outil": "web_get", "args": "http://exemple.test/page"},
+        {"outil": "envoyer_mail", "args": "inconnu@exemple.test"},
+    ]
+    CL = {"lire_fichier": "prive", "web_get": "non_fiable", "envoyer_mail": "externe", "calculer": None}
+    pol = {"autorises": {"lire_fichier", "web_get"}, "classes": CL, "k": 3}
+    a = audit(TR1, pol)
+    assert a == {"hors_liste": [2], "boucle": False, "trifecta": True}
+    sain = [{"outil": "lire_fichier", "args": "x"}, {"outil": "lire_fichier", "args": "y"}]
+    assert audit(sain, pol) == {"hors_liste": [], "boucle": False, "trifecta": False}
+    rep = [{"outil": "web_get", "args": "u"}] * 3
+    assert audit(rep, pol)["boucle"] is True and audit(rep, pol)["trifecta"] is False
+  solutionCode: |
+    def capacites(trace, classes):
+        return {classes[a["outil"]] for a in trace if classes.get(a["outil"])}
+
+    def hors_liste(trace, autorises):
+        return [i for i, a in enumerate(trace) if a["outil"] not in autorises]
+
+    def boucle_suspecte(trace, k):
+        serie = 0
+        prec = None
+        for a in trace:
+            cle = (a["outil"], a["args"])
+            serie = serie + 1 if cle == prec else 1
+            prec = cle
+            if serie >= k:
+                return True
+        return False
+
+    def audit(trace, politique):
+        return {
+            "hors_liste": hors_liste(trace, politique["autorises"]),
+            "boucle": boucle_suspecte(trace, politique["k"]),
+            "trifecta": capacites(trace, politique["classes"]) >= {"prive", "non_fiable", "externe"},
+        }
+  indice:
+    fr: Trois entrées de dictionnaire, chacune appelant l’une des fonctions fournies ; la dernière compare `capacites(...)` à l’ensemble des trois classes avec `>=`.
+    en: Three dictionary entries, each calling one of the provided functions; the last compares `capacites(...)` to the set of the three classes with `>=`.
+  explication:
+    fr: '`A >= B` pour des ensembles veut dire « A contient B ». L’audit est une simple composition de règles testables.'
+    en: '`A >= B` for sets means “A contains B”. The audit is a simple composition of testable rules.'
+- id: c14
+  type: idee
+  fr: 'Tu sais maintenant chasser l’erreur à cinq endroits : dans une **preuve**, dans du **code**, dans une **statistique**, dans un **backtest** et dans un **agent**. La méthode est la même : un cas concret, une règle testable, un contre-exemple à la main.'
+  en: 'You can now hunt for errors in five places: in a **proof**, in **code**, in a **statistic**, in a **backtest** and in an **agent**. The method is the same: a concrete case, a testable rule, a counterexample at hand.'
+  exemple:
+    fr: 'Chaque erreur trouvée mérite un test qui l’interdit : c’est la règle d’or du projet.'
+    en: 'Each error found deserves a test that forbids it: this is the project’s golden rule.'
+- id: c15
+  type: retenir
+  fr: 'Triade mortelle : données privées, contenu non fiable, communication externe. Audite les appels réels : outils autorisés, boucles, triade. Retire une jambe plutôt que de compter sur un prompt. Un agent peut mentir sur ce qu’il a fait.'
+  en: 'Lethal trifecta: private data, untrusted content, external communication. Audit the real calls: allowed tools, loops, triad. Remove a leg rather than counting on a prompt. An agent can lie about what it did.'
+- id: c16
+  type: plus
+  fr: Pour aller plus loin, lis [l’article de Simon Willison sur la triade mortelle](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) ; il demande une connexion.
+  en: To go further, read [Simon Willison’s article on the lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/); it needs a connection.

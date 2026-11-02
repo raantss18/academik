@@ -1,0 +1,344 @@
+# Niveau 23.3 — Enquêtes 3 : statistiques trompeuses. Original academik ; données de l’exemple de Simpson inventées et dites telles ; notions vérifiées (SEP, MIT 18.05, documentation Python) ; tous les calculs exécutés.
+id: '23.3'
+module: 23
+duree_min: 18
+titre:
+  fr: Statistiques trompeuses
+  en: Misleading statistics
+ia:
+  fr: 'Kintana questionne un chiffre avant de le croire : échantillon, mesure, dénominateur, nombre de comparaisons.'
+  en: 'Kintana questions a number before believing it: sample, measure, denominator, number of comparisons.'
+sources:
+- titre: Stanford Encyclopedia of Philosophy — Simpson’s Paradox
+  url: https://plato.stanford.edu/entries/paradox-simpson/
+  licence: Copyright SEP ; lien seulement, aucun extrait repris
+- titre: MIT OpenCourseWare — 18.05 Introduction to Probability and Statistics (probabilités, théorème de Bayes)
+  url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: 'Python — documentation : le module statistics'
+  url: https://docs.python.org/3/library/statistics.html
+  licence: PSF License (documentation officielle, citée)
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Cinq salaires, en k€ : $20, 22, 21, 23$ et $200$. Une annonce dit « le salaire moyen est de $57{,}2$ k€ ». Que dit la **médiane** ?'
+  en: 'Five salaries, in k€: $20, 22, 21, 23$ and $200$. An announcement says “the average salary is $57.2$ k€”. What does the **median** say?'
+  choix:
+  - fr: '$22$ k€ : la valeur extrême tire la moyenne vers le haut'
+    en: '$22$ k€: the extreme value pulls the mean upward'
+    juste: true
+  - fr: $57{,}2$ k€ aussi, car moyenne et médiane coïncident
+    en: $57.2$ k€ too, since mean and median coincide
+  - fr: $200$ k€
+    en: $200$ k€
+  indice:
+    fr: Range les cinq valeurs dans l’ordre et prends celle du milieu.
+    en: Sort the five values and take the middle one.
+  explication:
+    fr: 'Triées : $20, 21, 22, 23, 200$. La valeur du milieu est $22$. Un seul salaire extrême fait monter la moyenne, pas la médiane.'
+    en: 'Sorted: $20, 21, 22, 23, 200$. The middle value is $22$. A single extreme salary raises the mean, not the median.'
+  verif: |-
+    import statistics as s
+    print(s.median([20, 22, 21, 23, 200]))
+  sortie: '22'
+- id: c2
+  type: idee
+  fr: 'Devant un chiffre, pose quatre questions : **quel échantillon**, **quelle mesure**, **quel dénominateur**, **combien de comparaisons** avant d’en montrer une. Un chiffre qui résiste mal à l’une d’elles est suspect.'
+  en: 'Faced with a number, ask four questions: **which sample**, **which measure**, **which denominator**, **how many comparisons** before showing one. A number that holds up poorly to any of them is suspect.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Question
+      en: Question
+    - fr: Piège typique
+      en: Typical trap
+    cellules:
+    - - fr: quel échantillon ?
+        en: which sample?
+      - fr: survivants seulement
+        en: survivors only
+    - - fr: quelle mesure ?
+        en: which measure?
+      - fr: moyenne tirée par un extrême
+        en: mean pulled by an extreme
+    - - fr: quel dénominateur ?
+        en: which denominator?
+      - fr: groupes de tailles différentes
+        en: groups of different sizes
+    - - fr: combien de comparaisons ?
+        en: how many comparisons?
+      - fr: on ne montre que la meilleure
+        en: only the best is shown
+    legende:
+      fr: Chaque ligne est un cas des niveaux suivants.
+      en: Each row is a case in the following levels.
+- id: c3
+  type: exemple
+  titre:
+    fr: Moyenne et médiane
+    en: Mean and median
+  lang: python
+  etapes:
+  - code: |-
+      import statistics as st
+      salaires = [20, 22, 21, 23, 200]
+    fr: Les cinq salaires, en k€.
+    en: The five salaries, in k€.
+  - code: print(st.mean(salaires))
+    fr: 'La moyenne vaut `57.2` : plus que quatre salaires sur cinq.'
+    en: 'The mean is `57.2`: more than four salaries out of five.'
+  - code: print(st.median(salaires))
+    fr: 'La médiane vaut `22` : elle décrit mieux le salaire typique.'
+    en: 'The median is `22`: it describes the typical salary better.'
+  verif: |-
+    import statistics as st
+    salaires = [20, 22, 21, 23, 200]
+    print(st.mean(salaires))
+    print(st.median(salaires))
+  sortie: |-
+    57.2
+    22
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `resume(xs)`** : renvoie le couple `(moyenne, médiane)` de la liste `xs`, sans le module `statistics`. Pour une longueur paire, la médiane est la moyenne des deux valeurs du milieu.'
+  en: 'Your turn. **Write `resume(xs)`**: return the pair `(mean, median)` of the list `xs`, without the `statistics` module. For an even length, the median is the average of the two middle values.'
+  depart: |
+    # écris ta fonction resume ici
+  tests: |-
+    m, d = resume([20, 22, 21, 23, 200])
+    assert abs(m - 57.2) < 1e-9 and d == 22
+    assert resume([1, 2, 3, 4]) == (2.5, 2.5)
+    assert resume([5]) == (5, 5)
+  solutionCode: |
+    def resume(xs):
+        s = sorted(xs)
+        n = len(s)
+        moyenne = sum(s) / n
+        mediane = s[n // 2] if n % 2 else (s[n // 2 - 1] + s[n // 2]) / 2
+        return moyenne, mediane
+  indice:
+    fr: Trie `xs`, calcule la somme divisée par la longueur, puis prends l’élément du milieu (ou la moyenne des deux).
+    en: Sort `xs`, compute the sum divided by the length, then take the middle element (or the average of two).
+  explication:
+    fr: 'Quand la moyenne et la médiane s’écartent beaucoup, la série est asymétrique : cherche les valeurs extrêmes.'
+    en: 'When the mean and median differ a lot, the series is skewed: look for the extreme values.'
+- id: c5
+  type: idee
+  fr: 'Le **paradoxe de Simpson** : un traitement peut être meilleur dans chaque groupe et pourtant moins bon au total. La cause est la **taille des groupes** : l’un traite surtout des cas difficiles, l’autre surtout des cas faciles.'
+  en: '**Simpson’s paradox**: a treatment can be better in each group and yet worse overall. The cause is the **size of the groups**: one treats mostly hard cases, the other mostly easy ones.'
+  exemple:
+    fr: 'Données inventées pour l’exemple : A réussit $90\,\%$ des cas faciles et $33\,\%$ des difficiles ; B réussit $80\,\%$ et $30\,\%$. Pourtant B gagne au total, $75{,}5\,\%$ contre $39\,\%$.'
+    en: 'Made-up data for the example: A succeeds on $90\%$ of easy cases and $33\%$ of hard ones; B on $80\%$ and $30\%$. Yet B wins overall, $75.5\%$ against $39\%$.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Groupe
+      en: Group
+    - fr: 'A : réussites / cas'
+      en: 'A: successes / cases'
+    - fr: 'B : réussites / cas'
+      en: 'B: successes / cases'
+    cellules:
+    - - fr: faciles
+        en: easy
+      - 9 / 10
+      - fr: 80 / 100
+        en: 80 / 100
+        ton: ok
+    - - fr: difficiles
+        en: hard
+      - 30 / 90
+      - 3 / 10
+    - - fr: total
+        en: total
+      - fr: 39 / 100
+        en: 39 / 100
+        ton: bad
+      - fr: 83 / 110
+        en: 83 / 110
+        ton: ok
+    legende:
+      fr: A gagne dans chaque ligne de groupe ; B gagne au total, car A traite surtout des cas difficiles.
+      en: A wins in each group row; B wins overall, because A treats mostly hard cases.
+- id: c6
+  type: exemple
+  titre:
+    fr: Recalculer les taux
+    en: Recomputing the rates
+  lang: python
+  etapes:
+  - code: |-
+      A = [(9, 10), (30, 90)]
+      B = [(80, 100), (3, 10)]
+    fr: 'Pour chaque traitement : (réussites, cas) pour les faciles puis les difficiles.'
+    en: 'For each treatment: (successes, cases) for the easy then the hard ones.'
+  - code: print([round(s / t, 3) for s, t in A], [round(s / t, 3) for s, t in B])
+    fr: 'Par groupe : `[0.9, 0.333] [0.8, 0.3]`. A est meilleur dans les deux.'
+    en: 'By group: `[0.9, 0.333] [0.8, 0.3]`. A is better in both.'
+  - code: print(round(sum(s for s, _ in A) / 100, 3), round(sum(s for s, _ in B) / 110, 3))
+    fr: 'Au total : `0.39 0.755`. Le classement s’inverse.'
+    en: 'Overall: `0.39 0.755`. The ranking flips.'
+  verif: |-
+    A = [(9, 10), (30, 90)]
+    B = [(80, 100), (3, 10)]
+    print([round(s / t, 3) for s, t in A], [round(s / t, 3) for s, t in B])
+    print(round(sum(s for s, _ in A) / 100, 3), round(sum(s for s, _ in B) / 110, 3))
+  sortie: |-
+    [0.9, 0.333] [0.8, 0.3]
+    0.39 0.755
+- id: c7
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `paradoxe_de_simpson(a, b)`** : `a` et `b` sont des listes de couples `(réussites, cas)`, un par groupe. Renvoie `True` si `a` a un meilleur taux que `b` dans **chaque** groupe, mais un moins bon taux au total.'
+  en: 'Challenge. **Write `paradoxe_de_simpson(a, b)`**: `a` and `b` are lists of `(successes, cases)` pairs, one per group. Return `True` if `a` has a better rate than `b` in **every** group, but a worse rate overall.'
+  depart: |
+    # écris ta fonction paradoxe_de_simpson ici
+  tests: |-
+    A = [(9, 10), (30, 90)]
+    B = [(80, 100), (3, 10)]
+    assert paradoxe_de_simpson(A, B) is True
+    assert paradoxe_de_simpson(A, [(8, 10), (20, 90)]) is False
+    assert paradoxe_de_simpson(B, A) is False
+  solutionCode: |
+    def paradoxe_de_simpson(a, b):
+        mieux_partout = all(sa / ta > sb / tb for (sa, ta), (sb, tb) in zip(a, b))
+        taux_a = sum(s for s, _ in a) / sum(t for _, t in a)
+        taux_b = sum(s for s, _ in b) / sum(t for _, t in b)
+        return mieux_partout and taux_a < taux_b
+  indice:
+    fr: 'Calcule trois choses : `a` meilleur partout, taux total de `a`, taux total de `b`.'
+    en: 'Compute three things: `a` better everywhere, the total rate of `a`, the total rate of `b`.'
+  explication:
+    fr: 'Le seul remède est de comparer **à groupe égal** : le total masque la composition des groupes.'
+    en: 'The only remedy is to compare **within equal groups**: the total hides the composition of the groups.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: On fait $20$ tests indépendants au seuil de $5\,\%$, sans qu’aucun effet réel n’existe. Quelle est la probabilité, en pourcentage arrondi, d’obtenir **au moins un** test « significatif » ?
+  en: We run $20$ independent tests at the $5\%$ level, with no real effect anywhere. What is the probability, as a rounded percentage, of getting **at least one** “significant” test?
+  reponses:
+  - '64'
+  verif: print(round(100 * (1 - 0.95 ** 20)))
+  indice:
+    fr: 'Calcule d’abord la probabilité qu’aucun test ne soit significatif : $0{,}95^{20}$.'
+    en: 'First compute the probability that no test is significant: $0.95^{20}$.'
+  explication:
+    fr: '$1-0{,}95^{20}\approx0{,}64$ : environ deux chances sur trois de « trouver » quelque chose qui n’existe pas.'
+    en: '$1-0.95^{20}\approx0.64$: about two chances in three of “finding” something that does not exist.'
+- id: c9
+  type: idee
+  fr: 'Deux erreurs de raisonnement sur les probabilités. Les **comparaisons multiples** : plus on teste, plus un faux positif est probable (module 7). Le **taux de base** : un test fiable reste trompeur quand la maladie est rare.'
+  en: 'Two reasoning errors about probabilities. **Multiple comparisons**: the more you test, the likelier a false positive (module 7). The **base rate**: a reliable test stays misleading when the disease is rare.'
+  exemple:
+    fr: Maladie présente chez $1\,\%$ des gens, test sensible à $99\,\%$, faux positif $5\,\%$. Un test positif donne seulement $1$ chance sur $6$ d’être malade.
+    en: Disease present in $1\%$ of people, test $99\%$ sensitive, $5\%$ false positives. A positive test gives only $1$ chance in $6$ of being ill.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Sur 10 000 personnes
+        en: Out of 10,000 people
+      noeuds:
+      - fr: 100 malades
+        en: 100 ill
+      - fr: 99 positifs vrais
+        en: 99 true positives
+      - fr: 495 positifs faux
+        en: 495 false positives
+      - fr: 99 / 594 ≈ 17 %
+        en: 99 / 594 ≈ 17%
+        ton: ok
+    legende:
+      fr: Les faux positifs des $9\,900$ bien portants dominent.
+      en: The false positives of the $9{,}900$ healthy people dominate.
+- id: c10
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `proba_malade(prevalence, sensibilite, faux_positifs)`** : la probabilité d’être malade sachant que le test est positif, par la formule de Bayes.'
+  en: '**Write `proba_malade(prevalence, sensibilite, faux_positifs)`**: the probability of being ill given a positive test, by Bayes’ formula.'
+  depart: |
+    # écris ta fonction proba_malade ici
+  tests: |-
+    assert abs(proba_malade(0.01, 0.99, 0.05) - 1 / 6) < 1e-12
+    assert abs(proba_malade(0.5, 0.9, 0.1) - 0.9) < 1e-12
+    assert abs(proba_malade(0.1, 1, 0) - 1) < 1e-12
+  solutionCode: |
+    def proba_malade(prevalence, sensibilite, faux_positifs):
+        vrais = sensibilite * prevalence
+        faux = faux_positifs * (1 - prevalence)
+        return vrais / (vrais + faux)
+  indice:
+    fr: Les vrais positifs valent `sensibilite * prevalence` ; les faux positifs `faux_positifs * (1 - prevalence)`.
+    en: True positives are `sensibilite * prevalence`; false positives are `faux_positifs * (1 - prevalence)`.
+  explication:
+    fr: Si la maladie est rare, presque tous les positifs viennent des bien portants.
+    en: If the disease is rare, almost all positives come from healthy people.
+- id: c11
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: Avec ce test (prévalence $1\,\%$, sensibilité $99\,\%$, faux positifs $5\,\%$), quelle est la probabilité d’être malade après un test positif ?
+  en: With this test (prevalence $1\%$, sensitivity $99\%$, false positives $5\%$), what is the probability of being ill after a positive test?
+  choix:
+  - fr: Environ $17\,\%$
+    en: About $17\%$
+    juste: true
+  - fr: Environ $99\,\%$
+    en: About $99\%$
+  - fr: Environ $5\,\%$
+    en: About $5\%$
+  indice:
+    fr: Compare les vrais positifs aux faux positifs, sur $10\,000$ personnes.
+    en: Compare the true positives with the false positives, out of $10{,}000$ people.
+  explication:
+    fr: '$99$ vrais positifs sur $99+495=594$ positifs : environ $17\,\%$. Le chiffre de $99\,\%$ répond à une autre question.'
+    en: '$99$ true positives out of $99+495=594$ positives: about $17\%$. The $99\%$ figure answers another question.'
+- id: c12
+  type: piege
+  fr: Le biais du survivant. Si l’on ne regarde que les fonds qui existent encore, la moyenne paraît meilleure. Les fonds fermés après de mauvais résultats ont disparu de l’échantillon, et avec eux leurs pertes.
+  en: Survivorship bias. If we only look at funds that still exist, the average looks better. The funds closed after bad results disappeared from the sample, and their losses with them.
+- id: c13
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Huit fonds ont rapporté $-10, -5, 0, 5, 10, 15, 20, 25\,\%$. Les deux premiers ont fermé. Quelle est la moyenne des **six survivants** ?
+  en: Eight funds returned $-10, -5, 0, 5, 10, 15, 20, 25\%$. The first two closed. What is the average of the **six survivors**?
+  reponses:
+  - '12.5'
+  verif: print(sum([0, 5, 10, 15, 20, 25]) / 6)
+  indice:
+    fr: Additionne les six rendements restants, puis divise par $6$.
+    en: Add the six remaining returns, then divide by $6$.
+  explication:
+    fr: La moyenne des six survivants est $12{,}5\,\%$ ; celle des huit fonds est $7{,}5\,\%$. Oublier les fermés gonfle le résultat.
+    en: The average of the six survivors is $12.5\%$; that of the eight funds is $7.5\%$. Forgetting the closed ones inflates the result.
+- id: c14
+  type: idee
+  fr: 'Le lien avec la suite : ces erreurs se cachent aussi dans les **backtests** de Kintana. Au niveau 23.4, tu chercheras la fuite d’information, les coûts oubliés et la stratégie « miracle » qui n’est que la meilleure de cent essais.'
+  en: 'The link with what follows: these errors also hide in Kintana’s **backtests**. In level 23.4, you will look for information leakage, forgotten costs and the “miracle” strategy that is only the best of a hundred tries.'
+  exemple:
+    fr: Le biais du survivant, par exemple, gonfle les rendements d’un backtest sur des actions encore cotées.
+    en: Survivorship bias, for example, inflates the returns of a backtest on stocks still listed.
+- id: c15
+  type: retenir
+  fr: 'Quatre questions : quel échantillon, quelle mesure, quel dénominateur, combien de comparaisons. Médiane contre moyenne ; Simpson : comparer à groupe égal ; $1-0{,}95^{20}\approx64\,\%$ de faux positifs ; le taux de base compte ; le survivant gonfle.'
+  en: 'Four questions: which sample, which measure, which denominator, how many comparisons. Median versus mean; Simpson: compare within equal groups; $1-0.95^{20}\approx64\%$ of false positives; the base rate matters; the survivor inflates.'
+- id: c16
+  type: plus
+  fr: Pour aller plus loin, lis l’article sur [le paradoxe de Simpson](https://plato.stanford.edu/entries/paradox-simpson/) ; il demande une connexion.
+  en: To go further, read the article on [Simpson’s paradox](https://plato.stanford.edu/entries/paradox-simpson/); it needs a connection.

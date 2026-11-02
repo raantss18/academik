@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.30] — 2026-11-02
+
+### Message fr
+Le module « Enquêtes » est complet : trois nouveaux niveaux t'apprennent à démasquer une statistique trompeuse (moyenne, paradoxe de Simpson, taux de base), la fuite d'information d'un backtest (signal futur, coûts oubliés, meilleur-de-cent) et la faille d'un agent (la triade mortelle, outils hors liste, boucles).
+
+### Message en
+The “Investigations” module is complete: three new levels teach you to unmask a misleading statistic (mean, Simpson's paradox, base rate), the information leak in a backtest (future signal, forgotten costs, best-of-a-hundred) and the flaw in an agent (the lethal trifecta, off-list tools, loops).
+
 ## [0.3.29] — 2026-11-02
 
 ### Message fr

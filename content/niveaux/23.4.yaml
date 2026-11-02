@@ -1,0 +1,393 @@
+# Niveau 23.4 — Enquêtes 4 : la fuite dans le backtest. Original academik ; données simulées par générateur congruentiel (aucune donnée de marché) ; notions vérifiées (Bailey et López de Prado 2014, MIT 18.642) ; tous les chiffres exécutés.
+id: '23.4'
+module: 23
+duree_min: 22
+titre:
+  fr: La fuite dans le backtest
+  en: The leak in the backtest
+ia:
+  fr: Kintana démasque une performance qui vient d’une fuite d’information, de coûts oubliés ou d’un meilleur-de-cent.
+  en: Kintana unmasks a performance that comes from an information leak, forgotten costs or a best-of-a-hundred.
+sources:
+- titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
+  url: https://doi.org/10.3905/jpm.2014.40.5.094
+  licence: Lien seulement ; texte non repris
+- titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
+  url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: 'Python — documentation : le module statistics'
+  url: https://docs.python.org/3/library/statistics.html
+  licence: PSF License (documentation officielle, citée)
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un backtest affiche $+133\,\%$ en un an avec la règle « être investi les jours où le rendement du jour est positif ». Qu’est-ce qui cloche ?
+  en: A backtest shows $+133\%$ in one year with the rule “be invested on days when the day’s return is positive”. What is wrong?
+  choix:
+  - fr: La règle utilise le rendement du jour, qu’on ne connaît pas à l’avance
+    en: The rule uses the day’s return, which is not known in advance
+    juste: true
+  - fr: Le rendement est trop faible pour être vrai
+    en: The return is too low to be true
+  - fr: Il faut investir tous les jours
+    en: You must invest every day
+  indice:
+    fr: À quel moment de la journée sait-on si le rendement est positif ?
+    en: At what moment of the day do we know whether the return is positive?
+  explication:
+    fr: 'Le signal « rendement du jour positif » n’est connu qu’**après** la journée. C’est une **fuite d’information** : le backtest triche.'
+    en: 'The “day’s return positive” signal is only known **after** the day. This is an **information leak**: the backtest cheats.'
+- id: c2
+  type: idee
+  fr: 'La règle d’or d’un backtest : à la date $t$, on n’utilise que ce qui est **connu à $t$**. Toute information venue du futur est une **fuite**. Elle se cache dans le signal, dans la normalisation, dans le découpage des données.'
+  en: 'The golden rule of a backtest: at date $t$, we only use what is **known at $t$**. Any information from the future is a **leak**. It hides in the signal, in the normalisation, in the data split.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Fuite
+      en: Leak
+    - fr: Où elle se cache
+      en: Where it hides
+    cellules:
+    - - fr: signal futur
+        en: future signal
+      - fr: on lit `r[t]` pour décider de `t`
+        en: we read `r[t]` to decide on `t`
+    - - fr: normalisation globale
+        en: global normalisation
+      - fr: la moyenne de toute la période
+        en: the mean of the whole period
+    - - fr: découpage mélangé
+        en: shuffled split
+      - fr: des jours futurs dans l’entraînement
+        en: future days in training
+    - - fr: survivants
+        en: survivors
+      - fr: seules les actions encore cotées
+        en: only stocks still listed
+    legende:
+      fr: Chaque ligne se teste en décalant les données d’un jour.
+      en: Each row can be tested by shifting the data by one day.
+- id: c3
+  type: exemple
+  titre:
+    fr: Mesurer la fuite
+    en: Measuring the leak
+  lang: python
+  etapes:
+  - code: 'r = rend(250, 7)  # 250 rendements journaliers simulés, sans aucun effet réel'
+    fr: 'Une année de rendements aléatoires : aucune stratégie ne peut y gagner durablement. La fonction `rend` est un générateur congruentiel linéaire.'
+    en: 'A year of random returns: no strategy can durably win here. The function `rend` is a linear congruential generator.'
+  - code: |-
+      sig = [1 if x > 0 else 0 for x in r]
+      print(round(sum(s * x for s, x in zip(sig, r)), 3))
+    fr: 'Le signal lit le rendement du jour : le gain vaut `1.335`, soit $133\,\%$.'
+    en: 'The signal reads the day’s return: the gain is `1.335`, that is $133\%$.'
+  - code: |-
+      ret = [0] + sig[:-1]  # signal décalé d’un jour
+      print(round(sum(s * x for s, x in zip(ret, r)), 3))
+    fr: 'Décalé d’un jour, il n’utilise que le passé : le gain devient `-0.02`. La « performance » venait de la fuite.'
+    en: 'Shifted by one day, it only uses the past: the gain becomes `-0.02`. The “performance” came from the leak.'
+  verif: |-
+    def rend(n, graine):
+        s = graine
+        out = []
+        for _ in range(n):
+            s = (1664525 * s + 1013904223) % 2 ** 32
+            out.append((s / 2 ** 32 - 0.5) * 0.04)
+        return out
+    r = rend(250, 7)
+    sig = [1 if x > 0 else 0 for x in r]
+    print(round(sum(s * x for s, x in zip(sig, r)), 3))
+    ret = [0] + sig[:-1]
+    print(round(sum(s * x for s, x in zip(ret, r)), 3))
+  sortie: |-
+    1.335
+    -0.02
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `retarder(signaux)`** : décale la liste d’un jour. Le premier signal vaut `0` (pas de position) et on retire le dernier.'
+  en: 'Your turn. **Write `retarder(signaux)`**: shift the list by one day. The first signal is `0` (no position) and the last is dropped.'
+  depart: |
+    # écris ta fonction retarder ici
+  tests: |-
+    assert retarder([1, 0, 1, 1]) == [0, 1, 0, 1]
+    assert retarder([1]) == [0]
+    assert retarder([]) == [0]
+    assert len(retarder([1, 1, 1])) == 3
+  solutionCode: |
+    def retarder(signaux):
+        return [0] + signaux[:-1]
+  indice:
+    fr: Construis `[0]` suivi de `signaux` sans son dernier élément (`signaux[:-1]`).
+    en: Build `[0]` followed by `signaux` without its last element (`signaux[:-1]`).
+  explication:
+    fr: 'Le signal décidé à la fin du jour $t-1$ s’applique au rendement du jour $t$ : c’est ce décalage qui rend le test honnête.'
+    en: 'The signal decided at the end of day $t-1$ applies to day $t$’s return: this shift makes the test honest.'
+- id: c5
+  type: idee
+  fr: 'Deuxième enquête : les **coûts**. Chaque changement de position coûte des frais, même petits. Une stratégie qui change de position presque chaque jour paie beaucoup. Son gain brut peut devenir une perte nette.'
+  en: 'Second investigation: **costs**. Each change of position costs fees, even small ones. A strategy that changes position almost every day pays a lot. Its gross gain can become a net loss.'
+  exemple:
+    fr: Avec $0{,}1\,\%$ par changement de position, $133$ changements coûtent $13{,}3\,\%$ sur l’année.
+    en: With $0.1\%$ per change of position, $133$ changes cost $13.3\%$ over the year.
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `rendement_net(r, pos, cout)`** : somme des `pos[i] * r[i]`, moins `cout` à chaque changement de position (`abs(pos[i] - prec)`, avec `prec = 0` au départ).'
+  en: '**Write `rendement_net(r, pos, cout)`**: the sum of `pos[i] * r[i]`, minus `cout` at each change of position (`abs(pos[i] - prev)`, with `prev = 0` at the start).'
+  depart: |
+    # écris ta fonction rendement_net ici
+  tests: |-
+    assert abs(rendement_net([0.01, 0.02, -0.01], [1, 1, 0], 0.001) - 0.028) < 1e-12
+    assert rendement_net([0.01, 0.02], [0, 0], 0.5) == 0
+    assert abs(rendement_net([0.1], [1], 0) - 0.1) < 1e-12
+  solutionCode: |
+    def rendement_net(r, pos, cout):
+        total = 0.0
+        prec = 0
+        for x, p in zip(r, pos):
+            total += p * x - cout * abs(p - prec)
+            prec = p
+        return total
+  indice:
+    fr: Parcours `zip(r, pos)` en gardant `prec` ; ajoute `p * x - cout * abs(p - prec)`.
+    en: Loop over `zip(r, pos)` keeping `prec`; add `p * x - cout * abs(p - prec)`.
+  explication:
+    fr: 'Le premier jour compte aussi : passer de `0` à `1` est déjà un changement de position.'
+    en: 'The first day counts too: going from `0` to `1` is already a change of position.'
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Combien de changements de position dans `pos = [0, 1, 1, 0, 1, 0]` (on part de `0`) ?
+  en: How many changes of position in `pos = [0, 1, 1, 0, 1, 0]` (starting from `0`)?
+  reponses:
+  - '4'
+  verif: |-
+    pos = [0, 1, 1, 0, 1, 0]
+    prec = 0
+    n = 0
+    for p in pos:
+        n += p != prec
+        prec = p
+    print(n)
+  indice:
+    fr: Compte les jours où la valeur diffère de celle de la veille.
+    en: Count the days where the value differs from the previous day’s.
+  explication:
+    fr: 'La position change de $0$ à $1$, de $1$ à $0$, de $0$ à $1$, puis de $1$ à $0$ : $4$ changements.'
+    en: 'The position goes from $0$ to $1$, $1$ to $0$, $0$ to $1$, then $1$ to $0$: $4$ changes.'
+- id: c8
+  type: idee
+  fr: 'Troisième enquête : la **sélection**. Si tu essaies cent stratégies et que tu ne montres que la meilleure, tu montres le plus grand coup de chance. Le rapport de Sharpe de la gagnante est **gonflé**, même si aucune stratégie n’a d’effet réel.'
+  en: 'Third investigation: **selection**. If you try a hundred strategies and only show the best, you show the biggest stroke of luck. The winner’s Sharpe ratio is **inflated**, even if no strategy has any real effect.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le piège du meilleur de cent
+        en: The best-of-a-hundred trap
+      noeuds:
+      - fr: 100 stratégies au hasard
+        en: 100 random strategies
+      - fr: on garde la meilleure
+        en: we keep the best
+      - fr: Sharpe élevé, effet nul
+        en: high Sharpe, no effect
+        ton: bad
+      - fr: il faut corriger du nombre d’essais
+        en: correct for the number of trials
+        ton: ok
+    legende:
+      fr: 'Le module 17 donne la correction : le rapport de Sharpe « dégonflé ».'
+      en: 'Module 17 gives the correction: the “deflated” Sharpe ratio.'
+- id: c9
+  type: exemple
+  titre:
+    fr: Le meilleur de cent coups de chance
+    en: The best of a hundred strokes of luck
+  lang: python
+  etapes:
+  - code: |-
+      import math, statistics
+      def sharpe(r):
+          return statistics.mean(r) / statistics.stdev(r) * math.sqrt(252)
+    fr: 'Le rapport de Sharpe annualisé : rendement moyen sur écart-type, fois $\sqrt{252}$ jours de bourse.'
+    en: 'The annualised Sharpe ratio: mean return over standard deviation, times $\sqrt{252}$ trading days.'
+  - code: sh = [sharpe(rend(250, g)) for g in range(1, 101)]
+    fr: 'Cent « stratégies » : cent séries aléatoires, donc cent hasards sans effet réel.'
+    en: 'A hundred “strategies”: a hundred random series, so a hundred chances with no real effect.'
+  - code: print(round(max(sh), 2), round(sum(sh) / 100, 2))
+    fr: La meilleure a un Sharpe de `1.88`, la moyenne vaut `-0.26`. Un Sharpe de $1{,}88$ paraît excellent ; c’est du hasard.
+    en: The best has a Sharpe of `1.88`, the average is `-0.26`. A Sharpe of $1.88$ looks excellent; it is chance.
+  verif: |-
+    def rend(n, graine):
+        s = graine
+        out = []
+        for _ in range(n):
+            s = (1664525 * s + 1013904223) % 2 ** 32
+            out.append((s / 2 ** 32 - 0.5) * 0.04)
+        return out
+    import math, statistics
+    def sharpe(r):
+        return statistics.mean(r) / statistics.stdev(r) * math.sqrt(252)
+    sh = [sharpe(rend(250, g)) for g in range(1, 101)]
+    print(round(max(sh), 2), round(sum(sh) / 100, 2))
+  sortie: 1.88 -0.26
+- id: c10
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `sharpe(r)`** : `moyenne / écart-type × √252`, avec `statistics.mean` et `statistics.stdev`. Renvoie `0.0` si l’écart-type est nul.'
+  en: '**Write `sharpe(r)`**: `mean / standard deviation × √252`, with `statistics.mean` and `statistics.stdev`. Return `0.0` if the standard deviation is zero.'
+  depart: |
+    import math
+    import statistics
+
+    # écris ta fonction sharpe ici
+  tests: |-
+    assert abs(sharpe([0.01, 0.03]) - 22.449944) < 1e-4
+    assert sharpe([0.01, 0.01, 0.01]) == 0.0
+    assert sharpe([0.01, -0.01, 0.01, -0.01]) == 0.0
+    assert sharpe([0.02, 0.0]) > 0
+  solutionCode: |
+    import math
+    import statistics
+
+    def sharpe(r):
+        s = statistics.stdev(r)
+        return 0.0 if s == 0 else statistics.mean(r) / s * math.sqrt(252)
+  indice:
+    fr: Calcule `s = statistics.stdev(r)`, puis divise `statistics.mean(r)` par `s`, et multiplie par `math.sqrt(252)`.
+    en: Compute `s = statistics.stdev(r)`, then divide `statistics.mean(r)` by `s`, and multiply by `math.sqrt(252)`.
+  explication:
+    fr: 'Avec seulement deux jours, le Sharpe est énorme : peu de données, beaucoup de hasard.'
+    en: 'With only two days, the Sharpe is huge: little data, much chance.'
+- id: c11
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: Pour normaliser les rendements, on utilise la moyenne et l’écart-type de **toute** la période, puis on sépare entraînement et test. Quelle est la fuite ?
+  en: To normalise returns, we use the mean and standard deviation of the **whole** period, then split training and test. What is the leak?
+  choix:
+  - fr: La moyenne et l’écart-type contiennent des informations de la période de test
+    en: The mean and standard deviation contain information from the test period
+    juste: true
+  - fr: 'Il n’y a pas de fuite : une normalisation est neutre'
+    en: 'There is no leak: normalisation is neutral'
+  - fr: Le test est trop long
+    en: The test is too long
+  indice:
+    fr: D’où viennent les données qui servent à calculer cette moyenne ?
+    en: Where do the data used to compute this mean come from?
+  explication:
+    fr: La normalisation doit se calculer sur l’**entraînement seul**, puis s’appliquer au test. Sinon le futur influence le passé.
+    en: The normalisation must be computed on the **training set alone**, then applied to the test. Otherwise the future influences the past.
+- id: c12
+  type: piege
+  fr: 'Sur des séries temporelles, ne mélange jamais les jours au hasard avant de séparer entraînement et test. Un jour d’entraînement voisin d’un jour de test lui ressemble. Coupe **dans l’ordre du temps** : le passé pour apprendre, le futur pour tester.'
+  en: 'On time series, never shuffle the days at random before splitting training and test. A training day next to a test day resembles it. Cut **in time order**: the past to learn, the future to test.'
+- id: c13
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un backtest brut rapporte $8\,\%$ par an avec $500$ changements de position. Chaque changement coûte $0{,}1\,\%$. Que vaut le rendement net, en pourcentage ?
+  en: A gross backtest returns $8\%$ per year with $500$ changes of position. Each change costs $0.1\%$. What is the net return, in percent?
+  reponses:
+  - '-42.0'
+  - '-42'
+  verif: print(8 - 500 * 0.1)
+  indice:
+    fr: Retire $500\times0{,}1$ du rendement brut.
+    en: Subtract $500\times0.1$ from the gross return.
+  explication:
+    fr: '$8-500\times0{,}1=-42$ : la stratégie perd $42\,\%$. Les coûts mangent tout.'
+    en: '$8-500\times0.1=-42$: the strategy loses $42\%$. Costs eat everything.'
+- id: c14
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `bilan_backtest(r, signaux, cout)`** : renvoie un dictionnaire avec `"brut"` (signaux non décalés, sans coût), `"honnete"` (signaux décalés par `retarder`, sans coût) et `"net"` (décalés, avec coût). `retarder` et `rendement_net` sont fournis.'
+  en: 'Challenge. **Write `bilan_backtest(r, signaux, cout)`**: return a dictionary with `"brut"` (unshifted signals, no cost), `"honnete"` (signals shifted by `retarder`, no cost) and `"net"` (shifted, with cost). `retarder` and `rendement_net` are provided.'
+  depart: |
+    def retarder(signaux):
+        return [0] + signaux[:-1]
+
+    def rendement_net(r, pos, cout):
+        total = 0.0
+        prec = 0
+        for x, p in zip(r, pos):
+            total += p * x - cout * abs(p - prec)
+            prec = p
+        return total
+
+    # écris ta fonction bilan_backtest ici
+  tests: |-
+    def rend(n, graine):
+        s = graine
+        out = []
+        for _ in range(n):
+            s = (1664525 * s + 1013904223) % 2 ** 32
+            out.append((s / 2 ** 32 - 0.5) * 0.04)
+        return out
+    r = rend(250, 7)
+    sig = [1 if x > 0 else 0 for x in r]
+    b = bilan_backtest(r, sig, 0.001)
+    assert abs(b["brut"] - 1.335) < 1e-3
+    assert abs(b["honnete"] + 0.0205) < 1e-3
+    assert abs(b["net"] + 0.1535) < 1e-3
+    assert set(b) == {"brut", "honnete", "net"}
+  solutionCode: |
+    def retarder(signaux):
+        return [0] + signaux[:-1]
+
+    def rendement_net(r, pos, cout):
+        total = 0.0
+        prec = 0
+        for x, p in zip(r, pos):
+            total += p * x - cout * abs(p - prec)
+            prec = p
+        return total
+
+    def bilan_backtest(r, signaux, cout):
+        return {
+            "brut": rendement_net(r, signaux, 0),
+            "honnete": rendement_net(r, retarder(signaux), 0),
+            "net": rendement_net(r, retarder(signaux), cout),
+        }
+  indice:
+    fr: 'Trois appels à `rendement_net` : avec `signaux`, puis avec `retarder(signaux)` sans coût, puis avec coût.'
+    en: 'Three calls to `rendement_net`: with `signaux`, then with `retarder(signaux)` without cost, then with cost.'
+  explication:
+    fr: 'Les trois chiffres racontent l’histoire : $+133\,\%$ brut, $-2\,\%$ honnête, $-15\,\%$ net.'
+    en: 'The three numbers tell the story: $+133\%$ gross, $-2\%$ honest, $-15\%$ net.'
+- id: c15
+  type: idee
+  fr: 'Le lien avec Kintana : son rapport (module 21) annonce toujours le chiffre **honnête** et **net**, avec le nombre d’essais. Au niveau 23.5, tu quitteras la finance pour chercher une faille dans un agent qui utilise des outils.'
+  en: 'The link with Kintana: her report (module 21) always announces the **honest** and **net** figure, with the number of trials. In level 23.5, you will leave finance to look for a flaw in an agent that uses tools.'
+  exemple:
+    fr: 'Un rapport honnête dit : « meilleure de 100 stratégies, Sharpe 1,88, nets de coûts ».'
+    en: 'An honest report says: “best of 100 strategies, Sharpe 1.88, net of costs”.'
+- id: c16
+  type: retenir
+  fr: 'À la date $t$, n’utilise que ce qui est connu à $t$ : décale le signal d’un jour. Retire les coûts de chaque changement de position. Le meilleur de $N$ essais est gonflé. Normalise sur l’entraînement seul et coupe dans l’ordre du temps.'
+  en: 'At date $t$, only use what is known at $t$: shift the signal by one day. Subtract the costs of each change of position. The best of $N$ trials is inflated. Normalise on the training set alone and cut in time order.'
+- id: c17
+  type: plus
+  fr: Pour aller plus loin, lis [l’article sur le rapport de Sharpe dégonflé](https://doi.org/10.3905/jpm.2014.40.5.094) ; il demande une connexion.
+  en: To go further, read [the article on the deflated Sharpe ratio](https://doi.org/10.3905/jpm.2014.40.5.094); it needs a connection.

@@ -155,3 +155,8 @@
 
 - **Fait** : module 23 « Enquêtes » (23.1 trouver l'erreur dans une preuve, 23.2 trouver le bogue ; sorties Python exécutées) ; manifeste de 196 sources avec garde-fou E44 ; critères de la 0.4.0 écrits dans `docs/TODO.md` § 5.
 - **Non vérifié** : appareils réels, lecteur d'écran, vrais élèves, relecture par Codex. Les niveaux d'enquête restants (statistiques trompeuses, backtest, défense d'agent) ne sont pas écrits.
+
+### Module Enquêtes complet (2026-11-02, 0.3.30)
+
+- **Fait** : 23.3 statistiques trompeuses, 23.4 fuite dans le backtest (gain brut 133 %, honnête −2 %, net −15 % sur données simulées ; meilleur de 100 : Sharpe 1,88), 23.5 faille dans l'agent (triade mortelle d'après Willison, audit de trace) ; manifeste mis à jour ; 835 tests.
+- **Non vérifié** : appareils réels, lecteur d'écran, vrais élèves, relecture par Codex.

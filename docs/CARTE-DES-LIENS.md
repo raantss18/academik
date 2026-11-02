@@ -268,3 +268,6 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | --- | --- | --- | --- |
 | **23.1** Trouve l’erreur dans la preuve | Kintana relit un raisonnement ligne par ligne et désigne le premier passage du vrai au faux. | — | — |
 | **23.2** Trouve le bogue | Kintana enquête sur un bogue : elle le reproduit, le réduit, formule une hypothèse et la teste. | — | — |
+| **23.3** Statistiques trompeuses | Kintana questionne un chiffre avant de le croire : échantillon, mesure, dénominateur, nombre de comparaisons. | — | — |
+| **23.4** La fuite dans le backtest | Kintana démasque une performance qui vient d’une fuite d’information, de coûts oubliés ou d’un meilleur-de-cent. | — | — |
+| **23.5** La faille dans l’agent | Kintana audite la trace d’un agent : outils hors liste, boucles et triade mortelle. | — | — |
