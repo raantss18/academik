@@ -89,3 +89,10 @@
 - **Fait** : T-016 (288 indices écrits, un par carte notée) et T-017 (21 questions courtes insérées dans 16 niveaux) réalisées par Claude en relais ;
   garde-fous E29 et E30 ; durées recalculées ; aucune nouvelle version d'app nécessaire (contenu seul).
 - **Non vérifié** : aucun vrai élève ; les indices n'ont pas été relus par un pair (relecture croisée Codex à son retour, 18 h 29).
+
+### Module 10 et budget de chargement (2026-11-02)
+
+- **Fait** : module 10 « Séries temporelles » (10.1 à 10.5 + boss « Prévoir sans tricher ») avec quartier « Quai des Horloges » ; contenu embarqué chargé à part
+  (premier chargement 373 Ko → 73 Ko gzip) avec contrôle de budget ; version 0.3.19.
+- **Vérifié** : 631 tests, solutions des cartes de code exécutées avec le vrai Python, `npm run verify` vert, application relancée au navigateur.
+- **Non vérifié** : sur appareil réel ; relecture croisée Codex (retour à 18 h 29) ; GARCH et cointégration non traités.

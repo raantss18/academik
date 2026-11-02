@@ -263,4 +263,9 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     }
     expect(sans).toEqual([]); expect(fuite).toEqual([]);
   });
+  it('E31 : le contenu embarqué est un morceau à part (jamais importé statiquement) et le budget de premier chargement est contrôlé', () => {
+    const c = read('src/lib/content.svelte.ts');
+    expect(c).not.toMatch(/^import .* from '\.\.\/generated\/content\.json'/m); expect(c).toContain("import('../generated/content.json')");
+    expect(read('scripts/check-offline.mjs')).toContain('premier chargement trop lourd');
+  });
 });

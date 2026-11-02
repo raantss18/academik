@@ -26,6 +26,12 @@ for (const f of files.filter(f => /\.(js|css)$/.test(f) && !/^workbox-/.test(f) 
   for (const m of t.matchAll(/(?:fetch|import|XMLHttpRequest[^;]*open)\s*\(\s*["'`](https?:\/\/[^"'`]+)/g)) bad.push(`${f} : appel réseau externe ${m[1]}`);
   for (const m of t.matchAll(/<script[^>]+src=["'](https?:\/\/[^"']+)/g)) bad.push(`${f} : script externe ${m[1]}`);
 }
+// Budget du premier chargement (CONSIGNES § 5) : JS + CSS de la page (hors morceaux chargés à la demande), gzip ≤ 150 Ko.
+import { gzipSync } from 'node:zlib';
+const initiaux = [...html.matchAll(/(?:src|href)="\.\/([^"]+\.(?:js|css))"/g)].map(m => m[1]);
+const gz = initiaux.reduce((s, f) => s + gzipSync(readFileSync(join(dist, f))).length, 0) / 1024;
+if (gz > 150) bad.push(`premier chargement trop lourd : ${gz.toFixed(0)} Ko gzip (budget 150 Ko)`);
+console.log(`Premier chargement : ${gz.toFixed(0)} Ko gzip (JS + CSS, budget 150 Ko)`);
 const kb = [...precached].reduce((s, f) => { try { return s + statSync(join(dist, f)).size; } catch { return s; } }, 0) / 1024;
 if (bad.length) { console.error('Hors ligne : ÉCHEC\n- ' + bad.join('\n- ')); process.exit(1); }
 console.log(`Hors ligne : OK — ${precached.size} fichiers précachés (${kb.toFixed(0)} Ko), aucune ressource externe.`);

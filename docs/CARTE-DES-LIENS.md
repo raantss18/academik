@@ -32,7 +32,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | --- | --- | --- | --- |
 | **2.1** Kintana dit bonjour | Kintana sait maintenant afficher un message et le personnaliser avec un prénom. | — | 2.boss |
 | **2.2** Décider | Kintana sait choisir entre plusieurs réponses selon une condition. | — | — |
-| **2.3** Répéter | Kintana sait refaire la même chose plusieurs fois sans copier ses lignes. | — | 2.4, 2.5, 8.1 |
+| **2.3** Répéter | Kintana sait refaire la même chose plusieurs fois sans copier ses lignes. | — | 2.4, 2.5, 8.1, 10.2 |
 | **2.4** Fonctions | Kintana range ses gestes dans des fonctions qu’elle peut réutiliser. | 2.3 | 2.boss |
 | **2.5** Listes et dictionnaires | Kintana range plusieurs valeurs ensemble : une liste de notes, un dictionnaire de mots comptés. | 2.3 | 8.4, 8.5, 9.3 |
 | **2.boss** Le chatbot à règles | Kintana répond à des messages simples grâce à un dictionnaire de règles, et refuse les entrées mal formées. | 2.1, 2.4 | 9.boss |
@@ -94,7 +94,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
 | **7.1** Estimer | Kintana estime une valeur inconnue à partir d’un échantillon, et sait ce qu’est une vraisemblance. | — | — |
-| **7.2** Intervalles | Kintana encadre son estimation par un intervalle de confiance honnête. | — | 7.4, 9.4 |
+| **7.2** Intervalles | Kintana encadre son estimation par un intervalle de confiance honnête. | — | 7.4, 9.4, 10.3 |
 | **7.3** Tester | Kintana teste si un résultat peut s’expliquer par le hasard (p-valeur). | — | — |
 | **7.4** Bootstrap | Kintana mesure la variabilité de son estimation en rééchantillonnant ses données (bootstrap). | 7.2 | — |
 | **7.5** Tests multiples | Kintana corrige ses seuils quand elle teste beaucoup d’idées à la fois. | — | — |
@@ -106,19 +106,30 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | --- | --- | --- | --- |
 | **8.1** Lire un tableau | Kintana lit un tableau de données écrit en texte, pour pouvoir ensuite le nettoyer et le résumer. | 2.3 | — |
 | **8.2** Nettoyer | Kintana repère les valeurs manquantes, les doublons et les valeurs impossibles avant de calculer quoi que ce soit. | — | — |
-| **8.3** Résumer | Kintana résume une colonne de nombres en quelques chiffres et compare des groupes. | 6.4 | 9.5, 9.boss |
+| **8.3** Résumer | Kintana résume une colonne de nombres en quelques chiffres et compare des groupes. | 6.4 | 9.5, 9.boss, 10.2, 10.5 |
 | **8.4** Voir les données | Kintana dessine la forme d’une colonne de nombres, en texte, et sait repérer un graphique trompeur. | 2.5 | — |
-| **8.5** Entraîner et tester | Kintana met de côté des données qu’elle ne regarde pas pendant qu’elle apprend, pour mesurer honnêtement ce qu’elle sait. | 2.5 | 9.1, 9.2, 9.4 |
-| **8.boss** La fuite d’information | Kintana traque les fuites qui rendent un test trop beau pour être vrai : avant, pendant et après le découpage. | — | 9.5, 9.boss |
+| **8.5** Entraîner et tester | Kintana met de côté des données qu’elle ne regarde pas pendant qu’elle apprend, pour mesurer honnêtement ce qu’elle sait. | 2.5 | 9.1, 9.2, 9.4, 10.1, 10.4, 10.boss |
+| **8.boss** La fuite d’information | Kintana traque les fuites qui rendent un test trop beau pour être vrai : avant, pendant et après le découpage. | — | 9.5, 9.boss, 10.boss |
 
 ## 9 · Apprentissage automatique
 
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
-| **9.1** Ajuster une droite | Kintana apprend ses premiers réglages : la droite qui passe au plus près d’un nuage de points. | 5.3, 5.5, 5.7, 8.5 | — |
-| **9.2** Biais et variance | Kintana règle la souplesse de son modèle : ni trop rigide pour comprendre, ni trop souple pour ne pas apprendre par cœur. | 8.5 | 9.5, 9.6 |
+| **9.1** Ajuster une droite | Kintana apprend ses premiers réglages : la droite qui passe au plus près d’un nuage de points. | 5.3, 5.5, 5.7, 8.5 | 10.4 |
+| **9.2** Biais et variance | Kintana règle la souplesse de son modèle : ni trop rigide pour comprendre, ni trop souple pour ne pas apprendre par cœur. | 8.5 | 9.5, 9.6, 10.1 |
 | **9.3** Classer | Kintana apprend à répondre par une catégorie, avec une probabilité, grâce à la régression logistique. | 2.5, 5.6 | 9.4, 9.5, 9.6 |
-| **9.4** Mesurer une classification | Kintana mesure honnêtement ses réponses : combien de bonnes, combien de fausses alertes, combien d’oublis. | 7.2, 8.5, 9.3 | 9.boss |
-| **9.5** Régularisation et validation croisée | Kintana retient ses réglages pour ne pas s’emballer, et choisit ses hyperparamètres sans jamais toucher au test. | 8.3, 8.boss, 9.2, 9.3 | — |
+| **9.4** Mesurer une classification | Kintana mesure honnêtement ses réponses : combien de bonnes, combien de fausses alertes, combien d’oublis. | 7.2, 8.5, 9.3 | 9.boss, 10.boss |
+| **9.5** Régularisation et validation croisée | Kintana retient ses réglages pour ne pas s’emballer, et choisit ses hyperparamètres sans jamais toucher au test. | 8.3, 8.boss, 9.2, 9.3 | 10.boss |
 | **9.6** Arbres de décision | Kintana décide en posant une suite de questions simples, et apprend elle-même quelles questions poser. | 3.6, 9.2, 9.3 | — |
 | **9.boss** Classer une demande | Kintana comprend l’intention d’une demande (salut, heure, aide), et prouve son score sur un jeu de test gelé. | 2.boss, 4.1, 4.2, 4.boss, 8.3, 8.boss, 9.4 | — |
+
+## 10 · Séries temporelles
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **10.1** Lire une série | Kintana lisse une série de valeurs dans le temps et la transforme pour la rendre plus facile à étudier. | 8.5, 9.2 | 10.2, 10.5 |
+| **10.2** Stationnarité | Kintana reconnaît une série dont le comportement reste stable, et sait différencier une série qui dérive. | 2.3, 8.3, 10.1 | 10.3 |
+| **10.3** Autocorrélation | Kintana mesure à quel point une série ressemble à elle-même quelques pas plus tôt : sa mémoire. | 7.2, 10.2 | 10.4, 10.5 |
+| **10.4** Prévoir : le modèle AR(1) | Kintana prévoit la valeur suivante d’une série stable en s’appuyant sur la valeur actuelle. | 8.5, 9.1, 10.3 | 10.boss |
+| **10.5** Volatilité | Kintana mesure l’agitation d’une série, c’est-à-dire le risque, même quand elle ne sait pas prévoir son sens. | 8.3, 10.1, 10.3 | — |
+| **10.boss** Prévoir sans tricher | Kintana évalue ses prévisions comme dans la vraie vie : au fil du temps, sans jamais regarder le futur. | 8.5, 8.boss, 9.4, 9.5, 10.4 | — |

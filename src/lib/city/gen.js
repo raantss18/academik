@@ -95,6 +95,15 @@ const THEMES = [
     kinds: { hall: 2, tower: 2, house: 2, dome: 1.5 }, count: 24, align: .85,
     props: { lamp: 7, person: 3, car: 2, crate: 3 },
     lm: ['dome', 'tower', 'hall', 'datacenter', 'tower'], boss: 'lighthouse' },
+  { place: 'Le Quai des Horloges', blurb: 'Horloges, rails et quais : le temps passe, on note chaque instant.', path: 3, smooth: false,
+    top: '#4a4a52', cliff: '#555560', lip: '#5a6a55', road: '#33343c', roadHi: '#f0e0b0', dash: true, night: '#13121c',
+    patches: ['#585862', '#44444e', '#5a6050'],
+    walls: ['#d8cfc0', '#c9bfae', '#b5a994', '#e6dfd2', '#a39884'], roofs: ['#4f4a5a', '#3a3646', '#5f5870'],
+    roofW: { flat: 3, hip: 2, gable: 2 }, win: ['#ffe9a8', '#ffd36b', '#ffcf80'], leaf: ['#2f6b3a', '#3f8a4b', '#5aa55a'],
+    trees: { round: 1, conifer: 2, bush: 1 }, nTrees: 14,
+    kinds: { hall: 3, tower: 2, house: 2, shop: 1 }, count: 24, align: .9,
+    props: { lamp: 8, person: 4, car: 2, crate: 2 },
+    lm: ['clock', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

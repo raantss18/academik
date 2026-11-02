@@ -1,0 +1,165 @@
+# Niveau 10.5 — Séries temporelles 5 : volatilité. Original academik ; notions vérifiées dans Hyndman et Athanasopoulos (lien) et le document technique RiskMetrics de J.P. Morgan (1996, lien, formule EWMA citée sans reproduction du texte). Cadre strictement pédagogique, aucune recommandation d'investissement.
+id: '10.5'
+module: 10
+duree_min: 16
+titre: { fr: 'Volatilité', en: 'Volatility' }
+ia: { fr: 'Kintana mesure l’agitation d’une série, c’est-à-dire le risque, même quand elle ne sait pas prévoir son sens.', en: 'Kintana measures the agitation of a series, that is, the risk, even when she cannot forecast its direction.' }
+sources:
+  - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd.', url: 'https://otexts.com/fpp3/', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
+  - { titre: 'J.P. Morgan / Reuters — RiskMetrics Technical Document (1996), moyenne mobile exponentielle', url: 'https://www.msci.com/documents/10199/5915b101-4206-4ba0-aee2-3449d5c7e95a', licence: 'Lien seulement ; formule citée, texte non repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Deux séries de rendements : A = `0.01, -0.01, 0.01, -0.01` et B = `0.05, -0.06, 0.07, -0.05`. Laquelle est la plus **agitée** ?'
+    en: 'Two return series: A = `0.01, -0.01, 0.01, -0.01` and B = `0.05, -0.06, 0.07, -0.05`. Which is the more **agitated**?'
+    choix:
+      - { fr: 'B', en: 'B', juste: true }
+      - { fr: 'A', en: 'A' }
+      - { fr: 'Elles sont aussi agitées', en: 'They are equally agitated' }
+    indice: { fr: 'Compare la taille des valeurs, sans te soucier de leur signe.', en: 'Compare the size of the values, ignoring their sign.' }
+    explication: { fr: 'B oscille entre $\pm5\,\%$ et $\pm7\,\%$, A seulement de $\pm1\,\%$ : l’agitation, c’est la taille des écarts.', en: 'B swings between $\pm5\,\%$ and $\pm7\,\%$, A only by $\pm1\,\%$: agitation is the size of the gaps.' }
+  - id: c2
+    type: idee
+    fr: 'La **volatilité** est la dispersion des rendements : on la mesure par leur **écart-type** (niveau 8.3). Une volatilité élevée signifie des variations fortes, à la hausse comme à la baisse. C’est une mesure de **risque**, pas de gain.'
+    en: '**Volatility** is the spread of returns: we measure it with their **standard deviation** (level 8.3). A high volatility means large moves, upward as well as downward. It is a measure of **risk**, not of gain.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Rendements', en: 'Returns' }, { fr: 'Écart-type', en: 'Standard deviation' }, { fr: 'Lecture', en: 'Reading' }]
+      cellules:
+        - ['`0.01,-0.01,0.01,-0.01`', '$0{,}01$', { fr: 'calme', en: 'calm', ton: ok }]
+        - ['`0.05,-0.06,0.07,-0.05`', '$\approx0{,}058$', { fr: 'agitée', en: 'agitated', ton: bad }]
+      legende: { fr: 'Les moyennes sont proches de 0 dans les deux cas : seule la dispersion les distingue.', en: 'The means are close to 0 in both cases: only the spread tells them apart.' }
+  - id: d_glissante
+    type: idee
+    fr: 'La volatilité change au cours du temps : calme pendant des semaines, puis agitée. On la suit avec une **volatilité glissante** : l’écart-type des $k$ derniers rendements, recalculé à chaque pas, comme la moyenne mobile du niveau 10.1.'
+    en: 'Volatility changes over time: calm for weeks, then agitated. We follow it with a **rolling volatility**: the standard deviation of the last $k$ returns, recomputed at each step, like the moving average of level 10.1.'
+    exemple: { fr: 'Rendements `0.01, -0.01, 0.02, -0.02, 0.0` avec $k=2$ : les écarts-types des fenêtres sont `0.01, 0.015, 0.02, 0.01`. Le pic du milieu montre un moment plus agité.', en: 'Returns `0.01, -0.01, 0.02, -0.02, 0.0` with $k=2$: the standard deviations of the windows are `0.01, 0.015, 0.02, 0.01`. The peak in the middle shows a more agitated moment.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Suivre la volatilité', en: 'Tracking volatility' }
+    lang: python
+    etapes:
+      - { code: 'import math\nr = [0.01, -0.01, 0.02, -0.02, 0.0]\nk = 2', fr: 'Cinq rendements et une fenêtre de deux.', en: 'Five returns and a window of two.' }
+      - { code: 'def ecart_type(v):\n    m = sum(v) / len(v)\n    return math.sqrt(sum((a - m) ** 2 for a in v) / len(v))', fr: 'L’écart-type de la population (niveau 8.3).', en: 'The population standard deviation (level 8.3).' }
+      - { code: 'vol = [round(ecart_type(r[i:i + k]), 4) for i in range(len(r) - k + 1)]\nprint(vol)', fr: 'On l’applique à chaque fenêtre. On affiche `[0.01, 0.015, 0.02, 0.01]`.', en: 'We apply it to each window. We display `[0.01, 0.015, 0.02, 0.01]`.' }
+    verif: |-
+      import math
+      r = [0.01, -0.01, 0.02, -0.02, 0.0]
+      k = 2
+      def ecart_type(v):
+          m = sum(v) / len(v)
+          return math.sqrt(sum((a - m) ** 2 for a in v) / len(v))
+      vol = [round(ecart_type(r[i:i + k]), 4) for i in range(len(r) - k + 1)]
+      print(vol)
+    sortie: '[0.01, 0.015, 0.02, 0.01]'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `vol_glissante(r, k)`** : la liste des écarts-types (de la population) de chaque fenêtre de `k` rendements consécutifs.'
+    en: 'Your turn. **Write `vol_glissante(r, k)`**: the list of the (population) standard deviations of each window of `k` consecutive returns.'
+    depart: |
+      import math
+
+      # écris ta fonction vol_glissante ici
+    tests: |
+      v = vol_glissante([0.01, -0.01, 0.02, -0.02, 0.0], 2)
+      assert [round(a, 4) for a in v] == [0.01, 0.015, 0.02, 0.01]
+      assert vol_glissante([0.5, 0.5, 0.5], 2) == [0.0, 0.0]
+      assert vol_glissante([1], 2) == []
+    solutionCode: |
+      import math
+
+      def vol_glissante(r, k):
+          sorties = []
+          for i in range(len(r) - k + 1):
+              v = r[i:i + k]
+              m = sum(v) / k
+              sorties.append(math.sqrt(sum((a - m) ** 2 for a in v) / k))
+          return sorties
+    indice: { fr: 'Combine la fenêtre glissante du niveau 10.1 et l’écart-type du niveau 8.3.', en: 'Combine the sliding window from level 10.1 and the standard deviation from level 8.3.' }
+    explication: { fr: 'Une série constante n’a aucune agitation : volatilité nulle sur chaque fenêtre.', en: 'A constant series has no agitation: zero volatility on every window.' }
+  - id: d_amas
+    type: idee
+    fr: 'Fait observé sur beaucoup de séries financières : les **grands mouvements arrivent par grappes**. Une journée agitée est souvent suivie d’autres. Les rendements eux-mêmes sont peu corrélés (niveau 10.3), mais leur **taille** garde de la mémoire.'
+    en: 'A fact observed on many financial series: **large moves come in clusters**. An agitated day is often followed by others. The returns themselves are barely correlated (level 10.3), but their **size** keeps memory.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Quantité', en: 'Quantity' }, { fr: 'Autocorrélation typique', en: 'Typical autocorrelation' }]
+      cellules:
+        - [{ fr: 'rendements $r_t$', en: 'returns $r_t$' }, { fr: 'proche de 0', en: 'close to 0' }]
+        - [{ fr: 'tailles $|r_t|$ ou $r_t^2$', en: 'sizes $|r_t|$ or $r_t^2$' }, { fr: 'positive, durable', en: 'positive, lasting', ton: ok }]
+      legende: { fr: 'On ne prévoit pas le sens des mouvements, mais on peut prévoir leur ampleur.', en: 'We cannot forecast the direction of moves, but we can forecast their size.' }
+  - id: d_ewma
+    type: idee
+    fr: 'Pour donner plus de poids aux rendements récents, on utilise une **moyenne exponentielle** : $v_{t+1}=\lambda\,v_t+(1-\lambda)\,r_t^2$, avec $\lambda$ proche de $1$ (par exemple $0{,}94$). $v$ est la variance estimée ; sa racine est la volatilité.'
+    en: 'To give more weight to recent returns, we use an **exponential average**: $v_{t+1}=\lambda\,v_t+(1-\lambda)\,r_t^2$, with $\lambda$ close to $1$ (for example $0.94$). $v$ is the estimated variance; its root is the volatility.'
+    exemple: { fr: 'Avec $\lambda=0{,}9$, $v_0=0{,}0001$ (volatilité $1\,\%$) et un rendement de $3\,\%$ : $v_1=0{,}9\times0{,}0001+0{,}1\times0{,}0009=0{,}00018$. La volatilité passe à $\approx1{,}34\,\%$.', en: 'With $\lambda=0.9$, $v_0=0.0001$ (volatility $1\,\%$) and a return of $3\,\%$: $v_1=0.9\times0.0001+0.1\times0.0009=0.00018$. Volatility rises to $\approx1.34\,\%$.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `ewma(r, lam, v0)`** : la liste des variances `v_1, v_2, …` obtenues en appliquant $v\leftarrow\lambda v+(1-\lambda)r^2$ pour chaque rendement `r`, à partir de `v0`.'
+    en: '**Write `ewma(r, lam, v0)`**: the list of variances `v_1, v_2, …` obtained by applying $v\leftarrow\lambda v+(1-\lambda)r^2$ for each return `r`, starting from `v0`.'
+    depart: |
+      # écris ta fonction ewma ici
+    tests: |
+      v = ewma([0.03, 0.0], 0.9, 0.0001)
+      assert abs(v[0] - 0.00018) < 1e-12 and abs(v[1] - 0.000162) < 1e-12
+      assert ewma([], 0.9, 1.0) == []
+      assert ewma([1], 0.5, 0) == [0.5]
+    solutionCode: |
+      def ewma(r, lam, v0):
+          v = v0
+          sorties = []
+          for x in r:
+              v = lam * v + (1 - lam) * x * x
+              sorties.append(v)
+          return sorties
+    indice: { fr: 'Une variable `v` mise à jour à chaque rendement ; ajoute chaque nouvelle valeur à la liste.', en: 'A variable `v` updated at each return; append each new value to the list.' }
+    explication: { fr: 'Un rendement nul fait redescendre la variance : $0{,}9\times0{,}00018=0{,}000162$.', en: 'A zero return brings the variance down: $0.9\times0.00018=0.000162$.' }
+  - id: d_p_vol
+    type: piege
+    fr: 'Une volatilité faible **ne protège pas** : elle peut précéder une explosion. Et prévoir l’ampleur d’un mouvement n’en prévoit pas le sens. Ce niveau est pédagogique : ce n’est **pas un conseil d’investissement**.'
+    en: 'A low volatility **does not protect**: it can precede an explosion. And forecasting the size of a move does not forecast its direction. This level is educational: it is **not investment advice**.'
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Une variance estimée vaut `0.0004`. Quelle est la volatilité correspondante, en pourcentage ?'
+    en: 'An estimated variance is `0.0004`. What is the corresponding volatility, as a percentage?'
+    reponses: ['2']
+    verif: 'print(round((0.0004 ** 0.5) * 100))'
+    indice: { fr: 'La volatilité est la racine carrée de la variance ; multiplie par 100 pour le pourcentage.', en: 'Volatility is the square root of the variance; multiply by 100 for the percentage.' }
+    explication: { fr: '$\sqrt{0{,}0004}=0{,}02$, soit $2\,\%$.', en: '$\sqrt{0.0004}=0.02$, i.e. $2\,\%$.' }
+  - id: d_lien
+    type: idee
+    fr: 'Les modèles **GARCH**, cités pour aller plus loin, formalisent cette idée : la variance d’aujourd’hui dépend de la variance et des chocs d’hier. Notre moyenne exponentielle en est une version simple. La volatilité sert à régler la **taille d’une position** et à mesurer le risque.'
+    en: '**GARCH** models, cited for further reading, formalise this idea: today’s variance depends on yesterday’s variance and shocks. Our exponential average is a simple version. Volatility is used to size a **position** and to measure risk.'
+    exemple: { fr: 'Si la volatilité double, une règle prudente est de **réduire de moitié** la taille de la position pour garder le même risque.', en: 'If volatility doubles, a prudent rule is to **halve** the size of the position to keep the same risk.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `taille_position(vol_cible, vol_actuelle)`** : la fraction du capital à engager pour que le risque reste égal à `vol_cible` quand la volatilité actuelle est `vol_actuelle`. Plafonne à `1`. Renvoie `0` si `vol_actuelle` vaut 0.'
+    en: 'Challenge. **Write `taille_position(vol_cible, vol_actuelle)`**: the fraction of capital to commit so that risk stays equal to `vol_cible` when current volatility is `vol_actuelle`. Cap at `1`. Return `0` if `vol_actuelle` is 0.'
+    depart: |
+      # écris ta fonction taille_position ici
+    tests: |
+      assert taille_position(0.01, 0.02) == 0.5
+      assert taille_position(0.02, 0.01) == 1
+      assert taille_position(0.01, 0.01) == 1
+      assert taille_position(0.01, 0) == 0
+    solutionCode: |
+      def taille_position(vol_cible, vol_actuelle):
+          if vol_actuelle == 0:
+              return 0
+          return min(1, vol_cible / vol_actuelle)
+    indice: { fr: 'Le rapport des deux volatilités, plafonné à 1 avec `min` ; traite d’abord le cas nul.', en: 'The ratio of the two volatilities, capped at 1 with `min`; handle the zero case first.' }
+    explication: { fr: 'Exemple pédagogique de gestion du risque : on engage moins quand le marché est agité. Aucune prévision de gain n’intervient.', en: 'An educational risk-management example: commit less when the market is agitated. No gain forecast is involved.' }
+  - id: c8
+    type: retenir
+    fr: 'Volatilité = écart-type des rendements : risque, pas gain. Glissante sur $k$ pas, ou exponentielle $v\leftarrow\lambda v+(1-\lambda)r^2$. Les grands mouvements viennent en grappes : l’ampleur est prévisible, pas le sens.'
+    en: 'Volatility = standard deviation of returns: risk, not gain. Rolling over $k$ steps, or exponential $v\leftarrow\lambda v+(1-\lambda)r^2$. Large moves come in clusters: size is forecastable, not direction.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [Forecasting: Principles and Practice](https://otexts.com/fpp3/) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [Forecasting: Principles and Practice](https://otexts.com/fpp3/); this optional reading needs a connection.'

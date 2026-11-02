@@ -1,0 +1,170 @@
+# Niveau 10.3 — Séries temporelles 3 : autocorrélation. Original academik ; notions vérifiées dans Hyndman et Athanasopoulos, Forecasting: Principles and Practice (autocorrélation, lien, texte non repris).
+id: '10.3'
+module: 10
+duree_min: 16
+titre: { fr: 'Autocorrélation', en: 'Autocorrelation' }
+ia: { fr: 'Kintana mesure à quel point une série ressemble à elle-même quelques pas plus tôt : sa mémoire.', en: 'Kintana measures how much a series resembles itself a few steps earlier: its memory.' }
+sources:
+  - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (autocorrélation)', url: 'https://otexts.com/fpp3/acf.html', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
+  - { titre: 'Python — module math', url: 'https://docs.python.org/3/library/math.html', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Une série alterne `+1, -1, +1, -1…`. Quand une valeur est haute, que vaut en général la suivante ?'
+    en: 'A series alternates `+1, -1, +1, -1…`. When a value is high, what is the next one in general?'
+    choix:
+      - { fr: 'Basse : la série alterne', en: 'Low: the series alternates', juste: true }
+      - { fr: 'Haute aussi', en: 'High too' }
+      - { fr: 'On ne peut rien dire', en: 'We cannot say anything' }
+    indice: { fr: 'Regarde la valeur qui suit chaque `+1` dans la suite donnée.', en: 'Look at the value following each `+1` in the given sequence.' }
+    explication: { fr: 'Chaque `+1` est suivi d’un `-1` : les voisins varient en sens opposé, c’est une autocorrélation négative.', en: 'Each `+1` is followed by a `-1`: neighbours vary in opposite directions, a negative autocorrelation.' }
+  - id: c2
+    type: idee
+    fr: 'L’**autocorrélation** de décalage $k$ compare la série avec elle-même décalée de $k$ pas. Elle vaut entre $-1$ et $1$. Proche de $1$ : une valeur haute annonce une valeur haute. Proche de $-1$ : elle annonce une valeur basse.'
+    en: 'The **autocorrelation** at lag $k$ compares the series with itself shifted by $k$ steps. It is between $-1$ and $1$. Close to $1$: a high value announces a high value. Close to $-1$: it announces a low value.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Série', en: 'Series' }, { fr: 'Autocorrélation (pas 1)', en: 'Autocorrelation (lag 1)' }, { fr: 'Lecture', en: 'Reading' }]
+      cellules:
+        - ['`1,2,3,4,5`', '$0{,}4$', { fr: 'tendance : mémoire positive', en: 'trend: positive memory', ton: ok }]
+        - ['`1,-1,1,-1,1,-1`', '$-0{,}83$', { fr: 'alternance', en: 'alternation', ton: bad }]
+        - ['`2,4,3,5,4,6`', '$-0{,}1$', { fr: 'presque rien', en: 'almost nothing' }]
+      legende: { fr: 'Valeurs calculées avec la formule de l’exemple ci-dessous.', en: 'Values computed with the formula in the example below.' }
+  - id: d_formule
+    type: idee
+    fr: 'On centre la série (on retire sa moyenne $\bar x$), puis $r_k=\dfrac{\sum_{t=k}^{n-1}(x_t-\bar x)(x_{t-k}-\bar x)}{\sum_{t=0}^{n-1}(x_t-\bar x)^2}$. Au numérateur, un produit par paire de valeurs distantes de $k$ ; au dénominateur, la variation totale.'
+    en: 'We centre the series (remove its mean $\bar x$), then $r_k=\dfrac{\sum_{t=k}^{n-1}(x_t-\bar x)(x_{t-k}-\bar x)}{\sum_{t=0}^{n-1}(x_t-\bar x)^2}$. The numerator has a product for each pair of values $k$ apart; the denominator is the total variation.'
+    exemple: { fr: 'Pour `1, 2, 3, 4, 5` : $\bar x=3$, centrées `-2,-1,0,1,2`. Numérateur du pas 1 : $(-1)(-2)+0(-1)+1\cdot0+2\cdot1=4$. Dénominateur : $4+1+0+1+4=10$. Donc $r_1=0{,}4$.', en: 'For `1, 2, 3, 4, 5`: $\bar x=3$, centred `-2,-1,0,1,2`. Numerator at lag 1: $(-1)(-2)+0(-1)+1\cdot0+2\cdot1=4$. Denominator: $4+1+0+1+4=10$. So $r_1=0.4$.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Calculer une autocorrélation', en: 'Computing an autocorrelation' }
+    lang: python
+    etapes:
+      - { code: 'x = [1, 2, 3, 4, 5]\nm = sum(x) / len(x)', fr: 'La série et sa moyenne, `3.0`.', en: 'The series and its mean, `3.0`.' }
+      - { code: 'k = 1\nnum = sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x)))', fr: 'Pour chaque `t` à partir de `k`, le produit des écarts à la moyenne de `x[t]` et de `x[t-k]`.', en: 'For each `t` from `k`, the product of the deviations from the mean of `x[t]` and `x[t-k]`.' }
+      - { code: 'den = sum((v - m) ** 2 for v in x)\nprint(round(num / den, 3))', fr: 'Le dénominateur est la somme des carrés des écarts. On affiche `0.4`.', en: 'The denominator is the sum of the squared deviations. We display `0.4`.' }
+    verif: |-
+      x = [1, 2, 3, 4, 5]
+      m = sum(x) / len(x)
+      k = 1
+      num = sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x)))
+      den = sum((v - m) ** 2 for v in x)
+      print(round(num / den, 3))
+    sortie: '0.4'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `autocorr(x, k)`** : l’autocorrélation de décalage `k` avec la formule ci-dessus (moyenne de toute la série).'
+    en: 'Your turn. **Write `autocorr(x, k)`**: the autocorrelation at lag `k` with the formula above (mean of the whole series).'
+    depart: |
+      # écris ta fonction autocorr ici
+    tests: |
+      assert abs(autocorr([1, 2, 3, 4, 5], 1) - 0.4) < 1e-12
+      assert abs(autocorr([1, -1, 1, -1, 1, -1], 1) - (-5 / 6)) < 1e-12
+      assert abs(autocorr([2, 4, 3, 5, 4, 6], 1) - (-0.1)) < 1e-12
+      assert abs(autocorr([3, 1, 4, 1, 5], 0) - 1) < 1e-12
+    solutionCode: |
+      def autocorr(x, k):
+          m = sum(x) / len(x)
+          num = sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x)))
+          den = sum((v - m) ** 2 for v in x)
+          return num / den
+    indice: { fr: 'Reprends exactement l’exemple, en remplaçant les valeurs écrites en dur par `x` et `k`.', en: 'Reuse the example exactly, replacing the hard-coded values with `x` and `k`.' }
+    explication: { fr: 'À $k=0$ on trouve toujours $1$ : une série est parfaitement corrélée avec elle-même.', en: 'At $k=0$ we always find $1$: a series is perfectly correlated with itself.' }
+  - id: d_bande
+    type: idee
+    fr: 'Même un bruit pur donne des autocorrélations non nulles par hasard. On les compare à une **bande** : $\pm\dfrac{1{,}96}{\sqrt n}$ (niveau 7.2). En dehors, la valeur est probablement un vrai signal.'
+    en: 'Even pure noise gives non-zero autocorrelations by chance. We compare them with a **band**: $\pm\dfrac{1.96}{\sqrt n}$ (level 7.2). Outside it, the value is probably a real signal.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Taille $n$', en: 'Size $n$' }, { fr: 'Bande $\pm1{,}96/\sqrt n$', en: 'Band $\pm1.96/\sqrt n$' }]
+      cellules:
+        - ['$6$', '$0{,}80$']
+        - ['$100$', '$0{,}196$']
+        - ['$400$', { fr: '$0{,}098$', en: '$0.098$', ton: ok }]
+      legende: { fr: 'Avec 6 valeurs, aucune autocorrélation n’est significative : il faut beaucoup de données.', en: 'With 6 values, no autocorrelation is significant: you need a lot of data.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $n=100$ observations, quelle est la demi-largeur de la bande $1{,}96/\sqrt n$ ? (nombre décimal)'
+    en: 'For $n=100$ observations, what is the half-width of the band $1.96/\sqrt n$? (decimal number)'
+    reponses: ['0.196', '0,196']
+    verif: 'print(1.96 / 100 ** 0.5)'
+    indice: { fr: 'Calcule $\sqrt{100}$ puis divise $1{,}96$ par ce résultat.', en: 'Compute $\sqrt{100}$ then divide $1.96$ by that result.' }
+    explication: { fr: '$1{,}96/10=0{,}196$.', en: '$1.96/10=0.196$.' }
+  - id: d_correlogramme
+    type: idee
+    fr: 'On résume une série par son **corrélogramme** : la liste des $r_1,r_2,\dots$ tracée en barres. Une saisonnalité de période $p$ fait apparaître des pics aux décalages $p$, $2p$, $3p$.'
+    en: 'A series is summarised by its **correlogram**: the list of $r_1,r_2,\dots$ drawn as bars. A seasonality of period $p$ makes peaks appear at lags $p$, $2p$, $3p$.'
+    exemple: { fr: 'Pour des ventes qui se répètent chaque semaine, on s’attend à des pics aux décalages $7$, $14$, $21$ jours : la série ressemble à elle-même une semaine plus tôt.', en: 'For sales that repeat every week, we expect peaks at lags $7$, $14$, $21$ days: the series resembles itself a week earlier.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `retards_significatifs(x, kmax)`** : la liste des décalages `k` de 1 à `kmax` dont $|r_k|$ dépasse $1{,}96/\sqrt n$. `autocorr` est fournie.'
+    en: '**Write `retards_significatifs(x, kmax)`**: the list of lags `k` from 1 to `kmax` whose $|r_k|$ exceeds $1.96/\sqrt n$. `autocorr` is provided.'
+    depart: |
+      def autocorr(x, k):
+          m = sum(x) / len(x)
+          num = sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x)))
+          den = sum((v - m) ** 2 for v in x)
+          return num / den
+
+      # écris ta fonction retards_significatifs ici
+    tests: |
+      alterne = [1, -1] * 20
+      assert retards_significatifs(alterne, 3) == [1, 2, 3]
+      assert retards_significatifs([2, 4, 3, 5, 4, 6], 2) == []
+      monte = list(range(1, 41))
+      assert 1 in retards_significatifs(monte, 2)
+    solutionCode: |
+      def autocorr(x, k):
+          m = sum(x) / len(x)
+          num = sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x)))
+          den = sum((v - m) ** 2 for v in x)
+          return num / den
+
+      def retards_significatifs(x, kmax):
+          bande = 1.96 / len(x) ** 0.5
+          return [k for k in range(1, kmax + 1) if abs(autocorr(x, k)) > bande]
+    indice: { fr: 'Calcule la bande une fois, puis garde les `k` de `range(1, kmax + 1)` dont l’autocorrélation dépasse la bande en valeur absolue.', en: 'Compute the band once, then keep the `k` of `range(1, kmax + 1)` whose autocorrelation exceeds the band in absolute value.' }
+    explication: { fr: 'Une série qui alterne a des autocorrélations fortes à tous les décalages : alternance puis retour, signe qui change.', en: 'A series that alternates has strong autocorrelations at all lags: alternation then return, with changing sign.' }
+  - id: d_p_tendance
+    type: piege
+    fr: 'Une série avec **tendance** a une autocorrélation forte à presque tous les décalages, simplement parce que ses voisins sont proches. Différencie d’abord (niveau 10.2), sinon la lecture est trompeuse.'
+    en: 'A series with a **trend** has a strong autocorrelation at almost every lag, simply because its neighbours are close. Difference first (level 10.2), otherwise the reading is misleading.'
+  - id: d_lien
+    type: idee
+    fr: 'L’autocorrélation est la mesure de la **mémoire** d’une série. Si elle est nulle partout, la série est du bruit : rien à prévoir. Si elle est forte au pas 1, tu verras au niveau 10.4 un modèle qui s’en sert.'
+    en: 'Autocorrelation measures a series’ **memory**. If it is zero everywhere, the series is noise: nothing to forecast. If it is strong at lag 1, you will see in level 10.4 a model that uses it.'
+    exemple: { fr: 'Les rendements d’un actif ont presque toujours une autocorrélation proche de 0 : les prix sont difficiles à prévoir. Leur valeur absolue, elle, a de la mémoire (niveau 10.5).', en: 'An asset’s returns almost always have an autocorrelation close to 0: prices are hard to forecast. Their absolute value, however, has memory (level 10.5).' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `acf(x, kmax)`** : la liste `[r_1, …, r_kmax]` des autocorrélations. Si le dénominateur est nul (série constante), renvoie une liste de `0.0`. `autocorr` n’est pas fournie : écris-la dedans ou à côté.'
+    en: 'Challenge. **Write `acf(x, kmax)`**: the list `[r_1, …, r_kmax]` of autocorrelations. If the denominator is zero (constant series), return a list of `0.0`. `autocorr` is not provided: write it inside or beside.'
+    depart: |
+      # écris ta fonction acf ici
+    tests: |
+      r = acf([1, 2, 3, 4, 5], 2)
+      assert abs(r[0] - 0.4) < 1e-12 and abs(r[1] - (-0.1)) < 1e-12
+      assert acf([5, 5, 5, 5], 3) == [0.0, 0.0, 0.0]
+      assert acf([1, 2, 3], 0) == []
+    solutionCode: |
+      def acf(x, kmax):
+          m = sum(x) / len(x)
+          den = sum((v - m) ** 2 for v in x)
+          if den == 0:
+              return [0.0] * kmax
+          return [sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x))) / den for k in range(1, kmax + 1)]
+    indice: { fr: 'Calcule la moyenne et le dénominateur une seule fois ; traite le dénominateur nul avant la boucle.', en: 'Compute the mean and the denominator only once; handle the zero denominator before the loop.' }
+    explication: { fr: 'Pour `1, 2, 3, 4, 5`, le pas 2 donne `-0.1` : on le lit sur la liste complète.', en: 'For `1, 2, 3, 4, 5`, lag 2 gives `-0.1`: read it on the full list.' }
+  - id: c8
+    type: retenir
+    fr: 'L’autocorrélation $r_k$ mesure la mémoire d’une série à $k$ pas. Formule : écarts à la moyenne, produit par paires, divisé par la variation totale. Bande $\pm1{,}96/\sqrt n$ ; différencie une série à tendance avant.'
+    en: 'Autocorrelation $r_k$ measures a series’ memory at $k$ steps. Formula: deviations from the mean, product over pairs, divided by total variation. Band $\pm1.96/\sqrt n$; difference a trending series first.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [Forecasting: Principles and Practice — Autocorrélation](https://otexts.com/fpp3/acf.html) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [Forecasting: Principles and Practice — Autocorrelation](https://otexts.com/fpp3/acf.html); this optional reading needs a connection.'

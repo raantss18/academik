@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.19] — 2026-11-02
+
+### Message fr
+Nouveau module « Séries temporelles » : lire une série, stabilité, mémoire, prévoir avec un modèle simple, mesurer l'agitation et évaluer sans tricher. L'application démarre aussi plus vite : le premier chargement est cinq fois plus léger.
+
+### Message en
+New “Time series” module: reading a series, stability, memory, forecasting with a simple model, measuring agitation and evaluating without cheating. The app also starts faster: the first load is five times lighter.
+
 ### Contenu publié sans nouvelle version de l’app (2026-11-02)
 
 ### Message fr

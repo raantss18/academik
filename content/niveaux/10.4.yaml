@@ -1,0 +1,202 @@
+# Niveau 10.4 — Séries temporelles 4 : prévoir avec un modèle AR(1). Original academik ; notions vérifiées dans Hyndman et Athanasopoulos, Forecasting: Principles and Practice (modèles autorégressifs, lien, texte non repris).
+id: '10.4'
+module: 10
+duree_min: 19
+titre: { fr: 'Prévoir : le modèle AR(1)', en: 'Forecasting: the AR(1) model' }
+ia: { fr: 'Kintana prévoit la valeur suivante d’une série stable en s’appuyant sur la valeur actuelle.', en: 'Kintana forecasts the next value of a stable series from the current value.' }
+sources:
+  - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (modèles autorégressifs)', url: 'https://otexts.com/fpp3/AR.html', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
+  - { titre: 'Stanford CS229 — Machine Learning (moindres carrés)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un modèle prévoit la valeur suivante comme **la moitié** de la valeur actuelle. La valeur actuelle est `8`. Quelle est sa prévision ?'
+    en: 'A model forecasts the next value as **half** the current value. The current value is `8`. What is its forecast?'
+    choix:
+      - { fr: '4', en: '4', juste: true }
+      - { fr: '16', en: '16' }
+      - { fr: '8', en: '8' }
+    indice: { fr: 'Multiplie la valeur actuelle par un demi.', en: 'Multiply the current value by one half.' }
+    explication: { fr: '$0{,}5\times8=4$ : c’est un modèle autorégressif avec $\varphi=0{,}5$.', en: '$0.5\times8=4$: this is an autoregressive model with $\varphi=0.5$.' }
+  - id: c2
+    type: idee
+    fr: 'Le modèle **AR(1)** écrit chaque valeur comme une fraction de la précédente, plus un petit choc : $x_t=\varphi\,x_{t-1}+\varepsilon_t$. Le nombre $\varphi$ est le seul réglage. La série est supposée **centrée** (moyenne nulle).'
+    en: 'The **AR(1)** model writes each value as a fraction of the previous one, plus a small shock: $x_t=\varphi\,x_{t-1}+\varepsilon_t$. The number $\varphi$ is the only setting. The series is assumed **centred** (zero mean).'
+    figure:
+      kind: tableau
+      entetes: ['$\varphi$', { fr: 'Comportement', en: 'Behaviour' }, { fr: 'Stationnaire ?', en: 'Stationary?' }]
+      cellules:
+        - ['$0{,}5$', { fr: 'revient vers 0 vite', en: 'returns to 0 quickly' }, { fr: 'oui', en: 'yes', ton: ok }]
+        - ['$0{,}95$', { fr: 'revient vers 0 lentement', en: 'returns to 0 slowly' }, { fr: 'oui', en: 'yes', ton: ok }]
+        - ['$1$', { fr: 'marche aléatoire : dérive', en: 'random walk: drifts' }, { fr: 'non', en: 'no', ton: bad }]
+        - ['$-0{,}8$', { fr: 'alterne en s’amortissant', en: 'alternates while fading' }, { fr: 'oui', en: 'yes', ton: ok }]
+      legende: { fr: 'Condition de stationnarité : $|\varphi|<1$.', en: 'Stationarity condition: $|\varphi|<1$.' }
+  - id: d_est
+    type: idee
+    fr: 'Pour **estimer** $\varphi$, on cherche la droite $x_t\approx\varphi\,x_{t-1}$ qui passe par l’origine, avec les moindres carrés (niveau 9.1) : $\hat\varphi=\dfrac{\sum x_t\,x_{t-1}}{\sum x_{t-1}^2}$.'
+    en: 'To **estimate** $\varphi$, we look for the line $x_t\approx\varphi\,x_{t-1}$ through the origin, using least squares (level 9.1): $\hat\varphi=\dfrac{\sum x_t\,x_{t-1}}{\sum x_{t-1}^2}$.'
+    exemple: { fr: 'Série `4, 2, 1, 0.5`. Paires (précédent, suivant) : $(4,2),(2,1),(1,0{,}5)$. Numérateur : $8+2+0{,}5=10{,}5$. Dénominateur : $16+4+1=21$. Donc $\hat\varphi=0{,}5$.', en: 'Series `4, 2, 1, 0.5`. (previous, next) pairs: $(4,2),(2,1),(1,0.5)$. Numerator: $8+2+0.5=10.5$. Denominator: $16+4+1=21$. So $\hat\varphi=0.5$.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Estimer φ en Python', en: 'Estimating φ in Python' }
+    lang: python
+    etapes:
+      - { code: 'x = [4, 2, 1, 0.5]', fr: 'Une série qui se divise par deux à chaque pas.', en: 'A series that is halved at each step.' }
+      - { code: 'num = sum(x[t] * x[t - 1] for t in range(1, len(x)))', fr: 'Somme des produits « valeur × valeur précédente ».', en: 'Sum of the products “value × previous value”.' }
+      - { code: 'den = sum(x[t - 1] ** 2 for t in range(1, len(x)))\nprint(num / den)', fr: 'Somme des carrés des valeurs précédentes. On affiche `0.5`.', en: 'Sum of the squares of the previous values. We display `0.5`.' }
+    verif: |-
+      x = [4, 2, 1, 0.5]
+      num = sum(x[t] * x[t - 1] for t in range(1, len(x)))
+      den = sum(x[t - 1] ** 2 for t in range(1, len(x)))
+      print(num / den)
+    sortie: '0.5'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `phi_ar1(x)`** : l’estimation $\hat\varphi$ ci-dessus pour une liste `x` d’au moins deux valeurs.'
+    en: 'Your turn. **Write `phi_ar1(x)`**: the estimate $\hat\varphi$ above for a list `x` of at least two values.'
+    depart: |
+      # écris ta fonction phi_ar1 ici
+    tests: |
+      assert phi_ar1([4, 2, 1, 0.5]) == 0.5
+      assert abs(phi_ar1([1, 2, 3]) - (2 + 6) / (1 + 4)) < 1e-12
+      assert phi_ar1([1, -1, 1, -1]) == -1
+    solutionCode: |
+      def phi_ar1(x):
+          num = sum(x[t] * x[t - 1] for t in range(1, len(x)))
+          den = sum(x[t - 1] ** 2 for t in range(1, len(x)))
+          return num / den
+    indice: { fr: 'Même calcul que l’exemple, avec `x` en paramètre.', en: 'Same computation as the example, with `x` as a parameter.' }
+    explication: { fr: 'Pour `1, -1, 1, -1`, chaque valeur est l’opposée de la précédente : $\hat\varphi=-1$, à la limite de la stationnarité.', en: 'For `1, -1, 1, -1`, each value is the opposite of the previous one: $\hat\varphi=-1$, at the edge of stationarity.' }
+  - id: d_prev
+    type: idee
+    fr: 'Pour **prévoir** $h$ pas devant, on applique le modèle $h$ fois en ignorant les chocs futurs (inconnus, de moyenne nulle) : la prévision est $\hat x_{n+h}=\varphi^h\,x_n$. Elle **se rapproche de 0**, la moyenne, quand $h$ grandit.'
+    en: 'To **forecast** $h$ steps ahead, we apply the model $h$ times, ignoring future shocks (unknown, of zero mean): the forecast is $\hat x_{n+h}=\varphi^h\,x_n$. It **gets closer to 0**, the mean, as $h$ grows.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Avec $\varphi=0{,}5$ et $x_n=8$', en: 'With $\varphi=0.5$ and $x_n=8$' }, { fr: 'Prévision', en: 'Forecast' }]
+      cellules:
+        - ['$h=1$', '$4$']
+        - ['$h=2$', '$2$']
+        - ['$h=3$', '$1$']
+        - ['$h=10$', { fr: '$\approx0{,}008$ : presque la moyenne', en: '$\approx0.008$: almost the mean', ton: bad }]
+      legende: { fr: 'Plus on prévoit loin, moins le modèle en sait : il retombe sur la moyenne.', en: 'The further we forecast, the less the model knows: it falls back to the mean.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `prevoir(derniere, phi, h)`** : la liste des prévisions pour 1, 2, …, `h` pas devant, à partir de la dernière valeur observée.'
+    en: '**Write `prevoir(derniere, phi, h)`**: the list of forecasts for 1, 2, …, `h` steps ahead, from the last observed value.'
+    depart: |
+      # écris ta fonction prevoir ici
+    tests: |
+      assert prevoir(8, 0.5, 3) == [4.0, 2.0, 1.0]
+      assert prevoir(10, 0, 2) == [0, 0]
+      assert prevoir(5, -1, 3) == [-5, 5, -5]
+      assert prevoir(3, 0.9, 0) == []
+    solutionCode: |
+      def prevoir(derniere, phi, h):
+          valeurs = []
+          x = derniere
+          for _ in range(h):
+              x = phi * x
+              valeurs.append(x)
+          return valeurs
+    indice: { fr: 'Une boucle de `h` tours : à chaque tour, multiplie la valeur courante par `phi` et note-la.', en: 'A loop of `h` turns: at each turn, multiply the current value by `phi` and record it.' }
+    explication: { fr: 'Pour $\varphi=-1$ la prévision alterne sans s’amortir : la série est à la limite de la stationnarité.', en: 'For $\varphi=-1$ the forecast alternates without fading: the series is at the edge of stationarity.' }
+  - id: d_p_moy
+    type: piege
+    fr: 'Un AR(1) suppose une série **centrée**. Pour une série qui oscille autour de $100$, retire d’abord la moyenne, prévois l’écart, puis **rajoute** la moyenne. Sinon la prévision tend vers $0$ au lieu de $100$.'
+    en: 'An AR(1) assumes a **centred** series. For a series oscillating around $100$, first remove the mean, forecast the deviation, then **add back** the mean. Otherwise the forecast tends to $0$ instead of $100$.'
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec $\varphi=0{,}8$ et une dernière valeur centrée de `10`, quelle est la prévision à **2 pas** ?'
+    en: 'With $\varphi=0.8$ and a last centred value of `10`, what is the 2-step forecast?'
+    reponses: ['6.4', '6,4']
+    verif: 'print(round(0.8 ** 2 * 10, 1))'
+    indice: { fr: 'Applique $\varphi^h x_n$ avec $h=2$.', en: 'Apply $\varphi^h x_n$ with $h=2$.' }
+    explication: { fr: '$0{,}8^2\times10=0{,}64\times10=6{,}4$.', en: '$0.8^2\times10=0.64\times10=6.4$.' }
+  - id: d_base
+    type: idee
+    fr: 'Un modèle n’a de valeur que s’il **bat une référence naïve** (niveau 8.5). La plus simple pour une série : prévoir que la prochaine valeur sera **égale à la dernière**. Si l’AR(1) ne fait pas mieux, il est inutile.'
+    en: 'A model is only worth anything if it **beats a naive baseline** (level 8.5). The simplest for a series: forecast that the next value will **equal the last one**. If the AR(1) does no better, it is useless.'
+    exemple: { fr: 'Série `1, 2, 3, 4, 5, 6` : la référence « dernière valeur » se trompe toujours de 1. C’est dur à battre sur une tendance, facile sur une série qui revient vers sa moyenne.', en: 'Series `1, 2, 3, 4, 5, 6`: the “last value” baseline is always off by 1. Hard to beat on a trend, easy on a series that returns to its mean.' }
+  - id: c7
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `erreur_un_pas(x, phi)`** : l’erreur absolue moyenne des prévisions à un pas $\varphi\,x_{t-1}$ pour $t=1,\dots,n-1$, comparées à $x_t$.'
+    en: '**Write `erreur_un_pas(x, phi)`**: the mean absolute error of the one-step forecasts $\varphi\,x_{t-1}$ for $t=1,\dots,n-1$, compared with $x_t$.'
+    depart: |
+      # écris ta fonction erreur_un_pas ici
+    tests: |
+      assert erreur_un_pas([4, 2, 1, 0.5], 0.5) == 0
+      assert erreur_un_pas([1, 2, 3, 4], 1) == 1
+      assert abs(erreur_un_pas([2, 4, 8], 1) - 3) < 1e-12
+      assert erreur_un_pas([5, 5, 5], 0) == 5
+    solutionCode: |
+      def erreur_un_pas(x, phi):
+          erreurs = [abs(phi * x[t - 1] - x[t]) for t in range(1, len(x))]
+          return sum(erreurs) / len(erreurs)
+    indice: { fr: 'Pour chaque `t` de 1 à la fin : `abs(phi * x[t-1] - x[t])`, puis la moyenne.', en: 'For each `t` from 1 to the end: `abs(phi * x[t-1] - x[t])`, then the mean.' }
+    explication: { fr: 'Avec $\varphi=1$ on retrouve la référence « dernière valeur » : l’AR(1) la généralise.', en: 'With $\varphi=1$ we find the “last value” baseline: the AR(1) generalises it.' }
+  - id: d_lien
+    type: idee
+    fr: 'Le lien avec le niveau 10.3 : pour une série centrée, $\hat\varphi$ est presque l’autocorrélation du pas 1. Une autocorrélation de pas 1 proche de 0 signifie qu’il n’y a **rien à prévoir** avec ce modèle.'
+    en: 'The link with level 10.3: for a centred series, $\hat\varphi$ is almost the lag-1 autocorrelation. A lag-1 autocorrelation close to 0 means there is **nothing to forecast** with this model.'
+    exemple: { fr: 'Pour `1, 2, 3, 4, 5` (pas centrée), $\hat\varphi=1{,}6$ alors que $r_1=0{,}4$ : la différence vient de la moyenne non retirée. On centre toujours d’abord.', en: 'For `1, 2, 3, 4, 5` (not centred), $\hat\varphi=1.6$ whereas $r_1=0.4$: the difference comes from the unremoved mean. We always centre first.' }
+  - id: c8
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `prevoir_serie(x, h)`** : centre `x` (retire sa moyenne `m`), estime `phi` sur la série centrée, prévois `h` pas depuis la dernière valeur centrée, puis rajoute `m`. `phi_ar1` et `prevoir` sont fournies.'
+    en: 'Challenge. **Write `prevoir_serie(x, h)`**: centre `x` (remove its mean `m`), estimate `phi` on the centred series, forecast `h` steps from the last centred value, then add `m` back. `phi_ar1` and `prevoir` are provided.'
+    depart: |
+      def phi_ar1(x):
+          num = sum(x[t] * x[t - 1] for t in range(1, len(x)))
+          den = sum(x[t - 1] ** 2 for t in range(1, len(x)))
+          return num / den
+
+      def prevoir(derniere, phi, h):
+          valeurs = []
+          for _ in range(h):
+              derniere = phi * derniere
+              valeurs.append(derniere)
+          return valeurs
+
+      # écris ta fonction prevoir_serie ici
+    tests: |
+      p = prevoir_serie([104, 96, 102, 98, 101, 99], 2)
+      assert len(p) == 2 and 99 < p[0] + 0 < 101.5
+      q = prevoir_serie([10, 10, 10, 10], 3)
+      assert q == [10.0, 10.0, 10.0] or all(abs(v - 10) < 1e-9 for v in q)
+      assert prevoir_serie([5, 7, 5, 7], 0) == []
+    solutionCode: |
+      def phi_ar1(x):
+          num = sum(x[t] * x[t - 1] for t in range(1, len(x)))
+          den = sum(x[t - 1] ** 2 for t in range(1, len(x)))
+          return num / den
+
+      def prevoir(derniere, phi, h):
+          valeurs = []
+          for _ in range(h):
+              derniere = phi * derniere
+              valeurs.append(derniere)
+          return valeurs
+
+      def prevoir_serie(x, h):
+          m = sum(x) / len(x)
+          centree = [v - m for v in x]
+          den = sum(c ** 2 for c in centree[:-1])
+          phi = phi_ar1(centree) if den > 0 else 0.0
+          return [m + v for v in prevoir(centree[-1], phi, h)]
+    indice: { fr: 'Retire `m`, calcule `phi` sur la série centrée (attention à une série constante : dénominateur nul), prévois, puis ajoute `m` à chaque prévision.', en: 'Remove `m`, compute `phi` on the centred series (beware of a constant series: zero denominator), forecast, then add `m` to each forecast.' }
+    explication: { fr: 'Sur une série constante, la série centrée est nulle : phi n’est pas défini, on prend 0 et la prévision reste la moyenne.', en: 'On a constant series, the centred series is zero: phi is undefined, we take 0 and the forecast stays the mean.' }
+  - id: c9
+    type: retenir
+    fr: 'AR(1) : $x_t=\varphi x_{t-1}+\varepsilon_t$, stationnaire si $|\varphi|<1$ ; $\hat\varphi=\sum x_tx_{t-1}/\sum x_{t-1}^2$ sur une série centrée ; prévision à $h$ pas : $\varphi^hx_n$, qui tend vers la moyenne. Toujours battre la dernière valeur.'
+    en: 'AR(1): $x_t=\varphi x_{t-1}+\varepsilon_t$, stationary if $|\varphi|<1$; $\hat\varphi=\sum x_tx_{t-1}/\sum x_{t-1}^2$ on a centred series; $h$-step forecast: $\varphi^hx_n$, tending to the mean. Always beat the last value.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [Forecasting: Principles and Practice — Modèles autorégressifs](https://otexts.com/fpp3/AR.html) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [Forecasting: Principles and Practice — Autoregressive models](https://otexts.com/fpp3/AR.html); this optional reading needs a connection.'
