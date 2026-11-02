@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 16,
-  "version": "0.3.13",
+  "build": 17,
+  "version": "0.3.14",
   "notes": {
-   "fr": "Tu peux commencer chaque module quand tu veux : son premier niveau est toujours ouvert, il n'est pas nécessaire de tout réussir pour avancer. La page « À propos » donne aussi le contact de l'auteur et un lien pour télécharger l'application.",
-   "en": "You can start every module whenever you like: its first level is always open, you do not need to pass everything to move on. The “About” page also gives the author’s contact and a link to download the app."
+   "fr": "Le cours s'agrandit : le module 1 (le terminal) et le module 2 (Python) sont complets, et un nouveau quartier, « Données », t'apprend à lire, nettoyer, résumer et tester des données sans te laisser piéger par une fuite d'information.",
+   "en": "The course grows: module 1 (the terminal) and module 2 (Python) are complete, and a new district, “Data”, teaches you to read, clean, summarise and test data without falling for an information leak."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.13/academik-0.3.13.apk",
-    "sha256": "0861730e6ba0bf2e9affa6ee4da4aa4fc01acd1688411c50c6b85b0b7f9ab904",
-    "bytes": 10330627
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.14/academik-0.3.14.apk",
+    "sha256": "a28a3d955062099a1878926c6c612a302d723740dfc0730ca8e2052cabf867c1",
+    "bytes": 10434260
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.13/academik-0.3.13-x86_64.AppImage",
-    "sha256": "2a8c946854fd967e3a1c9dc802fa04a98ce562892ef3087de4fb6695e704030a",
-    "bytes": 114833912
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.14/academik-0.3.14-x86_64.AppImage",
+    "sha256": "e5610a92c8bd42dcb9bb05ba71da1aae45573af9f04d553718342b558fcd28cf",
+    "bytes": 114936312
    }
   }
  },
  "history": [
+  {
+   "build": 16,
+   "version": "0.3.13",
+   "notes": {
+    "fr": "Tu peux commencer chaque module quand tu veux : son premier niveau est toujours ouvert, il n'est pas nécessaire de tout réussir pour avancer. La page « À propos » donne aussi le contact de l'auteur et un lien pour télécharger l'application.",
+    "en": "You can start every module whenever you like: its first level is always open, you do not need to pass everything to move on. The “About” page also gives the author’s contact and a link to download the app."
+   }
+  },
   {
    "build": 15,
    "version": "0.3.12",
