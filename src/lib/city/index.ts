@@ -9,7 +9,7 @@ export interface CityLevel { id: string; short: string; aria: string; st: PinSta
 export interface CityDistrict { n: number; theme: number; name: string; label: string; color: string; reached: boolean; progress: number; levels: CityLevel[] }
 
 /** Couleur de chaque module (panneau du quartier, épingles réussies), reprise de la maquette. */
-export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B', '#C0792B', '#26A69A', '#7E57C2', '#5C6BC0', '#A1662F', '#4E7F8C', '#8D6E63', '#00897B', '#3949AB', '#D84315'];
+export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B', '#C0792B', '#26A69A', '#7E57C2', '#5C6BC0', '#A1662F', '#4E7F8C', '#8D6E63', '#00897B', '#3949AB', '#D84315', '#546E7A'];
 
 export interface CityInput {
   modules: CursusModule[]; levels: Record<string, Level>; scores: Record<string, number>;
@@ -54,4 +54,5 @@ export const THEMES_EN = [
   { place: 'The Control Post', blurb: 'Screens, gatehouses and barriers: every tool passes a check before acting.' },
   { place: 'The Port of Chance', blurb: 'Quays, lighthouses and waves: trajectories set off at random and come back as statistics.' },
   { place: 'The Market', blurb: 'Trading floor, quote screens and glass towers: ideas are tested here, and mirages rejected.' },
+  { place: 'The Machine Workshop', blurb: 'Forges, gears and stopwatches: here we take time apart to make it shorter.' },
 ];

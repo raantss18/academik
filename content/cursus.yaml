@@ -172,3 +172,12 @@ modules:
       - { id: "17.4", titre: { fr: "Options et absence d’arbitrage" } }
       - { id: "17.5", titre: { fr: "Un backtest honnête" } }
       - { id: "17.boss", boss: true, titre: { fr: "Le rapport qui rejette" } }
+  - id: 18
+    titre: { fr: "Performance", en: "Performance" }
+    niveaux:
+      - { id: "18.1", titre: { fr: "Compter les opérations" } }
+      - { id: "18.2", titre: { fr: "Mémoire, cache et localité" } }
+      - { id: "18.3", titre: { fr: "Éviter le travail inutile" } }
+      - { id: "18.4", titre: { fr: "Profiler avant d’optimiser" } }
+      - { id: "18.5", titre: { fr: "Vectoriser et paralléliser" } }
+      - { id: "18.boss", boss: true, titre: { fr: "Rends-le rapide" } }

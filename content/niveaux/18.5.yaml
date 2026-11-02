@@ -1,0 +1,264 @@
+# Niveau 18.5 — Performance 5 : vectorisation, parallélisme, C++. Original academik ; notions vérifiées dans la documentation NumPy, les C++ Core Guidelines et cppreference (cités).
+id: '18.5'
+module: 18
+duree_min: 16
+titre:
+  fr: Vectoriser et paralléliser
+  en: Vectorise and parallelise
+ia:
+  fr: Kintana fait travailler la machine en bloc, et sait quand ajouter des cœurs ne sert plus.
+  en: Kintana makes the machine work in bulk, and knows when adding cores no longer helps.
+sources:
+- titre: 'NumPy — documentation : What is NumPy ?'
+  url: https://numpy.org/doc/stable/user/whatisnumpy.html
+  licence: BSD-3-Clause ; documentation citée
+- titre: C++ Core Guidelines
+  url: https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
+  licence: MIT ; documentation citée
+- titre: cppreference.com — C++ reference
+  url: https://en.cppreference.com/w/
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Pour additionner deux listes de 1 million de nombres, une boucle Python traite un élément à la fois. Une bibliothèque comme NumPy traite le tableau entier en un seul appel. Pourquoi est-ce bien plus rapide ?
+  en: To add two lists of 1 million numbers, a Python loop processes one element at a time. A library like NumPy processes the whole array in a single call. Why is this much faster?
+  choix:
+  - fr: La boucle tourne dans du code compilé qui traite des données contiguës, sans le coût de l’interpréteur à chaque élément
+    en: The loop runs in compiled code processing contiguous data, without the interpreter’s cost on each element
+    juste: true
+  - fr: NumPy utilise de la magie
+    en: NumPy uses magic
+  - fr: Parce que les nombres y sont plus petits
+    en: Because the numbers in it are smaller
+  indice:
+    fr: 'Qu’est-ce qui coûte, dans une boucle Python : le calcul lui-même, ou l’interprétation de chaque tour ?'
+    en: 'What costs in a Python loop: the computation itself, or the interpretation of each turn?'
+  explication:
+    fr: 'La **vectorisation** déplace la boucle dans du code compilé : les données sont contiguës (niveau 18.2) et l’interpréteur n’intervient qu’une fois.'
+    en: '**Vectorisation** moves the loop into compiled code: the data is contiguous (level 18.2) and the interpreter intervenes only once.'
+- id: c2
+  type: idee
+  fr: '**Vectoriser**, c’est écrire une opération sur un tableau entier (`a + b`) plutôt qu’une boucle élément par élément. Le calcul est exécuté par du code compilé, souvent avec des instructions **SIMD** qui traitent 4 à 16 nombres à la fois. Le gain typique en Python : de 10 à 100 fois.'
+  en: 'To **vectorise** is to write an operation on a whole array (`a + b`) rather than an element-by-element loop. The computation is performed by compiled code, often with **SIMD** instructions that process 4 to 16 numbers at once. Typical gain in Python: 10 to 100 times.'
+  exemple:
+    fr: 'Additionner 1 million de paires en pur Python : environ 50 ms ; avec NumPy : environ 1 ms.'
+    en: 'Adding 1 million pairs in pure Python: about 50 ms; with NumPy: about 1 ms.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Boucle ou vecteur
+        en: Loop or vector
+      noeuds:
+      - fr: 'boucle Python : 1 élément par tour'
+        en: 'Python loop: 1 element per turn'
+      - fr: 'appel vectorisé : un seul appel'
+        en: 'vectorised call: a single call'
+      - fr: code compilé, SIMD
+        en: compiled code, SIMD
+      - fr: résultat identique, bien plus rapide
+        en: identical result, much faster
+        ton: ok
+    legende:
+      fr: Même résultat, coût différent.
+      en: Same result, different cost.
+- id: c3
+  type: idee
+  fr: Le module 11 n’utilise pas NumPy (décision D-030), mais l’idée se transpose. Dans PyTorch, un réseau est une suite d’opérations vectorisées, sur CPU ou **GPU**. Un GPU a des milliers de petits cœurs qui font la même opération sur des données différentes.
+  en: 'Module 11 does not use NumPy, because the application runs with the standard library only (decision D-030). But the idea transposes: in PyTorch or NumPy, a neural network is a sequence of vectorised operations, run on CPU or **GPU** (thousands of small cores doing the same operation on different data).'
+  exemple:
+    fr: 'Multiplier deux matrices de 1 000 × 1 000 est $10^9$ opérations : quelques millisecondes sur un GPU, des minutes en boucles Python pures.'
+    en: 'Multiplying two 1,000 × 1,000 matrices is $10^9$ operations: a few milliseconds on a GPU, minutes in pure Python loops.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Remplacer une boucle par une expression
+    en: Replacing a loop with an expression
+  lang: python
+  etapes:
+  - code: |-
+      u = [1, 2, 3]
+      v = [4, 5, 6]
+      s = 0
+      for i in range(3):
+          s += u[i] * v[i]
+    fr: Version boucle, avec des indices.
+    en: Loop version, with indices.
+  - code: t = sum(a * b for a, b in zip(u, v))
+    fr: 'Version « en bloc » : `zip` et `sum` font la boucle dans l’interpréteur de façon optimisée.'
+    en: '“Bulk” version: `zip` and `sum` do the loop inside the interpreter in an optimised way.'
+  - code: print(s, t)
+    fr: 'On affiche `32 32` : même résultat, code plus court et plus rapide.'
+    en: 'We display `32 32`: same result, shorter and faster code.'
+  verif: |-
+    u = [1, 2, 3]
+    v = [4, 5, 6]
+    s = 0
+    for i in range(3):
+        s += u[i] * v[i]
+    t = sum(a * b for a, b in zip(u, v))
+    print(s, t)
+  sortie: 32 32
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `produit_scalaire(u, v)`** sans boucle explicite ni indice : utilise `sum(a * b for a, b in zip(u, v))`.'
+  en: 'Your turn. **Write `produit_scalaire(u, v)`** without an explicit loop or index: use `sum(a * b for a, b in zip(u, v))`.'
+  depart: |
+    # écris ta fonction produit_scalaire ici
+  tests: |-
+    assert produit_scalaire([1, 2, 3], [4, 5, 6]) == 32
+    assert produit_scalaire([], []) == 0
+    assert produit_scalaire([2.0], [0.5]) == 1.0
+    assert "range(" not in _code
+    assert produit_scalaire(list(range(100000)), list(range(100000))) == 333328333350000
+  solutionCode: |
+    def produit_scalaire(u, v):
+        return sum(a * b for a, b in zip(u, v))
+  indice:
+    fr: Une seule ligne, avec `zip` pour parcourir les deux listes ensemble et `sum` pour additionner.
+    en: A single line, with `zip` to traverse both lists together and `sum` to add.
+  explication:
+    fr: Penser « opération sur des tableaux » plutôt que « boucle sur des indices » est le réflexe de la vectorisation.
+    en: Thinking “operation on arrays” rather than “loop over indices” is the vectorisation reflex.
+- id: c6
+  type: idee
+  fr: 'Le **parallélisme** répartit le travail entre plusieurs cœurs. On **partage** les données en morceaux, chaque cœur traite le sien, puis on **combine** les résultats. Mais coordonner coûte : démarrer des tâches, échanger des données, attendre. Trop de tâches pour peu de travail est plus lent.'
+  en: '**Parallelism** shares the work between several cores. We **split** the data into pieces, each core processes its own, then we **combine** the results. But coordinating costs: starting tasks, exchanging data, waiting. Too many tasks for little work is slower.'
+  exemple:
+    fr: 'Avec un travail de 100 s et un surcoût de 0,5 s par tâche : $k=4$ tâches donnent $25+2=27$ s ; $k=20$ tâches, $5+10=15$ s ; $k=40$ tâches, $2{,}5+20=22{,}5$ s.'
+    en: 'With 100 s of work and an overhead of 0.5 s per task: $k=4$ tasks give $25+2=27$ s; $k=20$ tasks, $5+10=15$ s; $k=40$ tasks, $2.5+20=22.5$ s.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Tâches $k$
+      en: Tasks $k$
+    - fr: Temps total
+      en: Total time
+    cellules:
+    - - '4'
+      - 27 s
+    - - fr: '20'
+        en: '20'
+        ton: ok
+      - fr: 15 s
+        en: 15 s
+        ton: ok
+    - - fr: '40'
+        en: '40'
+        ton: bad
+      - fr: 22,5 s
+        en: 22.5 s
+        ton: bad
+    legende:
+      fr: 'Il existe un nombre de tâches optimal : $\sqrt{\text{travail}/\text{surcoût}}$.'
+      en: 'There is an optimal number of tasks: $\sqrt{\text{work}/\text{overhead}}$.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `partager(liste, k)`** : découpe `liste` en `k` morceaux consécutifs dont les tailles diffèrent d’au plus 1 (les premiers morceaux reçoivent le reste). Utilise `base, reste = divmod(len(liste), k)`.'
+  en: '**Write `partager(liste, k)`**: split `liste` into `k` consecutive pieces whose sizes differ by at most 1 (the first pieces receive the remainder). Use `base, reste = divmod(len(liste), k)`.'
+  depart: |
+    # écris ta fonction partager ici
+  tests: |-
+    assert partager(list(range(10)), 3) == [[0, 1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    assert partager(list(range(6)), 3) == [[0, 1], [2, 3], [4, 5]]
+    assert partager([1, 2], 4) == [[1], [2], [], []]
+    assert sum(len(m) for m in partager(list(range(101)), 7)) == 101
+    assert [x for m in partager(list(range(25)), 4) for x in m] == list(range(25))
+  solutionCode: |
+    def partager(liste, k):
+        n = len(liste)
+        base, reste = divmod(n, k)
+        morceaux, debut = [], 0
+        for i in range(k):
+            taille = base + (1 if i < reste else 0)
+            morceaux.append(liste[debut:debut + taille])
+            debut += taille
+        return morceaux
+  indice:
+    fr: Pour chaque `i` de `0` à `k - 1`, la taille est `base + 1` si `i < reste`, sinon `base` ; avance un `debut`.
+    en: For each `i` from `0` to `k - 1`, the size is `base + 1` if `i < reste`, otherwise `base`; advance a `debut`.
+  explication:
+    fr: 'Un partage équilibré est essentiel : le plus gros morceau détermine le temps total.'
+    en: 'A balanced split is essential: the biggest piece determines the total time.'
+- id: c8
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `meilleur_k(travail, surcout, kmax)`** : le temps avec `k` tâches vaut `travail / k + surcout * k`. Renvoie le `k` de `1` à `kmax` qui minimise ce temps (le plus petit en cas d’égalité).'
+  en: 'Challenge. **Write `meilleur_k(travail, surcout, kmax)`**: the time with `k` tasks is `travail / k + surcout * k`. Return the `k` from `1` to `kmax` that minimises this time (the smallest in case of a tie).'
+  depart: |
+    # écris ta fonction meilleur_k ici
+  tests: |-
+    assert meilleur_k(100, 0.5, 64) == 14
+    assert meilleur_k(100, 0.0, 8) == 8
+    assert meilleur_k(1, 10, 8) == 1
+    assert meilleur_k(100, 1, 64) == 10
+    assert meilleur_k(100, 0.5, 5) == 5
+  solutionCode: |
+    def meilleur_k(travail, surcout, kmax):
+        meilleur, tmin = 1, travail / 1 + surcout * 1
+        for k in range(2, kmax + 1):
+            t = travail / k + surcout * k
+            if t < tmin:
+                meilleur, tmin = k, t
+        return meilleur
+  indice:
+    fr: Parcours `k` de `1` à `kmax`, garde le meilleur temps et le `k` correspondant, mets à jour avec `<` strict.
+    en: Walk `k` from `1` to `kmax`, keep the best time and its `k`, update with strict `<`.
+  explication:
+    fr: 'Le résultat suit $\sqrt{100/0{,}5}\approx14{,}1$ : au-delà, ajouter des cœurs ralentit.'
+    en: 'The result follows $\sqrt{100/0.5}\approx14.1$: beyond that, adding cores slows things down.'
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un programme a 20 % de parties non parallélisables. Avec un nombre infini de cœurs, quelle est l’accélération maximale ? (loi d’Amdahl)
+  en: A program has 20% non-parallelisable parts. With an infinite number of cores, what is the maximum speedup? (Amdahl’s law)
+  reponses:
+  - '5'
+  verif: print(round(1 / 0.2))
+  indice:
+    fr: Le plafond est l’inverse de la part non parallélisable.
+    en: The cap is the inverse of the non-parallelisable share.
+  explication:
+    fr: '$1/0{,}2=5$ : cent cœurs ne feront jamais mieux que 5 fois plus vite.'
+    en: '$1/0.2=5$: a hundred cores will never do better than 5 times faster.'
+- id: c10
+  type: piege
+  fr: En Python standard (CPython), le **GIL** empêche deux threads d’exécuter du code Python en même temps. Des threads n’accélèrent donc pas un calcul pur. Pour calculer en parallèle, on utilise des **processus** (`multiprocessing`) ou des bibliothèques compilées qui relâchent le GIL. Les threads servent surtout à attendre des entrées/sorties.
+  en: 'In standard Python (CPython), the **GIL** prevents two threads from running Python code at the same time: threads do not speed up a pure computation. To compute in parallel, we use **processes** (`multiprocessing`) or compiled libraries that release the GIL. Threads mainly serve to wait for input/output.'
+- id: c11
+  type: idee
+  fr: Quand Python ne suffit plus, on passe à un langage **compilé**. Le **C++** moderne est typé statiquement et traduit en code machine par un compilateur (`g++ -O2 programme.cpp`). Une boucle comme `for (int i = 0; i < n; ++i) s += v[i];` sur un `std::vector<double>` s’exécute en code natif sur des données contiguës, souvent 50 fois plus vite qu’en Python.
+  en: When Python is no longer enough, we move to a **compiled** language. Modern **C++** is statically typed and translated to machine code by a compiler (`g++ -O2 programme.cpp`). A loop like `for (int i = 0; i < n; ++i) s += v[i];` over a `std::vector<double>` runs as native code on contiguous data, often 50 times faster than in Python.
+  exemple:
+    fr: Le code lourd d’un modèle de langage (llama.cpp) est écrit en C++ ; Python sert de colle autour.
+    en: The heavy code of a language model (llama.cpp) is written in C++; Python serves as glue around it.
+- id: c12
+  type: idee
+  fr: 'L’ordre compte : **algorithme** (18.1, 18.3), **mesure** (18.4), **vectorisation**, **parallélisme**, et en dernier recours un langage compilé. Chaque étape ajoute de la complexité : on ne descend d’un cran que si la mesure le justifie.'
+  en: 'The right tool depends on the need. **Algorithm** first (18.1 and 18.3), **measurement** next (18.4), then **vectorisation** or a compiled library, then **parallelism**, and as a last resort a compiled language. Each step adds complexity: we go down a notch only if the measurement justifies it.'
+  exemple:
+    fr: Remplacer un algorithme en $O(n^2)$ par un $O(n)$ en Python bat presque toujours le fait de réécrire le $O(n^2)$ en C++.
+    en: Replacing an $O(n^2)$ algorithm with an $O(n)$ one in Python almost always beats rewriting the $O(n^2)$ in C++.
+- id: c13
+  type: retenir
+  fr: 'Vectoriser : opérer sur des tableaux, boucle dans du code compilé, SIMD, GPU. Paralléliser : partager, traiter, combiner ; le surcoût limite ; Amdahl plafonne ; GIL. C++ : compilé, typé, natif. Algorithme avant tout.'
+  en: 'Vectorise: operate on arrays, loop in compiled code, SIMD, GPU. Parallelise: split, process, combine; overhead limits; Amdahl caps; GIL. C++: compiled, typed, native. Algorithm above all.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [la présentation de NumPy](https://numpy.org/doc/stable/user/whatisnumpy.html) ; cette page demande une connexion.
+  en: For further study, see [the NumPy introduction](https://numpy.org/doc/stable/user/whatisnumpy.html); this page needs a connection.

@@ -167,6 +167,15 @@ const THEMES = [
     kinds: { tower: 4, hall: 2, shop: 1, house: 0 }, count: 24, align: .9,
     props: { lamp: 8, person: 4, car: 2, crate: 2 },
     lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
+  { place: 'L’Atelier des Machines', blurb: 'Forges, rouages et chronomètres : on y démonte le temps pour le rendre plus court.', path: 1, smooth: true,
+    top: '#464e52', cliff: '#566067', lip: '#5e7a52', road: '#2b3236', roadHi: '#ffd9a0', dash: true, night: '#0e1418',
+    patches: ['#566067', '#464e52', '#5e7a52'],
+    walls: ['#d6dde0', '#bfc9ce', '#a6b3ba', '#e8edef', '#8c9aa1'], roofs: ['#5b6a72', '#46535a', '#6e7f88'],
+    roofW: { flat: 2, hip: 2, gable: 2 }, win: ['#ffe9a8', '#ffd36b', '#ffcf80'], leaf: ['#3f7a48', '#52965a', '#6aae6a'],
+    trees: { round: 1, conifer: 1, bush: 1 }, nTrees: 10,
+    kinds: { hall: 4, shop: 2, tower: 1, house: 0 }, count: 24, align: .9,
+    props: { lamp: 8, person: 4, car: 2, crate: 2 },
+    lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

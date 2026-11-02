@@ -41,11 +41,11 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
-| **3.1** Complexité | Kintana estime comment le coût de recherche grandit avec ses documents. | — | 3.3, 3.8, 5.6 |
+| **3.1** Complexité | Kintana estime comment le coût de recherche grandit avec ses documents. | — | 3.3, 3.8, 5.6, 18.1 |
 | **3.2** Trier | Kintana ordonne ses documents pour préparer la recherche. | — | 3.4, 3.6 |
 | **3.3** Dichotomie | Kintana retrouve un identifiant dans une liste triée sans tout parcourir. | 3.1 | 3.4 |
 | **3.4** Hachage | Kintana associe chaque mot aux identifiants de ses documents. | 0.4, 3.2, 3.3 | — |
-| **3.5** Graphes | Kintana explore les liens entre documents par distance croissante. | — | 3.7, 3.8, 11.2 |
+| **3.5** Graphes | Kintana explore les liens entre documents par distance croissante. | — | 3.7, 3.8, 11.2, 18.3 |
 | **3.6** Récursivité | Kintana résout un problème en le ramenant à un problème plus petit de même forme. | 3.2 | 3.7, 3.boss, 9.6, 11.2 |
 | **3.7** Piles | Kintana vérifie que les parenthèses de ses formules sont bien fermées, grâce à une pile. | 3.5, 3.6 | — |
 | **3.8** Plus courts chemins | Kintana trouve le chemin le moins coûteux entre deux documents, quand chaque lien a un poids. | 3.1, 3.5 | 3.boss |
@@ -210,3 +210,14 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **17.4** Options et absence d’arbitrage | Kintana tarife un droit d’achat sans prédire l’avenir, par réplication. | 16.4 | — |
 | **17.5** Un backtest honnête | Kintana teste une idée sur le passé sans tricher, et compte ses essais. | 10.boss | — |
 | **17.boss** Le rapport qui rejette | Kintana distingue une vraie découverte d’un hasard heureux, et le dit dans son rapport. | 6.4 | — |
+
+## 18 · Performance
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **18.1** Compter les opérations | Kintana ne se fie pas au chronomètre : elle compte ce que son programme fait vraiment. | 3.1 | 18.3, 18.boss |
+| **18.2** Mémoire, cache et localité | Kintana lit la mémoire dans le bon ordre pour que le cache l’aide. | — | 18.5 |
+| **18.3** Éviter le travail inutile | Kintana ne refait jamais un calcul qu’elle connaît déjà. | 3.5, 18.1 | 18.boss |
+| **18.4** Profiler avant d’optimiser | Kintana trouve d’abord où son programme perd du temps, puis seulement le corrige. | — | — |
+| **18.5** Vectoriser et paralléliser | Kintana fait travailler la machine en bloc, et sait quand ajouter des cœurs ne sert plus. | 18.2 | — |
+| **18.boss** Rends-le rapide | Kintana accélère ses fonctions de mille fois sans changer leurs résultats. | 18.1, 18.3 | — |

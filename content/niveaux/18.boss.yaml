@@ -1,0 +1,304 @@
+# Niveau 18.boss — Rends-le rapide (mission : trois accélérations algorithmiques vérifiées par oracle). Original academik ; notions des niveaux 18.1 à 18.5, vérifiées dans la documentation Python (complexité) et Bentley (lien).
+id: 18.boss
+module: 18
+duree_min: 17
+titre:
+  fr: Rends-le rapide
+  en: Make it fast
+ia:
+  fr: Kintana accélère ses fonctions de mille fois sans changer leurs résultats.
+  en: Kintana speeds up her functions a thousandfold without changing their results.
+sources:
+- titre: 'Python — documentation : Time complexity'
+  url: https://wiki.python.org/moin/TimeComplexity
+  licence: PSF ; documentation citée
+- titre: Bentley — Programming Pearls (lien)
+  url: https://www.cs.bell-labs.com/cm/cs/pearls/
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: On te donne une fonction correcte mais lente, qui met des minutes sur de gros jeux de données. Quelle est la première chose à faire ?
+  en: You are given a correct but slow function, which takes minutes on large datasets. What is the first thing to do?
+  choix:
+  - fr: Mesurer où elle perd du temps et chercher un meilleur algorithme
+    en: Measure where it loses time and look for a better algorithm
+    juste: true
+  - fr: La réécrire en C++ directement
+    en: Rewrite it in C++ right away
+  - fr: Acheter un ordinateur plus puissant
+    en: Buy a more powerful computer
+  indice:
+    fr: Un gain de 100 fois vient presque toujours du changement d’algorithme (niveaux 18.1 et 18.3).
+    en: A 100-fold gain almost always comes from changing the algorithm (levels 18.1 and 18.3).
+  explication:
+    fr: 'On cherche d’abord la **complexité** : une fonction en $O(n^2)$ passe souvent à $O(n)$ avec la bonne structure de données.'
+    en: 'We first look at the **complexity**: an $O(n^2)$ function often becomes $O(n)$ with the right data structure.'
+- id: c2
+  type: idee
+  fr: 'Mission : accélérer trois fonctions sans changer leurs résultats. Compter les paires de somme donnée, répondre à beaucoup de questions d’intervalle, trouver les $k$ valeurs les plus fréquentes. Tes versions rapides sont comparées aux lentes, puis lancées sur de gros jeux.'
+  en: 'Mission: speed up three functions without changing their results. (1) Count pairs whose sum equals a target, (2) answer many interval sum questions, (3) find the $k$ most frequent values. Your fast versions will be compared with the slow ones on small cases, then run on very large ones.'
+  exemple:
+    fr: Le test sur 200 000 éléments serait impossible pour une version en $O(n^2)$ (40 milliards d’opérations).
+    en: The test on 200,000 elements would be impossible for an $O(n^2)$ version (40 billion operations).
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: La méthode
+        en: The method
+      noeuds:
+      - fr: version lente correcte
+        en: correct slow version
+      - fr: trouver le gaspillage
+        en: find the waste
+      - fr: structure adaptée
+        en: suitable structure
+      - fr: même résultat, vitesse ×1000
+        en: same result, speed ×1000
+        ton: ok
+    legende:
+      fr: La version lente sert d’oracle pour vérifier la rapide.
+      en: The slow version serves as an oracle to check the fast one.
+- id: c3
+  type: exemple
+  titre:
+    fr: La version lente
+    en: The slow version
+  lang: python
+  etapes:
+  - code: |-
+      nums = [1, 5, 3, 3, 3]
+      cible = 6
+      total = 0
+    fr: Cinq nombres, on cherche les paires de somme 6.
+    en: Five numbers, we look for pairs summing to 6.
+  - code: |-
+      for i in range(5):
+          for j in range(i + 1, 5):
+              if nums[i] + nums[j] == cible:
+                  total += 1
+    fr: 'Deux boucles : $n(n-1)/2=10$ paires examinées.'
+    en: 'Two loops: $n(n-1)/2=10$ pairs examined.'
+  - code: print(total)
+    fr: 'On affiche `4` : (1,5) et trois paires (3,3).'
+    en: 'We display `4`: (1,5) and three (3,3) pairs.'
+  verif: |-
+    nums = [1, 5, 3, 3, 3]
+    cible = 6
+    total = 0
+    for i in range(5):
+        for j in range(i + 1, 5):
+            if nums[i] + nums[j] == cible:
+                total += 1
+    print(total)
+  sortie: '4'
+- id: c4
+  type: idee
+  fr: 'L’idée du **complément** : pour chaque nombre $x$ de la liste, on cherche combien de nombres **déjà vus** valent $c-x$, où $c$ est la cible. Un dictionnaire `vus` retient le nombre d’occurrences de chaque valeur. Chaque nombre est traité une fois : $O(n)$.'
+  en: 'The **complement** idea: for each number $x$ in the list, we look for how many **already seen** numbers equal $c-x$, where $c$ is the target. A dictionary `vus` remembers the number of occurrences of each value. Each number is processed once: $O(n)$.'
+  exemple:
+    fr: 'Pour `[1, 5, 3, 3, 3]` et $c=6$ : 5 trouve un 1 déjà vu (+1) ; le deuxième 3 trouve un 3 (+1) ; le troisième 3 en trouve deux (+2). Total 4.'
+    en: 'For `[1, 5, 3, 3, 3]` and $c=6$: 5 finds one 1 already seen (+1); the second 3 finds one 3 (+1); the third 3 finds two (+2). Total 4.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Nombre lu
+      en: Number read
+    - fr: Complément cherché
+      en: Complement sought
+    cellules:
+    - - '1'
+      - '5'
+    - - '5'
+      - fr: '1 : trouvé'
+        en: '1: found'
+        ton: ok
+    - - fr: '3'
+        en: '3'
+        ton: ok
+      - fr: '3 : trouvé'
+        en: '3: found'
+        ton: ok
+    legende:
+      fr: Un seul passage suffit.
+      en: A single pass is enough.
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `paires_rapide(nums, cible)`** : le nombre de paires d’indices `i < j` avec `nums[i] + nums[j] == cible`, en $O(n)$. Garde un dictionnaire `vus` ; pour chaque `x` : ajoute `vus.get(cible - x, 0)` au total, **puis** compte `x` dans `vus`.'
+  en: 'Your turn. **Write `paires_rapide(nums, cible)`**: the number of index pairs `i < j` with `nums[i] + nums[j] == cible`, in $O(n)$. Keep a dictionary `vus`; for each `x`: add `vus.get(cible - x, 0)` to the total, **then** count `x` in `vus`.'
+  depart: |
+    def paires_lente_reference(nums, cible):
+        total = 0
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                if nums[i] + nums[j] == cible:
+                    total += 1
+        return total
+
+    # écris ta fonction paires_rapide ici
+  tests: |-
+    import random
+    r = random.Random(1)
+    for _ in range(30):
+        n = r.randint(0, 40)
+        v = [r.randint(0, 6) for _ in range(n)]
+        c = r.randint(0, 12)
+        assert paires_rapide(v, c) == paires_lente_reference(v, c)
+    assert paires_rapide([1, 5, 3, 3, 3], 6) == 4
+    big = [i % 1000 for i in range(200000)]
+    assert paires_rapide(big, 1998) > 0
+  solutionCode: |
+    def paires_lente_reference(nums, cible):
+        total = 0
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                if nums[i] + nums[j] == cible:
+                    total += 1
+        return total
+
+    def paires_rapide(nums, cible):
+        vus = {}
+        total = 0
+        for x in nums:
+            total += vus.get(cible - x, 0)
+            vus[x] = vus.get(x, 0) + 1
+        return total
+  indice:
+    fr: Le dictionnaire doit être mis à jour **après** le calcul pour `x`, sinon un nombre se compterait avec lui-même.
+    en: The dictionary must be updated **after** the computation for `x`, otherwise a number would be counted with itself.
+  explication:
+    fr: 'Le test sur 200 000 nombres s’exécute instantanément : la version lente aurait pris des heures.'
+    en: 'The test on 200,000 numbers runs instantly: the slow version would have taken hours.'
+- id: c6
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'Pour une liste de 100 000 nombres, combien de paires la version lente examine-t-elle ? Donne le résultat en milliards (arrondi à l’entier) : $n(n-1)/2$.'
+  en: 'For a list of 100,000 numbers, how many pairs does the slow version examine? Give the result in billions (rounded to the integer): $n(n-1)/2$.'
+  reponses:
+  - '5'
+  verif: |-
+    n = 100000
+    print(round(n * (n - 1) / 2 / 1e9))
+  indice:
+    fr: Calcule $100\,000\times99\,999/2$ puis divise par un milliard.
+    en: Compute $100{,}000\times99{,}999/2$ then divide by a billion.
+  explication:
+    fr: 'Environ $5\times10^9$ paires : plusieurs minutes en Python, contre une fraction de seconde avec la version rapide.'
+    en: 'About $5\times10^9$ pairs: several minutes in Python, against a fraction of a second with the fast version.'
+- id: c7
+  type: idee
+  fr: 'Pour les **questions d’intervalle** répétées, tu as vu les sommes préfixes (niveau 18.3) : un précalcul en $O(n)$, puis chaque question en $O(1)$. Avec $q$ questions sur $n$ éléments, on passe de $O(nq)$ à $O(n+q)$. Le gain est énorme quand $q$ est grand.'
+  en: 'For repeated **interval questions**, you saw prefix sums (level 18.3): a precomputation in $O(n)$, then each question in $O(1)$. With $q$ questions on $n$ elements, we go from $O(nq)$ to $O(n+q)$. The gain is huge when $q$ is large.'
+  exemple:
+    fr: '$n=q=100\,000$ : $10^{10}$ opérations en refaisant les sommes, $2\times10^5$ avec les préfixes.'
+    en: '$n=q=100{,}000$: $10^{10}$ operations when redoing the sums, $2\times10^5$ with prefixes.'
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `requetes_somme(v, requetes)`** : `requetes` est une liste de couples `(i, j)` ; renvoie, pour chacun, la somme des éléments `v[i]` à `v[j]` inclus. Construis d’abord la liste des sommes préfixes `p`, puis `p[j + 1] - p[i]`.'
+  en: '**Write `requetes_somme(v, requetes)`**: `requetes` is a list of pairs `(i, j)`; return, for each, the sum of the elements `v[i]` to `v[j]` inclusive. First build the list of prefix sums `p`, then `p[j + 1] - p[i]`.'
+  depart: |
+    # écris ta fonction requetes_somme ici
+  tests: |-
+    v = [3, 1, 4, 1, 5, 9, 2, 6]
+    assert requetes_somme(v, [(0, 7), (1, 3), (4, 4)]) == [31, 6, 5]
+    assert requetes_somme(v, []) == []
+    big = list(range(100000))
+    qs = [(0, 99999), (500, 600)] * 50000
+    r = requetes_somme(big, qs)
+    assert r[0] == 4999950000 and r[1] == sum(range(500, 601))
+  solutionCode: |
+    def requetes_somme(v, requetes):
+        p = [0]
+        for x in v:
+            p.append(p[-1] + x)
+        return [p[j + 1] - p[i] for i, j in requetes]
+  indice:
+    fr: Une première boucle construit `p` ; ensuite une compréhension de liste répond aux requêtes.
+    en: A first loop builds `p`; then a list comprehension answers the queries.
+  explication:
+    fr: 'Cent mille questions sur cent mille éléments : quelques millisecondes ici, des minutes avec des sommes recalculées.'
+    en: 'A hundred thousand questions on a hundred thousand elements: a few milliseconds here, minutes with recomputed sums.'
+- id: c9
+  type: idee
+  fr: '**Garde la version lente comme oracle.** Elle est correcte par construction : on compare la version rapide à elle sur de petites données aléatoires. Si elles divergent, le bug est dans la rapide. Jamais d’optimisation sans test de comparaison.'
+  en: '**Keep the slow version as an oracle.** It is correct by construction, so we compare the fast version to it on small random data. If the two diverge, the bug is in the fast version. This is what allows optimising without breaking: never an optimisation without a comparison test.'
+  exemple:
+    fr: Le test du niveau compare `paires_rapide` à une version lente sur 30 listes aléatoires avant de tenter 200 000 nombres.
+    en: The level’s test compares `paires_rapide` with a slow version on 30 random lists before trying 200,000 numbers.
+- id: c10
+  type: piege
+  fr: 'Une optimisation qui change légèrement le résultat n’est pas une optimisation, c’est un bug rapide. Surveille les cas limites : liste vide, valeurs égales, indices aux bords, égalités dans un classement. Tes tests doivent les contenir, car ce sont eux qui cassent le plus souvent.'
+  en: 'An optimisation that slightly changes the result is not an optimisation, it is a fast bug. Watch the edge cases: empty list, equal values, indices at the borders, ties in a ranking. Your tests must contain them, because they are what breaks most often.'
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 2
+  fr: 'Défi final. **Écris `top_k(liste, k)`** : les `k` valeurs les plus fréquentes, de la plus à la moins fréquente ; à égalité, la plus petite d’abord. Compte avec un dictionnaire, puis trie avec `sorted(compte, key=lambda x: (-compte[x], x))`.'
+  en: 'Final challenge. **Write `top_k(liste, k)`**: the `k` most frequent values of `liste`, from the most to the least frequent, and for equal frequency the smallest value first. Count with a dictionary, then sort with `sorted(compte, key=lambda x: (-compte[x], x))`.'
+  depart: |
+    # écris ta fonction top_k ici
+  tests: |-
+    assert top_k([1, 1, 2, 3, 3, 3], 2) == [3, 1]
+    assert top_k([5, 4, 5, 4, 9], 3) == [4, 5, 9]
+    assert top_k([], 3) == []
+    assert top_k([7], 5) == [7]
+    big = [i % 1000 for i in range(300000)] + [42] * 50
+    assert top_k(big, 1) == [42]
+  solutionCode: |
+    def top_k(liste, k):
+        compte = {}
+        for x in liste:
+            compte[x] = compte.get(x, 0) + 1
+        classes = sorted(compte, key=lambda x: (-compte[x], x))
+        return classes[:k]
+  indice:
+    fr: Compte avec `compte[x] = compte.get(x, 0) + 1`, trie par fréquence décroissante puis valeur croissante, puis `[:k]`.
+    en: Count with `compte[x] = compte.get(x, 0) + 1`, sort by decreasing frequency then increasing value, then `[:k]`.
+  explication:
+    fr: 'Compter en $O(n)$ puis trier les valeurs **distinctes** coûte $O(n+d\log d)$ : bien mieux que de compter chaque valeur avec `liste.count`, en $O(nd)$.'
+    en: 'Counting in $O(n)$ then sorting the **distinct** values costs $O(n+d\log d)$: far better than counting each value with `liste.count`, in $O(nd)$.'
+- id: c12
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Une liste de 1 000 000 d’éléments contient 1 000 valeurs distinctes. Avec `liste.count(x)` pour chaque valeur distincte, combien d’éléments sont parcourus en tout, en millions ?
+  en: A list of 1,000,000 elements contains 1,000 distinct values. With `liste.count(x)` for each distinct value, how many elements are traversed in total, in millions?
+  reponses:
+  - '1000'
+  verif: print(1000 * 1000000 // 1000000)
+  indice:
+    fr: 'Chaque appel à `count` parcourt toute la liste : 1 000 appels.'
+    en: 'Each `count` call traverses the whole list: 1,000 calls.'
+  explication:
+    fr: $1\,000\times1\,000\,000=10^9$ éléments, soit 1 000 millions. Le dictionnaire n’en parcourt qu’un million.
+    en: $1{,}000\times1{,}000{,}000=10^9$ elements, that is 1,000 million. The dictionary traverses only one million.
+- id: c13
+  type: idee
+  fr: 'Tu as maintenant la trousse : compter, localité, éviter le travail inutile, mesurer, vectoriser, paralléliser. Elle sert partout, des réseaux de neurones aux simulations financières. Le module 19 passe à un autre enjeu de qualité : la **sécurité**.'
+  en: 'You now have the toolkit: counting, locality, avoiding useless work, measuring, vectorising, parallelising. It serves everywhere, from neural networks to financial simulations. Module 19 moves to another quality issue: **security**.'
+  exemple:
+    fr: 'Un code rapide mais vulnérable est un mauvais code : la performance n’est qu’une qualité parmi d’autres.'
+    en: 'Fast but vulnerable code is bad code: performance is only one quality among others.'
+- id: c14
+  type: retenir
+  fr: 'Algorithme d’abord : dictionnaire pour les compléments, sommes préfixes pour les intervalles, comptage pour les fréquences. Garder la version lente comme oracle. Tester les cas limites. Mesurer avant et après.'
+  en: 'Algorithm first: dictionary for complements, prefix sums for intervals, counting for frequencies. Keep the slow version as an oracle. Test edge cases. Measure before and after.'
+- id: c15
+  type: plus
+  fr: Pour aller plus loin, consulte [la page sur la complexité des opérations Python](https://wiki.python.org/moin/TimeComplexity) ; cette page demande une connexion.
+  en: To go further, see [the page on the complexity of Python operations](https://wiki.python.org/moin/TimeComplexity); this page needs a connection.
