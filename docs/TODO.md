@@ -1,7 +1,7 @@
 # TODO d'academik
 
 > Source unique du « qui fait quoi, où on en est ». Mis à jour à chaque tâche. Légende : ✅ fait · 🔄 en cours · ⏳ à faire · ⛔ bloqué · ❓ décision d'Antsa.
-> Dernière mise à jour : 2 nov. 2026 (v0.3.28 : monuments par niveau, enseignes sans chevauchement, module bonus Recherche ; v0.3.27 publiée). Règles : `CONSIGNES.md` ; décisions : `DECISIONS.md` ; Codex : `docs/CODEX.md`.
+> Dernière mise à jour : 2 nov. 2026 (v0.3.29 : module bonus Enquêtes, manifeste des sources complet ; v0.3.28 publiée : monuments par niveau, enseignes sans chevauchement, module Recherche). Règles : `CONSIGNES.md` ; décisions : `DECISIONS.md` ; Codex : `docs/CODEX.md`.
 
 ## 0. Corrections signalées par Antsa (journal)
 > **Processus (obligatoire)** : dès qu'Antsa signale une erreur → (1) l'inscrire ici **avant** de corriger ; (2) corriger la **cause**, pas seulement le symptôme ;
@@ -52,6 +52,7 @@
 | E41 | 2 nov. (trouvée par Claude, construction) | La construction échouait : le contenu embarqué (2,11 Mo d'un bloc) dépassait la limite de 2 Mio du précache hors ligne | tout le cursus dans un seul fichier, qui grossissait à chaque module | contenu découpé en un morceau par module (≤ 200 Ko chacun), réunis au chargement ; 70 fichiers précachés | `invariants` E41 | 0.3.27 |
 | E42 | 2 nov. (Antsa, capture du téléphone) | L'enseigne « 20 · Évaluer et produire » cachait le repère 20.1 et un cadenas ; on ne voyait pas quel bâtiment appartient à quel niveau | l'enseigne avait un seul emplacement fixe, calculé sans tenir compte des épingles | l'enseigne essaie 30 emplacements le long de la route d'entrée et garde celui qui ne chevauche ni épingle ni autre enseigne ; chaque niveau a un monument nommé, affiché sur la fiche du niveau et l'écran de fin (« allumage 40 % », « allumage complet ») | `city.test` E42 (échoue avec l'ancien placement, vérifié) | 0.3.28 |
 | E43 | 2 nov. (Claude) | Une preuve Lean fausse aurait pu être publiée : rien ne la compilait | contenu nouveau (Lean 4) sans vérificateur dans les tests | chaque exemple et chaque exercice d'ordre Lean est compilé par le vrai `lean` ; les cartes « ordre » doivent n'avoir qu'un seul ordre valide (contrôlé à la génération) ; coloration Lean testée | `content.test` E43 (ignoré sans `lean`, comme en CI) | 0.3.28 |
+| E44 | 2 nov. (Claude, revue des sources) | Le manifeste des sources ne listait pas 147 des sources réellement citées dans les niveaux | les modules 11 à 22 ont cité leurs sources dans chaque niveau sans mettre à jour `content/manifest.json` | toutes les sources de tous les niveaux sont au manifeste (mode `lien`, licence, date de vérification) | `invariants` E44 (toute URL de source d'un niveau doit y figurer) | 0.3.29 |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | générateur porté dans `src/lib/city/` (fonction pure, chargée à la demande, 15,6 Ko gzip) ; un quartier par module, un bâtiment par niveau, allumé selon les étoiles ; fiche du niveau (Jouer/Rejouer) ; liste en choix mémorisé ; retour Android ferme la fiche ; vérifié à 375 px | `city.test` (épingles, états, échappement, déterminisme, temps), `invariants` E9 | 0.3.6 |
 
 ## 1. Application et site
@@ -77,13 +78,14 @@
 | 16 Processus stochastiques, 17 Recherche quantitative | ✅ 6 niveaux chacun |
 | 18 Performance, 19 Sécurité, 20 Évaluer et produire | ✅ 6 niveaux chacun |
 | 21 Boss final « Kintana, chercheuse honnête » | ✅ 1 niveau (exploration, confirmation, rapport qui rejette) |
+| 23 Enquêtes (bonus) : trouver l'erreur dans une preuve, trouver le bogue | ✅ 2 niveaux (3 à 5 autres à écrire : statistiques trompeuses, backtest, défense d'agent) |
 | 22 Recherche (bonus) : Lean 4, récurrence, spécification, Hessienne, entropie croisée/KL/perplexité, experts et patchs, boss « Prouve ton code » | ✅ 7 niveaux (preuves compilées par Lean 4.35) |
 - ✅ **Vérification du 2 nov.** : 136 niveaux ; toutes les solutions exécutées en vrai Python ; toutes les formules rendues par KaTeX ; une seule bonne réponse par QCM ; traduction anglaise partout ; 165 liens contrôlés (153 joignables, DOI confirmés par Crossref) ; chiffres des modules 11 à 21 recalculés
 - ⏳ **Relecture croisée par Codex** des modules 11 à 22 (écrits par Claude) : Codex résout sans voir les solutions
 - ⏳ **Vrais élèves** : tester 3 à 5 niveaux avec des élèves COMIMa et des L1 ; mesurer les temps réels (durées actuelles = estimations)
 - ⏳ Liens non joignables depuis la machine de vérification (à recontrôler d'un autre réseau) : `nlp.stanford.edu/IR-book`, `otexts.com/fpp3` ; bloqués aux robots (pages réelles) : Cloudflare Learning
-- ⏳ `content/manifest.json` : ajouter les sources des modules 11 à 22 (aujourd'hui citées dans chaque niveau, pas dans le manifeste)
-- ⏳ Niveaux « enquête » (trouver l'erreur), défis ★★ facultatifs, paquet NumPy/pandas facultatif téléchargé à la demande
+- ✅ `content/manifest.json` complet (196 sources, garde-fou E44) ; reste à vérifier la licence exacte de chaque source avant tout embarquement (aucune n'est embarquée : mode `lien`)
+- 🔄 Niveaux « enquête » : module 23 commencé (23.1 preuves, 23.2 bogues) ; défis ★★ facultatifs, paquet NumPy/pandas facultatif téléchargé à la demande
 - ⏳ Données publiques redistribuables pour le volet quant (aujourd'hui : synthétiques, générateur reproductible)
 
 ## 3. Qualité de la présentation (`docs/QUALITE-COURS.md`)
@@ -98,7 +100,17 @@
 - ⏳ Tâche de **relecture croisée** : Codex résout les exercices de Claude sans voir les solutions
 
 ## 5. Publication
-- ✅ v0.1.0 → v0.3.28 (site, APK, AppImage, `release.json` signé) ; chaque version : CI verte avant fusion
+### Jalon 0.4.0 — « prête pour de vrais élèves » (proposition, à valider par Antsa)
+Le contenu (modules 0 à 23) et le moteur sont complets ; la 0.4.0 marque le passage du développement à l'**usage réel**. Elle sort quand **toutes** ces cases sont cochées :
+- [ ] APK testé sur Xiaomi Pad 7 et Samsung S20+ : installation, hors ligne, Python (Pyodide), mise à jour 0.3.x → 0.4.0 en gardant la progression *(Antsa)*
+- [ ] AppImage testée sur Linux Mint et EndeavourOS *(Antsa)*
+- [ ] Service worker réel : réseau coupé puis rechargement dans Chrome *(Antsa ou Claude avec un vrai Chrome)*
+- [ ] `release-keys/` sauvegardées hors de la machine *(Antsa)*
+- [ ] 3 à 5 niveaux testés par de vrais élèves (COMIMa, L1) ; corrections faites ; durées recalées sur les temps mesurés
+- [ ] Accessibilité : un passage avec TalkBack ou Orca sans point bloquant
+- [ ] Relecture croisée des modules 11 à 23 (Codex, ou relecture d'Antsa si le quota manque)
+- ❓ Comptes et synchronisation : **non requis** pour la 0.4.0 (mode invité 100 % local) ; proposition : en faire la 0.5.0
+- ✅ v0.1.0 → v0.3.29 (site, APK, AppImage, `release.json` signé) ; chaque version : CI verte avant fusion
 - ⏳ **Sauvegarder `release-keys/`** hors de la machine (clé Android et `update.key`) : perdre l'une = plus de mises à jour acceptées
 - ⏳ Supprimer l'étiquette fantôme `v0.3.16` (`git push origin :refs/tags/v0.3.16`, à faire par Antsa)
 - ⏳ Fiches de campagne / affiches de version quand le produit sera stabilisé

@@ -213,3 +213,8 @@ modules:
       - { id: "22.5", titre: { fr: "Entropie croisée, KL et perplexité" } }
       - { id: "22.6", titre: { fr: "Experts et modalités" } }
       - { id: "22.boss", boss: true, titre: { fr: "Prouve ton code" } }
+  - id: 23
+    titre: { fr: "Enquêtes (bonus)", en: "Investigations (bonus)" }
+    niveaux:
+      - { id: "23.1", titre: { fr: "Trouve l’erreur dans la preuve" } }
+      - { id: "23.2", titre: { fr: "Trouve le bogue" } }

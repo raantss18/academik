@@ -331,3 +331,17 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(amb).toContain('class="luciole"'); expect(amb).toContain('class="fete"'); expect(amb).toContain('.luciole { animation: none; display: none; }');
   });
 });
+
+describe('E44 · toute source citée par un niveau figure au manifeste (contenu sourcé, CONSIGNES § 2.3)', () => {
+  it('chaque URL de source de chaque niveau est dans content/manifest.json avec son mode et sa licence', () => {
+    const man = JSON.parse(read('content/manifest.json')) as { sources: { url: string; licence: string; mode: string }[] };
+    const known = new Map(man.sources.map(s => [s.url, s]));
+    const missing: string[] = [];
+    for (const f of readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'))) {
+      const L = parse(read(`content/niveaux/${f}`));
+      for (const s of L.sources ?? []) if (!known.has(s.url)) missing.push(`${f} ${s.url}`);
+    }
+    expect(missing).toEqual([]);
+    for (const s of man.sources) { expect(['embarque', 'lien', 'import-local', 'a-valider']).toContain(s.mode); expect(s.licence.length).toBeGreaterThanOrEqual(3); }
+  });
+});

@@ -261,3 +261,10 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **22.5** Entropie croisée, KL et perplexité | Kintana mesure à quel point son modèle est surpris par un vrai texte, avec la perte qu’elle minimise à l’entraînement. | — | — |
 | **22.6** Experts et modalités | Kintana sait pourquoi un modèle à experts calcule peu mais pèse lourd en mémoire, et comment une image devient une suite de jetons. | — | — |
 | **22.boss** Prouve ton code | Kintana livre une fonction spécifiée, testée et prouvée : elle sait ce qu’elle garantit, et ce qu’elle ne garantit pas. | 22.1 | — |
+
+## 23 · Enquêtes (bonus)
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **23.1** Trouve l’erreur dans la preuve | Kintana relit un raisonnement ligne par ligne et désigne le premier passage du vrai au faux. | — | — |
+| **23.2** Trouve le bogue | Kintana enquête sur un bogue : elle le reproduit, le réduit, formule une hypothèse et la teste. | — | — |

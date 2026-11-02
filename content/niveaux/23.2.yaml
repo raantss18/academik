@@ -1,0 +1,335 @@
+# Niveau 23.2 — Enquêtes 2 : trouver le bogue. Original academik ; comportements vérifiés dans la documentation Python officielle (PSF) et par exécution. Toutes les sorties exécutées.
+id: '23.2'
+module: 23
+duree_min: 23
+titre:
+  fr: Trouve le bogue
+  en: Find the bug
+ia:
+  fr: 'Kintana enquête sur un bogue : elle le reproduit, le réduit, formule une hypothèse et la teste.'
+  en: 'Kintana investigates a bug: she reproduces it, reduces it, forms a hypothesis and tests it.'
+sources:
+- titre: 'Python — documentation : définition de fonction (valeurs par défaut)'
+  url: https://docs.python.org/3/reference/compound_stmts.html
+  licence: PSF License (documentation officielle, citée)
+- titre: 'Python — tutoriel : arithmétique à virgule flottante'
+  url: https://docs.python.org/3/tutorial/floatingpoint.html
+  licence: PSF License (documentation officielle, citée)
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Cette fonction ajoute `x` à une liste : `def f(x, l=[])` puis `l.append(x)` et `return l`. On appelle `f(1)` puis `f(2)`. Que renvoie le **second** appel ?'
+  en: 'This function adds `x` to a list: `def f(x, l=[])` then `l.append(x)` and `return l`. We call `f(1)` then `f(2)`. What does the **second** call return?'
+  choix:
+  - fr: '`[1, 2]` : la liste par défaut est partagée'
+    en: '`[1, 2]`: the default list is shared'
+    juste: true
+  - fr: '`[2]` : chaque appel repart de zéro'
+    en: '`[2]`: each call starts afresh'
+  - fr: Une erreur
+    en: An error
+  indice:
+    fr: 'Quand Python crée-t-il la liste `[]` par défaut : à chaque appel, ou une seule fois ?'
+    en: 'When does Python create the default `[]` list: at each call, or only once?'
+  explication:
+    fr: La valeur par défaut est évaluée **une fois**, à la définition. Tous les appels sans `l` partagent la même liste.
+    en: The default value is evaluated **once**, at definition. All calls without `l` share the same list.
+  verif: |-
+    def f(x, l=[]):
+        l.append(x)
+        return l
+    f(1)
+    print(f(2))
+  sortie: '[1, 2]'
+- id: c2
+  type: idee
+  fr: Déboguer, c’est une enquête en quatre temps. **Reproduis** le bogue. **Réduis** le programme au plus petit cas qui échoue. Fais une **hypothèse**, puis **teste-la** avec une valeur précise, sans deviner.
+  en: Debugging is an investigation in four steps. **Reproduce** the bug. **Reduce** the program to the smallest failing case. Make a **hypothesis**, then **test it** with a precise value, without guessing.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: La boucle de l’enquêteur
+        en: The investigator’s loop
+      noeuds:
+      - fr: reproduire
+        en: reproduce
+      - fr: réduire
+        en: reduce
+      - fr: hypothèse
+        en: hypothesis
+      - fr: tester
+        en: test
+        ton: ok
+    legende:
+      fr: 'Si le test infirme l’hypothèse, on en fait une autre : on ne change pas le code au hasard.'
+      en: 'If the test refutes the hypothesis, we make another: we do not change code at random.'
+- id: c3
+  type: exemple
+  titre:
+    fr: Le bogue de la liste partagée
+    en: The shared-list bug
+  lang: python
+  etapes:
+  - code: |-
+      def f(x, l=[]):
+          l.append(x)
+          return l
+    fr: Une valeur par défaut qui est une liste.
+    en: A default value that is a list.
+  - code: print(f(1))
+    fr: 'Premier appel : `[1]`, comme attendu.'
+    en: 'First call: `[1]`, as expected.'
+  - code: print(f(2))
+    fr: 'Second appel : `[1, 2]`. La liste a survécu entre les appels, car elle n’est créée qu’une fois.'
+    en: 'Second call: `[1, 2]`. The list survived between calls, because it is created only once.'
+  verif: |-
+    def f(x, l=[]):
+        l.append(x)
+        return l
+    print(f(1))
+    print(f(2))
+  sortie: |-
+    [1]
+    [1, 2]
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Corrige `ajoute(x, l=None)`** : si `l` est `None`, pars d’une liste vide ; sinon copie `l` avec `list(l)`. Ajoute `x` à la copie et renvoie-la, sans modifier l’argument.'
+  en: 'Your turn. **Fix `ajoute(x, l=None)`**: if `l` is `None`, start from an empty list; otherwise copy `l` with `list(l)`. Add `x` to the copy and return it, without modifying the argument.'
+  depart: |
+    def ajoute(x, l=[]):
+        l.append(x)
+        return l
+  tests: |-
+    assert ajoute(1) == [1]
+    assert ajoute(2) == [2]
+    base = [1]
+    assert ajoute(2, base) == [1, 2]
+    assert base == [1]
+  solutionCode: |
+    def ajoute(x, l=None):
+        l = [] if l is None else list(l)
+        l.append(x)
+        return l
+  indice:
+    fr: Mets `None` comme valeur par défaut, puis crée la liste dans la fonction.
+    en: Use `None` as the default value, then create the list inside the function.
+  explication:
+    fr: '`None` est la convention : la liste est créée à chaque appel, jamais partagée.'
+    en: '`None` is the convention: the list is created at each call, never shared.'
+- id: c5
+  type: idee
+  fr: 'Les erreurs d’une unité sont les plus courantes. `range(1, n)` s’arrête à `n - 1` : la borne de droite est **exclue**. Pour inclure `n`, écris `range(1, n + 1)`.'
+  en: 'Off-by-one errors are the most common. `range(1, n)` stops at `n - 1`: the right bound is **excluded**. To include `n`, write `range(1, n + 1)`.'
+  exemple:
+    fr: '`sum(range(1, 5))` vaut $1+2+3+4=10$, pas $15$.'
+    en: '`sum(range(1, 5))` is $1+2+3+4=10$, not $15$.'
+- id: c6
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Que vaut `sum(range(1, 5))` ?
+  en: What is `sum(range(1, 5))`?
+  reponses:
+  - '10'
+  verif: print(sum(range(1, 5)))
+  indice:
+    fr: 'Liste les valeurs de `range(1, 5)` : la borne `5` est-elle incluse ?'
+    en: 'List the values of `range(1, 5)`: is the bound `5` included?'
+  explication:
+    fr: '`range(1, 5)` donne $1,2,3,4$ : la somme vaut $10$.'
+    en: '`range(1, 5)` gives $1,2,3,4$: the sum is $10$.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Corrige `somme_jusqua(n)`** : elle doit renvoyer $1+2+\dots+n$, `n` compris. Le code de départ oublie la dernière valeur.'
+  en: '**Fix `somme_jusqua(n)`**: it must return $1+2+\dots+n$, `n` included. The starting code forgets the last value.'
+  depart: |
+    def somme_jusqua(n):
+        return sum(range(1, n))
+  tests: |-
+    assert somme_jusqua(4) == 10
+    assert somme_jusqua(1) == 1
+    assert somme_jusqua(0) == 0
+    assert somme_jusqua(100) == 5050
+  solutionCode: |
+    def somme_jusqua(n):
+        return sum(range(1, n + 1))
+  indice:
+    fr: Décale la borne de droite de `range` d’une unité.
+    en: Shift the right bound of `range` by one.
+  explication:
+    fr: 'Pour $n=0$, `range(1, 1)` est vide et la somme vaut `0` : le cas limite est bon.'
+    en: 'For $n=0$, `range(1, 1)` is empty and the sum is `0`: the edge case is right.'
+- id: c8
+  type: idee
+  fr: Les nombres décimaux ne sont pas exacts en machine. `0.1 + 0.2` donne `0.30000000000000004`, donc `0.1 + 0.2 == 0.3` est faux. On compare deux décimaux avec une **tolérance**, jamais avec `==`.
+  en: Decimal numbers are not exact in a machine. `0.1 + 0.2` gives `0.30000000000000004`, so `0.1 + 0.2 == 0.3` is false. We compare two decimals with a **tolerance**, never with `==`.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Expression
+      en: Expression
+    - fr: Résultat
+      en: Result
+    cellules:
+    - - '`0.1 + 0.2`'
+      - '`0.30000000000000004`'
+    - - '`0.1 + 0.2 == 0.3`'
+      - fr: '`False`'
+        en: '`False`'
+        ton: bad
+    - - '`abs(a - b) <= 1e-9`'
+      - fr: '`True` pour ces deux nombres'
+        en: '`True` for these two numbers'
+        ton: ok
+    legende:
+      fr: La tolérance dépend de l’échelle des nombres comparés.
+      en: The tolerance depends on the scale of the numbers compared.
+- id: c9
+  type: exemple
+  titre:
+    fr: Comparer deux décimaux
+    en: Comparing two decimals
+  lang: python
+  etapes:
+  - code: |-
+      a = 0.1 + 0.2
+      b = 0.3
+    fr: Deux nombres qui devraient être égaux.
+    en: Two numbers that should be equal.
+  - code: print(a == b)
+    fr: '`False` : la comparaison exacte échoue.'
+    en: '`False`: the exact comparison fails.'
+  - code: print(abs(a - b) <= 1e-9)
+    fr: '`True` : leur écart est de l’ordre de $10^{-17}$, bien sous la tolérance.'
+    en: '`True`: their gap is of the order of $10^{-17}$, far below the tolerance.'
+  verif: |-
+    a = 0.1 + 0.2
+    b = 0.3
+    print(a == b)
+    print(abs(a - b) <= 1e-9)
+  sortie: |-
+    False
+    True
+- id: c10
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `egaux(a, b, tol=1e-9)`** : `True` si `a` et `b` diffèrent d’au plus `tol`.'
+  en: '**Write `egaux(a, b, tol=1e-9)`**: `True` if `a` and `b` differ by at most `tol`.'
+  depart: |
+    # écris ta fonction egaux ici
+  tests: |-
+    assert egaux(0.1 + 0.2, 0.3)
+    assert not egaux(1, 1.1)
+    assert egaux(5, 5)
+    assert egaux(1, 1.05, tol=0.1)
+  solutionCode: |
+    def egaux(a, b, tol=1e-9):
+        return abs(a - b) <= tol
+  indice:
+    fr: Compare `abs(a - b)` à `tol`.
+    en: Compare `abs(a - b)` with `tol`.
+  explication:
+    fr: '`math.isclose` existe aussi ; la tolérance absolue est simple, mais choisis-la selon l’échelle.'
+    en: '`math.isclose` also exists; an absolute tolerance is simple, but choose it according to the scale.'
+- id: c11
+  type: piege
+  fr: 'Ne retire jamais d’éléments d’une liste en la parcourant. Avec `for x in l: if x % 2 == 0: l.remove(x)` sur `[2, 4, 6, 1]`, le résultat est `[4, 1]` : des nombres pairs restent, car la boucle saute des cases.'
+  en: 'Never remove items from a list while looping over it. With `for x in l: if x % 2 == 0: l.remove(x)` on `[2, 4, 6, 1]`, the result is `[4, 1]`: even numbers remain, because the loop skips positions.'
+- id: c12
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `retire_pairs(l)`** : renvoie une **nouvelle** liste sans les nombres pairs, sans modifier `l`. Utilise une compréhension de liste.'
+  en: 'Challenge. **Write `retire_pairs(l)`**: return a **new** list without the even numbers, without modifying `l`. Use a list comprehension.'
+  depart: |
+    # écris ta fonction retire_pairs ici
+  tests: |-
+    l = [2, 4, 6, 1]
+    assert retire_pairs(l) == [1]
+    assert l == [2, 4, 6, 1]
+    assert retire_pairs([]) == []
+    assert retire_pairs([3, 5, 7]) == [3, 5, 7]
+  solutionCode: |
+    def retire_pairs(l):
+        return [x for x in l if x % 2 != 0]
+  indice:
+    fr: '`[x for x in l if ...]` : garde `x` quand il est impair.'
+    en: '`[x for x in l if ...]`: keep `x` when it is odd.'
+  explication:
+    fr: 'Construire une nouvelle liste évite le piège : on ne touche jamais à ce qu’on parcourt.'
+    en: 'Building a new list avoids the trap: we never touch what we loop over.'
+- id: c13
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: On écrit `g = [[0] * 3] * 3`, puis `g[0][0] = 1`. Que vaut `g` ?
+  en: We write `g = [[0] * 3] * 3`, then `g[0][0] = 1`. What is `g`?
+  choix:
+  - fr: '`[[1, 0, 0], [1, 0, 0], [1, 0, 0]]`'
+    en: '`[[1, 0, 0], [1, 0, 0], [1, 0, 0]]`'
+    juste: true
+  - fr: '`[[1, 0, 0], [0, 0, 0], [0, 0, 0]]`'
+    en: '`[[1, 0, 0], [0, 0, 0], [0, 0, 0]]`'
+  - fr: '`TypeError`'
+    en: '`TypeError`'
+  indice:
+    fr: '`* 3` répète la **même** liste trois fois, il ne la copie pas.'
+    en: '`* 3` repeats the **same** list three times, it does not copy it.'
+  explication:
+    fr: 'Les trois lignes pointent vers un seul objet : modifier l’une modifie les autres.'
+    en: 'The three rows point to a single object: changing one changes the others.'
+- id: c14
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `grille(n, m)`** : une grille de `n` lignes et `m` colonnes de zéros, dont les lignes sont des listes **distinctes**.'
+  en: '**Write `grille(n, m)`**: a grid of `n` rows and `m` columns of zeros, whose rows are **distinct** lists.'
+  depart: |
+    # écris ta fonction grille ici
+  tests: |-
+    g = grille(2, 3)
+    assert g == [[0, 0, 0], [0, 0, 0]]
+    g[0][0] = 1
+    assert g == [[1, 0, 0], [0, 0, 0]]
+    assert grille(0, 3) == []
+  solutionCode: |
+    def grille(n, m):
+        return [[0] * m for _ in range(n)]
+  indice:
+    fr: Une compréhension de liste qui crée une nouvelle ligne `[0] * m` à chaque tour.
+    en: A list comprehension that creates a new row `[0] * m` at each turn.
+  explication:
+    fr: 'La compréhension évalue `[0] * m` à chaque tour : chaque ligne est un objet neuf.'
+    en: 'The comprehension evaluates `[0] * m` at each turn: each row is a fresh object.'
+- id: c15
+  type: idee
+  fr: 'Le lien avec la suite : un test trouve un bogue, une preuve (module 22) garantit qu’il n’en reste pas pour la propriété prouvée. Kintana utilise les deux. Retiens aussi la règle d’or : un bogue corrigé reçoit un **test** qui l’interdit.'
+  en: 'The link with what follows: a test finds a bug, a proof (module 22) guarantees none remains for the proved property. Kintana uses both. Also remember the golden rule: a fixed bug gets a **test** that forbids it.'
+  exemple:
+    fr: Dans ce projet, chaque erreur signalée reçoit un garde-fou dans les tests, pour qu’elle ne revienne jamais.
+    en: In this project, each reported error gets a guard in the tests, so that it never comes back.
+- id: c16
+  type: retenir
+  fr: 'Déboguer : reproduire, réduire, hypothèse, test. Pièges classiques : liste par défaut partagée, borne de `range`, égalité de décimaux, modification pendant le parcours, lignes de grille partagées. Un bogue corrigé reçoit un test.'
+  en: 'Debugging: reproduce, reduce, hypothesis, test. Classic traps: shared default list, `range` bound, decimal equality, modification during iteration, shared grid rows. A fixed bug gets a test.'
+- id: c17
+  type: plus
+  fr: Pour aller plus loin, lis [le tutoriel sur les nombres à virgule flottante](https://docs.python.org/3/tutorial/floatingpoint.html) ; cette page demande une connexion.
+  en: To go further, read [the tutorial on floating-point numbers](https://docs.python.org/3/tutorial/floatingpoint.html); this page needs a connection.

@@ -1,0 +1,340 @@
+# Niveau 23.1 — Enquêtes 1 : trouver l’erreur dans une preuve. Original academik ; notions de logique vérifiées dans Levin (CC BY-SA 4.0) et Lehman-Leighton-Meyer (CC BY-SA 3.0, référence). Tous les calculs exécutés.
+id: '23.1'
+module: 23
+duree_min: 18
+titre:
+  fr: Trouve l’erreur dans la preuve
+  en: Find the error in the proof
+ia:
+  fr: Kintana relit un raisonnement ligne par ligne et désigne le premier passage du vrai au faux.
+  en: Kintana rereads an argument line by line and points to the first step from true to false.
+sources:
+- titre: Lehman, Leighton, Meyer — Mathematics for Computer Science (référence, rédaction originale)
+  url: https://courses.csail.mit.edu/6.042/spring18/mcs.pdf
+  licence: CC BY-SA 3.0 ; référence, rédaction originale
+- titre: 'Levin — Discrete Mathematics: An Open Introduction'
+  url: https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html
+  licence: CC BY-SA 4.0 ; notions citées, exemples réécrits
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Une « preuve » que $1=2$ part de $a=b$, multiplie, factorise, puis **divise par $(a-b)$**. Où est l’erreur ?
+  en: A “proof” that $1=2$ starts from $a=b$, multiplies, factors, then **divides by $(a-b)$**. Where is the error?
+  choix:
+  - fr: On divise par $a-b$, qui vaut $0$
+    en: We divide by $a-b$, which is $0$
+    juste: true
+  - fr: On multiplie par $a$
+    en: We multiply by $a$
+  - fr: On part de $a=b$
+    en: We start from $a=b$
+  indice:
+    fr: Que vaut $a-b$ quand $a=b$ ?
+    en: What is $a-b$ when $a=b$?
+  explication:
+    fr: Comme $a=b$, on a $a-b=0$, et diviser par $0$ n’a pas de sens. Toutes les lignes avant sont vraies ; c’est ce passage qui est faux.
+    en: Since $a=b$, we have $a-b=0$, and dividing by $0$ makes no sense. All lines before are true; this step is the false one.
+- id: c2
+  type: idee
+  fr: Pour trouver l’erreur d’une preuve, **teste chaque ligne avec des valeurs concrètes**. Prends des valeurs qui respectent l’hypothèse. L’erreur est le **premier passage** d’une ligne vraie à une ligne fausse.
+  en: To find the error in a proof, **test each line with concrete values**. Take values that satisfy the hypothesis. The error is the **first step** from a true line to a false line.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Ligne
+      en: Line
+    - fr: Énoncé
+      en: Statement
+    - fr: Vrai pour $a=b=1$ ?
+      en: True for $a=b=1$?
+    cellules:
+    - - '1'
+      - $a=b$
+      - fr: oui
+        en: 'yes'
+        ton: ok
+    - - '4'
+      - $(a-b)(a+b)=b(a-b)$
+      - fr: 'oui : $0=0$'
+        en: 'yes: $0=0$'
+        ton: ok
+    - - '5'
+      - $a+b=b$
+      - fr: 'non : $2\ne1$'
+        en: 'no: $2\ne1$'
+        ton: bad
+    legende:
+      fr: Entre les lignes 4 et 5, on a divisé par $a-b=0$.
+      en: Between lines 4 and 5, we divided by $a-b=0$.
+- id: c3
+  type: exemple
+  titre:
+    fr: Chercher la ligne fausse par le calcul
+    en: Finding the false line by computing
+  lang: python
+  etapes:
+  - code: |-
+      lignes = [
+          lambda a, b: a == b,
+          lambda a, b: (a - b) * (a + b) == b * (a - b),
+          lambda a, b: a + b == b,
+      ]
+    fr: Trois lignes de la « preuve », écrites comme des tests sur `a` et `b`.
+    en: Three lines of the “proof”, written as tests on `a` and `b`.
+  - code: print([l(1, 1) for l in lignes])
+    fr: 'On prend $a=b=1$ : on obtient `[True, True, False]`.'
+    en: 'Take $a=b=1$: we get `[True, True, False]`.'
+  - code: '# la première ligne fausse est la dernière : on a divisé par a - b = 0'
+    fr: Le calcul désigne la ligne fautive, sans discuter.
+    en: The computation points to the faulty line, without argument.
+  verif: |-
+    lignes = [
+        lambda a, b: a == b,
+        lambda a, b: (a - b) * (a + b) == b * (a - b),
+        lambda a, b: a + b == b,
+    ]
+    print([l(1, 1) for l in lignes])
+  sortie: '[True, True, False]'
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `premiere_etape_fausse(etapes)`** : `etapes` est une liste de couples `(avant, apres)` de booléens. Renvoie l’indice de la première étape où `avant` est vrai et `apres` faux, ou `None`.'
+  en: 'Your turn. **Write `premiere_etape_fausse(etapes)`**: `etapes` is a list of `(avant, apres)` boolean pairs. Return the index of the first step where `avant` is true and `apres` false, or `None`.'
+  depart: |
+    # écris ta fonction premiere_etape_fausse ici
+  tests: |-
+    assert premiere_etape_fausse([(True, True), (True, False), (False, False)]) == 1
+    assert premiere_etape_fausse([(True, True), (False, False)]) is None
+    assert premiere_etape_fausse([]) is None
+    assert premiere_etape_fausse([(False, True), (True, False)]) == 1
+  solutionCode: |
+    def premiere_etape_fausse(etapes):
+        for i, (avant, apres) in enumerate(etapes):
+            if avant and not apres:
+                return i
+        return None
+  indice:
+    fr: Une boucle avec `enumerate` ; teste `avant and not apres`.
+    en: A loop with `enumerate`; test `avant and not apres`.
+  explication:
+    fr: 'Partir d’une ligne fausse ne prouve rien : seule la chute du vrai au faux est une erreur de raisonnement.'
+    en: 'Starting from a false line proves nothing: only a drop from true to false is a reasoning error.'
+- id: c5
+  type: idee
+  fr: 'Quatre erreurs reviennent sans cesse : **diviser par zéro**, **prendre la réciproque pour l’implication**, **inverser des quantificateurs**, et **généraliser à partir d’exemples**. Reconnaître le schéma aide à repérer l’erreur vite.'
+  en: 'Four errors keep coming back: **dividing by zero**, **taking the converse for the implication**, **swapping quantifiers**, and **generalising from examples**. Recognising the pattern helps spot the error fast.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Erreur
+      en: Error
+    - fr: Contre-exemple
+      en: Counterexample
+    cellules:
+    - - fr: division par zéro
+        en: division by zero
+      - fr: $a=b$ rend $a-b=0$
+        en: $a=b$ makes $a-b=0$
+    - - fr: réciproque
+        en: converse
+      - fr: $x>2\Rightarrow x^2>4$ mais $x=-3$
+        en: $x>2\Rightarrow x^2>4$ but $x=-3$
+    - - fr: quantificateurs inversés
+        en: swapped quantifiers
+      - fr: tout $x$ a un $y=x+1$, aucun $y$ ne convient à tous
+        en: every $x$ has a $y=x+1$, no single $y$ suits all
+    - - fr: exemples
+        en: examples
+      - fr: $n^2>n$ échoue pour $n=0$ et $n=1$
+        en: $n^2>n$ fails for $n=0$ and $n=1$
+    legende:
+      fr: Un seul contre-exemple suffit à réfuter un énoncé universel.
+      en: A single counterexample is enough to refute a universal statement.
+- id: c6
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: On sait que « si $x>2$ alors $x^2>4$ ». Peut-on en déduire « si $x^2>4$ alors $x>2$ » ?
+  en: We know “if $x>2$ then $x^2>4$”. Can we deduce “if $x^2>4$ then $x>2$”?
+  choix:
+  - fr: 'Non : $x=-3$ vérifie $x^2>4$ sans vérifier $x>2$'
+    en: 'No: $x=-3$ satisfies $x^2>4$ without satisfying $x>2$'
+    juste: true
+  - fr: 'Oui : c’est la même phrase'
+    en: 'Yes: it is the same sentence'
+  - fr: Oui, car $x^2>4$ est plus fort
+    en: Yes, because $x^2>4$ is stronger
+  indice:
+    fr: Cherche un nombre négatif dont le carré dépasse $4$.
+    en: Look for a negative number whose square exceeds $4$.
+  explication:
+    fr: 'C’est la **réciproque**, pas la contraposée. $x=-3$ la réfute : $9>4$ mais $-3\not>2$.'
+    en: 'This is the **converse**, not the contrapositive. $x=-3$ refutes it: $9>4$ but $-3\not>2$.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `reciproque_fausse(p, q, domaine)`** : renvoie le premier `x` du `domaine` qui vérifie `q(x)` mais pas `p(x)` (il réfute « si `q` alors `p` »), ou `None`.'
+  en: '**Write `reciproque_fausse(p, q, domaine)`**: return the first `x` of `domaine` that satisfies `q(x)` but not `p(x)` (it refutes “if `q` then `p`”), or `None`.'
+  depart: |
+    # écris ta fonction reciproque_fausse ici
+  tests: |-
+    assert reciproque_fausse(lambda x: x > 2, lambda x: x * x > 4, range(-5, 6)) == -5
+    assert reciproque_fausse(lambda x: x % 2 == 0, lambda x: x % 4 == 0, range(20)) is None
+    assert reciproque_fausse(lambda x: x % 4 == 0, lambda x: x % 2 == 0, range(20)) == 2
+  solutionCode: |
+    def reciproque_fausse(p, q, domaine):
+        for x in domaine:
+            if q(x) and not p(x):
+                return x
+        return None
+  indice:
+    fr: Parcours `domaine` ; renvoie `x` quand `q(x) and not p(x)`.
+    en: Loop over `domaine`; return `x` when `q(x) and not p(x)`.
+  explication:
+    fr: 'Multiple de 4 implique pair, mais pas l’inverse : `2` est pair sans être multiple de 4.'
+    en: 'A multiple of 4 implies even, but not the reverse: `2` is even without being a multiple of 4.'
+- id: c8
+  type: exemple
+  titre:
+    fr: Le piège des chevaux
+    en: The horse trap
+  lang: python
+  etapes:
+  - code: |-
+      A = {"h1"}
+      B = {"h2"}
+    fr: Une récurrence « célèbre » prétend que tous les chevaux ont la même couleur. À $n=2$, on découpe en deux groupes d’un cheval.
+    en: A “famous” induction claims all horses have the same colour. At $n=2$, we split into two groups of one horse.
+  - code: print(len(A & B))
+    fr: '`0` : les deux groupes n’ont aucun cheval en commun.'
+    en: '`0`: the two groups have no horse in common.'
+  - code: '# l’argument suppose un cheval commun : il tombe pour n = 1 -> 2'
+    fr: Le raisonnement exige un cheval commun pour relier les groupes. L’hérédité échoue dès le premier pas.
+    en: The argument needs a common horse to link the groups. The inductive step fails at the very first step.
+  verif: |-
+    A = {"h1"}
+    B = {"h2"}
+    print(len(A & B))
+  sortie: '0'
+- id: c9
+  type: idee
+  fr: Une récurrence a deux parties, et l’**hérédité** doit marcher pour **chaque** valeur, y compris la première. Si le passage de $n$ à $n+1$ échoue pour un seul $n$ de départ, la chaîne est rompue.
+  en: An induction has two parts, and the **inductive step** must work for **every** value, including the first one. If the step from $n$ to $n+1$ fails for even one starting $n$, the chain is broken.
+  exemple:
+    fr: 'Dans le cas des chevaux, le pas de $1$ à $2$ n’a pas de cheval commun : la preuve ne démarre jamais.'
+    en: 'In the horse case, the step from $1$ to $2$ has no common horse: the proof never gets started.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Une chaîne de dominos
+        en: A chain of dominoes
+      noeuds:
+      - fr: base vraie
+        en: base true
+      - fr: '1 → 2 : rompu'
+        en: '1 → 2: broken'
+      - fr: les suivants ne tombent pas
+        en: the next ones do not fall
+        ton: bad
+    legende:
+      fr: Vérifie le **premier** pas de l’hérédité, pas seulement le cas général.
+      en: Check the **first** step of the induction, not only the general case.
+- id: c10
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Parmi $n=0,1,\dots,10$, pour combien de valeurs a-t-on $n^2>n$ ?
+  en: Among $n=0,1,\dots,10$, for how many values do we have $n^2>n$?
+  reponses:
+  - '9'
+  verif: print(sum(n * n > n for n in range(11)))
+  indice:
+    fr: 'Teste $n=0$ et $n=1$ à part : $n^2$ et $n$ sont-ils différents ?'
+    en: 'Test $n=0$ and $n=1$ separately: are $n^2$ and $n$ different?'
+  explication:
+    fr: 'Pour $n=0$ et $n=1$, $n^2=n$ : l’inégalité stricte est fausse. Elle vaut pour $n=2$ à $10$, soit $9$ valeurs.'
+    en: 'For $n=0$ and $n=1$, $n^2=n$: the strict inequality is false. It holds for $n=2$ to $10$, that is $9$ values.'
+- id: c11
+  type: piege
+  fr: 'Un énoncé vrai « presque partout » reste faux. « $n^2>n$ pour tout $n$ » échoue pour $n=0$ et $n=1$. Cherche toujours les cas limites : $0$, $1$, la liste vide, l’égalité.'
+  en: 'A statement true “almost everywhere” is still false. “$n^2>n$ for every $n$” fails for $n=0$ and $n=1$. Always look for edge cases: $0$, $1$, the empty list, equality.'
+- id: c12
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: « Pour tout $x$ il existe $y$ tel que $y=x+1$ » est vrai. Que dire de « il existe $y$ tel que, pour tout $x$, $y=x+1$ » ?
+  en: “For every $x$ there is a $y$ with $y=x+1$” is true. What about “there is a $y$ such that, for every $x$, $y=x+1$”?
+  choix:
+  - fr: 'Faux : un seul $y$ ne peut égaler $x+1$ pour tous les $x$'
+    en: 'False: a single $y$ cannot equal $x+1$ for all $x$'
+    juste: true
+  - fr: 'Vrai : c’est la même phrase'
+    en: 'True: it is the same sentence'
+  - fr: Vrai pour $y=0$
+    en: True for $y=0$
+  indice:
+    fr: Choisis un $y$ ; essaie $x=y$.
+    en: Pick a $y$; try $x=y$.
+  explication:
+    fr: L’ordre des quantificateurs change le sens. Pour tout $y$, $x=y$ donne $x+1\ne y$.
+    en: The order of quantifiers changes the meaning. For any $y$, $x=y$ gives $x+1\ne y$.
+- id: c13
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `premiere_ligne_fausse(lignes, a, b)`** : `lignes` est une liste de fonctions `ligne(a, b)` renvoyant un booléen. Renvoie l’indice de la première ligne fausse pour ces `a` et `b`, ou `None`.'
+  en: 'Challenge. **Write `premiere_ligne_fausse(lignes, a, b)`**: `lignes` is a list of functions `ligne(a, b)` returning a boolean. Return the index of the first false line for these `a` and `b`, or `None`.'
+  depart: |
+    # écris ta fonction premiere_ligne_fausse ici
+  tests: |-
+    lignes = [
+        lambda a, b: a == b,
+        lambda a, b: a * a == a * b,
+        lambda a, b: a * a - b * b == a * b - b * b,
+        lambda a, b: (a - b) * (a + b) == b * (a - b),
+        lambda a, b: a + b == b,
+        lambda a, b: 2 * b == b,
+    ]
+    assert premiere_ligne_fausse(lignes, 1, 1) == 4
+    assert premiere_ligne_fausse(lignes, 2, 1) == 0
+    assert premiere_ligne_fausse([lambda a, b: True], 3, 3) is None
+  solutionCode: |
+    def premiere_ligne_fausse(lignes, a, b):
+        for i, ligne in enumerate(lignes):
+            if not ligne(a, b):
+                return i
+        return None
+  indice:
+    fr: Parcours les lignes avec `enumerate` ; renvoie l’indice dès que `ligne(a, b)` est faux.
+    en: Loop over the lines with `enumerate`; return the index as soon as `ligne(a, b)` is false.
+  explication:
+    fr: 'Avec $a=b=1$, la ligne $a+b=b$ est la première fausse : c’est la division par $a-b=0$. Avec $a=2$, $b=1$, l’hypothèse $a=b$ est déjà fausse.'
+    en: 'With $a=b=1$, the line $a+b=b$ is the first false one: it is the division by $a-b=0$. With $a=2$, $b=1$, the hypothesis $a=b$ is already false.'
+- id: c14
+  type: idee
+  fr: 'Le lien avec Kintana : ses rapports (module 21) doivent résister à la même chasse à l’erreur. Relire une preuve ou un calcul, c’est tester chaque ligne avec des valeurs concrètes. Au niveau 23.2, tu feras la même chose avec du code.'
+  en: 'The link with Kintana: her reports (module 21) must withstand the same error hunt. Rereading a proof or a calculation means testing each line with concrete values. In level 23.2, you will do the same with code.'
+  exemple:
+    fr: Un rapport de recherche qui cache une division par zéro ou une hérédité rompue serait rejeté.
+    en: A research report hiding a division by zero or a broken induction would be rejected.
+- id: c15
+  type: retenir
+  fr: 'Teste chaque ligne avec des valeurs concrètes ; l’erreur est le premier passage du vrai au faux. Quatre classiques : division par zéro, réciproque, quantificateurs inversés, exemples pris pour une preuve. L’hérédité doit marcher dès le premier pas.'
+  en: 'Test each line with concrete values; the error is the first step from true to false. Four classics: division by zero, converse, swapped quantifiers, examples mistaken for a proof. The inductive step must work from the first step.'
+- id: c16
+  type: plus
+  fr: 'Pour aller plus loin, lis le chapitre sur la logique de [Discrete Mathematics: An Open Introduction](https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html) ; ce livre demande une connexion.'
+  en: 'To go further, read the logic chapter of [Discrete Mathematics: An Open Introduction](https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html); this book needs a connection.'

@@ -9,7 +9,7 @@ export interface CityLevel { id: string; short: string; aria: string; st: PinSta
 export interface CityDistrict { n: number; theme: number; name: string; label: string; color: string; reached: boolean; progress: number; levels: CityLevel[] }
 
 /** Couleur de chaque module (panneau du quartier, épingles réussies), reprise de la maquette. */
-export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B', '#C0792B', '#26A69A', '#7E57C2', '#5C6BC0', '#A1662F', '#4E7F8C', '#8D6E63', '#00897B', '#3949AB', '#D84315', '#546E7A', '#37474F', '#2E7D32', '#B71C1C', '#5E35B1'];
+export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B', '#C0792B', '#26A69A', '#7E57C2', '#5C6BC0', '#A1662F', '#4E7F8C', '#8D6E63', '#00897B', '#3949AB', '#D84315', '#546E7A', '#37474F', '#2E7D32', '#B71C1C', '#5E35B1', '#6D4C41'];
 
 /** Nom de chaque monument (clé de `K` dans gen.js) : le bâtiment du niveau, qui s'allume avec son score. */
 export const MONUMENTS: Record<string, { fr: string; en: string }> = {
@@ -74,4 +74,5 @@ export const THEMES_EN = [
   { place: 'The Shipping Port', blurb: 'Loading docks, scales and traffic lights: nothing leaves without a green light.' },
   { place: 'The Rova', blurb: 'Palace on the hill, terraces and lights: where all the bricks come together.' },
   { place: 'The Academy of Proofs', blurb: 'Colonnades, domes and a lighthouse: every statement is checked before it is believed.' },
+  { place: 'The Investigation Bureau', blurb: 'Magnifying glasses, cork boards and desk lamps: we look for the error before it gets expensive.' },
 ];
