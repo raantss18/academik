@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 12,
-  "version": "0.3.9",
+  "build": 13,
+  "version": "0.3.10",
   "notes": {
-   "fr": "La ville devient un vrai panorama : des quartiers aux formes naturelles reliés par un chemin qui serpente, une rivière, des collines. Le logo, ta série et tes points flottent dans le décor, et chaque niveau s'allume petit à petit, puis complètement quand tu le termines. Le niveau à jouer est marqué par un repère rouge, comme sur une carte.",
-   "en": "The city is now a real panorama: naturally shaped districts linked by a winding path, a river, hills. The logo, your streak and your points float in the scenery, and each level lights up bit by bit, then completely when you finish it. The level to play is marked by a red pin, like on a map."
+   "fr": "La ville n'est plus gênée : le message d'info disparaît seul, les deux gros boutons deviennent une pastille de révision et un bouton « Continuer » compact, et tu peux zoomer la carte (pincement, double toucher, boutons ＋ −).",
+   "en": "The city is no longer obstructed: the info message disappears on its own, the two big buttons become a review badge and a compact “Continue” button, and you can zoom the map (pinch, double tap, ＋ − buttons)."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.9/academik-0.3.9.apk",
-    "sha256": "f0514691f7491314b38a2c498a29929eda29f84c08a69364d0bae8eaae1d51a1",
-    "bytes": 10146656
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.10/academik-0.3.10.apk",
+    "sha256": "b3622f7b47c44adb0e9bca28bef8fe4e4e56b1496b1f177b70b5c81477d04d81",
+    "bytes": 10196740
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.9/academik-0.3.9-x86_64.AppImage",
-    "sha256": "45e3ce16af21b0ca945c9a380be9a1a94eb2970c5a04847852c61be39a7c0070",
-    "bytes": 114674168
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.10/academik-0.3.10-x86_64.AppImage",
+    "sha256": "b933177c59ec7f35df0b28e996c5541c1f1ba99833ac7bb05b600cf66b0e9163",
+    "bytes": 114711032
    }
   }
  },
  "history": [
+  {
+   "build": 12,
+   "version": "0.3.9",
+   "notes": {
+    "fr": "La ville devient un vrai panorama : des quartiers aux formes naturelles reliés par un chemin qui serpente, une rivière, des collines. Le logo, ta série et tes points flottent dans le décor, et chaque niveau s'allume petit à petit, puis complètement quand tu le termines. Le niveau à jouer est marqué par un repère rouge, comme sur une carte.",
+    "en": "The city is now a real panorama: naturally shaped districts linked by a winding path, a river, hills. The logo, your streak and your points float in the scenery, and each level lights up bit by bit, then completely when you finish it. The level to play is marked by a red pin, like on a map."
+   }
+  },
   {
    "build": 11,
    "version": "0.3.8",
