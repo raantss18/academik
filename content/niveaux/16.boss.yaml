@@ -1,0 +1,378 @@
+# Niveau 16.boss — Simuler des prix (mission : estimation Monte-Carlo avec intervalle de confiance). Original academik ; notions des niveaux 16.1 à 16.5, vérifiées dans Glasserman (lien) et le cours 18.642 du MIT (lien). Cadre strictement pédagogique.
+id: 16.boss
+module: 16
+duree_min: 17
+titre:
+  fr: Simuler des prix
+  en: Simulating prices
+ia:
+  fr: Kintana estime un prix moyen et une probabilité, et annonce toujours l’incertitude.
+  en: Kintana estimates an average price and a probability, and always states the uncertainty.
+sources:
+- titre: Glasserman — Monte Carlo Methods in Financial Engineering (lien)
+  url: https://link.springer.com/book/10.1007/978-0-387-21617-1
+  licence: Lien seulement ; texte non repris
+- titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
+  url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Tu veux estimer le prix moyen d’un actif dans un an. Comment la simulation te donne-t-elle une idée de la **précision** de l’estimation ?
+  en: You want to estimate an asset’s average price in a year. How does the simulation give you an idea of the **accuracy** of the estimate?
+  choix:
+  - fr: En calculant un intervalle de confiance autour de la moyenne des simulations
+    en: By computing a confidence interval around the mean of the simulations
+    juste: true
+  - fr: En ne faisant qu’une simulation
+    en: By running only one simulation
+  - fr: En ignorant le hasard
+    en: By ignoring the randomness
+  indice:
+    fr: Une moyenne de simulations est elle-même aléatoire (niveau 7.2). Quelle quantité mesure son incertitude ?
+    en: A mean of simulations is itself random (level 7.2). Which quantity measures its uncertainty?
+  explication:
+    fr: 'L’erreur de la moyenne décroît en $\sigma/\sqrt n$ : on donne un **intervalle de confiance** $\bar x\pm1{,}96\,s/\sqrt n$ à 95 %.'
+    en: 'The error of the mean decreases as $\sigma/\sqrt n$: we give a **confidence interval** $\bar x\pm1.96\,s/\sqrt n$ at 95%.'
+- id: c2
+  type: idee
+  fr: 'Mission : estimer par **Monte-Carlo** deux quantités pour un actif simulé. D’abord son **prix moyen** dans un an, avec un intervalle de confiance. Puis la **probabilité** qu’il dépasse un seuil.'
+  en: 'Mission: estimate by **Monte Carlo** two quantities for a simulated asset: its **average price** in a year with a confidence interval, and the **probability** that it exceeds a threshold. You use the generator and simulation of levels 16.2 to 16.5.'
+  exemple:
+    fr: On prend $S_0=100$, $\mu=5\,\%$, $\sigma=20\,\%$ et $T=1$ an.
+    en: We take $S_0=100$, $\mu=5\%$, $\sigma=20\%$ and $T=1$ year.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Monte-Carlo
+        en: Monte Carlo
+      noeuds:
+      - fr: simuler $N$ prix
+        en: simulate $N$ prices
+      - fr: moyenne et dispersion
+        en: mean and dispersion
+      - fr: intervalle de confiance
+        en: confidence interval
+      - fr: estimation honnête
+        en: honest estimate
+        ton: ok
+    legende:
+      fr: Toujours donner l’incertitude avec l’estimation.
+      en: Always give the uncertainty with the estimate.
+- id: c3
+  type: idee
+  fr: L’**erreur standard** de la moyenne de $N$ valeurs est $s/\sqrt N$, où $s$ est l’écart type des valeurs. Pour l’**intervalle de confiance à 95 %**, on prend la moyenne plus ou moins $1{,}96$ erreurs standard. Pour diviser l’erreur par dix, il faut cent fois plus de simulations.
+  en: The **standard error** of the mean of $N$ values is $s/\sqrt N$, where $s$ is the standard deviation of the values. For the **95% confidence interval**, we take the mean plus or minus $1.96$ standard errors. To divide the error by ten, a hundred times more simulations are needed.
+  exemple:
+    fr: 'Pour $s=20$ et $N=10\,000$ : erreur standard $=20/100=0{,}2$, intervalle $\pm0{,}39$.'
+    en: 'For $s=20$ and $N=10{,}000$: standard error $=20/100=0.2$, interval $\pm0.39$.'
+- id: c3b
+  type: idee
+  fr: 'Pour réduire l’erreur sans multiplier les simulations, il existe des **techniques de réduction de variance**. La plus simple : les variables antithétiques, qui associent à chaque tirage $z$ son opposé $-z$. Elles font baisser la dispersion de la moyenne sans coût important.'
+  en: 'To reduce the error without multiplying the simulations, there are **variance reduction techniques**. The simplest: antithetic variables, which pair each draw $z$ with its opposite $-z$. They lower the dispersion of the mean at no great cost.'
+  exemple:
+    fr: 'Si le tirage $z$ donne un prix élevé, $-z$ en donne un bas : leur moyenne varie moins que celle de deux tirages indépendants.'
+    en: 'If the draw $z$ gives a high price, $-z$ gives a low one: their mean varies less than that of two independent draws.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Un intervalle à la main
+    en: An interval by hand
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      s, N, m = 20.0, 10000, 105.0
+    fr: Écart type 20, dix mille simulations, moyenne 105.
+    en: Standard deviation 20, ten thousand simulations, mean 105.
+  - code: marge = 1.96 * s / math.sqrt(N)
+    fr: La marge vaut 1,96 erreur standard.
+    en: The margin is 1.96 standard errors.
+  - code: print(round(m - marge, 2), round(m + marge, 2))
+    fr: On affiche `104.61 105.39`.
+    en: We display `104.61 105.39`.
+  verif: |-
+    import math
+    s, N, m = 20.0, 10000, 105.0
+    marge = 1.96 * s / math.sqrt(N)
+    print(round(m - marge, 2), round(m + marge, 2))
+  sortie: 104.61 105.39
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `intervalle(valeurs)`** : `n = len(valeurs)`, la moyenne `m`, l’écart type `s` (somme des carrés des écarts divisée par `n - 1`, puis racine), `marge = 1.96 * s / math.sqrt(n)`. Renvoie le couple `(m - marge, m + marge)`.'
+  en: 'Your turn. **Write `intervalle(valeurs)`**: `n = len(valeurs)`, the mean `m`, the standard deviation `s` (sum of squared deviations divided by `n - 1`, then root), `marge = 1.96 * s / math.sqrt(n)`. Return the pair `(m - marge, m + marge)`.'
+  depart: |
+    import math
+
+    # écris ta fonction intervalle ici
+  tests: |-
+    lo, hi = intervalle([1.0, 2.0, 3.0, 4.0, 5.0])
+    assert abs((lo + hi) / 2 - 3.0) < 1e-12
+    assert abs((hi - lo) / 2 - 1.96 * (2.5 ** 0.5) / (5 ** 0.5)) < 1e-9
+    lo, hi = intervalle([10.0] * 50)
+    assert lo == hi == 10.0
+    a = intervalle([float(i % 7) for i in range(100)])
+    b = intervalle([float(i % 7) for i in range(400)])
+    assert (b[1] - b[0]) < (a[1] - a[0])
+  solutionCode: |
+    import math
+
+    def intervalle(valeurs):
+        n = len(valeurs)
+        m = sum(valeurs) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in valeurs) / (n - 1))
+        marge = 1.96 * s / math.sqrt(n)
+        return m - marge, m + marge
+  indice:
+    fr: Calcule `m`, puis `s = math.sqrt(sum((x - m) ** 2 for x in valeurs) / (n - 1))`, puis la marge.
+    en: Compute `m`, then `s = math.sqrt(sum((x - m) ** 2 for x in valeurs) / (n - 1))`, then the margin.
+  explication:
+    fr: La division par `n - 1` corrige un biais d’estimation de la variance (niveau 7.2).
+    en: Dividing by `n - 1` corrects a bias in the variance estimate (level 7.2).
+- id: c6
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Une simulation avec $N=2500$ essais donne un écart type de $s=10$. Quelle est l’erreur standard de la moyenne ?
+  en: A simulation with $N=2500$ trials gives a standard deviation of $s=10$. What is the standard error of the mean?
+  reponses:
+  - '0.2'
+  - 0,2
+  verif: print(10 / 2500 ** 0.5)
+  indice:
+    fr: Divise l’écart type par la racine du nombre d’essais.
+    en: Divide the standard deviation by the root of the number of trials.
+  explication:
+    fr: $10/\sqrt{2500}=10/50=0{,}2$.
+    en: $10/\sqrt{2500}=10/50=0.2$.
+- id: c7
+  type: idee
+  fr: 'Une **probabilité** s’estime comme une moyenne d’indicatrices : pour chaque simulation, on compte $1$ si l’événement a lieu (ici, prix final $>$ seuil), $0$ sinon. La moyenne de ces $0$ et $1$ est la fréquence observée, estimation de la probabilité.'
+  en: 'A **probability** is estimated as a mean of indicators: for each simulation, we count $1$ if the event occurs (here, final price $>$ threshold), $0$ otherwise. The mean of these $0$s and $1$s is the observed frequency, an estimate of the probability.'
+  exemple:
+    fr: Si 1 800 simulations sur 10 000 dépassent le seuil, la probabilité estimée est $0{,}18$.
+    en: If 1,800 simulations out of 10,000 exceed the threshold, the estimated probability is $0.18$.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Simulations
+      en: Simulations
+    - fr: Dépassent le seuil
+      en: Exceed threshold
+    - fr: Fréquence
+      en: Frequency
+    cellules:
+    - - '100'
+      - '21'
+      - 0,21
+    - - 1 000
+      - '184'
+      - 0,184
+    - - fr: 10 000
+        en: 10,000
+        ton: ok
+      - fr: 1 803
+        en: 1,803
+        ton: ok
+      - fr: 0,180
+        en: '0.180'
+        ton: ok
+    legende:
+      fr: La fréquence se stabilise quand le nombre d’essais augmente.
+      en: The frequency stabilises as the number of trials grows.
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `proba_depasse(S0, mu, sigma, T, n, essais, graine, seuil)`** : crée `u = generateur(graine)`, simule `essais` prix finaux avec `prix_final`, et renvoie la part de ceux qui dépassent **strictement** `seuil`. `prix_final` est fournie.'
+  en: '**Write `proba_depasse(S0, mu, sigma, T, n, essais, graine, seuil)`**: create `u = generateur(graine)`, simulate `essais` final prices with `prix_final`, and return the share of those strictly exceeding `seuil`. `prix_final` is provided.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def prix_final(S0, mu, sigma, T, n, u):
+        dt = T / n
+        S = S0
+        for _ in range(n):
+            S = S + mu * S * dt + sigma * S * math.sqrt(dt) * gauss(u)
+        return S
+
+    # écris ta fonction proba_depasse ici
+  tests: |-
+    p = proba_depasse(100.0, 0.05, 0.2, 1.0, 50, 4000, 1, 100.0)
+    assert 0.5 < p < 0.62
+    assert proba_depasse(100.0, 0.05, 0.2, 1.0, 50, 2000, 1, 0.0) == 1.0
+    assert proba_depasse(100.0, 0.05, 0.2, 1.0, 50, 2000, 1, 1e9) == 0.0
+    assert proba_depasse(100.0, 0.05, 0.2, 1.0, 50, 3000, 4, 130.0) < proba_depasse(100.0, 0.05, 0.2, 1.0, 50, 3000, 4, 110.0)
+  solutionCode: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def prix_final(S0, mu, sigma, T, n, u):
+        dt = T / n
+        S = S0
+        for _ in range(n):
+            S = S + mu * S * dt + sigma * S * math.sqrt(dt) * gauss(u)
+        return S
+
+    def proba_depasse(S0, mu, sigma, T, n, essais, graine, seuil):
+        u = generateur(graine)
+        finaux = [prix_final(S0, mu, sigma, T, n, u) for _ in range(essais)]
+        depassent = sum(1 for x in finaux if x > seuil)
+        return depassent / essais
+  indice:
+    fr: Fabrique la liste `finaux`, puis `sum(1 for x in finaux if x > seuil) / essais`.
+    en: Build the list `finaux`, then `sum(1 for x in finaux if x > seuil) / essais`.
+  explication:
+    fr: 'Plus le seuil est haut, plus la probabilité baisse : une vérification de bon sens pour tout code de simulation.'
+    en: 'The higher the threshold, the lower the probability: a common-sense check for any simulation code.'
+- id: c9
+  type: piege
+  fr: Une simulation n’est pas une preuve. Si ton modèle est faux (volatilité constante, pas de sauts, pas de coûts), tes probabilités sont fausses, aussi précises soient-elles. L’intervalle de confiance mesure l’erreur de **simulation**, pas l’erreur de **modèle**. Les marchés réels ont des crises que ce modèle sous-estime.
+  en: A simulation is not a proof. If your model is wrong (constant volatility, no jumps, no costs), your probabilities are wrong, however precise. The confidence interval measures the **simulation** error, not the **model** error. Real markets have crises that this model underestimates.
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 2
+  fr: 'Défi final. **Écris `monte_carlo(S0, mu, sigma, T, n, essais, graine)`** : simule `essais` prix finaux avec un générateur de graine `graine`, puis renvoie l’`intervalle` de confiance de leur moyenne. `prix_final` et `intervalle` sont fournies.'
+  en: 'Final challenge. **Write `monte_carlo(S0, mu, sigma, T, n, essais, graine)`**: simulate `essais` final prices with a generator of seed `graine`, then return the confidence `intervalle` of their mean. `prix_final` and `intervalle` are provided.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def prix_final(S0, mu, sigma, T, n, u):
+        dt = T / n
+        S = S0
+        for _ in range(n):
+            S = S + mu * S * dt + sigma * S * math.sqrt(dt) * gauss(u)
+        return S
+
+    def intervalle(valeurs):
+        n = len(valeurs)
+        m = sum(valeurs) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in valeurs) / (n - 1))
+        marge = 1.96 * s / math.sqrt(n)
+        return m - marge, m + marge
+
+    # écris ta fonction monte_carlo ici
+  tests: |-
+    lo, hi = monte_carlo(100.0, 0.05, 0.2, 1.0, 50, 4000, 1)
+    assert lo < 100 * math.exp(0.05) < hi + 1.0
+    assert hi - lo < 2.0
+    lo2, hi2 = monte_carlo(100.0, 0.05, 0.2, 1.0, 50, 16000, 1)
+    assert (hi2 - lo2) < (hi - lo) * 0.65
+    assert monte_carlo(100.0, 0.0, 0.2, 1.0, 10, 100, 3) == monte_carlo(100.0, 0.0, 0.2, 1.0, 10, 100, 3)
+  solutionCode: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def prix_final(S0, mu, sigma, T, n, u):
+        dt = T / n
+        S = S0
+        for _ in range(n):
+            S = S + mu * S * dt + sigma * S * math.sqrt(dt) * gauss(u)
+        return S
+
+    def intervalle(valeurs):
+        n = len(valeurs)
+        m = sum(valeurs) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in valeurs) / (n - 1))
+        marge = 1.96 * s / math.sqrt(n)
+        return m - marge, m + marge
+
+    def monte_carlo(S0, mu, sigma, T, n, essais, graine):
+        u = generateur(graine)
+        finaux = [prix_final(S0, mu, sigma, T, n, u) for _ in range(essais)]
+        return intervalle(finaux)
+  indice:
+    fr: Liste `finaux` comme dans `proba_depasse`, puis `return intervalle(finaux)`.
+    en: A `finaux` list as in `proba_depasse`, then `return intervalle(finaux)`.
+  explication:
+    fr: 'Quatre fois plus de simulations divisent la largeur de l’intervalle par deux : la loi en $1/\sqrt N$ en action.'
+    en: 'Four times more simulations halve the interval’s width: the $1/\sqrt N$ law in action.'
+- id: c11
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Pour passer d’une largeur d’intervalle de $0{,}4$ à $0{,}1$, par combien faut-il multiplier le nombre de simulations ?
+  en: To go from an interval width of $0.4$ to $0.1$, by how much must the number of simulations be multiplied?
+  reponses:
+  - '16'
+  verif: print(int((0.4 / 0.1) ** 2))
+  indice:
+    fr: 'La largeur est divisée par 4 : comme elle varie en $1/\sqrt N$, élève 4 au carré.'
+    en: 'The width is divided by 4: since it varies as $1/\sqrt N$, square 4.'
+  explication:
+    fr: Diviser la largeur par 4 demande $4^2=16$ fois plus de simulations.
+    en: Dividing the width by 4 requires $4^2=16$ times more simulations.
+- id: c12
+  type: idee
+  fr: 'Tu sais maintenant simuler des trajectoires de prix et annoncer l’incertitude d’une estimation. Le module 17 passe à la **recherche quantitative** : rendements, risque, backtests honnêtes, et la méfiance envers les résultats trop beaux.'
+  en: 'You now know how to simulate price trajectories and state the uncertainty of an estimate. Module 17 moves on to **quantitative research**: returns, risk, honest backtests, and the distrust of results that are too good.'
+  exemple:
+    fr: 'Ce cadre est strictement pédagogique : aucun conseil d’investissement personnalisé.'
+    en: 'This framework is strictly educational: no personalised investment advice.'
+- id: c13
+  type: retenir
+  fr: 'Monte-Carlo : simuler, moyenner, donner l’intervalle $\bar x\pm1{,}96\,s/\sqrt N$. Une probabilité est une fréquence. Erreur en $1/\sqrt N$. L’intervalle ne mesure pas l’erreur du modèle.'
+  en: 'Monte Carlo: simulate, average, give the interval $\bar x\pm1.96\,s/\sqrt N$. A probability is a frequency. Error in $1/\sqrt N$. The interval does not measure model error.'
+- id: c14
+  type: plus
+  fr: Pour aller plus loin, consulte [Monte Carlo Methods in Financial Engineering](https://link.springer.com/book/10.1007/978-0-387-21617-1) ; ce livre demande une connexion.
+  en: To go further, see [Monte Carlo Methods in Financial Engineering](https://link.springer.com/book/10.1007/978-0-387-21617-1); this book needs a connection.

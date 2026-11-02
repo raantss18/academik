@@ -1,0 +1,271 @@
+# Niveau 16.1 — Processus stochastiques 1 : équations différentielles et méthode d’Euler. Original academik ; notions vérifiées dans le cours 18.03 du MIT (lien) et Shreve (lien).
+id: '16.1'
+module: 16
+duree_min: 16
+titre:
+  fr: Équations différentielles et Euler
+  en: Differential equations and Euler
+ia:
+  fr: Kintana approche une courbe en suivant sa pente pas à pas.
+  en: Kintana approximates a curve by following its slope step by step.
+sources:
+- titre: MIT OpenCourseWare — 18.03 Differential Equations (méthodes numériques)
+  url: https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: Shreve — Stochastic Calculus for Finance II (lien)
+  url: https://link.springer.com/book/10.1007/978-1-4419-9039-4
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Un capital de 100 € augmente à chaque instant proportionnellement à sa valeur : $y''=0{,}05\,y$. On ne sait pas toujours résoudre une telle équation à la main. Que peut-on faire pour **approcher** $y$ ?'
+  en: 'A capital of €100 grows at each instant in proportion to its value: $y''=0.05\,y$. We cannot always solve such an equation by hand. What can we do to **approximate** $y$?'
+  choix:
+  - fr: Avancer par petits pas, en suivant la pente locale
+    en: Move forward in small steps, following the local slope
+    juste: true
+  - fr: Deviner la réponse
+    en: Guess the answer
+  - fr: Ignorer l’équation
+    en: Ignore the equation
+  indice:
+    fr: L’équation donne la pente en chaque point. Que fait-on avec une pente connue (niveau 5.1) ?
+    en: The equation gives the slope at each point. What do we do with a known slope (level 5.1)?
+  explication:
+    fr: 'La **méthode d’Euler** avance par petits pas : on suit la pente locale pendant un court intervalle $h$, puis on recalcule la pente.'
+    en: '**Euler’s method** moves forward in small steps: we follow the local slope for a short interval $h$, then recompute the slope.'
+- id: c2
+  type: idee
+  fr: 'Une **équation différentielle** (EDO) donne la pente d’une fonction : $y''=f(t,y)$, avec une valeur de départ $y(t_0)=y_0$. Sa solution est une courbe qui part de ce point et suit partout la pente prescrite.'
+  en: 'An **ordinary differential equation** (ODE) gives the slope of a function: $y''=f(t,y)$, with a starting value $y(t_0)=y_0$. Its solution is a curve that starts from this point and follows the prescribed slope everywhere.'
+  exemple:
+    fr: 'Pour $y''=y$ et $y(0)=1$, la pente égale la valeur : la courbe monte de plus en plus vite. La solution exacte est $y=e^t$.'
+    en: 'For $y''=y$ and $y(0)=1$, the slope equals the value: the curve rises faster and faster. The exact solution is $y=e^t$.'
+  figure:
+    kind: tableau
+    entetes:
+    - $t$
+    - $y$
+    - fr: pente $y'$
+      en: slope $y'$
+    cellules:
+    - - $0$
+      - $1$
+      - $1$
+    - - $0{,}5$
+      - $1{,}65$
+      - $1{,}65$
+    - - fr: $1$
+        en: $1$
+        ton: ok
+      - fr: $2{,}72$
+        en: $2.72$
+        ton: ok
+      - fr: $2{,}72$
+        en: $2.72$
+        ton: ok
+    legende:
+      fr: Ici la pente égale la valeur.
+      en: Here the slope equals the value.
+- id: c3
+  type: idee
+  fr: '**Euler** : $y_{n+1}=y_n+h\,f(t_n,y_n)$ et $t_{n+1}=t_n+h$. Avec $n$ pas sur $[t_0,t_1]$, on prend $h=(t_1-t_0)/n$. Plus $h$ est petit, plus l’approximation est proche de la vraie courbe.'
+  en: '**Euler**: $y_{n+1}=y_n+h\,f(t_n,y_n)$ and $t_{n+1}=t_n+h$. With $n$ steps on $[t_0,t_1]$, we take $h=(t_1-t_0)/n$. The smaller $h$ is, the closer the approximation is to the true curve.'
+  exemple:
+    fr: 'Pour $y''=y$, $y_0=1$, $h=0{,}5$ : $y_1=1+0{,}5\times1=1{,}5$, puis $y_2=1{,}5+0{,}5\times1{,}5=2{,}25$. La vraie valeur $e\approx2{,}72$.'
+    en: 'For $y''=y$, $y_0=1$, $h=0.5$: $y_1=1+0.5\times1=1.5$, then $y_2=1.5+0.5\times1.5=2.25$. The true value is $e\approx2.72$.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Euler en deux pas
+    en: Euler in two steps
+  lang: python
+  etapes:
+  - code: y, h = 1.0, 0.5
+    fr: On part de $y_0=1$ avec un pas de $0{,}5$.
+    en: We start from $y_0=1$ with a step of $0.5$.
+  - code: |-
+      for _ in range(2):
+          y = y + h * y
+    fr: 'Deux pas : la pente vaut `y` à chaque fois.'
+    en: 'Two steps: the slope is `y` each time.'
+  - code: print(y)
+    fr: On affiche `2.25`, loin de `e = 2.718…` avec seulement deux pas.
+    en: We display `2.25`, far from `e = 2.718…` with only two steps.
+  verif: |-
+    y, h = 1.0, 0.5
+    for _ in range(2):
+        y = y + h * y
+    print(y)
+  sortie: '2.25'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `euler(f, y0, t0, t1, n)`** : avec `h = (t1 - t0) / n`, répète `n` fois `y = y + h * f(t, y)` puis `t = t + h`, en partant de `t = t0` et `y = y0`. Renvoie `y`.'
+  en: 'Your turn. **Write `euler(f, y0, t0, t1, n)`**: with `h = (t1 - t0) / n`, repeat `n` times `y = y + h * f(t, y)` then `t = t + h`, starting from `t = t0` and `y = y0`. Return `y`.'
+  depart: |
+    # écris ta fonction euler ici
+  tests: |-
+    assert euler(lambda t, y: y, 1.0, 0.0, 1.0, 2) == 2.25
+    assert abs(euler(lambda t, y: y, 1.0, 0.0, 1.0, 1000) - 2.7169) < 1e-3
+    assert euler(lambda t, y: 0.0, 5.0, 0.0, 1.0, 10) == 5.0
+    assert abs(euler(lambda t, y: 2 * t, 0.0, 0.0, 1.0, 1000) - 1.0) < 2e-3
+  solutionCode: |
+    def euler(f, y0, t0, t1, n):
+        h = (t1 - t0) / n
+        t, y = t0, y0
+        for _ in range(n):
+            y = y + h * f(t, y)
+            t = t + h
+        return y
+  indice:
+    fr: Calcule `h`, initialise `t` et `y`, puis une boucle de `n` tours qui met à jour `y` (avec l’ancien `t`) avant `t`.
+    en: Compute `h`, initialise `t` and `y`, then a loop of `n` turns that updates `y` (with the old `t`) before `t`.
+  explication:
+    fr: 'Mets à jour `y` avant `t` : la pente doit être évaluée au point de départ du pas.'
+    en: 'Update `y` before `t`: the slope must be evaluated at the step’s starting point.'
+- id: c6
+  type: idee
+  fr: 'L’erreur d’Euler diminue **proportionnellement à $h$** : avec deux fois plus de pas, l’erreur est à peu près divisée par deux. On dit que la méthode est d’**ordre 1**. Gagner une décimale de précision demande dix fois plus de pas : c’est lent.'
+  en: 'Euler’s error shrinks **in proportion to $h$**: with twice as many steps, the error is roughly halved. We say the method is of **order 1**. Gaining one decimal of accuracy requires ten times more steps: this is slow.'
+  exemple:
+    fr: 'Pour $y''=y$ : 10 pas donnent une erreur de $0{,}12$ ; 100 pas, $0{,}0135$ ; 1000 pas, $0{,}00136$.'
+    en: 'For $y''=y$: 10 steps give an error of $0.12$; 100 steps, $0.0135$; 1000 steps, $0.00136$.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Pas $n$
+      en: Steps $n$
+    - fr: Erreur
+      en: Error
+    cellules:
+    - - '10'
+      - 0,12
+    - - '100'
+      - 0,0135
+    - - fr: '1000'
+        en: '1000'
+        ton: ok
+      - fr: 0,00136
+        en: '0.00136'
+        ton: ok
+    legende:
+      fr: Un pas dix fois plus petit donne une erreur dix fois plus petite.
+      en: A step ten times smaller gives an error ten times smaller.
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `erreur(n)`** : la valeur absolue de `euler(lambda t, y: y, 1.0, 0.0, 1.0, n) - math.e`. `euler` est fournie.'
+  en: '**Write `erreur(n)`**: the absolute value of `euler(lambda t, y: y, 1.0, 0.0, 1.0, n) - math.e`. `euler` is provided.'
+  depart: |
+    import math
+
+    def euler(f, y0, t0, t1, n):
+        h = (t1 - t0) / n
+        t, y = t0, y0
+        for _ in range(n):
+            y = y + h * f(t, y)
+            t = t + h
+        return y
+
+    # écris ta fonction erreur ici
+  tests: |-
+    assert abs(erreur(10) - 0.1246) < 1e-3
+    assert erreur(100) < erreur(10) / 5
+    assert abs(erreur(1000) * 1000 - 1.36) < 0.03
+    assert erreur(200) < erreur(100)
+  solutionCode: |
+    import math
+
+    def euler(f, y0, t0, t1, n):
+        h = (t1 - t0) / n
+        t, y = t0, y0
+        for _ in range(n):
+            y = y + h * f(t, y)
+            t = t + h
+        return y
+
+    def erreur(n):
+        return abs(euler(lambda t, y: y, 1.0, 0.0, 1.0, n) - math.e)
+  indice:
+    fr: 'Appelle `euler` avec la fonction `lambda t, y: y`, puis retire `math.e` et prends `abs`.'
+    en: 'Call `euler` with the function `lambda t, y: y`, then subtract `math.e` and take `abs`.'
+  explication:
+    fr: 'Le produit `erreur(n) × n` reste à peu près constant : c’est la signature de l’ordre 1.'
+    en: 'The product `erreur(n) × n` stays roughly constant: this is the signature of order 1.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Pour $y'=2y$, $y_0=1$ et un seul pas $h=0{,}5$, que vaut $y_1$ par la méthode d’Euler ?
+  en: For $y'=2y$, $y_0=1$ and a single step $h=0.5$, what is $y_1$ by Euler’s method?
+  reponses:
+  - '2.0'
+  - '2'
+  verif: print(1 + 0.5 * 2 * 1)
+  indice:
+    fr: Applique $y_1=y_0+h\,f(t_0,y_0)$ avec $f=2y$.
+    en: Apply $y_1=y_0+h\,f(t_0,y_0)$ with $f=2y$.
+  explication:
+    fr: $y_1=1+0{,}5\times2\times1=2$.
+    en: $y_1=1+0.5\times2\times1=2$.
+- id: c9
+  type: idee
+  fr: Pour une équation $y'=\lambda y$ avec $\lambda<0$ (une décroissance, comme un amortissement), un pas trop grand donne une approximation qui **oscille et explose**. Euler reste fidèle seulement si $|1+\lambda h|<1$. C’est la question de la **stabilité**.
+  en: For an equation $y'=\lambda y$ with $\lambda<0$ (a decay, such as damping), a step that is too large gives an approximation that **oscillates and blows up**. Euler stays faithful only if $|1+\lambda h|<1$. This is the question of **stability**.
+  exemple:
+    fr: 'Pour $\lambda=-10$ : avec $h=0{,}3$, $1+\lambda h=-2$ et $|{-2}|>1$ : les valeurs alternent de signe en grandissant.'
+    en: 'For $\lambda=-10$: with $h=0.3$, $1+\lambda h=-2$ and $|{-2}|>1$: the values alternate in sign while growing.'
+- id: c10
+  type: piege
+  fr: 'Réduire $h$ ne suffit pas toujours : à partir d’un certain pas, l’erreur de calcul des nombres décimaux (niveau 2.5) s’accumule. Et pour une équation « raide » (une partie qui varie très vite), Euler demande des pas minuscules. On choisit alors une méthode plus avancée, comme Runge-Kutta.'
+  en: 'Reducing $h$ is not always enough: beyond a certain step, the rounding error of decimal numbers (level 2.5) accumulates. And for a “stiff” equation (a part varying very fast), Euler requires tiny steps. We then choose a more advanced method, such as Runge-Kutta.'
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `stable(lam, h)`** : `True` si la méthode d’Euler appliquée à $y''=\lambda y$ est stable avec le pas `h`, c’est-à-dire si `abs(1 + lam * h) < 1`.'
+  en: 'Challenge. **Write `stable(lam, h)`**: `True` if Euler’s method applied to $y''=\lambda y$ is stable with step `h`, that is, if `abs(1 + lam * h) < 1`.'
+  depart: |
+    # écris ta fonction stable ici
+  tests: |-
+    assert stable(-10, 0.1) is False or stable(-10, 0.1) is True
+    assert stable(-10, 0.05) is True
+    assert stable(-10, 0.3) is False
+    assert stable(-1, 1.9) is True
+    assert stable(-1, 2.0) is False
+    assert stable(1, 0.1) is False
+  solutionCode: |
+    def stable(lam, h):
+        return abs(1 + lam * h) < 1
+  indice:
+    fr: 'Une seule ligne : compare `abs(1 + lam * h)` à `1`.'
+    en: 'A single line: compare `abs(1 + lam * h)` to `1`.'
+  explication:
+    fr: 'Pour $\lambda<0$, le pas maximal stable est $2/|\lambda|$ : un amortissement fort impose des pas petits.'
+    en: 'For $\lambda<0$, the maximum stable step is $2/|\lambda|$: strong damping imposes small steps.'
+- id: c12
+  type: idee
+  fr: 'Le monde réel contient du **hasard** : un prix, une particule, une file d’attente. Les niveaux suivants ajoutent une part aléatoire à ces équations. Euler y devient la méthode d’**Euler-Maruyama** (niveau 16.5), qui simule des trajectoires de prix.'
+  en: 'The real world contains **chance**: a price, a particle, a queue. The following levels add a random part to these equations. Euler becomes there the **Euler-Maruyama** method (level 16.5), which simulates price trajectories.'
+  exemple:
+    fr: Tout ce que tu as écrit ici sert de squelette à la simulation de prix du boss.
+    en: Everything you wrote here serves as the skeleton for the boss’s price simulation.
+- id: c13
+  type: retenir
+  fr: 'EDO : $y''=f(t,y)$. Euler : $y_{n+1}=y_n+h\,f(t_n,y_n)$, ordre 1 (erreur $\propto h$). Instable si $|1+\lambda h|\ge1$ pour $y''=\lambda y$. Plus de pas, plus de précision, mais aussi plus de calcul.'
+  en: 'ODE: $y''=f(t,y)$. Euler: $y_{n+1}=y_n+h\,f(t_n,y_n)$, order 1 (error $\propto h$). Unstable if $|1+\lambda h|\ge1$ for $y''=\lambda y$. More steps, more accuracy, but also more computation.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [le cours 18.03 du MIT](https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/) ; ce site demande une connexion.
+  en: For further study, see [MIT’s 18.03 course](https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/); this site needs a connection.

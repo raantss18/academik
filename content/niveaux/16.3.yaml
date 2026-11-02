@@ -1,0 +1,264 @@
+# Niveau 16.3 — Processus stochastiques 3 : chaînes de Markov. Original academik ; notions vérifiées dans le cours 18.642 du MIT (lien) et Grinstead et Snell (cité).
+id: '16.3'
+module: 16
+duree_min: 16
+titre:
+  fr: Chaînes de Markov
+  en: Markov chains
+ia:
+  fr: Kintana suit un système sans mémoire et prévoit où il passera son temps à long terme.
+  en: Kintana follows a memoryless system and predicts where it will spend its time in the long run.
+sources:
+- titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
+  url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: Grinstead, Snell — Introduction to Probability (chap. 11, chaînes de Markov)
+  url: https://math.dartmouth.edu/~prob/prob/prob.pdf
+  licence: Licence GFDL ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Demain, la météo ne dépend que d’aujourd’hui : s’il fait beau aujourd’hui, il fera beau demain avec probabilité 0,8. Le temps d’hier n’intervient pas. Comment appelle-t-on cette propriété « sans mémoire » ?'
+  en: 'Tomorrow’s weather depends only on today’s: if it is sunny today, it will be sunny tomorrow with probability 0.8. Yesterday’s weather plays no role. What is this “memoryless” property called?'
+  choix:
+  - fr: La propriété de Markov
+    en: The Markov property
+    juste: true
+  - fr: La loi des grands nombres
+    en: The law of large numbers
+  - fr: Le théorème de Bayes
+    en: Bayes’ theorem
+  indice:
+    fr: On la retrouve dans le modèle de langage à un mot de contexte du module 6 (bigrammes).
+    en: It appears in the one-word-context language model of module 6 (bigrams).
+  explication:
+    fr: 'La **propriété de Markov** : le futur ne dépend du passé qu’à travers le présent. Une suite d’états qui la vérifie est une **chaîne de Markov**.'
+    en: 'The **Markov property**: the future depends on the past only through the present. A sequence of states satisfying it is a **Markov chain**.'
+- id: c2
+  type: idee
+  fr: Une **chaîne de Markov** a des **états** (beau, pluie) et une **matrice de transition** $P$. Le nombre $P_{ij}$ est la probabilité de passer de l’état $i$ à l’état $j$. Chaque ligne est une distribution, de somme $1$.
+  en: 'A **Markov chain** has **states** (sunny, rainy) and a **transition matrix** $P$: $P_{ij}$ is the probability of going from state $i$ to state $j$. Each row is a distribution: its numbers are positive and sum to $1$.'
+  exemple:
+    fr: 'Avec $P=\begin{pmatrix}0{,}8&0{,}2\\0{,}4&0{,}6\end{pmatrix}$ : après un jour de beau temps, 20 % de pluie ; après un jour de pluie, 40 % de beau temps.'
+    en: 'With $P=\begin{pmatrix}0.8&0.2\\0.4&0.6\end{pmatrix}$: after a sunny day, 20% rain; after a rainy day, 40% sun.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: De \ vers
+      en: From \ to
+    - fr: Beau
+      en: Sun
+    - fr: Pluie
+      en: Rain
+    cellules:
+    - - fr: Beau
+        en: Sun
+      - 0,8
+      - 0,2
+    - - fr: Pluie
+        en: Rain
+      - 0,4
+      - 0,6
+    legende:
+      fr: Chaque ligne somme à 1.
+      en: Each row sums to 1.
+- id: c3
+  type: idee
+  fr: 'On décrit l’incertitude par une **distribution** sur les états, un vecteur $\pi$. Après un pas, elle devient $\pi P$ : la nouvelle probabilité de l’état $j$ est $\sum_i \pi_i P_{ij}$. Après $n$ pas, on multiplie $n$ fois par $P$.'
+  en: 'We describe uncertainty by a **distribution** over the states, a vector $\pi$. After one step, it becomes $\pi P$: the new probability of state $j$ is $\sum_i \pi_i P_{ij}$. After $n$ steps, we multiply $n$ times by $P$.'
+  exemple:
+    fr: 'Départ certain de beau temps : $\pi=(1;\,0)$. Après un jour : $(0{,}8;\,0{,}2)$. Après deux jours : $(0{,}72;\,0{,}28)$.'
+    en: 'Starting surely from sunny: $\pi=(1;\,0)$. After one day: $(0.8;\,0.2)$. After two days: $(0.72;\,0.28)$.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Un pas de chaîne
+    en: One chain step
+  lang: python
+  etapes:
+  - code: |-
+      P = [[0.8, 0.2], [0.4, 0.6]]
+      dist = [1.0, 0.0]
+    fr: Le temps est beau avec certitude.
+    en: The weather is sunny for sure.
+  - code: suivante = [sum(dist[i] * P[i][j] for i in range(2)) for j in range(2)]
+    fr: Pour chaque état d’arrivée `j`, on somme sur les états de départ `i`.
+    en: For each arrival state `j`, we sum over the departure states `i`.
+  - code: print([round(x, 2) for x in suivante])
+    fr: On affiche `[0.8, 0.2]`.
+    en: We display `[0.8, 0.2]`.
+  verif: |-
+    P = [[0.8, 0.2], [0.4, 0.6]]
+    dist = [1.0, 0.0]
+    suivante = [sum(dist[i] * P[i][j] for i in range(2)) for j in range(2)]
+    print([round(x, 2) for x in suivante])
+  sortie: '[0.8, 0.2]'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `pas_markov(dist, P)`** : renvoie la distribution après un pas, soit pour chaque `j` la somme sur `i` de `dist[i] * P[i][j]`.'
+  en: 'Your turn. **Write `pas_markov(dist, P)`**: return the distribution after one step, that is for each `j` the sum over `i` of `dist[i] * P[i][j]`.'
+  depart: |
+    # écris ta fonction pas_markov ici
+  tests: |-
+    P = [[0.8, 0.2], [0.4, 0.6]]
+    r = pas_markov([1.0, 0.0], P)
+    assert abs(r[0] - 0.8) < 1e-12 and abs(r[1] - 0.2) < 1e-12
+    r = pas_markov(r, P)
+    assert abs(r[0] - 0.72) < 1e-12
+    assert abs(sum(pas_markov([0.3, 0.7], P)) - 1) < 1e-12
+    assert pas_markov([1.0], [[1.0]]) == [1.0]
+  solutionCode: |
+    def pas_markov(dist, P):
+        n = len(dist)
+        return [sum(dist[i] * P[i][j] for i in range(n)) for j in range(n)]
+  indice:
+    fr: Une compréhension de liste sur `j`, avec `sum(dist[i] * P[i][j] for i in range(n))`.
+    en: A list comprehension over `j`, with `sum(dist[i] * P[i][j] for i in range(n))`.
+  explication:
+    fr: 'La somme des probabilités reste `1` : une distribution reste une distribution après un pas.'
+    en: 'The sum of the probabilities stays `1`: a distribution remains a distribution after a step.'
+- id: c6
+  type: idee
+  fr: 'Souvent, la distribution se **stabilise** : après de nombreux pas, elle ne change plus. C’est la **distribution stationnaire** $\pi$, qui vérifie $\pi=\pi P$. Elle dit quelle part du temps la chaîne passe dans chaque état à long terme.'
+  en: 'Often, the distribution **stabilises**: after many steps, it no longer changes. This is the **stationary distribution** $\pi$, which satisfies $\pi=\pi P$. It says what share of the time the chain spends in each state in the long run.'
+  exemple:
+    fr: 'Pour la météo : $\pi=(2/3;\,1/3)$, soit deux jours de beau temps sur trois à long terme. Vérification : $0{,}8\times\frac23+0{,}4\times\frac13=\frac23$.'
+    en: 'For the weather: $\pi=(2/3;\,1/3)$, that is two sunny days out of three in the long run. Check: $0.8\times\frac23+0.4\times\frac13=\frac23$.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Jours
+      en: Days
+    - fr: Part de beau temps
+      en: Share of sun
+    cellules:
+    - - '0'
+      - 1,000
+    - - '2'
+      - 0,720
+    - - fr: '10'
+        en: '10'
+        ton: ok
+      - fr: 0,667
+        en: '0.667'
+        ton: ok
+    legende:
+      fr: 'Le départ certain est oublié : la distribution converge.'
+      en: 'The certain start is forgotten: the distribution converges.'
+- id: c6b
+  type: idee
+  fr: Le **temps moyen de séjour** dans un état est l’inverse de la probabilité d’en sortir. Si l’état « beau » reste « beau » avec probabilité $0{,}8$, la probabilité de sortie est $0{,}2$ et le séjour dure en moyenne $1/0{,}2=5$ jours.
+  en: The **mean sojourn time** in a state is the inverse of the probability of leaving it. If the “sunny” state stays “sunny” with probability $0.8$, the exit probability is $0.2$ and the stay lasts on average $1/0.2=5$ days.
+  exemple:
+    fr: 'Pour « pluie » : sortie $0{,}4$, séjour moyen $1/0{,}4=2{,}5$ jours.'
+    en: 'For “rain”: exit $0.4$, mean stay $1/0.4=2.5$ days.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `est_stochastique(P)`** : `True` si chaque ligne de `P` n’a aucun nombre négatif et une somme égale à `1` (à `1e-9` près) ; sinon `False`.'
+  en: '**Write `est_stochastique(P)`**: `True` if each row of `P` has no negative number and a sum equal to `1` (within `1e-9`); otherwise `False`.'
+  depart: |
+    # écris ta fonction est_stochastique ici
+  tests: |-
+    assert est_stochastique([[0.8, 0.2], [0.4, 0.6]]) is True
+    assert est_stochastique([[0.8, 0.3], [0.4, 0.6]]) is False
+    assert est_stochastique([[1.2, -0.2], [0.5, 0.5]]) is False
+    assert est_stochastique([[1.0]]) is True
+    assert est_stochastique([]) is True
+  solutionCode: |
+    def est_stochastique(P):
+        for ligne in P:
+            if any(x < 0 for x in ligne) or abs(sum(ligne) - 1) > 1e-9:
+                return False
+        return True
+  indice:
+    fr: 'Parcours les lignes : retourne `False` dès qu’une ligne contient un négatif ou que `abs(sum(ligne) - 1) > 1e-9`.'
+    en: 'Loop through the rows: return `False` as soon as a row contains a negative or `abs(sum(ligne) - 1) > 1e-9`.'
+  explication:
+    fr: Vérifier la matrice avant de simuler évite des heures de résultats faux.
+    en: Checking the matrix before simulating avoids hours of wrong results.
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Avec la matrice de la météo et un départ certain de pluie, $\pi=(0;\,1)$, quelle est la probabilité de beau temps le lendemain ?
+  en: With the weather matrix and a certain start from rain, $\pi=(0;\,1)$, what is the probability of sun the next day?
+  reponses:
+  - '0.4'
+  - 0,4
+  verif: |-
+    P=[[0.8,0.2],[0.4,0.6]]
+    print(0*P[0][0]+1*P[1][0])
+  indice:
+    fr: 'Lis la deuxième ligne de la matrice : départ pluie, arrivée beau temps.'
+    en: 'Read the matrix’s second row: departure rain, arrival sun.'
+  explication:
+    fr: La ligne « pluie » donne $0{,}4$ vers « beau ».
+    en: The “rain” row gives $0.4$ towards “sun”.
+- id: c9
+  type: piege
+  fr: Toutes les chaînes ne se stabilisent pas. Une chaîne qui alterne toujours $A\to B\to A\to B$ oscille sans fin ; une chaîne avec un état **absorbant** (une fois dedans, on n’en sort plus) finit toujours là. Avant de chercher une distribution stationnaire, vérifie que la chaîne est irréductible et apériodique.
+  en: Not all chains stabilise. A chain that always alternates $A\to B\to A\to B$ oscillates endlessly; a chain with an **absorbing** state (once inside, you never leave) always ends there. Before looking for a stationary distribution, check that the chain is irreducible and aperiodic.
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `stationnaire(P, iterations=500)`** : pars de la distribution uniforme (`1 / n` partout) et applique `pas_markov` `iterations` fois. Renvoie la distribution obtenue. `pas_markov` est fournie.'
+  en: 'Challenge. **Write `stationnaire(P, iterations=500)`**: start from the uniform distribution (`1 / n` everywhere) and apply `pas_markov` `iterations` times. Return the resulting distribution. `pas_markov` is provided.'
+  depart: |
+    def pas_markov(dist, P):
+        n = len(dist)
+        return [sum(dist[i] * P[i][j] for i in range(n)) for j in range(n)]
+
+    # écris ta fonction stationnaire ici
+  tests: |-
+    r = stationnaire([[0.8, 0.2], [0.4, 0.6]])
+    assert abs(r[0] - 2 / 3) < 1e-9 and abs(r[1] - 1 / 3) < 1e-9
+    r = stationnaire([[0.5, 0.5], [0.5, 0.5]], 3)
+    assert abs(r[0] - 0.5) < 1e-12
+    r = stationnaire([[0.9, 0.1, 0.0], [0.1, 0.8, 0.1], [0.0, 0.2, 0.8]])
+    assert abs(sum(r) - 1) < 1e-9 and abs(r[1] - 0.4) < 0.2
+    assert stationnaire([[1.0]]) == [1.0]
+  solutionCode: |
+    def pas_markov(dist, P):
+        n = len(dist)
+        return [sum(dist[i] * P[i][j] for i in range(n)) for j in range(n)]
+
+    def stationnaire(P, iterations=500):
+        n = len(P)
+        dist = [1 / n] * n
+        for _ in range(iterations):
+            dist = pas_markov(dist, P)
+        return dist
+  indice:
+    fr: '`dist = [1 / n] * n`, puis une boucle `for _ in range(iterations)` qui remplace `dist` par `pas_markov(dist, P)`.'
+    en: '`dist = [1 / n] * n`, then a loop `for _ in range(iterations)` that replaces `dist` with `pas_markov(dist, P)`.'
+  explication:
+    fr: Cette méthode s’appelle l’**itération de la puissance** ; elle est la base de l’algorithme PageRank des moteurs de recherche.
+    en: This method is called **power iteration**; it is the basis of the PageRank algorithm of search engines.
+- id: c11
+  type: idee
+  fr: En finance, on modélise parfois les **régimes de marché** (calme, agité) par une chaîne de Markov. La matrice dit combien de temps un régime dure, et la distribution stationnaire dit la part du temps passée dans chacun. Le modèle de langage à bigrammes du module 6 est aussi une chaîne de Markov.
+  en: In finance, **market regimes** (calm, turbulent) are sometimes modelled by a Markov chain. The matrix says how long a regime lasts, and the stationary distribution says the share of time spent in each. The bigram language model of module 6 is also a Markov chain.
+  exemple:
+    fr: Si le régime calme reste calme avec probabilité $0{,}95$, il dure en moyenne $1/(1-0{,}95)=20$ jours.
+    en: If the calm regime stays calm with probability $0.95$, it lasts on average $1/(1-0.95)=20$ days.
+- id: c12
+  type: retenir
+  fr: 'Chaîne de Markov : états, matrice $P$ à lignes de somme 1, futur ne dépendant que du présent. Une distribution devient $\pi P$. Distribution stationnaire : $\pi=\pi P$, par itération. Attention aux chaînes périodiques ou absorbantes.'
+  en: 'Markov chain: states, matrix $P$ with rows summing to 1, future depending only on the present. A distribution becomes $\pi P$. Stationary distribution: $\pi=\pi P$, by iteration. Beware of periodic or absorbing chains.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [Introduction to Probability, chapitre 11](https://math.dartmouth.edu/~prob/prob/prob.pdf) ; ce livre en ligne demande une connexion.
+  en: For further study, see [Introduction to Probability, chapter 11](https://math.dartmouth.edu/~prob/prob/prob.pdf); this online book needs a connection.

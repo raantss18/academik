@@ -1,0 +1,300 @@
+# Niveau 18.1 — Performance 1 : compter les opérations, dichotomie, boucles imbriquées. Original academik ; notions vérifiées dans la documentation Python (complexité) et Cormen et al. (lien).
+id: '18.1'
+module: 18
+duree_min: 20
+titre:
+  fr: Compter les opérations
+  en: Counting operations
+ia:
+  fr: 'Kintana ne se fie pas au chronomètre : elle compte ce que son programme fait vraiment.'
+  en: 'Kintana does not trust the stopwatch: she counts what her program really does.'
+sources:
+- titre: 'Python — documentation : Time complexity'
+  url: https://wiki.python.org/moin/TimeComplexity
+  licence: PSF ; documentation citée
+- titre: Cormen, Leiserson, Rivest, Stein — Introduction to Algorithms (lien)
+  url: https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Ton programme met 1 seconde pour 1 000 données. Combien de temps mettra-t-il pour 1 000 000 de données (mille fois plus) s’il fait un nombre d’opérations **proportionnel au carré** de la taille ?
+  en: Your program takes 1 second for 1,000 data items. How long will it take for 1,000,000 items (a thousand times more) if it does a number of operations **proportional to the square** of the size?
+  choix:
+  - fr: Environ un million de secondes (plus de 11 jours)
+    en: About a million seconds (over 11 days)
+    juste: true
+  - fr: Environ 1 000 secondes
+    en: About 1,000 seconds
+  - fr: Toujours 1 seconde
+    en: Always 1 second
+  indice:
+    fr: Multiplier la taille par 1 000 multiplie le carré par $1\,000^2$.
+    en: Multiplying the size by 1,000 multiplies the square by $1{,}000^2$.
+  explication:
+    fr: 'La croissance quadratique est brutale : $1\,000^2=10^6$. Le **bon algorithme** compte souvent plus que la vitesse de l’ordinateur.'
+    en: 'Quadratic growth is brutal: $1{,}000^2=10^6$. The **right algorithm** often matters more than the computer’s speed.'
+- id: c2
+  type: idee
+  fr: 'Au niveau 3.1, tu as vu la complexité en $O(\cdot)$ comme un ordre de grandeur. Ici, on **compte** vraiment : pas de chronomètre, qui dépend de l’ordinateur, mais le nombre d’opérations de base (comparaisons, additions). Ce compte est reproductible partout.'
+  en: 'In level 3.1, you saw complexity in $O(\cdot)$ as an order of magnitude. Here, we really **count**: no stopwatch, which depends on the computer, but the number of basic operations (comparisons, additions). This count is reproducible everywhere.'
+  exemple:
+    fr: Chercher un nombre dans une liste de 1 000 éléments non triée demande jusqu’à 1 000 comparaisons.
+    en: Searching for a number in an unsorted list of 1,000 elements requires up to 1,000 comparisons.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Complexité
+      en: Complexity
+    - fr: Pour $n=1\,000$
+      en: For $n=1{,}000$
+    - fr: Pour $n=10^6$
+      en: For $n=10^6$
+    cellules:
+    - - $O(\log n)$
+      - '10'
+      - '20'
+    - - $O(n)$
+      - 1 000
+      - 1 000 000
+    - - fr: $O(n^2)$
+        en: $O(n^2)$
+        ton: bad
+      - fr: 1 000 000
+        en: 1,000,000
+        ton: bad
+      - fr: $10^{12}$
+        en: $10^{12}$
+        ton: bad
+    legende:
+      fr: Compter les opérations révèle ce que le chronomètre cache.
+      en: Counting operations reveals what the stopwatch hides.
+- id: c3
+  type: exemple
+  titre:
+    fr: Compter une recherche linéaire
+    en: Counting a linear search
+  lang: python
+  etapes:
+  - code: |-
+      liste = list(range(1000))
+      cible = 999
+      n = 0
+    fr: Une liste triée de 1 000 nombres ; on cherche le dernier.
+    en: A sorted list of 1,000 numbers; we search for the last one.
+  - code: |-
+      for x in liste:
+          n += 1
+          if x == cible:
+              break
+    fr: On compte chaque comparaison jusqu’à trouver.
+    en: We count each comparison until found.
+  - code: print(n)
+    fr: 'On affiche `1000` : il a fallu parcourir toute la liste.'
+    en: 'We display `1000`: the whole list had to be traversed.'
+  verif: |-
+    liste = list(range(1000))
+    cible = 999
+    n = 0
+    for x in liste:
+        n += 1
+        if x == cible:
+            break
+    print(n)
+  sortie: '1000'
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `comparaisons_lineaire(liste, cible)`** : parcours `liste` dans l’ordre en comptant chaque élément regardé ; arrête-toi dès que `x == cible`. Renvoie le nombre d’éléments regardés (tous si la cible est absente).'
+  en: 'Your turn. **Write `comparaisons_lineaire(liste, cible)`**: walk through `liste` in order counting each element looked at; stop as soon as `x == cible`. Return the number of elements looked at (all of them if the target is absent).'
+  depart: |
+    # écris ta fonction comparaisons_lineaire ici
+  tests: |-
+    assert comparaisons_lineaire(list(range(1000)), 999) == 1000
+    assert comparaisons_lineaire(list(range(1000)), 0) == 1
+    assert comparaisons_lineaire(list(range(10)), 99) == 10
+    assert comparaisons_lineaire([], 5) == 0
+  solutionCode: |
+    def comparaisons_lineaire(liste, cible):
+        n = 0
+        for x in liste:
+            n += 1
+            if x == cible:
+                break
+        return n
+  indice:
+    fr: Un compteur `n`, une boucle `for x in liste`, `n += 1` avant le test, et un `break` quand `x == cible`.
+    en: A counter `n`, a `for x in liste` loop, `n += 1` before the test, and a `break` when `x == cible`.
+  explication:
+    fr: 'Dans le pire cas, la recherche linéaire regarde tous les éléments : $O(n)$.'
+    en: 'In the worst case, linear search looks at every element: $O(n)$.'
+- id: c5
+  type: idee
+  fr: 'Sur une liste **triée**, la **dichotomie** coupe l’intervalle en deux à chaque étape. On regarde le milieu, puis on garde la moitié qui peut contenir la cible. Pour $n$ éléments : environ $\log_2 n$ comparaisons au plus.'
+  en: 'On a **sorted** list, **binary search** halves the interval at each step: we look at the middle, then keep the half that can contain the target. For $n$ elements, at most about $\log_2 n$ comparisons: 10 for 1,000, 20 for a million.'
+  exemple:
+    fr: '1 000 éléments : 1 000 → 500 → 250 → … → 1 en 10 étapes, car $2^{10}=1\,024$.'
+    en: '1,000 elements: 1,000 → 500 → 250 → … → 1 in 10 steps, since $2^{10}=1{,}024$.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: La dichotomie
+        en: Binary search
+      noeuds:
+      - fr: regarder le milieu
+        en: look at the middle
+      - fr: trop petit ? à droite
+        en: too small? go right
+      - fr: trop grand ? à gauche
+        en: too large? go left
+      - fr: intervalle divisé par 2
+        en: interval halved
+        ton: ok
+    legende:
+      fr: Il faut que la liste soit triée.
+      en: The list must be sorted.
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `comparaisons_dichotomie(liste, cible)`** : `bas, haut = 0, len(liste) - 1` ; tant que `bas <= haut`, prends le `milieu`, compte une comparaison, renvoie le compte si `liste[milieu] == cible`, sinon ajuste `bas` ou `haut`. Renvoie le nombre de comparaisons (même si la cible est absente).'
+  en: '**Write `comparaisons_dichotomie(liste, cible)`**: `bas, haut = 0, len(liste) - 1`; while `bas <= haut`, take the `milieu`, count one comparison, return the count if `liste[milieu] == cible`, otherwise adjust `bas` or `haut`. Return the number of comparisons (even if the target is absent).'
+  depart: |
+    # écris ta fonction comparaisons_dichotomie ici
+  tests: |-
+    assert comparaisons_dichotomie(list(range(1000)), 999) <= 10
+    assert comparaisons_dichotomie(list(range(1000)), 499) == 1
+    assert comparaisons_dichotomie(list(range(1000000)), 12345) <= 20
+    assert comparaisons_dichotomie(list(range(100)), -5) <= 7
+    assert comparaisons_dichotomie([], 3) == 0
+  solutionCode: |
+    def comparaisons_dichotomie(liste, cible):
+        bas, haut, n = 0, len(liste) - 1, 0
+        while bas <= haut:
+            milieu = (bas + haut) // 2
+            n += 1
+            if liste[milieu] == cible:
+                return n
+            if liste[milieu] < cible:
+                bas = milieu + 1
+            else:
+                haut = milieu - 1
+        return n
+  indice:
+    fr: Boucle `while bas <= haut` avec `milieu = (bas + haut) // 2`, un compteur incrémenté à chaque passage.
+    en: '`while bas <= haut` loop with `milieu = (bas + haut) // 2`, a counter incremented on each pass.'
+  explication:
+    fr: 'Pour un million d’éléments, la dichotomie fait au plus 20 comparaisons : 50 000 fois moins que la recherche linéaire.'
+    en: 'For a million elements, binary search makes at most 20 comparisons: 50,000 times fewer than linear search.'
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Combien de comparaisons au plus la dichotomie fait-elle sur une liste triée de 1 024 éléments (cas d’une cible absente) ? Utilise $\lfloor\log_2 n\rfloor+1$.
+  en: At most how many comparisons does binary search make on a sorted list of 1,024 elements (case of an absent target)? Use $\lfloor\log_2 n\rfloor+1$.
+  reponses:
+  - '11'
+  verif: |-
+    import math
+    print(int(math.log2(1024)) + 1)
+  indice:
+    fr: Calcule $\log_2 1024$, prends la partie entière, puis ajoute 1.
+    en: Compute $\log_2 1024$, take the integer part, then add 1.
+  explication:
+    fr: $\log_21024=10$, donc $10+1=11$ comparaisons au plus.
+    en: $\log_21024=10$, so $10+1=11$ comparisons at most.
+- id: c8
+  type: idee
+  fr: 'Les **boucles imbriquées** multiplient les coûts : deux boucles de taille $n$ imbriquées font $n^2$ tours. Comparer chaque élément à tous les autres coûte $n(n-1)/2$ comparaisons de paires. Pour 10 000 éléments : près de 50 millions.'
+  en: '**Nested loops** multiply costs: two nested loops of size $n$ make $n^2$ turns. Comparing each element with all others costs $n(n-1)/2$ pair comparisons. For 10,000 elements: nearly 50 million.'
+  exemple:
+    fr: 'Pour $n=5$ : $5\times4/2=10$ paires. Pour $n=1\,000$ : $499\,500$ paires.'
+    en: 'For $n=5$: $5\times4/2=10$ pairs. For $n=1{,}000$: $499{,}500$ pairs.'
+- id: c8b
+  type: idee
+  fr: 'Le **meilleur cas**, le **pire cas** et le **cas moyen** peuvent différer. Chercher un élément dans une liste non triée : 1 comparaison au mieux, $n$ au pire, environ $n/2$ en moyenne. On donne souvent le pire cas, car c’est une garantie.'
+  en: 'The **best case**, the **worst case** and the **average case** can differ. Searching for an element in an unsorted list: 1 comparison at best, $n$ at worst, about $n/2$ on average. The worst case is often given, because it is a guarantee.'
+  exemple:
+    fr: 'Pour 1 000 éléments : 1, 500 ou 1 000 comparaisons selon le cas.'
+    en: 'For 1,000 elements: 1, 500 or 1,000 comparisons depending on the case.'
+- id: c9
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `paires_doublons(liste)`** : deux boucles imbriquées (`i` de `0` à `n - 1`, `j` de `i + 1` à `n - 1`) qui comptent le nombre de paires `(i, j)` examinées. Renvoie ce nombre (il vaut $n(n-1)/2$).'
+  en: '**Write `paires_doublons(liste)`**: two nested loops (`i` from `0` to `n - 1`, `j` from `i + 1` to `n - 1`) counting the number of pairs `(i, j)` examined. Return that number (it equals $n(n-1)/2$).'
+  depart: |
+    # écris ta fonction paires_doublons ici
+  tests: |-
+    assert paires_doublons([0] * 5) == 10
+    assert paires_doublons([0] * 1000) == 499500
+    assert paires_doublons([1]) == 0
+    assert paires_doublons([]) == 0
+  solutionCode: |
+    def paires_doublons(liste):
+        n = 0
+        for i in range(len(liste)):
+            for j in range(i + 1, len(liste)):
+                n += 1
+        return n
+  indice:
+    fr: Une variable `n`, la double boucle, et `n += 1` à l’intérieur de la boucle sur `j`.
+    en: A variable `n`, the double loop, and `n += 1` inside the `j` loop.
+  explication:
+    fr: 'Ce compte est la signature d’un algorithme en $O(n^2)$ : rendre la boucle intérieure plus rapide est la clé de l’optimisation.'
+    en: 'This count is the signature of an $O(n^2)$ algorithm: making the inner loop faster is the key to optimisation.'
+- id: c10
+  type: piege
+  fr: 'Une complexité asymptotique n’est pas une vitesse. Un algorithme en $O(n)$ avec une grosse constante peut perdre contre un $O(n^2)$ pour de petits $n$. Et la **dichotomie** exige de trier d’abord (coût $O(n\log n)$) : elle ne vaut le coup que si l’on cherche **plusieurs fois** dans la même liste.'
+  en: 'An asymptotic complexity is not a speed. An $O(n)$ algorithm with a big constant can lose against an $O(n^2)$ one for small $n$. And **binary search** requires sorting first (cost $O(n\log n)$): it is only worth it if we search **several times** in the same list.'
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `premier_depassement(f, seuil)`** : le plus petit entier `n >= 1` pour lequel `f(n) > seuil`. Commence à `n = 1` et avance tant que `f(n) <= seuil`. Ainsi on trouve à partir de quelle taille un algorithme dépasse un budget d’opérations.'
+  en: 'Challenge. **Write `premier_depassement(f, seuil)`**: the smallest integer `n >= 1` for which `f(n) > seuil`. Start at `n = 1` and advance while `f(n) <= seuil`. This finds from what size an algorithm exceeds an operation budget.'
+  depart: |
+    # écris ta fonction premier_depassement ici
+  tests: |-
+    assert premier_depassement(lambda n: n * n, 1000000) == 1001
+    assert premier_depassement(lambda n: n, 5) == 6
+    assert premier_depassement(lambda n: 2 ** n, 1000) == 10
+    assert premier_depassement(lambda n: n * (n - 1) // 2, 499500) == 1001
+  solutionCode: |
+    def premier_depassement(f, seuil):
+        n = 1
+        while f(n) <= seuil:
+            n += 1
+        return n
+  indice:
+    fr: 'Un compteur `n = 1` et `while f(n) <= seuil: n += 1`, puis `return n`.'
+    en: 'A counter `n = 1` and `while f(n) <= seuil: n += 1`, then `return n`.'
+  explication:
+    fr: Avec un budget d’un million d’opérations, un algorithme en $n^2$ cesse d’être praticable dès $n=1\,001$ ; un en $2^n$ dès $n=20$.
+    en: With a budget of a million operations, an $n^2$ algorithm stops being practical from $n=1{,}001$; a $2^n$ one from $n=20$.
+- id: c12
+  type: idee
+  fr: 'L’**ordre de grandeur** d’un budget : un ordinateur d’aujourd’hui fait grossièrement $10^8$ à $10^9$ opérations simples par seconde en Python compilé ou $10^7$ en Python pur. Un algorithme à $10^{12}$ opérations prend donc des heures, voire des jours. Estimer avant d’écrire évite de mauvaises surprises.'
+  en: 'The **order of magnitude** of a budget: a computer today does roughly $10^8$ to $10^9$ simple operations per second in compiled code or $10^7$ in pure Python. An algorithm of $10^{12}$ operations thus takes hours or even days. Estimating before writing avoids nasty surprises.'
+  exemple:
+    fr: '$10^{10}$ opérations en Python pur : environ $10^3$ s, soit 17 minutes.'
+    en: '$10^{10}$ operations in pure Python: about $10^3$ s, that is 17 minutes.'
+- id: c13
+  type: retenir
+  fr: 'Compter les opérations plutôt que mesurer le temps. Linéaire : $n$. Dichotomie (liste triée) : $\approx\log_2n$. Double boucle : $n(n-1)/2$. Estimer l’ordre de grandeur avant d’écrire ; la complexité n’est pas la vitesse.'
+  en: 'Count operations rather than measuring time. Linear: $n$. Binary search (sorted list): $\approx\log_2n$. Double loop: $n(n-1)/2$. Estimate the order of magnitude before writing; complexity is not speed.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [la page sur la complexité des opérations Python](https://wiki.python.org/moin/TimeComplexity) ; cette page demande une connexion.
+  en: For further study, see [the page on the complexity of Python operations](https://wiki.python.org/moin/TimeComplexity); this page needs a connection.

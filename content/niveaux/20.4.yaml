@@ -1,0 +1,275 @@
+# Niveau 20.4 — Évaluer et produire 4 : reproductibilité, graines, dépendances épinglées, empreinte de configuration. Original academik ; notions vérifiées dans Pineau et al. 2019 (arXiv 2003.12206) et la documentation pip (citée).
+id: '20.4'
+module: 20
+duree_min: 16
+titre:
+  fr: Reproduire une expérience
+  en: Reproducing an experiment
+ia:
+  fr: Kintana fixe tout ce qui varie pour qu’un résultat puisse être refait par un autre.
+  en: Kintana fixes everything that varies so that a result can be redone by someone else.
+sources:
+- titre: Pineau et al. — Improving Reproducibility in Machine Learning Research (NeurIPS 2019)
+  url: https://arxiv.org/abs/2003.12206
+  licence: Article en accès libre ; liste de contrôle citée
+- titre: Python Packaging User Guide — Requirements files
+  url: https://pip.pypa.io/en/stable/reference/requirements-file-format/
+  licence: MIT ; documentation citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Un collègue te dit : « mon modèle atteint 92 % ». Tu relances son code et obtiens 88 %. Que s’est-il probablement passé ?'
+  en: 'A colleague tells you: “my model reaches 92%”. You rerun their code and get 88%. What probably happened?'
+  choix:
+  - fr: 'Des éléments non fixés changent d’une exécution à l’autre : graine aléatoire, versions de bibliothèques, données'
+    en: 'Unfixed elements change between runs: random seed, library versions, data'
+    juste: true
+  - fr: Le code fonctionne différemment le mardi
+    en: The code works differently on Tuesdays
+  - fr: Le collègue a menti
+    en: The colleague lied
+  indice:
+    fr: Qu’est-ce qui doit être identique pour que deux exécutions donnent le même résultat ?
+    en: What must be identical for two runs to give the same result?
+  explication:
+    fr: 'Un résultat n’est fiable que s’il est **reproductible** : même code, mêmes données, mêmes versions, **même graine**.'
+    en: 'A result is reliable only if it is **reproducible**: same code, same data, same versions, **same seed**.'
+- id: c2
+  type: idee
+  fr: 'Pour **reproduire** une expérience, on fixe cinq choses : le **code** (commit), les **données**, la **configuration**, l’**environnement** (versions) et l’**aléa** (graine). Si l’une change, le résultat peut changer.'
+  en: 'To **reproduce** an experiment, we fix five things: the **code** (commit), the **data**, the **configuration**, the **environment** (versions) and the **randomness** (seed). If one changes, the result may change.'
+  exemple:
+    fr: Mettre à jour une bibliothèque peut modifier un arrondi, donc un résultat à la troisième décimale.
+    en: Updating a library can change a rounding, hence a result at the third decimal.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Élément
+      en: Element
+    - fr: Comment le fixer
+      en: How to fix it
+    cellules:
+    - - fr: code
+        en: code
+      - fr: commit Git
+        en: Git commit
+    - - fr: environnement
+        en: environment
+      - fr: versions épinglées
+        en: pinned versions
+    - - fr: aléa
+        en: randomness
+        ton: ok
+      - fr: graine
+        en: seed
+        ton: ok
+    legende:
+      fr: Tout ce qui varie doit être consigné.
+      en: Everything that varies must be recorded.
+- id: c3
+  type: idee
+  fr: 'Les nombres « aléatoires » d’un ordinateur sont **pseudo-aléatoires** : une suite déterministe issue d’une **graine**. Avec la même graine, on obtient la même suite. On passe un générateur local à l’expérience (`random.Random(graine)`) plutôt que d’utiliser un générateur global partagé.'
+  en: 'A computer’s “random” numbers are **pseudo-random**: a deterministic sequence from a **seed**. With the same seed, we get the same sequence. We pass a local generator to the experiment (`random.Random(graine)`) rather than using a shared global generator.'
+  exemple:
+    fr: '`random.Random(42).random()` donne le même nombre à chaque exécution, sur toute machine.'
+    en: '`random.Random(42).random()` gives the same number at every run, on any machine.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Même graine, même suite
+    en: Same seed, same sequence
+  lang: python
+  etapes:
+  - code: |-
+      import random
+      a = random.Random(42)
+      b = random.Random(42)
+    fr: Deux générateurs indépendants, avec la même graine.
+    en: Two independent generators, with the same seed.
+  - code: |-
+      suite_a = [a.randint(1, 100) for _ in range(5)]
+      suite_b = [b.randint(1, 100) for _ in range(5)]
+    fr: On tire cinq nombres avec chacun.
+    en: We draw five numbers with each.
+  - code: print(suite_a == suite_b)
+    fr: 'On affiche `True` : les deux suites sont identiques.'
+    en: 'We display `True`: the two sequences are identical.'
+  verif: |-
+    import random
+    a = random.Random(42)
+    b = random.Random(42)
+    suite_a = [a.randint(1, 100) for _ in range(5)]
+    suite_b = [b.randint(1, 100) for _ in range(5)]
+    print(suite_a == suite_b)
+  sortie: 'True'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `reproduit(experience, graine)`** : `experience` est une fonction qui prend un générateur `random.Random`. Appelle-la deux fois, chacune avec un `random.Random(graine)` neuf, et renvoie `True` si les deux résultats sont égaux.'
+  en: 'Your turn. **Write `reproduit(experience, graine)`**: `experience` is a function taking a `random.Random` generator. Call it twice, each with a fresh `random.Random(graine)`, and return `True` if both results are equal.'
+  depart: |
+    import random
+
+    # écris ta fonction reproduit ici
+  tests: |-
+    assert reproduit(lambda r: [r.random() for _ in range(5)], 7) is True
+    assert reproduit(lambda r: r.randint(0, 10 ** 9), 1) is True
+    import time
+    compteur = [0]
+    def instable(r):
+        compteur[0] += 1
+        return compteur[0]
+    assert reproduit(instable, 3) is False
+  solutionCode: |
+    import random
+
+    def reproduit(experience, graine):
+        a = experience(random.Random(graine))
+        b = experience(random.Random(graine))
+        return a == b
+  indice:
+    fr: Deux appels `experience(random.Random(graine))` stockés dans `a` et `b`, puis `a == b`.
+    en: Two calls `experience(random.Random(graine))` stored in `a` and `b`, then `a == b`.
+  explication:
+    fr: Ce test attrape les fonctions qui dépendent d’un état caché (horloge, variable globale, générateur partagé).
+    en: This test catches functions that depend on a hidden state (clock, global variable, shared generator).
+- id: c5b
+  type: idee
+  fr: 'Une expérience reproductible se range comme une chaîne : des **données** versionnées, un **script** versionné, une **configuration** versionnée, un **environnement** épinglé. La commande `python experience.py config.json` doit produire le même résultat sur toute machine. Chaque maillon manquant casse la chaîne.'
+  en: 'A reproducible experiment is organised as a chain: versioned **data**, a versioned **script**, a versioned **configuration**, a pinned **environment**. The command `python experience.py config.json` must produce the same result on any machine. Each missing link breaks the chain.'
+  exemple:
+    fr: Si les données sont sur le disque de quelqu’un sans version, personne d’autre ne peut refaire le calcul.
+    en: If the data sits on someone’s disk without a version, nobody else can redo the computation.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: La chaîne de reproduction
+        en: The reproduction chain
+      noeuds:
+      - fr: données versionnées
+        en: versioned data
+      - fr: script versionné
+        en: versioned script
+      - fr: configuration versionnée
+        en: versioned configuration
+      - fr: environnement épinglé
+        en: pinned environment
+        ton: ok
+    legende:
+      fr: Un maillon manquant et le résultat n’est plus refaisable.
+      en: One missing link and the result can no longer be redone.
+- id: c6
+  type: idee
+  fr: 'Les **dépendances** doivent être **épinglées** : `numpy==1.26.4` fixe la version exacte, alors que `numpy` ou `numpy>=1` laisse l’installation choisir la plus récente à chaque fois. Un fichier de dépendances épinglées permet de recréer le même environnement dans un an.'
+  en: '**Dependencies** must be **pinned**: `numpy==1.26.4` fixes the exact version, whereas `numpy` or `numpy>=1` lets the installation choose the latest each time. A pinned dependencies file lets us recreate the same environment a year from now.'
+  exemple:
+    fr: 'academik épingle ses dépendances dans `package-lock.json` : la CI et ta machine installent exactement les mêmes versions.'
+    en: 'academik pins its dependencies in `package-lock.json`: CI and your machine install exactly the same versions.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `non_epingles(lignes)`** : `lignes` est la liste des lignes d’un fichier de dépendances. Ignore les lignes vides et celles qui commencent par `#`. Renvoie la liste (dans l’ordre) des lignes qui ne contiennent pas `==`, nettoyées avec `strip()`.'
+  en: '**Write `non_epingles(lignes)`**: `lignes` is the list of lines of a dependencies file. Ignore empty lines and those starting with `#`. Return the list (in order) of lines that do not contain `==`, cleaned with `strip()`.'
+  depart: |
+    # écris ta fonction non_epingles ici
+  tests: |-
+    l = ["# outils", "numpy==1.26.4", "", "pandas", "scipy>=1.10  ", "requests==2.31.0"]
+    assert non_epingles(l) == ["pandas", "scipy>=1.10"]
+    assert non_epingles([]) == []
+    assert non_epingles(["a==1"]) == []
+  solutionCode: |
+    def non_epingles(lignes):
+        resultat = []
+        for l in lignes:
+            l = l.strip()
+            if l and not l.startswith("#") and "==" not in l:
+                resultat.append(l)
+        return resultat
+  indice:
+    fr: 'Pour chaque ligne : `strip()`, ignore si vide ou commentaire, ajoute si `"==" not in l`.'
+    en: 'For each line: `strip()`, skip if empty or a comment, append if `"==" not in l`.'
+  explication:
+    fr: Un tel contrôle peut tourner dans l’intégration continue pour refuser une dépendance non épinglée.
+    en: Such a check can run in continuous integration to reject an unpinned dependency.
+- id: c8
+  type: idee
+  fr: Une **empreinte** (hachage, niveau 19.2) de la configuration identifie une expérience. Un seul paramètre différent change entièrement l’empreinte. On la consigne avec chaque résultat pour savoir **exactement** ce qui l’a produit.
+  en: A **fingerprint** (hash, level 19.2) of the configuration identifies an experiment. A single different parameter changes the fingerprint entirely. We record it with each result to know **exactly** what produced it.
+  exemple:
+    fr: 'Config `{"lr": 0.1, "epoques": 100}` : toujours la même empreinte, quel que soit l’ordre d’écriture des clés.'
+    en: 'Config `{"lr": 0.1, "epoques": 100}`: always the same fingerprint, whatever the key order.'
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `empreinte_config(config)`** : transforme `config` (dictionnaire) en JSON avec `json.dumps(config, sort_keys=True, ensure_ascii=False)`, puis renvoie le SHA-256 en hexadécimal du texte encodé en UTF-8. L’ordre des clés ne doit pas changer le résultat.'
+  en: 'Challenge. **Write `empreinte_config(config)`**: turn `config` (dictionary) into JSON with `json.dumps(config, sort_keys=True, ensure_ascii=False)`, then return the SHA-256 in hexadecimal of the UTF-8 encoded text. The key order must not change the result.'
+  depart: |
+    import hashlib
+    import json
+
+    # écris ta fonction empreinte_config ici
+  tests: |-
+    a = empreinte_config({"lr": 0.1, "epoques": 100})
+    b = empreinte_config({"epoques": 100, "lr": 0.1})
+    assert a == b and len(a) == 64
+    assert a != empreinte_config({"lr": 0.2, "epoques": 100})
+    assert empreinte_config({}) == hashlib.sha256(b"{}").hexdigest()
+  solutionCode: |
+    import hashlib
+    import json
+
+    def empreinte_config(config):
+        texte = json.dumps(config, sort_keys=True, ensure_ascii=False)
+        return hashlib.sha256(texte.encode("utf-8")).hexdigest()
+  indice:
+    fr: '`sort_keys=True` rend le JSON indépendant de l’ordre ; encode en UTF-8 avant `hashlib.sha256`.'
+    en: '`sort_keys=True` makes the JSON independent of order; encode in UTF-8 before `hashlib.sha256`.'
+  explication:
+    fr: 'Tu retrouves ici le hachage du niveau 19.2 : la même brique sert à la sécurité et à la traçabilité.'
+    en: 'You find here the hash of level 19.2: the same building block serves security and traceability.'
+- id: c10
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Une expérience a 3 réglages possibles pour le pas d’apprentissage, 4 pour la taille du lot et 5 graines. Combien d’exécutions pour toutes les combinaisons ?
+  en: An experiment has 3 possible settings for the learning step, 4 for the batch size and 5 seeds. How many runs for all combinations?
+  reponses:
+  - '60'
+  verif: print(3 * 4 * 5)
+  indice:
+    fr: Multiplie le nombre de choix de chaque réglage.
+    en: Multiply the number of choices of each setting.
+  explication:
+    fr: '$3\times4\times5=60$ exécutions : d’où l’intérêt de consigner chaque empreinte.'
+    en: '$3\times4\times5=60$ runs: hence the value of recording each fingerprint.'
+- id: c11
+  type: piege
+  fr: 'La reproductibilité parfaite à l’octet près n’est pas toujours possible : calculs GPU non déterministes, ordre de sommation, pilotes. On vise alors la reproductibilité **statistique** avec plusieurs graines.'
+  en: 'Perfect byte-for-byte reproducibility is not always possible: non-deterministic GPU computations, summation order, drivers. We then aim for **statistical** reproducibility with several seeds.'
+- id: c12
+  type: idee
+  fr: 'Documente toujours : **comment lancer**, **quelles données**, **quels réglages**, **quel matériel**, **quels résultats attendus**. Un `README` clair et des configurations versionnées valent plus qu’un code brillant mais incompréhensible.'
+  en: 'Always document: **how to run**, **which data**, **which settings**, **which hardware**, **which expected results**. A clear `README` and versioned configurations are worth more than brilliant but incomprehensible code.'
+  exemple:
+    fr: 'Dans academik, chaque décision est consignée dans `DECISIONS.md` : la même discipline appliquée au projet.'
+    en: 'In academik, each decision is recorded in `DECISIONS.md`: the same discipline applied to the project.'
+- id: c13
+  type: retenir
+  fr: Reproduire = fixer code, données, configuration, environnement, aléa. Graine locale, test de reproductibilité. Dépendances épinglées (`==`). Empreinte de configuration (JSON trié + SHA-256). Viser la reproductibilité statistique avec plusieurs graines. Tout documenter.
+  en: Reproducing = fixing code, data, configuration, environment, randomness. Local seed, reproducibility test. Pinned dependencies (`==`). Configuration fingerprint (sorted JSON + SHA-256). Aim for statistical reproducibility with several seeds. Document everything.
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [l’article sur la reproductibilité en apprentissage automatique](https://arxiv.org/abs/2003.12206) ; cet article demande une connexion.
+  en: For further study, see [the paper on reproducibility in machine learning](https://arxiv.org/abs/2003.12206); this paper needs a connection.

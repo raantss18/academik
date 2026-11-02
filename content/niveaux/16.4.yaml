@@ -1,0 +1,264 @@
+# Niveau 16.4 — Processus stochastiques 4 : espérance conditionnelle et martingales. Original academik ; notions vérifiées dans le cours 18.642 du MIT (lien) et Shreve (lien).
+id: '16.4'
+module: 16
+duree_min: 16
+titre:
+  fr: Martingales
+  en: Martingales
+ia:
+  fr: Kintana comprend pourquoi un jeu équitable ne se bat pas, et ce que vaut une prévision.
+  en: Kintana understands why a fair game cannot be beaten, and what a prediction is worth.
+sources:
+- titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
+  url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: Shreve — Stochastic Calculus for Finance I (lien)
+  url: https://link.springer.com/book/10.1007/978-0-387-22527-2
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Tu joues à pile ou face, avec une pièce équilibrée, en misant 1 € à chaque lancer. Ta fortune est $M_n$ après $n$ lancers. Sachant ce qui s’est passé jusqu’au lancer $n$, quelle est ta fortune **attendue** au lancer suivant ?
+  en: You play heads or tails, with a fair coin, betting €1 on each toss. Your fortune is $M_n$ after $n$ tosses. Knowing what has happened up to toss $n$, what is your **expected** fortune at the next toss?
+  choix:
+  - fr: 'La même qu’aujourd’hui : $M_n$'
+    en: 'The same as today: $M_n$'
+    juste: true
+  - fr: 'Plus : le hasard finit par compenser'
+    en: 'More: chance ends up compensating'
+  - fr: 'Moins : le casino gagne toujours'
+    en: 'Less: the casino always wins'
+  indice:
+    fr: Le prochain lancer te donne $+1$ ou $-1$ avec la même probabilité. Quelle est l’espérance de ce gain ?
+    en: The next toss gives you $+1$ or $-1$ with equal probability. What is the expectation of this gain?
+  explication:
+    fr: 'Le gain attendu est nul : $E[M_{n+1}\mid\text{passé}]=M_n$. Un tel processus s’appelle une **martingale** : un jeu équitable.'
+    en: 'The expected gain is zero: $E[M_{n+1}\mid\text{past}]=M_n$. Such a process is called a **martingale**: a fair game.'
+- id: c2
+  type: idee
+  fr: 'L’**espérance conditionnelle** $E[X\mid Y=y]$ est la moyenne de $X$ quand on **sait** que $Y=y$. C’est la meilleure prévision de $X$ avec cette information. Elle se calcule avec la loi conjointe : $\sum_x x\,p(x,y)\,/\,\sum_x p(x,y)$.'
+  en: 'The **conditional expectation** $E[X\mid Y=y]$ is the average of $X$ when we **know** that $Y=y$. It is the best prediction of $X$ with this information. It is computed with the joint law: $\sum_x x\,p(x,y)\,/\,\sum_x p(x,y)$.'
+  exemple:
+    fr: 'Pour $p(1,0)=0{,}2$, $p(3,0)=0{,}3$ : $E[X\mid Y=0]=(1\times0{,}2+3\times0{,}3)/0{,}5=2{,}2$.'
+    en: 'For $p(1,0)=0.2$, $p(3,0)=0.3$: $E[X\mid Y=0]=(1\times0.2+3\times0.3)/0.5=2.2$.'
+  figure:
+    kind: tableau
+    entetes:
+    - $x$
+    - $y$
+    - $p(x,y)$
+    cellules:
+    - - $1$
+      - $0$
+      - $0{,}2$
+    - - $3$
+      - $0$
+      - $0{,}3$
+    - - fr: $2$
+        en: $2$
+        ton: ok
+      - fr: $1$
+        en: $1$
+        ton: ok
+      - fr: $0{,}5$
+        en: $0.5$
+        ton: ok
+    legende:
+      fr: On ne garde que les lignes où $y$ vaut la valeur connue.
+      en: We keep only the rows where $y$ equals the known value.
+- id: c2b
+  type: idee
+  fr: 'Une **sous-martingale** a une espérance qui monte en moyenne ($E[M_{n+1}\mid\mathcal F_n]\ge M_n$) : un jeu favorable. Une **sur-martingale** a une espérance qui baisse en moyenne ($\le M_n$) : un jeu défavorable. La martingale est le cas exactement équitable.'
+  en: 'A **submartingale** has an expectation that rises on average ($E[M_{n+1}\mid\mathcal F_n]\ge M_n$): a favourable game. A **supermartingale** has an expectation that falls on average ($\le M_n$): an unfavourable game. The martingale is the exactly fair case.'
+  exemple:
+    fr: 'Un casino est une sur-martingale pour le joueur : son espérance de gain par pari est négative.'
+    en: 'A casino is a supermartingale for the player: the expected gain per bet is negative.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Type
+      en: Type
+    - fr: Espérance du pas
+      en: Step expectation
+    cellules:
+    - - fr: sous-martingale
+        en: submartingale
+      - fr: '> 0'
+        en: '> 0'
+        ton: ok
+    - - fr: martingale
+        en: martingale
+      - fr: = 0
+        en: = 0
+    - - fr: sur-martingale
+        en: supermartingale
+      - fr: < 0
+        en: < 0
+        ton: bad
+    legende:
+      fr: Le nom dit si le jeu est favorable ou défavorable à celui qui joue.
+      en: The name says whether the game is favourable or unfavourable to the player.
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `esperance_conditionnelle(table, y)`** : `table` associe `(x, y)` à sa probabilité. Renvoie la somme de `x * p` sur les couples dont la seconde coordonnée vaut `y`, divisée par la somme des `p` de ces couples.'
+  en: 'Your turn. **Write `esperance_conditionnelle(table, y)`**: `table` maps `(x, y)` to its probability. Return the sum of `x * p` over the pairs whose second coordinate is `y`, divided by the sum of the `p` of those pairs.'
+  depart: |
+    # écris ta fonction esperance_conditionnelle ici
+  tests: |-
+    t = {(1, 0): 0.2, (3, 0): 0.3, (2, 1): 0.5}
+    assert abs(esperance_conditionnelle(t, 0) - 2.2) < 1e-12
+    assert esperance_conditionnelle(t, 1) == 2.0
+    t2 = {(0, 0): 0.25, (4, 0): 0.25, (1, 1): 0.5}
+    assert esperance_conditionnelle(t2, 0) == 2.0
+  solutionCode: |
+    def esperance_conditionnelle(table, y):
+        num = sum(x * p for (x, yy), p in table.items() if yy == y)
+        den = sum(p for (x, yy), p in table.items() if yy == y)
+        return num / den
+  indice:
+    fr: 'Deux sommes sur les mêmes couples : `sum(x * p ...)` et `sum(p ...)`, avec la condition `yy == y`. Puis divise.'
+    en: 'Two sums over the same pairs: `sum(x * p ...)` and `sum(p ...)`, with the condition `yy == y`. Then divide.'
+  explication:
+    fr: 'Diviser par `P(Y = y)` renormalise : on ne regarde plus que l’univers où `Y = y` s’est réalisé.'
+    en: 'Dividing by `P(Y = y)` renormalises: we only look at the universe where `Y = y` occurred.'
+- id: c4
+  type: idee
+  fr: 'La **filtration** $\mathcal F_n$ est l’information disponible à l’instant $n$ : tout ce qui s’est passé jusque-là. Elle ne fait que grandir. Une **martingale** est un processus $(M_n)$ tel que $E[M_{n+1}\mid\mathcal F_n]=M_n$ : sachant le passé, la meilleure prévision du futur est le présent.'
+  en: 'The **filtration** $\mathcal F_n$ is the information available at time $n$: everything that has happened so far. It only grows. A **martingale** is a process $(M_n)$ such that $E[M_{n+1}\mid\mathcal F_n]=M_n$: knowing the past, the best prediction of the future is the present.'
+  exemple:
+    fr: 'La marche aléatoire symétrique $S_n$ est une martingale : $E[S_{n+1}\mid S_n]=\frac12(S_n+1)+\frac12(S_n-1)=S_n$.'
+    en: 'The symmetric random walk $S_n$ is a martingale: $E[S_{n+1}\mid S_n]=\frac12(S_n+1)+\frac12(S_n-1)=S_n$.'
+- id: c5
+  type: exemple
+  titre:
+    fr: Une marche biaisée
+    en: A biased walk
+  lang: python
+  etapes:
+  - code: p, pos = 0.6, 10
+    fr: Une marche qui monte avec probabilité $0{,}6$, en position $10$.
+    en: A walk that goes up with probability $0.6$, at position $10$.
+  - code: esperance = p * (pos + 1) + (1 - p) * (pos - 1)
+    fr: L’espérance de la position suivante.
+    en: The expectation of the next position.
+  - code: print(round(esperance, 2))
+    fr: 'On affiche `10.2` : la marche a une dérive, ce n’est pas une martingale.'
+    en: 'We display `10.2`: the walk has a drift, it is not a martingale.'
+  verif: |-
+    p, pos = 0.6, 10
+    esperance = p * (pos + 1) + (1 - p) * (pos - 1)
+    print(round(esperance, 2))
+  sortie: '10.2'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `esperance_suivante(position, p)`** : la position suivante vaut `position + 1` avec probabilité `p` et `position - 1` sinon ; renvoie son espérance. Puis **`nature(p)`** : `"martingale"` si `p` vaut `0.5`, `"sous-martingale"` si `p > 0.5` (dérive vers le haut), `"sur-martingale"` sinon.'
+  en: '**Write `esperance_suivante(position, p)`**: the next position is `position + 1` with probability `p` and `position - 1` otherwise; return its expectation. Then **`nature(p)`**: `"martingale"` if `p` is `0.5`, `"sous-martingale"` if `p > 0.5` (upward drift), `"sur-martingale"` otherwise.'
+  depart: |
+    # écris tes fonctions esperance_suivante et nature ici
+  tests: |-
+    assert esperance_suivante(10, 0.5) == 10
+    assert abs(esperance_suivante(10, 0.6) - 10.2) < 1e-12
+    assert abs(esperance_suivante(0, 0.3) + 0.4) < 1e-12
+    assert nature(0.5) == "martingale"
+    assert nature(0.6) == "sous-martingale"
+    assert nature(0.4) == "sur-martingale"
+  solutionCode: |
+    def esperance_suivante(position, p):
+        return p * (position + 1) + (1 - p) * (position - 1)
+
+    def nature(p):
+        if abs(p - 0.5) < 1e-12:
+            return "martingale"
+        return "sous-martingale" if p > 0.5 else "sur-martingale"
+  indice:
+    fr: '`p * (position + 1) + (1 - p) * (position - 1)` ; puis un `if` sur `p` pour `nature`.'
+    en: '`p * (position + 1) + (1 - p) * (position - 1)`; then an `if` on `p` for `nature`.'
+  explication:
+    fr: 'Le gain attendu à chaque pas vaut $2p-1$ : nul seulement pour $p=0{,}5$. C’est la **dérive**.'
+    en: 'The expected gain at each step is $2p-1$: zero only for $p=0.5$. This is the **drift**.'
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Une marche monte de 1 avec probabilité $0{,}7$ et descend de 1 sinon. Quel est son gain attendu par pas ?
+  en: A walk goes up by 1 with probability $0.7$ and down by 1 otherwise. What is its expected gain per step?
+  reponses:
+  - '0.4'
+  - 0,4
+  verif: print(round(2 * 0.7 - 1, 1))
+  indice:
+    fr: Gain attendu $=p\times(+1)+(1-p)\times(-1)$.
+    en: Expected gain $=p\times(+1)+(1-p)\times(-1)$.
+  explication:
+    fr: '$0{,}7-0{,}3=0{,}4$ par pas : une dérive vers le haut.'
+    en: '$0.7-0.3=0.4$ per step: an upward drift.'
+- id: c8
+  type: idee
+  fr: Les martingales expliquent pourquoi **aucune stratégie** ne bat un jeu équitable. Si ta fortune est une martingale, toute règle d’arrêt raisonnable garde l’espérance de ta fortune finale égale à ta fortune de départ. C’est le théorème d’**arrêt optionnel**.
+  en: Martingales explain why **no strategy** beats a fair game. If your fortune is a martingale, any reasonable stopping rule (bounded losses, limited duration) keeps the expectation of your final fortune equal to your starting fortune. This is the **optional stopping** theorem.
+  exemple:
+    fr: 'Partir quand tu as gagné 10 €, ou quand tu as perdu tout ton capital, ne change pas ton gain moyen : il reste nul.'
+    en: 'Leaving when you have won €10, or when you have lost all your capital, does not change your average gain: it stays zero.'
+- id: c9
+  type: piege
+  fr: La « stratégie de la martingale » du casino (doubler la mise après chaque perte) ne bat pas un jeu équitable. Elle gagne souvent un petit gain, mais avec une probabilité faible elle mène à une perte énorme, et la mise requise dépasse vite ton capital. L’espérance reste nulle, ou négative avec une taxe.
+  en: The casino “martingale strategy” (doubling the stake after each loss) does not beat a fair game. It often wins a small gain, but with a small probability it leads to an enormous loss, and the required stake quickly exceeds your capital. The expectation stays zero, or negative with a fee.
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `ruine(a, b, p)`** : la probabilité d’atteindre `b` avant `0` en partant de `a` (avec `0 < a < b`), pour une marche qui monte avec probabilité `p`. Si `p` vaut `0.5` : `a / b`. Sinon, avec `r = (1 - p) / p` : `(1 - r ** a) / (1 - r ** b)`.'
+  en: 'Challenge. **Write `ruine(a, b, p)`**: the probability of reaching `b` before `0` starting from `a` (with `0 < a < b`), for a walk that goes up with probability `p`. If `p` is `0.5`: `a / b`. Otherwise, with `r = (1 - p) / p`: `(1 - r ** a) / (1 - r ** b)`.'
+  depart: |
+    # écris ta fonction ruine ici
+  tests: |-
+    assert ruine(3, 10, 0.5) == 0.3
+    assert abs(ruine(5, 10, 0.5) - 0.5) < 1e-12
+    def iteration(a, b, p):
+        h = [0.0] * (b + 1); h[b] = 1.0
+        for _ in range(20000):
+            for i in range(1, b):
+                h[i] = p * h[i + 1] + (1 - p) * h[i - 1]
+        return h[a]
+    for a, b, p in [(5, 10, 0.45), (3, 8, 0.6), (2, 6, 0.3)]:
+        assert abs(ruine(a, b, p) - iteration(a, b, p)) < 1e-6
+    assert ruine(5, 10, 0.45) < 0.5 < ruine(5, 10, 0.55)
+  solutionCode: |
+    def ruine(a, b, p):
+        if abs(p - 0.5) < 1e-12:
+            return a / b
+        r = (1 - p) / p
+        return (1 - r ** a) / (1 - r ** b)
+  indice:
+    fr: Traite d’abord le cas équitable avec `abs(p - 0.5) < 1e-12`, puis applique la formule avec `r`.
+    en: Handle the fair case first with `abs(p - 0.5) < 1e-12`, then apply the formula with `r`.
+  explication:
+    fr: Pour un jeu défavorable ($p<0{,}5$), la probabilité de gagner baisse très vite avec l’objectif `b`.
+    en: For an unfavourable game ($p<0.5$), the probability of winning drops very fast with the target `b`.
+- id: c11
+  type: idee
+  fr: 'En finance, l’idée centrale est que le prix actualisé d’un actif est une martingale sous la bonne mesure de probabilité (la mesure « risque-neutre »). Elle exprime l’**absence d’arbitrage** : aucun moyen de gagner sans risque. Le module 17 y revient pour tarifer des options.'
+  en: 'In finance, the central idea is that the discounted price of an asset is a martingale under the right probability measure (the “risk-neutral” measure). It expresses **no arbitrage**: no way to win without risk. Module 17 returns to it to price options.'
+  exemple:
+    fr: Si l’on pouvait prédire une hausse moyenne sans risque, tout le monde achèterait, et le prix monterait aussitôt.
+    en: If one could predict an average rise without risk, everyone would buy, and the price would rise immediately.
+- id: c12
+  type: retenir
+  fr: 'Espérance conditionnelle : la meilleure prévision sachant l’information. Martingale : $E[M_{n+1}\mid\mathcal F_n]=M_n$, un jeu équitable. Marche à pas $\pm1$ avec $p$ : dérive $2p-1$. Ruine : $a/b$ si équitable. Aucune stratégie ne bat un jeu équitable.'
+  en: 'Conditional expectation: the best prediction given the information. Martingale: $E[M_{n+1}\mid\mathcal F_n]=M_n$, a fair game. Walk with $\pm1$ steps and $p$: drift $2p-1$. Ruin: $a/b$ if fair. No strategy beats a fair game.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [Stochastic Calculus for Finance I](https://link.springer.com/book/10.1007/978-0-387-22527-2) ; ce livre demande une connexion.
+  en: For further study, see [Stochastic Calculus for Finance I](https://link.springer.com/book/10.1007/978-0-387-22527-2); this book needs a connection.

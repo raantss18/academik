@@ -1,0 +1,297 @@
+# Niveau 20.3 — Évaluer et produire 3 : observabilité, journaux structurés, percentiles, alertes. Original academik ; notions vérifiées dans le livre SRE de Google (lien) et la documentation OpenTelemetry (citée).
+id: '20.3'
+module: 20
+duree_min: 20
+titre:
+  fr: Observer en production
+  en: Observing in production
+ia:
+  fr: Kintana regarde son propre fonctionnement avec des journaux, des métriques et des percentiles.
+  en: Kintana watches her own operation with logs, metrics and percentiles.
+sources:
+- titre: Google SRE Book — Monitoring Distributed Systems
+  url: https://sre.google/sre-book/monitoring-distributed-systems/
+  licence: CC BY-NC-ND (lecture en ligne) ; lien seulement
+- titre: OpenTelemetry — Observability primer
+  url: https://opentelemetry.io/docs/concepts/observability-primer/
+  licence: Apache-2.0 ; documentation citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Ton assistant fonctionne en production. Un utilisateur dit « c’est lent ». Quel outil te permet de savoir si c’est vrai, et depuis quand ?
+  en: Your assistant is running in production. A user says “it’s slow”. What tool lets you know whether it’s true, and since when?
+  choix:
+  - fr: 'L’observabilité : des journaux, des métriques et des traces collectés en continu'
+    en: 'Observability: logs, metrics and traces collected continuously'
+    juste: true
+  - fr: Redémarrer le serveur
+    en: Restarting the server
+  - fr: Demander à un autre utilisateur
+    en: Asking another user
+  indice:
+    fr: On ne peut pas corriger ce qu’on ne voit pas. Que faut-il enregistrer au fil de l’eau ?
+    en: We cannot fix what we cannot see. What must be recorded as we go?
+  explication:
+    fr: 'L’**observabilité** est la capacité à comprendre l’état d’un système depuis ses sorties : **journaux**, **métriques** et **traces**.'
+    en: '**Observability** is the ability to understand a system’s state from its outputs: **logs**, **metrics** and **traces**.'
+- id: c2
+  type: idee
+  fr: Trois piliers. Les **journaux** racontent des événements précis, les **métriques** sont des nombres suivis dans le temps, les **traces** suivent une requête à travers plusieurs composants. Les trois se complètent.
+  en: Three pillars. **Logs** tell precise events, **metrics** are numbers tracked over time, **traces** follow a request through several components. The three complement each other.
+  exemple:
+    fr: Une alerte (métrique) dit « la latence a doublé » ; le journal montre quelle erreur ; la trace montre quel composant est lent.
+    en: An alert (metric) says “latency has doubled”; the log shows which error; the trace shows which component is slow.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Pilier
+      en: Pillar
+    - fr: Répond à
+      en: Answers
+    cellules:
+    - - fr: journaux
+        en: logs
+      - fr: que s’est-il passé ?
+        en: what happened?
+    - - fr: métriques
+        en: metrics
+      - fr: combien, à quelle vitesse ?
+        en: how many, how fast?
+    - - fr: traces
+        en: traces
+        ton: ok
+      - fr: où le temps passe-t-il ?
+        en: where does the time go?
+        ton: ok
+    legende:
+      fr: Commence par les métriques, creuse avec les journaux.
+      en: Start with metrics, dig with logs.
+- id: c3
+  type: idee
+  fr: 'Un bon journal est **structuré** : une ligne JSON par événement, avec des champs (niveau, message, identifiant de requête), plutôt que du texte libre. On peut alors compter, filtrer et agréger automatiquement. Et on n’y met **jamais** de secrets ni de données personnelles brutes.'
+  en: 'A good log is **structured**: one JSON line per event, with fields (level, message, request identifier), rather than free text. We can then count, filter and aggregate automatically. And we **never** put secrets or raw personal data in it.'
+  exemple:
+    fr: '`{"niveau": "erreur", "message": "timeout", "requete": "a1b2"}` se filtre par niveau en une ligne de code.'
+    en: '`{"niveau": "erreur", "message": "timeout", "requete": "a1b2"}` can be filtered by level in one line of code.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Une ligne de journal structurée
+    en: A structured log line
+  lang: python
+  etapes:
+  - code: |-
+      import json
+      ligne = json.dumps({"niveau": "erreur", "message": "timeout", "ms": 5200}, sort_keys=True)
+    fr: On construit une ligne JSON avec trois champs.
+    en: We build a JSON line with three fields.
+  - code: lu = json.loads(ligne)
+    fr: On la relit comme un dictionnaire.
+    en: We read it back as a dictionary.
+  - code: |-
+      print(ligne)
+      print(lu["niveau"] == "erreur")
+    fr: 'On affiche la ligne puis `True` : le niveau se teste directement.'
+    en: 'We display the line then `True`: the level can be tested directly.'
+  verif: |-
+    import json
+    ligne = json.dumps({"niveau": "erreur", "message": "timeout", "ms": 5200}, sort_keys=True)
+    lu = json.loads(ligne)
+    print(ligne)
+    print(lu["niveau"] == "erreur")
+  sortie: |-
+    {"message": "timeout", "ms": 5200, "niveau": "erreur"}
+    True
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `journal(niveau, message, **champs)`** : renvoie la ligne `json.dumps({"niveau": niveau, "message": message, **champs}, sort_keys=True, ensure_ascii=False)`.'
+  en: 'Your turn. **Write `journal(niveau, message, **champs)`**: return the line `json.dumps({"niveau": niveau, "message": message, **champs}, sort_keys=True, ensure_ascii=False)`.'
+  depart: |
+    import json
+
+    # écris ta fonction journal ici
+  tests: |-
+    l = journal("erreur", "délai dépassé", ms=5200, requete="a1")
+    d = json.loads(l)
+    assert d == {"niveau": "erreur", "message": "délai dépassé", "ms": 5200, "requete": "a1"}
+    assert journal("info", "ok") == '{"message": "ok", "niveau": "info"}'
+    assert "é" in journal("info", "é")
+  solutionCode: |
+    import json
+
+    def journal(niveau, message, **champs):
+        return json.dumps({"niveau": niveau, "message": message, **champs}, sort_keys=True, ensure_ascii=False)
+  indice:
+    fr: Un dictionnaire avec `niveau`, `message` et les champs supplémentaires dépliés avec `**champs`.
+    en: A dictionary with `niveau`, `message` and the extra fields unpacked with `**champs`.
+  explication:
+    fr: '`sort_keys=True` rend la ligne stable : utile pour comparer ou dédoublonner les journaux.'
+    en: '`sort_keys=True` makes the line stable: useful for comparing or deduplicating logs.'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `taux_erreur(lignes)`** : `lignes` est une liste de lignes JSON de journal. Ignore les lignes vides, décode les autres avec `json.loads`, et renvoie la part dont le champ `"niveau"` vaut `"erreur"` (`0.0` s’il n’y a aucune ligne).'
+  en: '**Write `taux_erreur(lignes)`**: `lignes` is a list of JSON log lines. Ignore empty lines, decode the others with `json.loads`, and return the share whose `"niveau"` field is `"erreur"` (`0.0` if there are no lines).'
+  depart: |
+    import json
+
+    # écris ta fonction taux_erreur ici
+  tests: |-
+    l = [journal_ for journal_ in ["{\"niveau\": \"info\"}", "{\"niveau\": \"erreur\"}", "", "{\"niveau\": \"info\"}", "{\"niveau\": \"erreur\"}"]]
+    assert taux_erreur(l) == 0.5
+    assert taux_erreur([]) == 0.0
+    assert taux_erreur(["", "  "]) == 0.0
+    assert taux_erreur(["{\"niveau\": \"info\"}"]) == 0.0
+  solutionCode: |
+    import json
+
+    def taux_erreur(lignes):
+        entrees = [json.loads(l) for l in lignes if l.strip()]
+        if not entrees:
+            return 0.0
+        erreurs = sum(1 for e in entrees if e.get("niveau") == "erreur")
+        return erreurs / len(entrees)
+  indice:
+    fr: Décode avec une compréhension de liste, compte les `e.get("niveau") == "erreur"`, divise par le nombre d’entrées.
+    en: Decode with a list comprehension, count the `e.get("niveau") == "erreur"`, divide by the number of entries.
+  explication:
+    fr: Le taux d’erreur est la métrique la plus simple à surveiller, et souvent la plus parlante.
+    en: The error rate is the simplest metric to monitor, and often the most telling.
+- id: c7
+  type: idee
+  fr: 'La **moyenne** de la latence ment : quelques requêtes très lentes se noient dans des milliers de rapides. On regarde les **percentiles** : la médiane (p50) est l’expérience typique, le **p95** et le **p99** sont ce que vivent les cas les plus lents. Un service est jugé sur ses pires cas.'
+  en: 'The **average** latency lies: a few very slow requests drown among thousands of fast ones. We look at **percentiles**: the median (p50) is the typical experience, the **p95** and **p99** are what the slowest cases experience. A service is judged on its worst cases.'
+  exemple:
+    fr: Sur 100 requêtes dont 98 à 100 ms et 2 à 10 s, la moyenne est de 298 ms, mais le p99 est de 10 s.
+    en: On 100 requests with 98 at 100 ms and 2 at 10 s, the average is 298 ms, but the p99 is 10 s.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: 'Latence : moyenne contre percentiles'
+        en: 'Latency: average versus percentiles'
+      noeuds:
+      - fr: 'moyenne : cache les extrêmes'
+        en: 'average: hides extremes'
+      - fr: 'p50 : le cas typique'
+        en: 'p50: the typical case'
+      - fr: 'p95, p99 : les cas lents'
+        en: 'p95, p99: the slow cases'
+      - fr: on surveille les percentiles
+        en: we monitor percentiles
+        ton: ok
+    legende:
+      fr: Un utilisateur sur cent subit le p99.
+      en: One user out of a hundred experiences the p99.
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `percentile(valeurs, p)`** (méthode du rang le plus proche) : trie `valeurs`, calcule `rang = math.ceil(p / 100 * len(tri))`, et renvoie `tri[max(rang, 1) - 1]`.'
+  en: '**Write `percentile(valeurs, p)`** (nearest-rank method): sort `valeurs`, compute `rang = math.ceil(p / 100 * len(tri))`, and return `tri[max(rang, 1) - 1]`.'
+  depart: |
+    import math
+
+    # écris ta fonction percentile ici
+  tests: |-
+    v = [100] * 98 + [10000, 10000]
+    assert percentile(v, 50) == 100
+    assert percentile(v, 99) == 10000
+    assert percentile(v, 95) == 100
+    assert percentile([1, 2, 3, 4], 50) == 2
+    assert percentile([7], 99) == 7
+    assert percentile([3, 1, 2], 100) == 3
+  solutionCode: |
+    import math
+
+    def percentile(valeurs, p):
+        tri = sorted(valeurs)
+        rang = math.ceil(p / 100 * len(tri))
+        return tri[max(rang, 1) - 1]
+  indice:
+    fr: Trie d’abord ; le rang est le plus petit entier au moins égal à `p/100 × n` ; l’indice vaut `rang - 1`.
+    en: Sort first; the rank is the smallest integer at least equal to `p/100 × n`; the index is `rang - 1`.
+  explication:
+    fr: Sur ces 100 valeurs, p50 et p95 voient une latence de 100 ms ; seul p99 révèle les 10 s.
+    en: On these 100 values, p50 and p95 see a latency of 100 ms; only p99 reveals the 10 s.
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Sur 200 requêtes triées par latence, quel est le rang du percentile p95, par la méthode du rang le plus proche ?
+  en: Out of 200 requests sorted by latency, what is the rank of the p95 percentile, by the nearest-rank method?
+  reponses:
+  - '190'
+  verif: |-
+    import math
+    print(math.ceil(95 / 100 * 200))
+  indice:
+    fr: Calcule $0{,}95\times200$.
+    en: Compute $0.95\times200$.
+  explication:
+    fr: '$0{,}95\times200=190$ : le p95 est la 190ᵉ valeur triée.'
+    en: '$0.95\times200=190$: the p95 is the 190th sorted value.'
+- id: c10
+  type: idee
+  fr: Une **alerte** prévient quand une métrique dépasse un seuil. Pour éviter les fausses alertes sur un pic isolé, on regarde la moyenne des $k$ dernières valeurs. Chaque alerte doit appeler une **action** précise.
+  en: An **alert** warns when a metric exceeds a threshold. To avoid false alerts on an isolated spike, we look at the average of the last $k$ values. Each alert must call for a precise **action**.
+  exemple:
+    fr: Alerter si la latence moyenne des 5 dernières minutes dépasse 500 ms, plutôt que sur une seule mesure.
+    en: Alert if the average latency of the last 5 minutes exceeds 500 ms, rather than on a single measure.
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `alerte(valeurs, seuil, fenetre)`** : renvoie `False` s’il y a moins de `fenetre` valeurs ; sinon `True` si la **moyenne** des `fenetre` dernières valeurs est **strictement supérieure** à `seuil`.'
+  en: 'Challenge. **Write `alerte(valeurs, seuil, fenetre)`**: return `False` if there are fewer than `fenetre` values; otherwise `True` if the **average** of the last `fenetre` values is **strictly greater than** `seuil`.'
+  depart: |
+    # écris ta fonction alerte ici
+  tests: |-
+    assert alerte([100, 100, 900, 100, 100], 400, 3) is False
+    assert alerte([100, 100, 900, 900, 900], 400, 3) is True
+    assert alerte([500], 400, 3) is False
+    assert alerte([400, 400, 400], 400, 3) is False
+    assert alerte([], 1, 1) is False
+  solutionCode: |
+    def alerte(valeurs, seuil, fenetre):
+        if len(valeurs) < fenetre:
+            return False
+        recents = valeurs[-fenetre:]
+        return sum(recents) / fenetre > seuil
+  indice:
+    fr: Prends `valeurs[-fenetre:]`, fais la moyenne avec `sum(...) / fenetre`, compare avec `>`.
+    en: Take `valeurs[-fenetre:]`, average with `sum(...) / fenetre`, compare with `>`.
+  explication:
+    fr: 'La fenêtre lisse les pics isolés : une seule mesure à 900 ne déclenche rien, trois de suite oui.'
+    en: 'The window smooths isolated spikes: a single measure at 900 triggers nothing, three in a row do.'
+- id: c12
+  type: piege
+  fr: 'Surveiller ne suffit pas si personne n’agit. Trop d’alertes créent de la **fatigue d’alerte** : on finit par les ignorer, y compris la vraie. Il faut peu d’alertes, claires, avec un responsable et une procédure. Et pour un assistant LLM, journaliser les prompts expose des données privées : anonymise ou limite.'
+  en: 'Monitoring is not enough if nobody acts. Too many alerts create **alert fatigue**: we end up ignoring them, including the real one. We need few alerts, clear, with an owner and a procedure. And for an LLM assistant, logging prompts exposes private data: anonymise or limit.'
+- id: c13
+  type: idee
+  fr: Pour un **assistant LLM**, on suit aussi l’**abstention**, les **citations valides** (module 14), les tokens par requête (coût) et les **refus** du garde (module 15). Une baisse de qualité apparaît souvent d’abord là.
+  en: For an **LLM assistant**, we also track **abstention**, **valid citations** (module 14), tokens per request (cost) and the guard’s **refusals** (module 15). A quality drop often shows up there first.
+  exemple:
+    fr: Si le taux d’abstention passe de 8 % à 30 % après une mise à jour, quelque chose a cassé dans la recherche.
+    en: If the abstention rate goes from 8% to 30% after an update, something broke in the search.
+- id: c14
+  type: retenir
+  fr: 'Observabilité : journaux, métriques, traces. Journaux structurés (JSON), sans secret. Percentiles plutôt que moyenne (p95, p99). Alerte sur une fenêtre, peu d’alertes, une action par alerte. Métriques propres aux LLM : abstention, citations, refus, coût.'
+  en: 'Observability: logs, metrics, traces. Structured logs (JSON), without secrets. Percentiles rather than average (p95, p99). Alert on a window, few alerts, one action per alert. LLM-specific metrics: abstention, citations, refusals, cost.'
+- id: c15
+  type: plus
+  fr: Pour approfondir, consulte [le chapitre sur la surveillance du livre SRE de Google](https://sre.google/sre-book/monitoring-distributed-systems/) ; ce livre demande une connexion.
+  en: For further study, see [the monitoring chapter of Google’s SRE book](https://sre.google/sre-book/monitoring-distributed-systems/); this book needs a connection.

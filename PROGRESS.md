@@ -135,3 +135,8 @@
 - **Fait** : 14.1 à 14.5 et boss « Ton assistant de cours » ; 15.1 à 15.5 et boss « Ton agent local » ; deux quartiers ; 698 tests (le test Python réel passe à 300 s de délai).
 - **Non vérifié** : appareils réels ; relecture croisée par Codex ; durées mesurées.
 
+### Modules 16 à 20 (2026-11-02, 0.3.26)
+
+- **Fait** : 16 Processus stochastiques, 17 Recherche quantitative, 18 Performance, 19 Sécurité, 20 Évaluer et produire (6 niveaux chacun, boss compris) ; cinq quartiers ; 763 tests.
+- **Non vérifié** : appareils réels ; durées mesurées ; relecture croisée par Codex ; boss final du cursus (agent quant) pas encore écrit.
+

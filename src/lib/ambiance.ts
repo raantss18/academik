@@ -23,6 +23,11 @@ export const AMBIANCES: Ambiance[] = [
   { nom: 'Le Garage des Modèles', nuit: { haut: '#0f1a1d', bas: '#26434a', lueur: '#d6f2a0' }, jour: { haut: '#e6f1f1', bas: '#bcd5d8', lueur: '#1f5a66' } },
   { nom: 'La Bibliothèque des Passages', nuit: { haut: '#150f0a', bas: '#3b2a1e', lueur: '#ffd9a0' }, jour: { haut: '#f6ecdc', bas: '#e3cfae', lueur: '#7a4a1a' } },
   { nom: 'Le Poste de Contrôle', nuit: { haut: '#081a18', bas: '#133d38', lueur: '#9affd9' }, jour: { haut: '#e2f4f0', bas: '#b3dcd3', lueur: '#0b5f55' } },
+  { nom: 'Le Port du Hasard', nuit: { haut: '#0a1230', bas: '#1b2f66', lueur: '#a8c4ff' }, jour: { haut: '#e6edfb', bas: '#bccdf0', lueur: '#26407f' } },
+  { nom: 'Le Marché', nuit: { haut: '#1c0f0a', bas: '#4a2418', lueur: '#ffb38a' }, jour: { haut: '#fbeee6', bas: '#f1cdb8', lueur: '#8f2e0e' } },
+  { nom: 'L’Atelier des Machines', nuit: { haut: '#0e1418', bas: '#2a3b44', lueur: '#ffd18a' }, jour: { haut: '#eaf0f2', bas: '#c3d1d7', lueur: '#3d5560' } },
+  { nom: 'La Citadelle', nuit: { haut: '#0b0f12', bas: '#232f36', lueur: '#ffcf8a' }, jour: { haut: '#e9eef1', bas: '#bcc8ce', lueur: '#2c3e47' } },
+  { nom: 'Le Port de Livraison', nuit: { haut: '#0a1510', bas: '#1c3a26', lueur: '#b8ffcc' }, jour: { haut: '#e6f5ea', bas: '#bfe0c8', lueur: '#1f6a35' } },
 ];
 
 export const ambianceDe = (module: number): Ambiance => AMBIANCES[((module % AMBIANCES.length) + AMBIANCES.length) % AMBIANCES.length];

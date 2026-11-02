@@ -1,0 +1,378 @@
+# Niveau 16.5 — Processus stochastiques 5 : mouvement brownien, EDS et Euler-Maruyama. Original academik ; notions vérifiées dans le cours 18.642 du MIT (lien) et Shreve (lien).
+id: '16.5'
+module: 16
+duree_min: 19
+titre:
+  fr: Mouvement brownien et EDS
+  en: Brownian motion and SDEs
+ia:
+  fr: Kintana simule le hasard continu d’un prix, un pas après l’autre.
+  en: Kintana simulates the continuous randomness of a price, one step at a time.
+sources:
+- titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
+  url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: Shreve — Stochastic Calculus for Finance II (lien)
+  url: https://link.springer.com/book/10.1007/978-1-4419-9039-4
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: On découpe une année en $n$ intervalles, et le prix reçoit un choc aléatoire à chacun. Comment la taille du choc doit-elle évoluer quand $n$ augmente, pour que la dispersion annuelle reste raisonnable ?
+  en: If a year is cut into $n$ intervals and at each the price receives a random shock, how should the size of the shock change as $n$ increases, for the annual dispersion to remain reasonable?
+  choix:
+  - fr: Elle doit diminuer comme $\sqrt{1/n}$
+    en: It must decrease like $\sqrt{1/n}$
+    juste: true
+  - fr: Elle doit rester constante
+    en: It must stay constant
+  - fr: Elle doit augmenter avec $n$
+    en: It must increase with $n$
+  indice:
+    fr: Les variances s’additionnent (niveau 16.2). Si la variance totale doit rester fixe, que vaut la variance de chaque choc ?
+    en: Variances add (level 16.2). If the total variance must stay fixed, what is each shock’s variance?
+  explication:
+    fr: 'Variance totale fixe $\sigma^2T$ répartie en $n$ chocs : chacun a une variance $\sigma^2T/n$, donc un écart type $\sigma\sqrt{T/n}$. C’est la base du **mouvement brownien**.'
+    en: 'Fixed total variance $\sigma^2T$ split into $n$ shocks: each has variance $\sigma^2T/n$, hence a standard deviation $\sigma\sqrt{T/n}$. This is the basis of **Brownian motion**.'
+- id: c2
+  type: idee
+  fr: Le **mouvement brownien** $W_t$ est le modèle continu du hasard. Il part de $W_0=0$ et ses accroissements sont indépendants. L’accroissement $W_{t+s}-W_t$ suit une loi normale de moyenne $0$ et de variance $s$.
+  en: '**Brownian motion** $W_t$ is the continuous model of chance. It starts from $W_0=0$; its increments are independent; and $W_{t+s}-W_t$ follows a normal law with expectation $0$ and variance $s$. Its paths are continuous but very irregular.'
+  exemple:
+    fr: Sur un intervalle de durée $0{,}01$, un accroissement a un écart type de $\sqrt{0{,}01}=0{,}1$.
+    en: Over an interval of length $0.01$, an increment has a standard deviation of $\sqrt{0.01}=0.1$.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Durée $s$
+      en: Duration $s$
+    - fr: Écart type $\sqrt s$
+      en: Standard deviation $\sqrt s$
+    cellules:
+    - - 0,01
+      - 0,1
+    - - '1'
+      - '1'
+    - - fr: '100'
+        en: '100'
+        ton: ok
+      - fr: '10'
+        en: '10'
+        ton: ok
+    legende:
+      fr: L’écart type croît comme la racine de la durée.
+      en: The standard deviation grows like the square root of the duration.
+- id: c3
+  type: idee
+  fr: 'Pour simuler, il faut des tirages **normaux**. La méthode de **Box-Muller** transforme deux nombres uniformes $u_1,u_2$ en un tirage normal : $\sqrt{-2\ln u_1}\cos(2\pi u_2)$. On l’utilise ici avec le générateur du niveau 16.2.'
+  en: 'To simulate, we need **normal** draws. The **Box-Muller** method turns two uniform numbers $u_1,u_2$ into a normal draw: $\sqrt{-2\ln u_1}\cos(2\pi u_2)$. We use it here with the generator of level 16.2.'
+  exemple:
+    fr: 'Pour $u_1=e^{-1/2}\approx0{,}607$ et $u_2=0$ : $\sqrt{-2\ln u_1}=1$ et $\cos0=1$, d’où le tirage $1$.'
+    en: 'For $u_1=e^{-1/2}\approx0.607$ and $u_2=0$: $\sqrt{-2\ln u_1}=1$ and $\cos0=1$, hence the draw $1$.'
+- id: c3b
+  type: idee
+  fr: 'Le brownien a une propriété étonnante : ses trajectoires sont continues mais **nulle part dérivables**. Plus on zoome, plus elles restent irrégulières. C’est pour cela qu’on ne peut pas écrire $dW/dt$, et qu’on écrit $dW$ avec des règles à part.'
+  en: 'Brownian motion has an astonishing property: its paths are continuous but **nowhere differentiable**. The more we zoom, the more irregular they remain. This is why we cannot write $dW/dt$, and we write $dW$ with separate rules.'
+  exemple:
+    fr: Sur une durée $dt$, le brownien bouge de l’ordre de $\sqrt{dt}$, bien plus que $dt$ quand $dt$ est petit.
+    en: Over a duration $dt$, Brownian motion moves by about $\sqrt{dt}$, much more than $dt$ when $dt$ is small.
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `gauss(u)`** : appelle `u()` deux fois (`u1` puis `u2`) et renvoie `math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * u2)`.'
+  en: 'Your turn. **Write `gauss(u)`**: call `u()` twice (`u1` then `u2`) and return `math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * u2)`.'
+  depart: |
+    import math
+
+    # écris ta fonction gauss ici
+  tests: |-
+    vals = iter([math.exp(-0.5), 0.0])
+    assert abs(gauss(lambda: next(vals)) - 1.0) < 1e-12
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+    u = generateur(5)
+    xs = [gauss(u) for _ in range(4000)]
+    m = sum(xs) / len(xs)
+    v = sum((x - m) ** 2 for x in xs) / len(xs)
+    assert abs(m) < 0.06 and 0.9 < v < 1.1
+  solutionCode: |
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+  indice:
+    fr: 'Écris `u1 = u()` puis `u2 = u()` : deux appels, dans cet ordre, puis la formule.'
+    en: 'Write `u1 = u()` then `u2 = u()`: two calls, in this order, then the formula.'
+  explication:
+    fr: 'Le résultat suit (à très peu près) une loi normale centrée réduite : moyenne $0$, variance $1$.'
+    en: 'The result follows (very nearly) a standard normal law: mean $0$, variance $1$.'
+- id: c5
+  type: exemple
+  titre:
+    fr: Un accroissement brownien
+    en: A Brownian increment
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      dt = 0.01
+      z = 1.0
+    fr: Un pas de durée $0{,}01$ et un tirage normal de $1$.
+    en: A step of duration $0.01$ and a normal draw of $1$.
+  - code: dW = math.sqrt(dt) * z
+    fr: L’accroissement brownien est `sqrt(dt) * z`.
+    en: The Brownian increment is `sqrt(dt) * z`.
+  - code: print(round(dW, 2))
+    fr: On affiche `0.1`.
+    en: We display `0.1`.
+  verif: |-
+    import math
+    dt = 0.01
+    z = 1.0
+    dW = math.sqrt(dt) * z
+    print(round(dW, 2))
+  sortie: '0.1'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `brownien(T, n, u)`** : `dt = T / n`, `W = [0.0]`, puis `n` fois ajoute `W[-1] + math.sqrt(dt) * gauss(u)`. Renvoie `W` (`n + 1` valeurs). `gauss` est fournie.'
+  en: '**Write `brownien(T, n, u)`**: `dt = T / n`, `W = [0.0]`, then `n` times append `W[-1] + math.sqrt(dt) * gauss(u)`. Return `W` (`n + 1` values). `gauss` is provided.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    # écris ta fonction brownien ici
+  tests: |-
+    W = brownien(1.0, 100, generateur(3))
+    assert len(W) == 101 and W[0] == 0.0
+    fin = [brownien(1.0, 50, generateur(g))[-1] for g in range(1, 301)]
+    m = sum(fin) / len(fin)
+    v = sum((x - m) ** 2 for x in fin) / len(fin)
+    assert abs(m) < 0.25 and 0.7 < v < 1.4
+    assert brownien(2.0, 10, generateur(9)) == brownien(2.0, 10, generateur(9))
+  solutionCode: |
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def brownien(T, n, u):
+        dt = T / n
+        W = [0.0]
+        for _ in range(n):
+            W.append(W[-1] + math.sqrt(dt) * gauss(u))
+        return W
+  indice:
+    fr: Même structure que la marche du niveau 16.2, mais le pas est `math.sqrt(dt) * gauss(u)`.
+    en: Same structure as the walk of level 16.2, but the step is `math.sqrt(dt) * gauss(u)`.
+  explication:
+    fr: 'La variance de `W[-1]` vaut `T`, quel que soit `n` : le raffinement du pas ne change pas la dispersion.'
+    en: 'The variance of `W[-1]` is `T`, whatever `n`: refining the step does not change the dispersion.'
+- id: c7
+  type: idee
+  fr: 'Un prix ne se modélise pas par un brownien seul, qui peut devenir négatif. On utilise le **mouvement brownien géométrique** : $dS=\mu S\,dt+\sigma S\,dW$. La variation relative suit une tendance $\mu$ et un bruit d’intensité $\sigma$ (la **volatilité**). Le prix reste positif.'
+  en: 'A price is not modelled by a plain Brownian motion, which can become negative. We use **geometric Brownian motion**: $dS=\mu S\,dt+\sigma S\,dW$. The relative change follows a trend $\mu$ and noise of intensity $\sigma$ (the **volatility**). The price stays positive.'
+  exemple:
+    fr: Avec $\mu=5\,\%$ par an et $\sigma=20\,\%$, un prix de 100 monte en moyenne de 5 € par an, avec une dispersion de 20 € environ.
+    en: With $\mu=5\%$ per year and $\sigma=20\%$, a price of 100 rises on average by €5 per year, with a dispersion of about €20.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Une EDS de prix
+        en: A price SDE
+      noeuds:
+      - fr: tendance $\mu S\,dt$
+        en: trend $\mu S\,dt$
+      - fr: + bruit $\sigma S\,dW$
+        en: + noise $\sigma S\,dW$
+      - fr: nouveau prix
+        en: new price
+        ton: ok
+    legende:
+      fr: 'Euler-Maruyama : le pas d’Euler plus un choc brownien.'
+      en: 'Euler-Maruyama: the Euler step plus a Brownian shock.'
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `prix_final(S0, mu, sigma, T, n, u)`** : méthode d’**Euler-Maruyama**. Avec `dt = T / n` et `S = S0`, répète `n` fois `S = S + mu * S * dt + sigma * S * math.sqrt(dt) * gauss(u)`. Renvoie `S`. `gauss` est fournie.'
+  en: '**Write `prix_final(S0, mu, sigma, T, n, u)`**: the **Euler-Maruyama** method. With `dt = T / n` and `S = S0`, repeat `n` times `S = S + mu * S * dt + sigma * S * math.sqrt(dt) * gauss(u)`. Return `S`. `gauss` is provided.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    # écris ta fonction prix_final ici
+  tests: |-
+    assert prix_final(100.0, 0.05, 0.0, 1.0, 100, generateur(1)) > 104.9
+    assert abs(prix_final(100.0, 0.05, 0.0, 1.0, 1000, generateur(1)) - 100 * math.exp(0.05)) < 0.3
+    assert prix_final(100.0, 0.0, 0.2, 1.0, 50, generateur(2)) == prix_final(100.0, 0.0, 0.2, 1.0, 50, generateur(2))
+    assert prix_final(100.0, 0.0, 0.2, 0.0, 1, generateur(2)) == 100.0
+  solutionCode: |
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def prix_final(S0, mu, sigma, T, n, u):
+        dt = T / n
+        S = S0
+        for _ in range(n):
+            S = S + mu * S * dt + sigma * S * math.sqrt(dt) * gauss(u)
+        return S
+  indice:
+    fr: 'Une boucle de `n` tours qui met `S` à jour : tendance déterministe plus choc `sigma * S * math.sqrt(dt) * gauss(u)`.'
+    en: 'A loop of `n` turns updating `S`: deterministic trend plus shock `sigma * S * math.sqrt(dt) * gauss(u)`.'
+  explication:
+    fr: 'Avec `sigma = 0`, il n’y a plus de hasard : on retrouve exactement la méthode d’Euler du niveau 16.1.'
+    en: 'With `sigma = 0`, there is no more randomness: we recover exactly Euler’s method from level 16.1.'
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Pour un brownien, la variance de $W_4$ est égale à la durée $4$. Quel est l’écart type de $W_4$ ?
+  en: For a Brownian motion, the variance of $W_4$ equals the duration $4$. What is the standard deviation of $W_4$?
+  reponses:
+  - '2'
+  - '2.0'
+  verif: print(4 ** 0.5)
+  indice:
+    fr: Écart type = racine carrée de la variance.
+    en: Standard deviation = square root of the variance.
+  explication:
+    fr: $\sqrt4=2$.
+    en: $\sqrt4=2$.
+- id: c10
+  type: idee
+  fr: 'Le **calcul d’Itô** corrige le calcul ordinaire, car $(dW)^2=dt$ n’est pas négligeable. Résultat : la solution exacte du mouvement brownien géométrique est $S_T=S_0\exp\!\big((\mu-\tfrac12\sigma^2)T+\sigma W_T\big)$. Le terme $-\tfrac12\sigma^2$ est la **correction d’Itô**.'
+  en: '**Itô calculus** corrects ordinary calculus, because $(dW)^2=dt$ is not negligible. Result: the exact solution of geometric Brownian motion is $S_T=S_0\exp\!\big((\mu-\tfrac12\sigma^2)T+\sigma W_T\big)$. The term $-\tfrac12\sigma^2$ is the **Itô correction**.'
+  exemple:
+    fr: 'Malgré cette correction, l’espérance reste $E[S_T]=S_0e^{\mu T}$ : la volatilité n’abaisse pas la moyenne, mais la médiane.'
+    en: 'Despite this correction, the expectation stays $E[S_T]=S_0e^{\mu T}$: volatility does not lower the mean, but the median.'
+- id: c11
+  type: piege
+  fr: 'Le rendement moyen « typique » n’est pas $\mu$ : c’est $\mu-\tfrac12\sigma^2$. Avec une forte volatilité, la moyenne arithmétique des prix monte alors que la trajectoire **typique** peut baisser. Un investisseur voit la trajectoire, pas la moyenne sur des univers parallèles.'
+  en: 'The “typical” average return is not $\mu$: it is $\mu-\tfrac12\sigma^2$. With high volatility, the arithmetic mean of prices rises while the **typical** path may fall. An investor sees the path, not the average over parallel universes.'
+- id: c12
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `moyenne_terminale(S0, mu, sigma, T, n, essais, graine)`** : crée `u = generateur(graine)`, simule `essais` prix finaux avec `prix_final`, et renvoie leur moyenne. Elle doit être proche de $S_0e^{\mu T}$. `prix_final` est fournie.'
+  en: 'Challenge. **Write `moyenne_terminale(S0, mu, sigma, T, n, essais, graine)`**: create `u = generateur(graine)`, simulate `essais` final prices with `prix_final`, and return their mean. It should be close to $S_0e^{\mu T}$. `prix_final` is provided.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def prix_final(S0, mu, sigma, T, n, u):
+        dt = T / n
+        S = S0
+        for _ in range(n):
+            S = S + mu * S * dt + sigma * S * math.sqrt(dt) * gauss(u)
+        return S
+
+    # écris ta fonction moyenne_terminale ici
+  tests: |-
+    m = moyenne_terminale(100.0, 0.05, 0.2, 1.0, 50, 4000, 1)
+    assert abs(m - 100 * math.exp(0.05)) < 1.6
+    m0 = moyenne_terminale(100.0, 0.0, 0.2, 1.0, 50, 4000, 2)
+    assert abs(m0 - 100) < 1.6
+    assert moyenne_terminale(100.0, 0.05, 0.2, 1.0, 10, 50, 7) == moyenne_terminale(100.0, 0.05, 0.2, 1.0, 10, 50, 7)
+  solutionCode: |
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    import math
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def prix_final(S0, mu, sigma, T, n, u):
+        dt = T / n
+        S = S0
+        for _ in range(n):
+            S = S + mu * S * dt + sigma * S * math.sqrt(dt) * gauss(u)
+        return S
+
+    def moyenne_terminale(S0, mu, sigma, T, n, essais, graine):
+        u = generateur(graine)
+        return sum(prix_final(S0, mu, sigma, T, n, u) for _ in range(essais)) / essais
+  indice:
+    fr: Un seul générateur `u` pour tous les essais, puis `sum(prix_final(...) for _ in range(essais)) / essais`.
+    en: A single generator `u` for all trials, then `sum(prix_final(...) for _ in range(essais)) / essais`.
+  explication:
+    fr: 'Tu estimes une espérance par moyenne de simulations : c’est la méthode de Monte-Carlo, utilisée dans le boss.'
+    en: 'You estimate an expectation by averaging simulations: this is the Monte Carlo method, used in the boss.'
+- id: c13
+  type: retenir
+  fr: 'Brownien : accroissements indépendants normaux, variance égale à la durée. Box-Muller pour simuler. Prix : $dS=\mu S\,dt+\sigma S\,dW$, Euler-Maruyama. Itô : correction $-\tfrac12\sigma^2$. $E[S_T]=S_0e^{\mu T}$.'
+  en: 'Brownian: independent normal increments, variance equal to the duration. Box-Muller to simulate. Price: $dS=\mu S\,dt+\sigma S\,dW$, Euler-Maruyama. Itô: correction $-\tfrac12\sigma^2$. $E[S_T]=S_0e^{\mu T}$.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [Stochastic Calculus for Finance II](https://link.springer.com/book/10.1007/978-1-4419-9039-4) ; ce livre demande une connexion.
+  en: For further study, see [Stochastic Calculus for Finance II](https://link.springer.com/book/10.1007/978-1-4419-9039-4); this book needs a connection.

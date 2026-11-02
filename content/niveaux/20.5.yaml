@@ -1,0 +1,305 @@
+# Niveau 20.5 — Évaluer et produire 5 : déploiement, portes de qualité, équité, vie privée, fiche du modèle. Original academik ; notions vérifiées dans Mitchell et al. 2019 (arXiv 1810.03993), NIST AI RMF (cité) et le livre SRE de Google (lien).
+id: '20.5'
+module: 20
+duree_min: 20
+titre:
+  fr: Livrer avec éthique
+  en: Shipping ethically
+ia:
+  fr: Kintana met en service une version par étapes, mesure son équité et dit honnêtement ses limites.
+  en: Kintana puts a version into service in stages, measures its fairness and honestly states its limits.
+sources:
+- titre: Mitchell et al. — Model Cards for Model Reporting (2019)
+  url: https://arxiv.org/abs/1810.03993
+  licence: Article en accès libre ; idée citée
+- titre: NIST — AI Risk Management Framework (AI RMF 1.0)
+  url: https://www.nist.gov/itl/ai-risk-management-framework
+  licence: Domaine public (publication fédérale américaine) ; cadre cité
+- titre: Google SRE Book — Release Engineering
+  url: https://sre.google/sre-book/release-engineering/
+  licence: CC BY-NC-ND (lecture en ligne) ; lien seulement
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Tu as une nouvelle version de ton assistant, qui paraît meilleure en test. Comment la mettre en service en limitant le risque si elle se révèle moins bonne en conditions réelles ?
+  en: You have a new version of your assistant, which looks better in testing. How do you put it into service while limiting the risk if it turns out worse in real conditions?
+  choix:
+  - fr: 'Par étapes : d’abord à une petite part des utilisateurs, en surveillant, avec retour arrière possible'
+    en: 'In stages: first to a small share of users, while monitoring, with rollback possible'
+    juste: true
+  - fr: Pour tout le monde d’un coup, le vendredi soir
+    en: For everyone at once, on a Friday night
+  - fr: Ne jamais mettre à jour
+    en: Never update
+  indice:
+    fr: Un test ne couvre jamais toute la réalité. Comment limiter le nombre de personnes touchées par une erreur ?
+    en: A test never covers all of reality. How do we limit the number of people affected by an error?
+  explication:
+    fr: Un **déploiement progressif** (canary) expose d’abord peu d’utilisateurs. Si les mesures restent bonnes, on étend ; sinon on **revient en arrière**.
+    en: A **progressive rollout** (canary) first exposes few users. If the measures stay good, we extend; otherwise we **roll back**.
+- id: c2
+  type: idee
+  fr: 'L’**intégration continue** lance les tests à chaque modification, le **déploiement continu** met en service ce qui passe les contrôles. Entre les deux, des **portes de qualité** décident si la version avance. academik : la CI doit être verte avant toute fusion.'
+  en: '**Continuous integration** runs the tests at each change, **continuous deployment** puts into service what passes the checks. Between the two, **quality gates** decide whether the version advances. academik: CI must be green before any merge.'
+  exemple:
+    fr: 'Pour academik : tests, vérification de types, budget de premier chargement et audit des licences sont des portes.'
+    en: 'For academik: tests, type checks, first-load budget and licence audit are gates.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: La chaîne de livraison
+        en: The delivery chain
+      noeuds:
+      - fr: modification
+        en: change
+      - fr: tests et portes de qualité
+        en: tests and quality gates
+      - fr: déploiement progressif
+        en: progressive rollout
+      - fr: surveillance et retour arrière
+        en: monitoring and rollback
+        ton: ok
+    legende:
+      fr: Chaque étape peut arrêter la suite.
+      en: Each stage can stop what follows.
+- id: c3
+  type: idee
+  fr: 'Une **porte de qualité** compare la version candidate à la référence : erreurs, latence p95, exactitude. Elle tolère le bruit mais refuse une vraie dégradation. Le résultat est un **feu vert** ou rouge, avec les **raisons**.'
+  en: 'A **quality gate** compares the candidate version with the reference: errors, p95 latency, accuracy. It tolerates noise but refuses a real degradation. The result is a **green** or red light, with the **reasons**.'
+  exemple:
+    fr: 'Tolérance : +0,5 point d’erreurs, +10 % de latence, −1 point d’exactitude.'
+    en: 'Tolerance: +0.5 point of errors, +10% latency, −1 point of accuracy.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Un déploiement par paliers
+    en: A staged rollout
+  lang: python
+  etapes:
+  - code: |-
+      paliers = [1, 5, 25, 100]
+      erreurs = [0.2, 0.3, 0.4, 0.3]
+    fr: Quatre étapes (en % du trafic) et le taux d’erreurs (en %) mesuré à chacune.
+    en: Four stages (in % of traffic) and the error rate (in %) measured at each.
+  - code: |-
+      limite = 0.5
+      fin = None
+      for p, e in zip(paliers, erreurs):
+          if e > limite:
+              fin = p
+              break
+    fr: On s’arrête au premier palier qui dépasse la limite.
+    en: We stop at the first stage that exceeds the limit.
+  - code: print(fin)
+    fr: 'On affiche `None` : aucun palier ne dépasse 0,5, le déploiement va jusqu’à 100 %.'
+    en: 'We display `None`: no stage exceeds 0.5, the rollout goes up to 100%.'
+  verif: |-
+    paliers = [1, 5, 25, 100]
+    erreurs = [0.2, 0.3, 0.4, 0.3]
+    limite = 0.5
+    fin = None
+    for p, e in zip(paliers, erreurs):
+        if e > limite:
+            fin = p
+            break
+    print(fin)
+  sortie: None
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `feu_vert(candidat, reference, tolerances)`** : les trois dictionnaires ont les clés `"erreurs"`, `"p95_ms"`, `"exactitude"` (les tolérances : `"erreurs"`, `"latence"` en proportion, `"exactitude"`). Ajoute `"erreurs"` à la liste `raisons` si `candidat["erreurs"] > reference["erreurs"] + tolerances["erreurs"]` ; `"latence"` si `candidat["p95_ms"] > reference["p95_ms"] * (1 + tolerances["latence"])` ; `"exactitude"` si `candidat["exactitude"] < reference["exactitude"] - tolerances["exactitude"]`. Renvoie `(len(raisons) == 0, raisons)`.'
+  en: 'Your turn. **Write `feu_vert(candidat, reference, tolerances)`**: the three dictionaries have the keys `"erreurs"`, `"p95_ms"`, `"exactitude"` (the tolerances: `"erreurs"`, `"latence"` as a proportion, `"exactitude"`). Add `"erreurs"` to the `raisons` list if `candidat["erreurs"] > reference["erreurs"] + tolerances["erreurs"]`; `"latence"` if `candidat["p95_ms"] > reference["p95_ms"] * (1 + tolerances["latence"])`; `"exactitude"` if `candidat["exactitude"] < reference["exactitude"] - tolerances["exactitude"]`. Return `(len(raisons) == 0, raisons)`.'
+  depart: |
+    # écris ta fonction feu_vert ici
+  tests: |-
+    ref = {"erreurs": 1.0, "p95_ms": 800, "exactitude": 0.90}
+    tol = {"erreurs": 0.5, "latence": 0.10, "exactitude": 0.01}
+    assert feu_vert({"erreurs": 1.2, "p95_ms": 850, "exactitude": 0.905}, ref, tol) == (True, [])
+    assert feu_vert({"erreurs": 2.0, "p95_ms": 850, "exactitude": 0.905}, ref, tol) == (False, ["erreurs"])
+    assert feu_vert({"erreurs": 1.0, "p95_ms": 1000, "exactitude": 0.85}, ref, tol) == (False, ["latence", "exactitude"])
+  solutionCode: |
+    def feu_vert(candidat, reference, tolerances):
+        raisons = []
+        if candidat["erreurs"] > reference["erreurs"] + tolerances["erreurs"]:
+            raisons.append("erreurs")
+        if candidat["p95_ms"] > reference["p95_ms"] * (1 + tolerances["latence"]):
+            raisons.append("latence")
+        if candidat["exactitude"] < reference["exactitude"] - tolerances["exactitude"]:
+            raisons.append("exactitude")
+        return len(raisons) == 0, raisons
+  indice:
+    fr: Trois `if` indépendants qui remplissent la liste `raisons`, puis le couple final.
+    en: Three independent `if`s filling the `raisons` list, then the final pair.
+  explication:
+    fr: Garder toutes les raisons, pas seulement la première, aide à corriger plusieurs problèmes d’un coup.
+    en: Keeping all the reasons, not just the first, helps fix several problems at once.
+- id: c6
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Une version de référence a un p95 de 800 ms. La tolérance de latence est de 10 %. Quelle valeur de p95 (en ms) ne doit pas être dépassée ?
+  en: A reference version has a p95 of 800 ms. The latency tolerance is 10%. What p95 value (in ms) must not be exceeded?
+  reponses:
+  - '880'
+  verif: print(int(800 * 1.10))
+  indice:
+    fr: Multiplie 800 par $1+0{,}10$.
+    en: Multiply 800 by $1+0.10$.
+  explication:
+    fr: $800\times1{,}1=880$ ms.
+    en: $800\times1.1=880$ ms.
+- id: c7
+  type: idee
+  fr: 'Un système qui décide peut être **injuste** : ses taux de réussite, de refus ou d’erreur diffèrent selon les groupes de personnes (langue, genre, région). Un score global élevé peut cacher qu’un groupe est mal servi. On **mesure par groupe** et on compare les écarts.'
+  en: 'A system that decides can be **unfair**: its success, refusal or error rates differ across groups of people (language, gender, region). A high overall score can hide that a group is poorly served. We **measure per group** and compare the gaps.'
+  exemple:
+    fr: Un assistant qui répond correctement à 95 % des questions en français mais 60 % en malgache sert mal une partie de ses utilisateurs.
+    en: An assistant that answers 95% of questions in French but 60% in Malagasy poorly serves part of its users.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Groupe
+      en: Group
+    - fr: Taux de réussite
+      en: Success rate
+    cellules:
+    - - fr: français
+        en: French
+      - fr: 95 %
+        en: 95%
+        ton: ok
+    - - fr: anglais
+        en: English
+      - fr: 93 %
+        en: 93%
+        ton: ok
+    - - fr: malgache
+        en: Malagasy
+      - fr: 60 %
+        en: 60%
+        ton: bad
+    legende:
+      fr: Un écart important entre groupes est un signal à examiner.
+      en: A large gap between groups is a signal to examine.
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `ecart_parite(taux)`** : `taux` associe chaque groupe à son taux de réussite ; renvoie la différence entre le plus grand et le plus petit taux. Puis **`ratio_impact(taux)`** : le plus petit taux divisé par le plus grand.'
+  en: '**Write `ecart_parite(taux)`**: `taux` maps each group to its success rate; return the difference between the largest and the smallest rate. Then **`ratio_impact(taux)`**: the smallest rate divided by the largest.'
+  depart: |
+    # écris tes fonctions ecart_parite et ratio_impact ici
+  tests: |-
+    t = {"fr": 0.95, "en": 0.93, "mg": 0.60}
+    assert abs(ecart_parite(t) - 0.35) < 1e-12
+    assert abs(ratio_impact(t) - 0.60 / 0.95) < 1e-12
+    assert ecart_parite({"a": 0.8, "b": 0.8}) == 0.0
+    assert ratio_impact({"a": 0.8, "b": 0.8}) == 1.0
+  solutionCode: |
+    def ecart_parite(taux):
+        return max(taux.values()) - min(taux.values())
+
+    def ratio_impact(taux):
+        return min(taux.values()) / max(taux.values())
+  indice:
+    fr: '`max(taux.values())` et `min(taux.values())` suffisent pour les deux fonctions.'
+    en: '`max(taux.values())` and `min(taux.values())` are enough for both functions.'
+  explication:
+    fr: 'La « règle des quatre cinquièmes » regarde si le ratio d’impact est au moins 0,8 : ici 0,63, un signal d’alerte.'
+    en: 'The “four-fifths rule” checks whether the impact ratio is at least 0.8: here 0.63, a warning sign.'
+- id: c9
+  type: idee
+  fr: 'La **vie privée** se protège dès la conception : collecter le minimum, **pseudonymiser** (une empreinte salée remplace l’identifiant), limiter la durée de conservation, informer. En Europe, le RGPD encadre ces pratiques.'
+  en: '**Privacy** is protected from the design stage: collect the minimum, **pseudonymise** (a salted fingerprint replaces the identifier), limit retention time, inform. In Europe, the GDPR frames these practices.'
+  exemple:
+    fr: Les journaux de ton assistant peuvent garder `a3f9…` à la place du nom de l’étudiant.
+    en: Your assistant’s logs can keep `a3f9…` in place of the student’s name.
+- id: c10
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `pseudonymiser(identifiant, sel)`** : le SHA-256 en hexadécimal de `sel + identifiant` (encodé en UTF-8), limité aux 16 premiers caractères.'
+  en: '**Write `pseudonymiser(identifiant, sel)`**: the SHA-256 in hexadecimal of `sel + identifiant` (encoded in UTF-8), limited to the first 16 characters.'
+  depart: |
+    import hashlib
+
+    # écris ta fonction pseudonymiser ici
+  tests: |-
+    a = pseudonymiser("alice", "s3l")
+    assert len(a) == 16
+    assert a == pseudonymiser("alice", "s3l")
+    assert a != pseudonymiser("alice", "autre")
+    assert a != pseudonymiser("bob", "s3l")
+    assert a == hashlib.sha256(b"s3lalice").hexdigest()[:16]
+  solutionCode: |
+    import hashlib
+
+    def pseudonymiser(identifiant, sel):
+        return hashlib.sha256((sel + identifiant).encode("utf-8")).hexdigest()[:16]
+  indice:
+    fr: '`hashlib.sha256(...).hexdigest()[:16]` sur le texte `sel + identifiant` encodé.'
+    en: '`hashlib.sha256(...).hexdigest()[:16]` on the encoded text `sel + identifiant`.'
+  explication:
+    fr: 'Pseudonymiser n’est pas anonymiser : qui détient le sel et la table peut retrouver la personne.'
+    en: 'Pseudonymising is not anonymising: whoever holds the salt and the table can find the person.'
+- id: c11
+  type: idee
+  fr: 'La **fiche du modèle** dit l’essentiel honnêtement : usage prévu et à éviter, données, résultats par groupe avec incertitudes, limites connues, licence, contact. Elle accompagne chaque livraison, comme la notice d’un médicament.'
+  en: 'The **model card** says the essentials honestly: intended use and uses to avoid, data, results per group with uncertainties, known limits, licence, contact. It accompanies each release, like a medicine’s leaflet.'
+  exemple:
+    fr: 'Dans academik, `LICENSES.md` et les sources de chaque niveau jouent un rôle voisin : dire d’où vient chaque contenu.'
+    en: 'In academik, `LICENSES.md` and each level’s sources play a similar role: saying where each piece of content comes from.'
+- id: c12
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `champs_manquants(carte, requis)`** : `carte` est un dictionnaire, `requis` une liste de clés. Renvoie, dans l’ordre de `requis`, les clés **absentes** de `carte` ou dont la valeur est **vide** (`not carte.get(c)`).'
+  en: 'Challenge. **Write `champs_manquants(carte, requis)`**: `carte` is a dictionary, `requis` a list of keys. Return, in the order of `requis`, the keys **absent** from `carte` or whose value is **empty** (`not carte.get(c)`).'
+  depart: |
+    # écris ta fonction champs_manquants ici
+  tests: |-
+    req = ["usage", "donnees", "limites", "licence"]
+    carte = {"usage": "aide aux cours", "donnees": "", "limites": "peut se tromper", "contact": "x@y.z"}
+    assert champs_manquants(carte, req) == ["donnees", "licence"]
+    assert champs_manquants({}, ["a"]) == ["a"]
+    assert champs_manquants({"a": "ok"}, ["a"]) == []
+    assert champs_manquants({"a": []}, ["a"]) == ["a"]
+  solutionCode: |
+    def champs_manquants(carte, requis):
+        return [c for c in requis if not carte.get(c)]
+  indice:
+    fr: 'Une compréhension de liste : `[c for c in requis if not carte.get(c)]`.'
+    en: 'A list comprehension: `[c for c in requis if not carte.get(c)]`.'
+  explication:
+    fr: 'Ce contrôle peut bloquer une livraison dont la fiche est incomplète : la transparence devient une porte de qualité.'
+    en: 'This check can block a release whose card is incomplete: transparency becomes a quality gate.'
+- id: c13
+  type: piege
+  fr: 'L’**éthique** n’est pas une case à cocher. Une mesure d’équité est un signal, pas un certificat : plusieurs définitions de l’équité sont incompatibles. Il faut des humains pour regarder les cas, et accepter de ne pas livrer si le risque est trop grand.'
+  en: '**Ethics** is not a box to tick. A fairness measure is a signal, not a certificate: several definitions of fairness are incompatible. Humans are needed to look at the cases, and to accept not shipping if the risk is too great.'
+- id: c14
+  type: idee
+  fr: 'Principes : **utilité**, **honnêteté** sur les limites, **vie privée**, **équité** mesurée, **sécurité**, **supervision humaine** des décisions graves. Et la **responsabilité** : quelqu’un répond de ce qui est livré.'
+  en: 'Principles: **usefulness**, **honesty** about limits, **privacy**, measured **fairness**, **security**, **human oversight** of serious decisions. And **accountability**: someone answers for what is shipped.'
+  exemple:
+    fr: 'Le cadre NIST AI RMF organise ces principes en quatre fonctions : gouverner, cartographier, mesurer, gérer.'
+    en: 'The NIST AI RMF framework organises these principles in four functions: govern, map, measure, manage.'
+- id: c15
+  type: retenir
+  fr: 'Livrer : CI/CD, portes de qualité (feu vert avec raisons), déploiement progressif, retour arrière. Équité : mesurer par groupe, écart et ratio d’impact. Vie privée : minimiser, pseudonymiser. Fiche du modèle complète. L’éthique demande jugement humain.'
+  en: 'Shipping: CI/CD, quality gates (green light with reasons), progressive rollout, rollback. Fairness: measure per group, gap and impact ratio. Privacy: minimise, pseudonymise. Complete model card. Ethics requires human judgement.'
+- id: c16
+  type: plus
+  fr: Pour approfondir, consulte [l’article « Model Cards for Model Reporting »](https://arxiv.org/abs/1810.03993) ; cet article demande une connexion.
+  en: For further study, see [the “Model Cards for Model Reporting” paper](https://arxiv.org/abs/1810.03993); this paper needs a connection.

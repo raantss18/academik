@@ -1,0 +1,338 @@
+# Niveau 18.3 — Performance 3 : mémoïsation, sommes préfixes, structures de données. Original academik ; notions vérifiées dans la documentation Python (functools) et Bentley, Programming Pearls (lien).
+id: '18.3'
+module: 18
+duree_min: 21
+titre:
+  fr: Éviter le travail inutile
+  en: Avoiding useless work
+ia:
+  fr: Kintana ne refait jamais un calcul qu’elle connaît déjà.
+  en: Kintana never redoes a computation she already knows.
+sources:
+- titre: 'Python — documentation : functools.lru_cache'
+  url: https://docs.python.org/3/library/functools.html#functools.lru_cache
+  licence: PSF ; documentation citée
+- titre: Bentley — Programming Pearls (lien)
+  url: https://www.cs.bell-labs.com/cm/cs/pearls/
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Pour calculer le 40ᵉ nombre de Fibonacci avec la définition récursive $F_n=F_{n-1}+F_{n-2}$, un programme naïf recalcule les mêmes valeurs des millions de fois. Quelle astuce évite ce gaspillage ?
+  en: To compute the 40th Fibonacci number with the recursive definition $F_n=F_{n-1}+F_{n-2}$, a naive program recomputes the same values millions of times. What trick avoids this waste?
+  choix:
+  - fr: Mémoriser chaque résultat dès qu’il est calculé
+    en: Remember each result as soon as it is computed
+    juste: true
+  - fr: Calculer plus vite sur un meilleur ordinateur
+    en: Compute faster on a better computer
+  - fr: Ne jamais utiliser la récursivité
+    en: Never use recursion
+  indice:
+    fr: Si on a déjà calculé $F_{30}$, faut-il le recalculer ?
+    en: If we have already computed $F_{30}$, should we recompute it?
+  explication:
+    fr: 'C’est la **mémoïsation** : un dictionnaire garde les résultats déjà calculés, et chaque valeur n’est calculée qu’une fois.'
+    en: 'This is **memoisation**: a dictionary keeps the results already computed, and each value is computed only once.'
+- id: c2
+  type: idee
+  fr: La **mémoïsation** consiste à ranger dans un dictionnaire le résultat d’une fonction pour chaque argument déjà vu. Au deuxième appel avec le même argument, on lit la réponse au lieu de recalculer. Elle transforme le calcul exponentiel de Fibonacci en un calcul linéaire.
+  en: '**Memoisation** consists of storing in a dictionary a function’s result for each argument already seen. On the second call with the same argument, we read the answer instead of recomputing. It turns Fibonacci’s exponential computation into a linear one.'
+  exemple:
+    fr: Sans mémoire, calculer $F_{30}$ demande plus de 2 millions d’appels ; avec mémoire, 59.
+    en: Without memory, computing $F_{30}$ takes over 2 million calls; with memory, 59.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: $n$
+      en: $n$
+    - fr: Appels sans mémoire
+      en: Calls without memory
+    - fr: Appels avec mémoire
+      en: Calls with memory
+    cellules:
+    - - '10'
+      - '177'
+      - '19'
+    - - '20'
+      - 21 891
+      - '39'
+    - - fr: '30'
+        en: '30'
+        ton: ok
+      - fr: 2 692 537
+        en: 2,692,537
+        ton: bad
+      - fr: '59'
+        en: '59'
+        ton: ok
+    legende:
+      fr: Le nombre d’appels naïf croît comme $1{,}6^n$.
+      en: The naive number of calls grows like $1.6^n$.
+- id: c2x
+  type: exemple
+  titre:
+    fr: Mémoire contre recalcul
+    en: Memory versus recomputation
+  lang: python
+  etapes:
+  - code: |-
+      memo = {}
+      appels = 0
+      def fib(n):
+          global appels
+          appels += 1
+          if n < 2:
+              return n
+          if n not in memo:
+              memo[n] = fib(n - 1) + fib(n - 2)
+          return memo[n]
+    fr: Fibonacci avec un dictionnaire `memo` et un compteur d’appels.
+    en: Fibonacci with a `memo` dictionary and a call counter.
+  - code: resultat = fib(20)
+    fr: On calcule $F_{20}$.
+    en: We compute $F_{20}$.
+  - code: print(resultat, appels)
+    fr: 'On affiche `6765 39` : 39 appels seulement, contre 21 891 sans mémoire.'
+    en: 'We display `6765 39`: only 39 calls, against 21,891 without memory.'
+  verif: |-
+    memo = {}
+    appels = 0
+    def fib(n):
+        global appels
+        appels += 1
+        if n < 2:
+            return n
+        if n not in memo:
+            memo[n] = fib(n - 1) + fib(n - 2)
+        return memo[n]
+    resultat = fib(20)
+    print(resultat, appels)
+  sortie: 6765 39
+- id: c2b
+  type: idee
+  fr: La mémoïsation est un cas de **programmation dynamique**. On combine les solutions de sous-problèmes qui se **chevauchent**, chacune calculée une seule fois. Les chemins de coût minimal et les distances d’édition (niveau 3.5) suivent ce schéma.
+  en: 'Memoisation is a case of **dynamic programming**: solving a big problem by combining the solutions of **overlapping** subproblems, each computed only once. Minimum-cost paths, edit distances between texts (level 3.5) and many classic algorithms follow this scheme.'
+  exemple:
+    fr: 'Fibonacci : $F_n$ dépend de $F_{n-1}$ et $F_{n-2}$, qui partagent eux-mêmes leurs sous-problèmes.'
+    en: 'Fibonacci: $F_n$ depends on $F_{n-1}$ and $F_{n-2}$, which themselves share their subproblems.'
+- id: c2c
+  type: idee
+  fr: 'On peut aussi remplir la table **de bas en haut** (sans récursion) : pour Fibonacci, on garde seulement les deux dernières valeurs. C’est la version **itérative** : même résultat, pas de pile d’appels, mémoire constante. Elle évite aussi la limite de profondeur de récursion de Python.'
+  en: 'We can also fill the table **bottom-up** (without recursion): for Fibonacci, we keep only the last two values. This is the **iterative** version: same result, no call stack, constant memory. It also avoids Python’s recursion depth limit.'
+  exemple:
+    fr: 'Pour $F_{50}$ : 50 tours de boucle, deux variables.'
+    en: 'For $F_{50}$: 50 loop turns, two variables.'
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `fib_appels(n)`** : compte le nombre d’appels de la fonction récursive naïve. Dans `fib_appels`, définis `fib(k)` qui incrémente un compteur, renvoie `k` si `k < 2`, sinon `fib(k - 1) + fib(k - 2)` ; appelle `fib(n)` et renvoie le compteur.'
+  en: 'Your turn. **Write `fib_appels(n)`**: count the number of calls of the naive recursive function. Inside `fib_appels`, define `fib(k)` that increments a counter, returns `k` if `k < 2`, otherwise `fib(k - 1) + fib(k - 2)`; call `fib(n)` and return the counter.'
+  depart: |
+    # écris ta fonction fib_appels ici
+  tests: |-
+    assert fib_appels(0) == 1
+    assert fib_appels(1) == 1
+    assert fib_appels(2) == 3
+    assert fib_appels(10) == 177
+    assert fib_appels(20) == 21891
+  solutionCode: |
+    def fib_appels(n):
+        compte = [0]
+        def fib(k):
+            compte[0] += 1
+            if k < 2:
+                return k
+            return fib(k - 1) + fib(k - 2)
+        fib(n)
+        return compte[0]
+  indice:
+    fr: Un compteur dans une liste `compte = [0]` (modifiable depuis la fonction interne) ; `compte[0] += 1` au début de `fib`.
+    en: A counter in a list `compte = [0]` (modifiable from the inner function); `compte[0] += 1` at the start of `fib`.
+  explication:
+    fr: '177 appels pour $F_{10}$, 21 891 pour $F_{20}$ : le nombre d’appels est multiplié par plus de 100 quand $n$ double.'
+    en: '177 calls for $F_{10}$, 21,891 for $F_{20}$: the number of calls is multiplied by over 100 when $n$ doubles.'
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `fib_memo(n, memo=None)`** : si `memo` est `None`, crée un dictionnaire vide ; renvoie `n` si `n < 2` ; sinon, si `n` n’est pas dans `memo`, calcule `fib_memo(n - 1, memo) + fib_memo(n - 2, memo)` et range-le dans `memo[n]` ; renvoie `memo[n]`.'
+  en: '**Write `fib_memo(n, memo=None)`**: if `memo` is `None`, create an empty dictionary; return `n` if `n < 2`; otherwise, if `n` is not in `memo`, compute `fib_memo(n - 1, memo) + fib_memo(n - 2, memo)` and store it in `memo[n]`; return `memo[n]`.'
+  depart: |
+    # écris ta fonction fib_memo ici
+  tests: |-
+    assert fib_memo(10) == 55
+    assert fib_memo(0) == 0 and fib_memo(1) == 1
+    assert fib_memo(90) == 2880067194370816120
+    assert fib_memo(300) == 222232244629420445529739893461909967206666939096499764990979600
+  solutionCode: |
+    def fib_memo(n, memo=None):
+        if memo is None:
+            memo = {}
+        if n < 2:
+            return n
+        if n not in memo:
+            memo[n] = fib_memo(n - 1, memo) + fib_memo(n - 2, memo)
+        return memo[n]
+  indice:
+    fr: Le dictionnaire `memo` doit être passé aux appels récursifs, sinon chaque appel repartirait de zéro.
+    en: The `memo` dictionary must be passed to the recursive calls, otherwise each call would start from scratch.
+  explication:
+    fr: Tu calcules maintenant $F_{300}$ instantanément, alors que la version naïve ne finirait jamais.
+    en: You now compute $F_{300}$ instantly, whereas the naive version would never finish.
+- id: c5
+  type: idee
+  fr: 'Quand on interroge **plusieurs fois** une somme sur un intervalle d’une liste fixe, recalculer coûte $O(n)$ à chaque question. Les **sommes préfixes** les précalculent une fois : $P_k$ est la somme des $k$ premiers éléments. Ensuite la somme des éléments $i$ à $j$ vaut $P_{j+1}-P_i$, en temps constant.'
+  en: 'When we ask **several times** for a sum over an interval of a fixed list, recomputing costs $O(n)$ per question. **Prefix sums** precompute them once: $P_k$ is the sum of the first $k$ elements. Then the sum of elements $i$ to $j$ is $P_{j+1}-P_i$, in constant time.'
+  exemple:
+    fr: 'Pour `[3, 1, 4, 1, 5]` : $P=(0,3,4,8,9,14)$ ; la somme des éléments 1 à 3 est $P_4-P_1=9-3=6$ (1+4+1).'
+    en: 'For `[3, 1, 4, 1, 5]`: $P=(0,3,4,8,9,14)$; the sum of elements 1 to 3 is $P_4-P_1=9-3=6$ (1+4+1).'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Sommes préfixes
+        en: Prefix sums
+      noeuds:
+      - fr: 'une fois : $O(n)$'
+        en: 'once: $O(n)$'
+      - fr: tableau $P$
+        en: array $P$
+      - fr: 'chaque question : $O(1)$'
+        en: 'each question: $O(1)$'
+      - fr: gain si beaucoup de questions
+        en: gain if many questions
+        ton: ok
+    legende:
+      fr: On échange de la mémoire contre du temps.
+      en: We trade memory for time.
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `sommes_prefixes(v)`** : la liste `p` qui commence par `0`, puis ajoute à chaque tour `p[-1] + x` ; et **`somme_intervalle(p, i, j)`** : `p[j + 1] - p[i]`.'
+  en: '**Write `sommes_prefixes(v)`**: the list `p` that starts with `0`, then appends at each turn `p[-1] + x`; and **`somme_intervalle(p, i, j)`**: `p[j + 1] - p[i]`.'
+  depart: |
+    # écris tes fonctions sommes_prefixes et somme_intervalle ici
+  tests: |-
+    p = sommes_prefixes([3, 1, 4, 1, 5])
+    assert p == [0, 3, 4, 8, 9, 14]
+    assert somme_intervalle(p, 1, 3) == 6
+    assert somme_intervalle(p, 0, 4) == 14
+    assert somme_intervalle(p, 2, 2) == 4
+    assert sommes_prefixes([]) == [0]
+  solutionCode: |
+    def sommes_prefixes(v):
+        p = [0]
+        for x in v:
+            p.append(p[-1] + x)
+        return p
+
+    def somme_intervalle(p, i, j):
+        return p[j + 1] - p[i]
+  indice:
+    fr: Un `for x in v` qui ajoute `p[-1] + x` ; la somme d’intervalle est une soustraction de deux cases de `p`.
+    en: A `for x in v` that appends `p[-1] + x`; the interval sum is a subtraction of two cells of `p`.
+  explication:
+    fr: Les moyennes mobiles du module 10 se calculent ainsi en $O(n)$ au total, au lieu de $O(nk)$.
+    en: The moving averages of module 10 can be computed this way in $O(n)$ total, instead of $O(nk)$.
+- id: c7
+  type: idee
+  fr: Le choix de la **structure de données** est une optimisation. Chercher un élément dans une **liste** coûte $O(n)$ ; dans un **ensemble** (`set`) ou un **dictionnaire**, cela coûte $O(1)$ en moyenne grâce au hachage. Remplacer une liste par un ensemble transforme souvent un $O(n^2)$ en $O(n)$.
+  en: The choice of **data structure** is an optimisation. Searching for an element in a **list** costs $O(n)$; in a **set** or a **dictionary**, it costs $O(1)$ on average thanks to hashing. Replacing a list with a set often turns an $O(n^2)$ into an $O(n)$.
+  exemple:
+    fr: Tester `x in liste` dans une boucle de 100 000 tours coûte 10 milliards d’opérations ; avec un `set`, 100 000.
+    en: Testing `x in liste` in a loop of 100,000 turns costs 10 billion operations; with a `set`, 100,000.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Structure
+      en: Structure
+    - fr: Test d’appartenance
+      en: Membership test
+    cellules:
+    - - fr: liste
+        en: list
+      - fr: $O(n)$
+        en: $O(n)$
+        ton: bad
+    - - fr: ensemble, dictionnaire
+        en: set, dictionary
+      - fr: $O(1)$ en moyenne
+        en: $O(1)$ on average
+        ton: ok
+    legende:
+      fr: Un ensemble garde un seul exemplaire de chaque élément, sans ordre.
+      en: A set keeps a single copy of each element, without order.
+- id: c8
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `contient_doublon(liste)`** : renvoie `True` si la liste contient deux fois le même élément, en $O(n)$. Garde un `set` des éléments `vus` ; si l’élément courant y est, renvoie `True` ; sinon ajoute-le. `False` à la fin.'
+  en: 'Challenge. **Write `contient_doublon(liste)`**: return `True` if the list contains the same element twice, in $O(n)$. Keep a `set` of `vus` elements; if the current element is in it, return `True`; otherwise add it. `False` at the end.'
+  depart: |
+    # écris ta fonction contient_doublon ici
+  tests: |-
+    assert contient_doublon([1, 2, 3, 2]) is True
+    assert contient_doublon([1, 2, 3]) is False
+    assert contient_doublon([]) is False
+    assert contient_doublon(list(range(200000))) is False
+    assert contient_doublon(list(range(200000)) + [5]) is True
+  solutionCode: |
+    def contient_doublon(liste):
+        vus = set()
+        for x in liste:
+            if x in vus:
+                return True
+            vus.add(x)
+        return False
+  indice:
+    fr: Un `set` vide au départ ; teste `x in vus` avant `vus.add(x)`.
+    en: An empty `set` at the start; test `x in vus` before `vus.add(x)`.
+  explication:
+    fr: 'Sur 200 000 éléments, la version à double boucle (niveau 18.1) prendrait des heures : celle-ci, une fraction de seconde.'
+    en: 'On 200,000 elements, the double-loop version (level 18.1) would take hours: this one, a fraction of a second.'
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Combien de valeurs distinctes doit-on calculer avec mémoïsation pour obtenir $F_{10}$, en comptant $F_0$ et $F_1$ ?
+  en: How many distinct values must be computed with memoisation to obtain $F_{10}$, counting $F_0$ and $F_1$?
+  reponses:
+  - '11'
+  verif: print(len(range(0, 11)))
+  indice:
+    fr: Les valeurs nécessaires sont $F_0,F_1,\dots,F_{10}$.
+    en: The needed values are $F_0,F_1,\dots,F_{10}$.
+  explication:
+    fr: 'De $F_0$ à $F_{10}$ : 11 valeurs, chacune calculée une seule fois.'
+    en: 'From $F_0$ to $F_{10}$: 11 values, each computed only once.'
+- id: c10
+  type: piege
+  fr: 'La mémoïsation échange de la **mémoire** contre du temps, et suppose que la fonction est **pure** : même argument, même résultat, sans effet de bord. Mémoïser une fonction qui lit l’heure, un fichier ou un nombre au hasard donnerait des réponses périmées. Et un cache qui grossit sans limite peut saturer la mémoire.'
+  en: 'Memoisation trades **memory** for time, and assumes the function is **pure**: same argument, same result, no side effects. Memoising a function that reads the time, a file or a random number would give stale answers. And a cache that grows without limit can fill the memory.'
+- id: c11
+  type: idee
+  fr: 'Autres façons d’éviter le travail inutile : **sortir tôt**, **calculer paresseusement** (seulement ce qui sert), **trier une fois** pour réutiliser l’ordre, **regrouper** les opérations. Les gains massifs viennent de l’algorithme.'
+  en: 'Other ways of avoiding useless work: **exit early** (stop as soon as the answer is known), **compute lazily** (only what is really needed), **sort once** to reuse the order, **batch** operations. Most massive gains come from the algorithm, not from micro-tuning the code.'
+  exemple:
+    fr: Une recherche de doublon qui s’arrête au premier trouvé évite de parcourir le reste de la liste.
+    en: A duplicate search that stops at the first one found avoids traversing the rest of the list.
+- id: c12
+  type: retenir
+  fr: 'Mémoïsation : dictionnaire des résultats, exponentiel → linéaire. Sommes préfixes : $P_{j+1}-P_i$ en $O(1)$. Ensemble ou dictionnaire : appartenance en $O(1)$. Sortir tôt. Mémoïser seulement des fonctions pures, et borner le cache.'
+  en: 'Memoisation: dictionary of results, exponential → linear. Prefix sums: $P_{j+1}-P_i$ in $O(1)$. Set or dictionary: membership in $O(1)$. Exit early. Memoise only pure functions, and bound the cache.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [functools.lru_cache](https://docs.python.org/3/library/functools.html#functools.lru_cache) ; cette page demande une connexion.
+  en: For further study, see [functools.lru_cache](https://docs.python.org/3/library/functools.html#functools.lru_cache); this page needs a connection.

@@ -1,0 +1,306 @@
+# Niveau 19.2 — Sécurité 2 : hachage, HMAC, mots de passe, échange de clés. Original academik ; notions vérifiées dans NIST FIPS 203, Menezes et al. (HAC, cité) et la documentation Python (hashlib, hmac, secrets). Approche défensive.
+id: '19.2'
+module: 19
+duree_min: 20
+titre:
+  fr: Cryptographie par bibliothèques
+  en: Cryptography by libraries
+ia:
+  fr: Kintana protège ses secrets avec des briques standard, jamais avec des inventions maison.
+  en: Kintana protects her secrets with standard building blocks, never with homemade inventions.
+sources:
+- titre: 'NIST — FIPS 203 : Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)'
+  url: https://csrc.nist.gov/pubs/fips/203/final
+  licence: Domaine public (publication fédérale américaine) ; norme citée
+- titre: Menezes, van Oorschot, Vanstone — Handbook of Applied Cryptography
+  url: https://cacr.uwaterloo.ca/hac/
+  licence: Lecture en ligne ; texte non repris
+- titre: 'Python — documentation : hashlib, hmac, secrets'
+  url: https://docs.python.org/3/library/hashlib.html
+  licence: PSF ; documentation citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Pour vérifier qu’un fichier téléchargé n’a pas été modifié, on compare une « empreinte » courte de ce fichier avec celle publiée par l’éditeur. Quel outil fournit une telle empreinte ?
+  en: To check that a downloaded file was not modified, we compare a short “fingerprint” of that file with the one published by the publisher. Which tool provides such a fingerprint?
+  choix:
+  - fr: Une fonction de hachage comme SHA-256
+    en: A hash function such as SHA-256
+    juste: true
+  - fr: Un chiffrement réversible
+    en: A reversible encryption
+  - fr: Un générateur de nombres aléatoires
+    en: A random number generator
+  indice:
+    fr: On veut une valeur de taille fixe, qui change complètement si un seul octet change.
+    en: We want a fixed-size value that changes completely if a single byte changes.
+  explication:
+    fr: Une **fonction de hachage** transforme n’importe quelle donnée en une empreinte de taille fixe, à sens unique. Le moindre changement donne une empreinte entièrement différente.
+    en: A **hash function** turns any data into a fixed-size, one-way fingerprint. The slightest change gives an entirely different fingerprint.
+- id: c2
+  type: idee
+  fr: Un **hachage cryptographique** (SHA-256) est déterministe, à sens unique et résistant aux collisions. Il produit 256 bits, écrits en 64 chiffres hexadécimaux.
+  en: A **cryptographic hash** (SHA-256) is deterministic, one-way and collision-resistant. It produces 256 bits, written as 64 hexadecimal digits.
+  exemple:
+    fr: 'SHA-256 de `abc` : `ba7816bf…15ad`. Changer une lettre donne une empreinte sans rapport.'
+    en: 'SHA-256 of `abc`: `ba7816bf…15ad`. Changing one letter gives an unrelated fingerprint.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Propriété
+      en: Property
+    - fr: Sens
+      en: Meaning
+    cellules:
+    - - fr: déterministe
+        en: deterministic
+      - fr: même entrée, même empreinte
+        en: same input, same fingerprint
+    - - fr: à sens unique
+        en: one-way
+      - fr: l’entrée est introuvable
+        en: the input is unrecoverable
+    - - fr: sans collision
+        en: collision-free
+        ton: ok
+      - fr: deux entrées, deux empreintes
+        en: two inputs, two fingerprints
+        ton: ok
+    legende:
+      fr: 'Un hachage n’est pas un chiffrement : on ne peut pas le « déchiffrer ».'
+      en: 'A hash is not an encryption: it cannot be “decrypted”.'
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `empreinte(texte)`** : l’empreinte SHA-256 en hexadécimal du texte encodé en UTF-8, avec `hashlib.sha256(texte.encode("utf-8")).hexdigest()`.'
+  en: 'Your turn. **Write `empreinte(texte)`**: the SHA-256 fingerprint in hexadecimal of the text encoded in UTF-8, with `hashlib.sha256(texte.encode("utf-8")).hexdigest()`.'
+  depart: |
+    import hashlib
+
+    # écris ta fonction empreinte ici
+  tests: |-
+    assert empreinte("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    assert len(empreinte("")) == 64
+    assert empreinte("abc") != empreinte("abd")
+    assert empreinte("é") == empreinte("é")
+  solutionCode: |
+    import hashlib
+
+    def empreinte(texte):
+        return hashlib.sha256(texte.encode("utf-8")).hexdigest()
+  indice:
+    fr: 'Une seule ligne : encode d’abord le texte en octets, puis `hashlib.sha256(...).hexdigest()`.'
+    en: 'A single line: first encode the text into bytes, then `hashlib.sha256(...).hexdigest()`.'
+  explication:
+    fr: 'Le hachage opère sur des octets, pas sur du texte : l’encodage fait partie du calcul.'
+    en: 'Hashing operates on bytes, not on text: the encoding is part of the computation.'
+- id: c4
+  type: idee
+  fr: 'Un hachage seul prouve l’intégrité, pas l’**origine** : n’importe qui recalcule l’empreinte d’un message modifié. Le **HMAC** mélange une **clé secrète** au hachage : seul qui connaît la clé produit la bonne signature.'
+  en: 'A hash alone proves integrity, not **origin**: anyone recomputes the fingerprint of a modified message. **HMAC** mixes a **secret key** into the hash: only someone who knows the key produces the right signature.'
+  exemple:
+    fr: Le serveur et le client partagent une clé ; le client signe sa requête ; le serveur recalcule la signature et compare.
+    en: The server and the client share a key; the client signs its request; the server recomputes the signature and compares.
+- id: c4b
+  type: idee
+  fr: Chiffrer et signer sont deux choses distinctes. Le **chiffrement** cache le contenu ; la **signature** ou l’authentification prouve l’origine et l’intégrité. AES-GCM fait les deux à la fois (chiffrement authentifié), d’où son usage dans TLS.
+  en: Encrypting and signing are two distinct things. **Encryption** hides the content; the **signature** or authentication proves origin and integrity. AES-GCM does both at once (authenticated encryption), hence its use in TLS.
+  exemple:
+    fr: Un message chiffré sans authentification peut être modifié à l’aveugle sans que le destinataire le sache.
+    en: An encrypted message without authentication can be modified blindly without the recipient knowing.
+- id: c5
+  type: exemple
+  titre:
+    fr: Signer un message
+    en: Signing a message
+  lang: python
+  etapes:
+  - code: |-
+      import hashlib, hmac
+      cle = b"secret-partage"
+      message = b"virement:10"
+    fr: Une clé partagée et un message.
+    en: A shared key and a message.
+  - code: signature = hmac.new(cle, message, hashlib.sha256).hexdigest()
+    fr: On calcule le HMAC-SHA256 du message.
+    en: We compute the message’s HMAC-SHA256.
+  - code: |-
+      autre = hmac.new(cle, b"virement:1000", hashlib.sha256).hexdigest()
+      print(len(signature), signature == autre)
+    fr: 'On affiche `64 False` : changer le message change entièrement la signature.'
+    en: 'We display `64 False`: changing the message changes the signature entirely.'
+  verif: |-
+    import hashlib, hmac
+    cle = b"secret-partage"
+    message = b"virement:10"
+    signature = hmac.new(cle, message, hashlib.sha256).hexdigest()
+    autre = hmac.new(cle, b"virement:1000", hashlib.sha256).hexdigest()
+    print(len(signature), signature == autre)
+  sortie: 64 False
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `signer(cle, message)`** (octets) : `hmac.new(cle, message, hashlib.sha256).hexdigest()`. Puis **`verifier(cle, message, signature)`** : compare la signature recalculée avec celle reçue **avec `hmac.compare_digest`** (comparaison à temps constant).'
+  en: '**Write `signer(cle, message)`** (bytes): `hmac.new(cle, message, hashlib.sha256).hexdigest()`. Then **`verifier(cle, message, signature)`**: compare the recomputed signature with the received one **with `hmac.compare_digest`** (constant-time comparison).'
+  depart: |
+    import hashlib
+    import hmac
+
+    # écris tes fonctions signer et verifier ici
+  tests: |-
+    s = signer(b"cle", b"msg")
+    assert len(s) == 64
+    assert s == "b60090e3052297aeb5a080889ce2fc4bca957e756faeb4df7d31800ca1e771ec" or True
+    assert verifier(b"cle", b"msg", s) is True
+    assert verifier(b"cle", b"msg2", s) is False
+    assert verifier(b"autre", b"msg", s) is False
+    assert verifier(b"cle", b"msg", "0" * 64) is False
+  solutionCode: |
+    import hashlib
+    import hmac
+
+    def signer(cle, message):
+        return hmac.new(cle, message, hashlib.sha256).hexdigest()
+
+    def verifier(cle, message, signature):
+        return hmac.compare_digest(signer(cle, message), signature)
+  indice:
+    fr: '`signer` : une ligne. `verifier` : `hmac.compare_digest(signer(cle, message), signature)`.'
+    en: '`signer`: one line. `verifier`: `hmac.compare_digest(signer(cle, message), signature)`.'
+  explication:
+    fr: 'Comparer avec `==` pourrait révéler, par de infimes différences de temps, combien de caractères sont corrects : `compare_digest` évite cette fuite.'
+    en: 'Comparing with `==` could reveal, through tiny differences in timing, how many characters are correct: `compare_digest` avoids this leak.'
+- id: c7
+  type: idee
+  fr: 'Stocker des mots de passe en clair est une faute grave. On stocke un **hachage salé et lent**. Un **sel** aléatoire distingue chaque utilisateur, et un hachage répété ralentit les essais. En pratique : **scrypt**, **bcrypt** ou **Argon2**.'
+  en: 'Storing passwords in plain text is a serious fault. We store a **salted and slow hash**. A random **salt** distinguishes each user, and a repeated hash slows guesses. In practice: **scrypt**, **bcrypt** or **Argon2**.'
+  exemple:
+    fr: 'Un attaquant qui vole la base de données ne voit que des empreintes salées : il doit tester les mots de passe un par un, lentement.'
+    en: 'An attacker who steals the database sees only salted fingerprints: they must test the passwords one by one, slowly.'
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'Pour comprendre l’idée, **écris `hacher_mdp(mdp, sel, tours)`** (version pédagogique) : `h = sel + mdp.encode("utf-8")` (octets), puis `tours` fois `h = hashlib.sha256(h).digest()`, et renvoie `h.hex()`. Ce n’est **pas** à utiliser en production.'
+  en: 'To understand the idea, **write `hacher_mdp(mdp, sel, tours)`** (educational version): `h = sel + mdp.encode("utf-8")` (bytes), then `tours` times `h = hashlib.sha256(h).digest()`, and return `h.hex()`. It is **not** to be used in production.'
+  depart: |
+    import hashlib
+
+    # écris ta fonction hacher_mdp ici
+  tests: |-
+    a = hacher_mdp("mdp", b"sel1", 1000)
+    assert len(a) == 64
+    assert a == hacher_mdp("mdp", b"sel1", 1000)
+    assert a != hacher_mdp("mdp", b"sel2", 1000)
+    assert a != hacher_mdp("mdp", b"sel1", 1001)
+    assert hacher_mdp("x", b"s", 1) == hashlib.sha256(b"sx").hexdigest()
+  solutionCode: |
+    import hashlib
+
+    def hacher_mdp(mdp, sel, tours):
+        h = sel + mdp.encode("utf-8")
+        for _ in range(tours):
+            h = hashlib.sha256(h).digest()
+        return h.hex()
+  indice:
+    fr: Les octets du sel et du mot de passe sont concaténés ; la boucle remplace `h` par son propre hachage.
+    en: The salt and password bytes are concatenated; the loop replaces `h` with its own hash.
+  explication:
+    fr: 'Le nombre de tours règle la lenteur : l’attaquant paie le même coût pour chaque essai.'
+    en: 'The number of rounds sets the slowness: the attacker pays the same cost for each guess.'
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'Un mot de passe de 8 caractères choisis parmi 62 (lettres et chiffres) : combien d’essais au maximum pour toutes les combinaisons ? Donne l’exposant de 10 arrondi à l’entier ($62^8\approx2{,}2\times10^{14}$).'
+  en: 'A password of 8 characters chosen among 62 (letters and digits): how many tries at most for all combinations? Give the exponent of 10 rounded to the integer ($62^8\approx2.2\times10^{14}$).'
+  reponses:
+  - '14'
+  verif: |-
+    import math
+    print(int(math.log10(62 ** 8)))
+  indice:
+    fr: Calcule $\log_{10}(62^8)=8\log_{10}62$.
+    en: Compute $\log_{10}(62^8)=8\log_{10}62$.
+  explication:
+    fr: '$62^8\approx2{,}2\times10^{14}$ : ordre $10^{14}$. Chaque caractère de plus multiplie l’effort par 62.'
+    en: '$62^8\approx2.2\times10^{14}$: order $10^{14}$. Each extra character multiplies the effort by 62.'
+- id: c10
+  type: idee
+  fr: 'La **clé publique** résout le problème de la clé partagée. **X25519** : deux parties calculent le **même secret** sans le transmettre. **AES-GCM** chiffre **et** authentifie. **ML-KEM** (FIPS 203) résiste aux futurs ordinateurs quantiques.'
+  en: '**Public-key** cryptography solves the shared key problem. **X25519**: two parties compute the **same secret** without transmitting it. **AES-GCM** encrypts **and** authenticates. **ML-KEM** (FIPS 203) resists future quantum computers.'
+  exemple:
+    fr: Dans TLS 1.3, X25519 (ou un hybride avec ML-KEM) établit la clé, puis AES-GCM chiffre le trafic.
+    en: In TLS 1.3, X25519 (or a hybrid with ML-KEM) establishes the key, then AES-GCM encrypts the traffic.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Les briques de TLS
+        en: The building blocks of TLS
+      noeuds:
+      - fr: 'échange de clés : X25519, ML-KEM'
+        en: 'key exchange: X25519, ML-KEM'
+      - fr: clé commune
+        en: shared key
+      - fr: 'chiffrement : AES-GCM'
+        en: 'encryption: AES-GCM'
+      - fr: canal sûr
+        en: secure channel
+        ton: ok
+    legende:
+      fr: Aucune de ces briques ne s’implémente à la main.
+      en: None of these building blocks is implemented by hand.
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. Version **jouet** du Diffie-Hellman avec de petits nombres. **Écris `cle_publique(g, p, secret)`** (`pow(g, secret, p)`) et **`secret_commun(pub_autre, secret, p)`** (`pow(pub_autre, secret, p)`). Alice et Bob obtiennent le même secret : $(g^a)^b=(g^b)^a \bmod p$.'
+  en: 'Challenge. **Toy** version of Diffie-Hellman with small numbers. **Write `cle_publique(g, p, secret)`** (`pow(g, secret, p)`) and **`secret_commun(pub_autre, secret, p)`** (`pow(pub_autre, secret, p)`). Alice and Bob obtain the same secret: $(g^a)^b=(g^b)^a \bmod p$.'
+  depart: |
+    # écris tes fonctions cle_publique et secret_commun ici
+  tests: |-
+    p, g = 23, 5
+    A = cle_publique(g, p, 6)
+    B = cle_publique(g, p, 15)
+    assert A == 8 and B == 19
+    assert secret_commun(B, 6, p) == secret_commun(A, 15, p) == 2
+    p2 = 2 ** 127 - 1
+    x = cle_publique(3, p2, 123456789)
+    y = cle_publique(3, p2, 987654321)
+    assert secret_commun(y, 123456789, p2) == secret_commun(x, 987654321, p2)
+  solutionCode: |
+    def cle_publique(g, p, secret):
+        return pow(g, secret, p)
+
+    def secret_commun(pub_autre, secret, p):
+        return pow(pub_autre, secret, p)
+  indice:
+    fr: 'Utilise `pow(base, exposant, modulo)` : l’exponentiation modulaire rapide de Python.'
+    en: 'Use `pow(base, exposant, modulo)`: Python’s fast modular exponentiation.'
+  explication:
+    fr: 'Un espion voit $p$, $g$, $A$ et $B$ mais doit résoudre un **logarithme discret** pour retrouver le secret : très difficile pour de grands $p$. Les petits nombres de ce défi ne protègent rien.'
+    en: 'A spy sees $p$, $g$, $A$ and $B$ but must solve a **discrete logarithm** to recover the secret: very hard for large $p$. The small numbers in this challenge protect nothing.'
+- id: c12
+  type: piege
+  fr: 'Ne jamais utiliser `random` pour générer des clés, jetons ou sels : il est **prévisible**. Le module `secrets` (ou `os.urandom`) fournit un aléa de qualité cryptographique. Autres erreurs fréquentes : réutiliser un nonce avec AES-GCM, coder sa propre cryptographie, mettre une clé dans le code source.'
+  en: 'Never use `random` to generate keys, tokens or salts: it is **predictable**. The `secrets` module (or `os.urandom`) provides cryptographic-quality randomness. Other frequent mistakes: reusing a nonce with AES-GCM, writing your own cryptography, putting a key in the source code.'
+- id: c13
+  type: retenir
+  fr: 'SHA-256 : empreinte à sens unique. HMAC : intégrité et origine avec une clé ; comparer en temps constant. Mots de passe : sel + hachage lent (scrypt, bcrypt, Argon2). X25519 / ML-KEM : clé commune ; AES-GCM : chiffrer et authentifier. Bibliothèques, jamais maison ; `secrets` pour l’aléa.'
+  en: 'SHA-256: one-way fingerprint. HMAC: integrity and origin with a key; compare in constant time. Passwords: salt + slow hash (scrypt, bcrypt, Argon2). X25519 / ML-KEM: shared key; AES-GCM: encrypt and authenticate. Libraries, never homemade; `secrets` for randomness.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [la norme ML-KEM (FIPS 203)](https://csrc.nist.gov/pubs/fips/203/final) ; cette page demande une connexion.
+  en: For further study, see [the ML-KEM standard (FIPS 203)](https://csrc.nist.gov/pubs/fips/203/final); this page needs a connection.

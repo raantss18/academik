@@ -1,0 +1,270 @@
+# Niveau 17.2 — Recherche quantitative 2 : portefeuilles, diversification, Sharpe. Original academik ; notions vérifiées dans le cours 15.401 du MIT (lien) et Markowitz 1952 (lien). Cadre strictement pédagogique.
+id: '17.2'
+module: 17
+duree_min: 16
+titre:
+  fr: Portefeuilles et Markowitz
+  en: Portfolios and Markowitz
+ia:
+  fr: Kintana combine plusieurs actifs et mesure ce que la diversification apporte.
+  en: Kintana combines several assets and measures what diversification brings.
+sources:
+- titre: MIT OpenCourseWare — 15.401 Finance Theory I (portefeuilles)
+  url: https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: Markowitz — Portfolio Selection (Journal of Finance, 1952)
+  url: https://www.jstor.org/stable/2975974
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Tu as deux actifs qui ne montent et ne baissent pas aux mêmes moments. Si tu en mets la moitié de ton capital dans chacun, la dispersion de l’ensemble est-elle plus petite que la moyenne des deux dispersions ?
+  en: You have two assets that do not rise and fall at the same times. If you put half of your capital in each, is the dispersion of the whole smaller than the average of the two dispersions?
+  choix:
+  - fr: 'Oui : leurs variations se compensent en partie, c’est la diversification'
+    en: 'Yes: their variations partly offset each other, this is diversification'
+    juste: true
+  - fr: 'Non : le risque est toujours la moyenne des deux'
+    en: 'No: the risk is always the average of the two'
+  - fr: Oui, mais seulement avec trois actifs ou plus
+    en: Yes, but only with three or more assets
+  indice:
+    fr: Quand l’un baisse, l’autre ne baisse pas forcément. Que devient la dispersion de la somme ?
+    en: When one falls, the other does not necessarily fall. What happens to the dispersion of the sum?
+  explication:
+    fr: Si les actifs ne sont pas parfaitement corrélés, le risque du portefeuille est **inférieur** à la moyenne des risques. C’est la **diversification**.
+    en: If the assets are not perfectly correlated, the portfolio’s risk is **lower** than the average of the risks. This is **diversification**.
+- id: c2
+  type: idee
+  fr: 'Un **portefeuille** est un vecteur de poids $w=(w_1,\dots,w_n)$ de somme $1$. Son rendement espéré est la moyenne pondérée des rendements espérés : $\mu_p=\sum_i w_i\mu_i$. Cette partie est simple, linéaire.'
+  en: 'A **portfolio** is a vector of weights $w=(w_1,\dots,w_n)$ summing to $1$. Its expected return is the weighted average of the expected returns: $\mu_p=\sum_i w_i\mu_i$. This part is simple, linear.'
+  exemple:
+    fr: 'Avec $\mu=(6\,\%;\,2\,\%)$ et $w=(0{,}5;\,0{,}5)$ : $\mu_p=0{,}5\times6+0{,}5\times2=4\,\%$.'
+    en: 'With $\mu=(6\%;\,2\%)$ and $w=(0.5;\,0.5)$: $\mu_p=0.5\times6+0.5\times2=4\%$.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Actif
+      en: Asset
+    - fr: Poids
+      en: Weight
+    - fr: Rendement espéré
+      en: Expected return
+    cellules:
+    - - A
+      - 50 %
+      - 6 %
+    - - B
+      - 50 %
+      - 2 %
+    - - fr: Portefeuille
+        en: Portfolio
+        ton: ok
+      - fr: 100 %
+        en: 100%
+        ton: ok
+      - fr: 4 %
+        en: 4%
+        ton: ok
+    legende:
+      fr: Le rendement espéré se moyenne simplement.
+      en: Expected return averages simply.
+- id: c3
+  type: idee
+  fr: 'Le risque, lui, ne se moyenne pas : $\sigma_p^2=\sum_i\sum_j w_iw_j\,\text{Cov}_{ij}$, où $\text{Cov}$ est la **matrice de covariance**. Pour deux actifs : $\sigma_p^2=w_1^2\sigma_1^2+w_2^2\sigma_2^2+2w_1w_2\rho\sigma_1\sigma_2$, avec $\rho$ la corrélation.'
+  en: 'Risk, however, does not average: $\sigma_p^2=\sum_i\sum_j w_iw_j\,\text{Cov}_{ij}$, where $\text{Cov}$ is the **covariance matrix**. For two assets: $\sigma_p^2=w_1^2\sigma_1^2+w_2^2\sigma_2^2+2w_1w_2\rho\sigma_1\sigma_2$, with $\rho$ the correlation.'
+  exemple:
+    fr: 'Deux actifs de volatilité $20\,\%$, poids $\tfrac12$ : si $\rho=1$, $\sigma_p=20\,\%$ ; si $\rho=0$, $\sigma_p\approx14{,}1\,\%$ ; si $\rho=-1$, $\sigma_p=0$.'
+    en: 'Two assets of volatility $20\%$, weights $\tfrac12$: if $\rho=1$, $\sigma_p=20\%$; if $\rho=0$, $\sigma_p\approx14.1\%$; if $\rho=-1$, $\sigma_p=0$.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Le risque de deux actifs
+    en: The risk of two assets
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      s1, s2, rho = 0.2, 0.2, 0.0
+      w1 = w2 = 0.5
+    fr: Deux actifs de volatilité 20 %, non corrélés, poids égaux.
+    en: Two assets of 20% volatility, uncorrelated, equal weights.
+  - code: var = w1**2 * s1**2 + w2**2 * s2**2 + 2 * w1 * w2 * rho * s1 * s2
+    fr: La variance du portefeuille, avec le terme croisé nul ici.
+    en: The portfolio variance, with the cross term zero here.
+  - code: print(round(math.sqrt(var), 3))
+    fr: 'On affiche `0.141` : moins que 0,2, grâce à la diversification.'
+    en: 'We display `0.141`: less than 0.2, thanks to diversification.'
+  verif: |-
+    import math
+    s1, s2, rho = 0.2, 0.2, 0.0
+    w1 = w2 = 0.5
+    var = w1**2 * s1**2 + w2**2 * s2**2 + 2 * w1 * w2 * rho * s1 * s2
+    print(round(math.sqrt(var), 3))
+  sortie: '0.141'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `variance_portefeuille(w, cov)`** : la somme, pour tous les couples `(i, j)`, de `w[i] * w[j] * cov[i][j]`.'
+  en: 'Your turn. **Write `variance_portefeuille(w, cov)`**: the sum, over all pairs `(i, j)`, of `w[i] * w[j] * cov[i][j]`.'
+  depart: |
+    # écris ta fonction variance_portefeuille ici
+  tests: |-
+    cov = [[0.04, 0.0], [0.0, 0.04]]
+    assert abs(variance_portefeuille([0.5, 0.5], cov) - 0.02) < 1e-12
+    cov2 = [[0.04, 0.04], [0.04, 0.04]]
+    assert abs(variance_portefeuille([0.5, 0.5], cov2) - 0.04) < 1e-12
+    cov3 = [[0.04, -0.04], [-0.04, 0.04]]
+    assert abs(variance_portefeuille([0.5, 0.5], cov3)) < 1e-12
+    assert variance_portefeuille([1.0], [[0.09]]) == 0.09
+  solutionCode: |
+    def variance_portefeuille(w, cov):
+        n = len(w)
+        return sum(w[i] * w[j] * cov[i][j] for i in range(n) for j in range(n))
+  indice:
+    fr: Deux boucles imbriquées dans une même `sum(... for i in range(n) for j in range(n))`.
+    en: Two nested loops in one `sum(... for i in range(n) for j in range(n))`.
+  explication:
+    fr: 'Les termes croisés (`i ≠ j`) portent la corrélation : ils expliquent toute la diversification.'
+    en: 'The cross terms (`i ≠ j`) carry the correlation: they explain all diversification.'
+- id: c6
+  type: idee
+  fr: Combien mettre dans chaque actif pour que le risque soit **minimal** ? Pour deux actifs, le poids du premier est $w_1=\dfrac{\sigma_2^2-\rho\sigma_1\sigma_2}{\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2}$. L’actif le moins risqué reçoit en général le plus gros poids.
+  en: How much should we put in each asset for the risk to be **minimal**? For two assets, the weight of the first is $w_1=\dfrac{\sigma_2^2-\rho\sigma_1\sigma_2}{\sigma_1^2+\sigma_2^2-2\rho\sigma_1\sigma_2}$. The less risky asset generally receives the larger weight.
+  exemple:
+    fr: 'Pour $\sigma_1=10\,\%$, $\sigma_2=20\,\%$ et $\rho=0$ : $w_1=0{,}04/(0{,}01+0{,}04)=0{,}8$, $w_2=0{,}2$.'
+    en: 'For $\sigma_1=10\%$, $\sigma_2=20\%$ and $\rho=0$: $w_1=0.04/(0.01+0.04)=0.8$, $w_2=0.2$.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le portefeuille de variance minimale
+        en: The minimum-variance portfolio
+      noeuds:
+      - fr: variances et corrélation
+        en: variances and correlation
+      - fr: formule de $w_1$
+        en: formula for $w_1$
+      - fr: $w_2=1-w_1$
+        en: $w_2=1-w_1$
+      - fr: risque minimal
+        en: minimal risk
+        ton: ok
+    legende:
+      fr: On dérive la variance par rapport à $w_1$ et on annule.
+      en: We differentiate the variance with respect to $w_1$ and set it to zero.
+- id: c7
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `poids_variance_minimale(sigma1, sigma2, rho)`** : avec `v1 = sigma1**2`, `v2 = sigma2**2` et `c = rho * sigma1 * sigma2`, `w1 = (v2 - c) / (v1 + v2 - 2 * c)`. Renvoie le couple `(w1, 1 - w1)`.'
+  en: 'Challenge. **Write `poids_variance_minimale(sigma1, sigma2, rho)`**: with `v1 = sigma1**2`, `v2 = sigma2**2` and `c = rho * sigma1 * sigma2`, `w1 = (v2 - c) / (v1 + v2 - 2 * c)`. Return the pair `(w1, 1 - w1)`.'
+  depart: |
+    # écris ta fonction poids_variance_minimale ici
+  tests: |-
+    w1, w2 = poids_variance_minimale(0.1, 0.2, 0.0)
+    assert abs(w1 - 0.8) < 1e-12 and abs(w2 - 0.2) < 1e-12
+    w1, w2 = poids_variance_minimale(0.2, 0.2, 0.0)
+    assert abs(w1 - 0.5) < 1e-12
+    w1, w2 = poids_variance_minimale(0.2, 0.2, 0.5)
+    assert abs(w1 - 0.5) < 1e-12
+    w1, w2 = poids_variance_minimale(0.1, 0.3, 0.2)
+    assert 0.5 < w1 < 1.0
+  solutionCode: |
+    def poids_variance_minimale(sigma1, sigma2, rho):
+        v1, v2 = sigma1 ** 2, sigma2 ** 2
+        c = rho * sigma1 * sigma2
+        w1 = (v2 - c) / (v1 + v2 - 2 * c)
+        return w1, 1 - w1
+  indice:
+    fr: Trois quantités `v1`, `v2`, `c`, puis la fraction de la formule, puis le couple.
+    en: Three quantities `v1`, `v2`, `c`, then the fraction of the formula, then the pair.
+  explication:
+    fr: 'Si `rho` est très élevé, `w1` peut sortir de $[0;1]$ : le portefeuille optimal vend alors un actif à découvert.'
+    en: 'If `rho` is very high, `w1` can leave $[0;1]$: the optimal portfolio then sells one asset short.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Deux actifs de volatilité 10 % chacun et de corrélation $\rho=-1$, avec des poids égaux. Quelle est la volatilité du portefeuille, en pourcentage ?
+  en: Two assets of 10% volatility each and correlation $\rho=-1$, with equal weights. What is the portfolio’s volatility, in percent?
+  reponses:
+  - '0'
+  - '0.0'
+  verif: |-
+    import math
+    print(round(math.sqrt(max(0, 0.25*0.01+0.25*0.01+2*0.25*(-1)*0.01)), 4))
+  indice:
+    fr: Avec une corrélation $-1$, quand l’un monte exactement autant que l’autre baisse, que reste-t-il ?
+    en: With a correlation of $-1$, when one rises exactly as much as the other falls, what remains?
+  explication:
+    fr: 'Le terme croisé annule exactement les deux autres : variance $0$.'
+    en: 'The cross term exactly cancels the other two: variance $0$.'
+- id: c9
+  type: idee
+  fr: 'Comment comparer deux stratégies de risques différents ? Avec le **ratio de Sharpe** : le rendement moyen au-dessus du taux sans risque, divisé par l’écart type, annualisé. Il mesure le rendement obtenu **par unité de risque**.'
+  en: 'How do we compare two strategies of different risks? With the **Sharpe ratio**: the mean return above the risk-free rate, divided by the standard deviation, annualised. It measures the return obtained **per unit of risk**.'
+  exemple:
+    fr: Un rendement excédentaire de $8\,\%$ par an pour $16\,\%$ de volatilité donne un Sharpe de $0{,}5$.
+    en: An excess return of $8\%$ per year for $16\%$ volatility gives a Sharpe of $0.5$.
+- id: c10
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `sharpe(r, sans_risque=0.0, periodes=252)`** : les rendements `r` sont quotidiens. Retire à chacun `sans_risque / periodes`, calcule la moyenne `m` et l’écart type `s` (division par `n - 1`) des excès, et renvoie `m / s * math.sqrt(periodes)`.'
+  en: '**Write `sharpe(r, sans_risque=0.0, periodes=252)`**: the returns `r` are daily. Subtract `sans_risque / periodes` from each, compute the mean `m` and the standard deviation `s` (division by `n - 1`) of the excesses, and return `m / s * math.sqrt(periodes)`.'
+  depart: |
+    import math
+
+    # écris ta fonction sharpe ici
+  tests: |-
+    r = [0.01, -0.01, 0.02, 0.0]
+    s = sharpe(r)
+    m = sum(r) / 4
+    v = (sum((x - m) ** 2 for x in r) / 3) ** 0.5
+    assert abs(s - m / v * 252 ** 0.5) < 1e-9
+    assert sharpe(r, 0.0) > sharpe(r, 0.25)
+    assert abs(sharpe([x * 2 for x in r]) - s) < 1e-9
+  solutionCode: |
+    import math
+
+    def sharpe(r, sans_risque=0.0, periodes=252):
+        n = len(r)
+        exces = [x - sans_risque / periodes for x in r]
+        m = sum(exces) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in exces) / (n - 1))
+        return m / s * math.sqrt(periodes)
+  indice:
+    fr: Même structure que `volatilite`, mais on divise la moyenne par l’écart type avant d’annualiser.
+    en: Same structure as `volatilite`, but we divide the mean by the standard deviation before annualising.
+  explication:
+    fr: 'Doubler tous les rendements ne change pas le Sharpe : le levier n’améliore pas la qualité d’une stratégie.'
+    en: 'Doubling all returns does not change the Sharpe: leverage does not improve a strategy’s quality.'
+- id: c11
+  type: piege
+  fr: 'Les poids optimaux sont **très sensibles** aux estimations : une petite erreur sur un rendement espéré change beaucoup l’allocation. Un portefeuille « optimal » sur le passé peut être très fragile. En pratique, on contraint les poids, on regroupe les estimations ou on préfère un simple 50/50.'
+  en: 'Optimal weights are **very sensitive** to the estimates: a small error on an expected return changes the allocation a lot. A portfolio “optimal” on the past can be very fragile. In practice, we constrain the weights, shrink the estimates or prefer a simple 50/50.'
+- id: c12
+  type: idee
+  fr: La théorie moderne du portefeuille (Markowitz, 1952) montre qu’on ne juge pas un actif seul, mais par sa contribution au portefeuille. Un actif risqué mais peu corrélé aux autres peut **réduire** le risque global. Le niveau suivant explique cette contribution par le **bêta**.
+  en: Modern portfolio theory (Markowitz, 1952) shows that an asset is judged not alone, but by its contribution to the portfolio. A risky asset that is little correlated with the others can **reduce** the overall risk. The next level explains this contribution through **beta**.
+  exemple:
+    fr: Ajouter un actif volatil mais décorrélé peut faire baisser la volatilité du portefeuille.
+    en: Adding a volatile but uncorrelated asset can lower the portfolio’s volatility.
+- id: c13
+  type: retenir
+  fr: 'Rendement du portefeuille : moyenne pondérée. Variance : $\sum w_iw_j\text{Cov}_{ij}$ ; la corrélation réduit le risque. Variance minimale à deux actifs : formule fermée. Sharpe : excédent de rendement par unité de risque. Poids fragiles.'
+  en: 'Portfolio return: weighted average. Variance: $\sum w_iw_j\text{Cov}_{ij}$; correlation reduces risk. Two-asset minimum variance: closed formula. Sharpe: excess return per unit of risk. Fragile weights.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [l’article « Portfolio Selection »](https://www.jstor.org/stable/2975974) ; cet article demande une connexion.
+  en: For further study, see [the “Portfolio Selection” paper](https://www.jstor.org/stable/2975974); this paper needs a connection.

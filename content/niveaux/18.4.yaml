@@ -1,0 +1,256 @@
+# Niveau 18.4 — Performance 4 : profilage, goulot, loi d’Amdahl. Original academik ; notions vérifiées dans la documentation Python (profileurs) et Amdahl 1967 (lien).
+id: '18.4'
+module: 18
+duree_min: 16
+titre:
+  fr: Profiler avant d’optimiser
+  en: Profile before optimising
+ia:
+  fr: Kintana trouve d’abord où son programme perd du temps, puis seulement le corrige.
+  en: Kintana first finds where her program loses time, and only then fixes it.
+sources:
+- titre: 'Python — documentation : The Python Profilers'
+  url: https://docs.python.org/3/library/profile.html
+  licence: PSF ; documentation citée
+- titre: Amdahl — Validity of the single processor approach to achieving large scale computing capabilities (1967)
+  url: https://dl.acm.org/doi/10.1145/1465482.1465560
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Ton programme est lent. Tu as une intuition : « c’est sûrement la fonction de tri ». Que fais-tu avant de la réécrire ?'
+  en: 'Your program is slow. You have a hunch: “it must be the sort function”. What do you do before rewriting it?'
+  choix:
+  - fr: Je mesure où le temps passe réellement, avec un profileur
+    en: I measure where the time really goes, with a profiler
+    juste: true
+  - fr: Je réécris tout par précaution
+    en: I rewrite everything as a precaution
+  - fr: Je change d’ordinateur
+    en: I change computers
+  indice:
+    fr: Les intuitions sur la vitesse sont souvent fausses. Quel outil dit où va le temps ?
+    en: Intuitions about speed are often wrong. Which tool says where the time goes?
+  explication:
+    fr: 'Règle d’or : **mesurer d’abord**. Le profilage révèle le vrai goulot d’étranglement, qui n’est presque jamais celui qu’on devine.'
+    en: 'Golden rule: **measure first**. Profiling reveals the real bottleneck, which is almost never the one we guess.'
+- id: c2
+  type: idee
+  fr: '« L’optimisation prématurée est la racine de tous les maux » (Knuth). Optimiser sans mesurer complique le code pour un gain nul. Démarche : écrire correct, **mesurer**, optimiser le **goulot**, **re-mesurer**, s’arrêter quand c’est assez rapide.'
+  en: '“Premature optimisation is the root of all evil” (Knuth). Optimising without measuring complicates the code for no gain. The approach: (1) write it correct and readable; (2) **measure**; (3) optimise the **bottleneck**; (4) **re-measure**; (5) stop when it is fast enough.'
+  exemple:
+    fr: Une fonction qui prend 2 % du temps total ne mérite pas qu’on la réécrive, même si on la trouve inélégante.
+    en: A function taking 2% of the total time does not deserve to be rewritten, even if we find it inelegant.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: La boucle d’optimisation
+        en: The optimisation loop
+      noeuds:
+      - fr: mesurer
+        en: measure
+      - fr: trouver le goulot
+        en: find the bottleneck
+      - fr: corriger
+        en: fix
+      - fr: re-mesurer
+        en: re-measure
+        ton: ok
+    legende:
+      fr: Chaque tour doit prouver un gain réel.
+      en: Each turn must prove a real gain.
+- id: c3
+  type: exemple
+  titre:
+    fr: Chronométrer un morceau de code
+    en: Timing a piece of code
+  lang: python
+  etapes:
+  - code: |-
+      import time
+      debut = time.perf_counter()
+    fr: '`perf_counter` donne une horloge précise pour mesurer des durées.'
+    en: '`perf_counter` gives a precise clock to measure durations.'
+  - code: |-
+      somme = sum(i * i for i in range(100000))
+      duree = time.perf_counter() - debut
+    fr: On exécute le code à mesurer, puis on soustrait l’heure de départ.
+    en: We run the code to measure, then subtract the start time.
+  - code: print(duree >= 0, somme)
+    fr: On affiche `True 333328333350000`. La durée varie d’une machine à l’autre, d’où la nécessité de comparer **avant et après sur la même machine**.
+    en: We display `True 333328333350000`. The duration varies from machine to machine, hence the need to compare **before and after on the same machine**.
+  verif: |-
+    import time
+    debut = time.perf_counter()
+    somme = sum(i * i for i in range(100000))
+    duree = time.perf_counter() - debut
+    print(duree >= 0, somme)
+  sortie: True 333328333350000
+- id: c4
+  type: idee
+  fr: 'Un **profileur** décompose le temps par fonction : combien d’appels, temps total, part du total. Python en fournit un (`cProfile`). Ici, on fabrique les pièces : un **compteur d’appels** et le calcul des **parts** de temps, pour désigner le goulot.'
+  en: 'A **profiler** breaks down time by function: how many calls, total time, share of the total. Python provides one (`cProfile`). Here, we build the pieces: a **call counter** and the computation of time **shares**, to point out the bottleneck.'
+  exemple:
+    fr: 'Un profil typique : `lire` 5 %, `calculer` 80 %, `ecrire` 15 %. Le goulot est `calculer`.'
+    en: 'A typical profile: `lire` 5%, `calculer` 80%, `ecrire` 15%. The bottleneck is `calculer`.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Fonction
+      en: Function
+    - fr: Part du temps
+      en: Time share
+    cellules:
+    - - lire
+      - 5 %
+    - - fr: calculer
+        en: calculer
+        ton: bad
+      - fr: 80 %
+        en: 80%
+        ton: bad
+    - - ecrire
+      - 15 %
+    legende:
+      fr: On optimise la ligne rouge d’abord.
+      en: We optimise the red line first.
+- id: c4b
+  type: idee
+  fr: 'Deux sortes de mesures. L’**échantillonnage** regarde périodiquement quelle fonction s’exécute : peu coûteux, approximatif. L’**instrumentation** compte chaque appel : précise, mais ralentit le programme. Un profileur combine souvent les deux, et il faut savoir que lui-même modifie un peu les temps.'
+  en: 'Two kinds of measures. **Sampling** looks periodically at which function is running: cheap, approximate. **Instrumentation** counts every call: precise, but slows the program. A profiler often combines both, and it must be known that it itself changes the times a little.'
+  exemple:
+    fr: Un profileur par échantillonnage à 100 Hz sur 10 s prend 1 000 clichés ; une fonction vue dans 800 occupe environ 80 %.
+    en: A sampling profiler at 100 Hz over 10 s takes 1,000 snapshots; a function seen in 800 occupies about 80%.
+- id: c5
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `compteur(f)`**, un décorateur : il renvoie une fonction `enveloppe(*args, **kwargs)` qui incrémente `enveloppe.appels`, puis renvoie `f(*args, **kwargs)`. Initialise `enveloppe.appels = 0` avant de renvoyer `enveloppe`.'
+  en: 'Challenge. **Write `compteur(f)`**, a decorator: it returns a function `enveloppe(*args, **kwargs)` that increments `enveloppe.appels`, then returns `f(*args, **kwargs)`. Initialise `enveloppe.appels = 0` before returning `enveloppe`.'
+  depart: |
+    # écris ton décorateur compteur ici
+  tests: |-
+    @compteur
+    def carre(x):
+        return x * x
+    assert carre(3) == 9 and carre(4) == 16
+    assert carre.appels == 2
+    g = compteur(lambda a, b=1: a + b)
+    assert g(1, b=5) == 6 and g(2) == 3 and g.appels == 2
+    h = compteur(len)
+    assert h.appels == 0
+  solutionCode: |
+    def compteur(f):
+        def enveloppe(*args, **kwargs):
+            enveloppe.appels += 1
+            return f(*args, **kwargs)
+        enveloppe.appels = 0
+        return enveloppe
+  indice:
+    fr: 'Une fonction interne `enveloppe` ; en Python, une fonction peut porter un attribut : `enveloppe.appels += 1`.'
+    en: 'An inner function `enveloppe`; in Python, a function can carry an attribute: `enveloppe.appels += 1`.'
+  explication:
+    fr: 'Un compteur d’appels révèle les fonctions appelées des millions de fois : souvent la vraie cause de la lenteur.'
+    en: 'A call counter reveals functions called millions of times: often the real cause of slowness.'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `parts(durees)`** : `durees` associe un nom de fonction à son temps en secondes. Renvoie un dictionnaire nom → part du total (temps divisé par la somme des temps). Puis **`goulot(durees)`** : le nom de la fonction de plus grande part.'
+  en: '**Write `parts(durees)`**: `durees` maps a function name to its time in seconds. Return a dictionary name → share of the total (time divided by the sum of times). Then **`goulot(durees)`**: the name of the function with the largest share.'
+  depart: |
+    # écris tes fonctions parts et goulot ici
+  tests: |-
+    d = {"lire": 0.5, "calculer": 8.0, "ecrire": 1.5}
+    p = parts(d)
+    assert abs(p["calculer"] - 0.8) < 1e-12 and abs(sum(p.values()) - 1) < 1e-12
+    assert goulot(d) == "calculer"
+    assert goulot({"a": 1, "b": 1, "c": 3}) == "c"
+    assert parts({"x": 2.0}) == {"x": 1.0}
+  solutionCode: |
+    def parts(durees):
+        total = sum(durees.values())
+        return {nom: d / total for nom, d in durees.items()}
+
+    def goulot(durees):
+        p = parts(durees)
+        return max(p, key=lambda nom: p[nom])
+  indice:
+    fr: 'Une compréhension de dictionnaire pour `parts` ; `max(p, key=lambda nom: p[nom])` pour `goulot`.'
+    en: 'A dictionary comprehension for `parts`; `max(p, key=lambda nom: p[nom])` for `goulot`.'
+  explication:
+    fr: 'Savoir **où** optimiser vaut davantage que savoir **comment** : c’est le sens de la mesure.'
+    en: 'Knowing **where** to optimise is worth more than knowing **how**: that is the point of measuring.'
+- id: c7
+  type: idee
+  fr: La **loi d’Amdahl** borne le gain. Si une partie de proportion $p$ du temps est accélérée d’un facteur $s$, l’accélération totale est $\dfrac{1}{(1-p)+p/s}$. Même avec $s$ infini, elle reste limitée à $1/(1-p)$.
+  en: '**Amdahl’s law** bounds the gain: if a part of the program representing the proportion $p$ of the time is sped up by a factor $s$, the total speedup is $\dfrac{1}{(1-p)+p/s}$. Even with infinite $s$, the gain is limited to $1/(1-p)$.'
+  exemple:
+    fr: 'Si 80 % du temps est accéléré 10 fois : $1/(0{,}2+0{,}08)=3{,}57$. Même à l’infini : $1/0{,}2=5$.'
+    en: 'If 80% of the time is sped up 10 times: $1/(0.2+0.08)=3.57$. Even at infinity: $1/0.2=5$.'
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `amdahl(p, s)`** : `1 / ((1 - p) + p / s)`.'
+  en: '**Write `amdahl(p, s)`**: `1 / ((1 - p) + p / s)`.'
+  depart: |
+    # écris ta fonction amdahl ici
+  tests: |-
+    assert abs(amdahl(0.8, 10) - 3.5714) < 1e-3
+    assert abs(amdahl(0.5, 2) - 4 / 3) < 1e-12
+    assert amdahl(0.0, 100) == 1.0
+    assert amdahl(1.0, 8) == 8.0
+    assert amdahl(0.9, 1e9) < 10.000001
+  solutionCode: |
+    def amdahl(p, s):
+        return 1 / ((1 - p) + p / s)
+  indice:
+    fr: 'Une ligne : l’inverse de la partie non accélérée plus la partie accélérée divisée par `s`.'
+    en: 'A single line: the inverse of the non-accelerated part plus the accelerated part divided by `s`.'
+  explication:
+    fr: 'Accélérer une petite partie du programme ne peut jamais donner un gros gain : la partie lente restante domine.'
+    en: 'Speeding up a small part of the program can never give a big gain: the remaining slow part dominates.'
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un programme passe 90 % de son temps dans une fonction. On la rend infiniment rapide. Quel est le gain maximal ?
+  en: A program spends 90% of its time in one function. We make it infinitely fast. What is the maximum gain?
+  reponses:
+  - '10'
+  verif: print(round(1 / (1 - 0.9)))
+  indice:
+    fr: 'Avec $s$ infini, il reste la partie non accélérée : $1-p=0{,}1$.'
+    en: 'With infinite $s$, the non-accelerated part remains: $1-p=0.1$.'
+  explication:
+    fr: '$1/0{,}1=10$ : au mieux, le programme est 10 fois plus rapide.'
+    en: '$1/0.1=10$: at best, the program is 10 times faster.'
+- id: c10
+  type: piege
+  fr: Un chronomètre isolé trompe. La première exécution est plus lente (chargement, caches froids), la machine fait d’autres choses, et la mesure fluctue. Répète la mesure plusieurs fois, prends le **minimum** ou la médiane, travaille sur des données **réalistes**, et compare toujours à la même version de départ.
+  en: A lone stopwatch misleads. The first run is slower (loading, cold caches), the machine does other things, and the measure fluctuates. Repeat the measurement several times, take the **minimum** or the median, work on **realistic** data, and always compare against the same starting version.
+- id: c11
+  type: idee
+  fr: On mesure aussi la **mémoire**, la **latence** perçue (le temps avant que l’utilisateur voie quelque chose) et la **batterie**. Un code plus rapide qui vide la batterie n’est pas un progrès. On choisit la mesure qui compte.
+  en: Besides time, we measure **memory** and, for an application, the perceived **latency** (the time before the user sees something) and **battery consumption**. Code that is faster but drains a phone’s battery is not progress. We choose the measure that matters for the use.
+  exemple:
+    fr: 'Le budget de premier chargement d’academik (150 Ko) est une mesure choisie pour l’usage : un téléphone modeste avec un réseau lent.'
+    en: 'academik’s first-load budget (150 KB) is a measure chosen for the use: a modest phone on a slow network.'
+- id: c12
+  type: retenir
+  fr: 'Mesurer avant d’optimiser ; profileur : appels, temps, parts ; trouver le goulot ; re-mesurer. Loi d’Amdahl : $1/((1-p)+p/s)$, plafond $1/(1-p)$. Répéter les mesures, données réalistes.'
+  en: 'Measure before optimising; profiler: calls, time, shares; find the bottleneck; re-measure. Amdahl’s law: $1/((1-p)+p/s)$, cap $1/(1-p)$. Repeat measurements, realistic data.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [la documentation des profileurs Python](https://docs.python.org/3/library/profile.html) ; cette page demande une connexion.
+  en: For further study, see [the Python profilers documentation](https://docs.python.org/3/library/profile.html); this page needs a connection.

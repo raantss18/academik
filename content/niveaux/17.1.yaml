@@ -1,0 +1,316 @@
+# Niveau 17.1 — Recherche quantitative 1 : rendements, volatilité, drawdown, VaR et ES. Original academik ; notions vérifiées dans le cours 15.401 du MIT (lien) et le cours 18.642 (lien). Cadre strictement pédagogique.
+id: '17.1'
+module: 17
+duree_min: 20
+titre:
+  fr: Rendements et risque
+  en: Returns and risk
+ia:
+  fr: Kintana mesure ce qu’un prix rapporte, et ce qu’il peut faire perdre.
+  en: Kintana measures what a price earns, and what it can lose.
+sources:
+- titre: MIT OpenCourseWare — 15.401 Finance Theory I
+  url: https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
+  url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un prix passe de 100 à 110, puis de 110 à 99. Pour comparer des investissements de tailles différentes, on ne regarde pas la variation en euros mais en **pourcentage**. Comment s’appelle cette variation relative ?
+  en: A price goes from 100 to 110, then from 110 to 99. To compare investments of different sizes, we do not look at the change in euros but in **percent**. What is this relative change called?
+  choix:
+  - fr: Le rendement
+    en: The return
+    juste: true
+  - fr: La volatilité
+    en: The volatility
+  - fr: Le dividende
+    en: The dividend
+  indice:
+    fr: 'C’est la variation relative d’un prix entre deux dates : nouveau prix divisé par ancien prix, moins 1.'
+    en: 'It is the relative change of a price between two dates: new price divided by old price, minus 1.'
+  explication:
+    fr: 'Le **rendement** d’une période est $r=P_{t+1}/P_t-1$ : $+10\,\%$ de 100 à 110, puis $-10\,\%$ de 110 à 99.'
+    en: 'The **return** of a period is $r=P_{t+1}/P_t-1$: $+10\%$ from 100 to 110, then $-10\%$ from 110 to 99.'
+- id: c2
+  type: idee
+  fr: 'Le **rendement simple** compare deux prix : $r_t=P_t/P_{t-1}-1$. Les rendements permettent de comparer des actifs de prix très différents. Attention : $+10\,\%$ puis $-10\,\%$ ne ramène **pas** au point de départ ($100\to110\to99$).'
+  en: 'The **simple return** compares two prices: $r_t=P_t/P_{t-1}-1$. Returns let us compare assets of very different prices. Beware: $+10\%$ then $-10\%$ does **not** bring you back to the start ($100\to110\to99$).'
+  exemple:
+    fr: 'Pour les prix $(100,\,110,\,99)$ : $r_1=110/100-1=0{,}10$ et $r_2=99/110-1=-0{,}10$.'
+    en: 'For the prices $(100,\,110,\,99)$: $r_1=110/100-1=0.10$ and $r_2=99/110-1=-0.10$.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Date
+      en: Date
+    - fr: Prix
+      en: Price
+    - fr: Rendement
+      en: Return
+    cellules:
+    - - '0'
+      - '100'
+      - —
+    - - '1'
+      - '110'
+      - +10 %
+    - - fr: '2'
+        en: '2'
+        ton: bad
+      - fr: '99'
+        en: '99'
+        ton: bad
+      - fr: −10 %
+        en: −10%
+        ton: bad
+    legende:
+      fr: Deux variations opposées de 10 % ne s’annulent pas.
+      en: Two opposite 10% changes do not cancel out.
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `rendements(prix)`** : la liste des rendements simples `prix[i + 1] / prix[i] - 1`, pour `i` de `0` à `len(prix) - 2`. Une liste de moins de deux prix donne une liste vide.'
+  en: 'Your turn. **Write `rendements(prix)`**: the list of simple returns `prix[i + 1] / prix[i] - 1`, for `i` from `0` to `len(prix) - 2`. A list of fewer than two prices gives an empty list.'
+  depart: |
+    # écris ta fonction rendements ici
+  tests: |-
+    r = rendements([100.0, 110.0, 99.0])
+    assert abs(r[0] - 0.1) < 1e-12 and abs(r[1] + 0.1) < 1e-12
+    assert rendements([5.0]) == []
+    assert rendements([]) == []
+    assert len(rendements([1.0, 2.0, 3.0, 4.0])) == 3
+  solutionCode: |
+    def rendements(prix):
+        return [prix[i + 1] / prix[i] - 1 for i in range(len(prix) - 1)]
+  indice:
+    fr: Une compréhension de liste sur `range(len(prix) - 1)`.
+    en: A list comprehension over `range(len(prix) - 1)`.
+  explication:
+    fr: 'Pour `n` prix, on obtient `n - 1` rendements : un de moins que de dates.'
+    en: 'For `n` prices, we get `n - 1` returns: one fewer than dates.'
+- id: c4
+  type: idee
+  fr: 'Le **rendement logarithmique** $\ln(P_t/P_{t-1})$ a une qualité : ils **s’additionnent**. La somme des rendements log sur plusieurs périodes est le rendement log total. Pour de petites variations, il est presque égal au rendement simple.'
+  en: 'The **logarithmic return** $\ln(P_t/P_{t-1})$ has a quality: they **add up**. The sum of log returns over several periods is the total log return. For small changes, it is almost equal to the simple return.'
+  exemple:
+    fr: 'Prix $100\to110\to99$ : $\ln1{,}1+\ln0{,}9=0{,}0953-0{,}1054=-0{,}0101=\ln(99/100)$.'
+    en: 'Prices $100\to110\to99$: $\ln1.1+\ln0.9=0.0953-0.1054=-0.0101=\ln(99/100)$.'
+- id: c5
+  type: exemple
+  titre:
+    fr: Rendements log qui s’additionnent
+    en: Log returns that add up
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      prix = [100.0, 110.0, 99.0]
+    fr: Les trois prix de l’exemple.
+    en: The three prices of the example.
+  - code: logs = [math.log(prix[i + 1] / prix[i]) for i in range(2)]
+    fr: Un rendement log par période.
+    en: One log return per period.
+  - code: print(round(sum(logs), 4), round(math.log(prix[2] / prix[0]), 4))
+    fr: 'On affiche `-0.0101 -0.0101` : la somme égale le rendement total.'
+    en: 'We display `-0.0101 -0.0101`: the sum equals the total return.'
+  verif: |-
+    import math
+    prix = [100.0, 110.0, 99.0]
+    logs = [math.log(prix[i + 1] / prix[i]) for i in range(2)]
+    print(round(sum(logs), 4), round(math.log(prix[2] / prix[0]), 4))
+  sortie: -0.0101 -0.0101
+- id: c6
+  type: idee
+  fr: 'Le **risque** se mesure d’abord par la **volatilité** : l’écart type des rendements. On l’**annualise** en multipliant par $\sqrt{T}$, où $T$ est le nombre de périodes par an (252 jours de bourse). Une volatilité de 1 % par jour fait environ $1\,\%\times\sqrt{252}\approx16\,\%$ par an.'
+  en: '**Risk** is first measured by **volatility**: the standard deviation of returns. It is **annualised** by multiplying by $\sqrt{T}$, where $T$ is the number of periods per year (252 trading days). A volatility of 1% per day gives about $1\%\times\sqrt{252}\approx16\%$ per year.'
+  exemple:
+    fr: On multiplie par $\sqrt{252}\approx15{,}87$ parce que les variances s’additionnent (niveau 16.2).
+    en: We multiply by $\sqrt{252}\approx15.87$ because variances add (level 16.2).
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Volatilité quotidienne
+      en: Daily volatility
+    - fr: Annualisée
+      en: Annualised
+    cellules:
+    - - 0,5 %
+      - 7,9 %
+    - - 1 %
+      - 15,9 %
+    - - fr: 2 %
+        en: 2%
+        ton: ok
+      - fr: 31,7 %
+        en: 31.7%
+        ton: ok
+    legende:
+      fr: 'Annualisation : facteur $\sqrt{252}\approx15{,}87$.'
+      en: 'Annualisation: factor $\sqrt{252}\approx15.87$.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `volatilite(r, periodes=252)`** : l’écart type des rendements `r` (somme des carrés des écarts à la moyenne, divisée par `n - 1`, puis racine) multiplié par `math.sqrt(periodes)`.'
+  en: '**Write `volatilite(r, periodes=252)`**: the standard deviation of the returns `r` (sum of squared deviations from the mean, divided by `n - 1`, then root) multiplied by `math.sqrt(periodes)`.'
+  depart: |
+    import math
+
+    # écris ta fonction volatilite ici
+  tests: |-
+    r = [0.01, -0.01, 0.01, -0.01]
+    v = volatilite(r, 1)
+    assert abs(v - (4 / 3) ** 0.5 * 0.01) < 1e-9
+    assert abs(volatilite(r, 252) - v * 252 ** 0.5) < 1e-9
+    assert volatilite([0.02, 0.02, 0.02]) == 0.0
+  solutionCode: |
+    import math
+
+    def volatilite(r, periodes=252):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return s * math.sqrt(periodes)
+  indice:
+    fr: Calcule la moyenne `m`, puis `s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))`, puis `s * math.sqrt(periodes)`.
+    en: Compute the mean `m`, then `s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))`, then `s * math.sqrt(periodes)`.
+  explication:
+    fr: 'Des rendements constants ont une volatilité nulle : la volatilité mesure la dispersion, pas la hausse.'
+    en: 'Constant returns have zero volatility: volatility measures dispersion, not the rise.'
+- id: c8
+  type: idee
+  fr: 'La volatilité traite une hausse et une baisse de la même façon. Le **drawdown** mesure ce que redoute vraiment un investisseur : la perte depuis le dernier sommet. Le **drawdown maximal** est la pire chute entre un pic et un creux ultérieur, en pourcentage du pic.'
+  en: 'Volatility treats a rise and a fall the same way. The **drawdown** measures what an investor truly fears: the loss since the last peak. The **maximum drawdown** is the worst fall between a peak and a later trough, as a percentage of the peak.'
+  exemple:
+    fr: 'Prix $100,\,120,\,90,\,110$ : le pic est $120$, le creux $90$, soit un drawdown de $(120-90)/120=25\,\%$.'
+    en: 'Prices $100,\,120,\,90,\,110$: the peak is $120$, the trough $90$, a drawdown of $(120-90)/120=25\%$.'
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `drawdown_max(prix)`** : parcours les prix en gardant le `pic` (le plus haut vu jusqu’ici) ; pour chaque prix, la chute vaut `(pic - p) / pic` ; renvoie la plus grande chute (0 si les prix ne baissent jamais).'
+  en: 'Challenge. **Write `drawdown_max(prix)`**: walk through the prices keeping the `pic` (the highest seen so far); for each price, the fall is `(pic - p) / pic`; return the largest fall (0 if prices never decrease).'
+  depart: |
+    # écris ta fonction drawdown_max ici
+  tests: |-
+    assert abs(drawdown_max([100.0, 120.0, 90.0, 110.0]) - 0.25) < 1e-12
+    assert drawdown_max([1.0, 2.0, 3.0]) == 0.0
+    assert abs(drawdown_max([100.0, 50.0, 100.0, 90.0]) - 0.5) < 1e-12
+    assert abs(drawdown_max([10.0, 9.0, 8.0, 7.0]) - 0.3) < 1e-12
+  solutionCode: |
+    def drawdown_max(prix):
+        pic = prix[0]
+        pire = 0.0
+        for p in prix:
+            pic = max(pic, p)
+            pire = max(pire, (pic - p) / pic)
+        return pire
+  indice:
+    fr: 'Deux variables : `pic` (mis à jour avec `max`) et `pire`. Chaque prix met à jour `pire` avec la chute depuis `pic`.'
+    en: 'Two variables: `pic` (updated with `max`) and `pire`. Each price updates `pire` with the fall from `pic`.'
+  explication:
+    fr: 'Le drawdown dépend de l’ordre des prix : deux séries de même volatilité peuvent avoir des drawdowns très différents.'
+    en: 'The drawdown depends on the order of prices: two series with the same volatility can have very different drawdowns.'
+- id: c10
+  type: idee
+  fr: 'La **VaR** (value at risk) à 95 % est la perte qui n’est dépassée que dans 5 % des cas. L’**ES** (expected shortfall) est la perte **moyenne** dans ces 5 % des pires cas. L’ES voit la queue que la VaR ignore : deux portefeuilles de même VaR peuvent avoir des ES très différents.'
+  en: 'The 95% **VaR** (value at risk) is the loss exceeded only in 5% of cases. The **ES** (expected shortfall) is the **average** loss in those worst 5% of cases. ES sees the tail that VaR ignores: two portfolios with the same VaR can have very different ES.'
+  exemple:
+    fr: 'Sur 20 rendements, les 5 % les pires sont 1 valeur : VaR et ES valent la pire perte. À 90 %, ce sont 2 valeurs.'
+    en: 'On 20 returns, the worst 5% is 1 value: VaR and ES equal the worst loss. At 90%, it is 2 values.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: VaR et ES
+        en: VaR and ES
+      noeuds:
+      - fr: trier les rendements
+        en: sort the returns
+      - fr: prendre les $k$ pires
+        en: take the $k$ worst
+      - fr: 'VaR : le $k$-ième pire'
+        en: 'VaR: the $k$-th worst'
+      - fr: 'ES : leur moyenne'
+        en: 'ES: their average'
+        ton: ok
+    legende:
+      fr: $k=(1-\text{niveau})\times n$, arrondi.
+      en: $k=(1-\text{level})\times n$, rounded.
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `var_es(r, niveau=0.95)`** : trie `r` par ordre croissant, `k = max(1, round((1 - niveau) * len(r)))`. Renvoie le couple `(var, es)` avec `var = -tri[k - 1]` (opposé du `k`-ième pire rendement) et `es = -sum(tri[:k]) / k` (opposé de la moyenne des `k` pires).'
+  en: 'Challenge. **Write `var_es(r, niveau=0.95)`**: sort `r` in increasing order, `k = max(1, round((1 - niveau) * len(r)))`. Return the pair `(var, es)` with `var = -tri[k - 1]` (negative of the `k`-th worst return) and `es = -sum(tri[:k]) / k` (negative of the average of the `k` worst).'
+  depart: |
+    # écris ta fonction var_es ici
+  tests: |-
+    r = [-0.10, -0.05, -0.02, 0.0, 0.01, 0.02, 0.02, 0.03, 0.03, 0.04, 0.04, 0.05, 0.05, 0.06, 0.06, 0.07, 0.08, 0.08, 0.09, 0.10]
+    assert var_es(r, 0.95) == (0.10, 0.10)
+    v, e = var_es(r, 0.90)
+    assert abs(v - 0.05) < 1e-12 and abs(e - 0.075) < 1e-12
+    v, e = var_es(r, 0.80)
+    assert e >= v
+    assert var_es([-0.2, 0.1], 0.5) == (0.2, 0.2)
+  solutionCode: |
+    def var_es(r, niveau=0.95):
+        tri = sorted(r)
+        k = max(1, round((1 - niveau) * len(tri)))
+        var = -tri[k - 1]
+        es = -sum(tri[:k]) / k
+        return var, es
+  indice:
+    fr: '`tri = sorted(r)`, puis `k`, puis `-tri[k - 1]` pour la VaR et `-sum(tri[:k]) / k` pour l’ES.'
+    en: '`tri = sorted(r)`, then `k`, then `-tri[k - 1]` for VaR and `-sum(tri[:k]) / k` for ES.'
+  explication:
+    fr: 'L’ES est toujours au moins égale à la VaR : la moyenne des pires cas ne peut pas être meilleure que le seuil.'
+    en: 'ES is always at least equal to VaR: the average of the worst cases cannot be better than the threshold.'
+- id: c12
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un actif a une volatilité quotidienne de 2 %. Quelle est sa volatilité annualisée, en pourcentage arrondi à l’entier (252 jours) ?
+  en: An asset has a daily volatility of 2%. What is its annualised volatility, as a percentage rounded to the integer (252 days)?
+  reponses:
+  - '32'
+  verif: print(round(2 * 252 ** 0.5))
+  indice:
+    fr: Multiplie 2 % par la racine carrée de 252.
+    en: Multiply 2% by the square root of 252.
+  explication:
+    fr: $2\times15{,}87=31{,}7$, soit 32 % arrondi.
+    en: $2\times15.87=31.7$, that is 32% rounded.
+- id: c13
+  type: piege
+  fr: 'Le passé ne garantit pas le futur. Les rendements réels ont des **queues épaisses** : des chutes extrêmes bien plus fréquentes que ne le prédit une loi normale. Une VaR calculée sur une période calme sous-estime le risque d’une crise. Une mesure de risque est une estimation, pas une limite.'
+  en: 'The past does not guarantee the future. Real returns have **fat tails**: extreme falls far more frequent than a normal law predicts. A VaR computed over a calm period underestimates the risk of a crisis. A risk measure is an estimate, not a limit.'
+- id: c14
+  type: idee
+  fr: 'Dans ce module, tout est **pédagogique** : données synthétiques ou publiques, aucun conseil d’investissement. Le fil conducteur est la rigueur : mesurer, annoncer l’incertitude, et rejeter ce qui ne tient pas. Le niveau suivant combine plusieurs actifs en un portefeuille.'
+  en: 'In this module, everything is **educational**: synthetic or public data, no investment advice. The common thread is rigour: measure, state the uncertainty, and reject what does not hold. The next level combines several assets into a portfolio.'
+  exemple:
+    fr: Un résultat qui paraît trop beau est le premier à vérifier, jamais à publier.
+    en: A result that looks too good is the first to check, never to publish.
+- id: c15
+  type: retenir
+  fr: 'Rendement simple $P_t/P_{t-1}-1$ ; rendement log additif. Volatilité = écart type des rendements, annualisée par $\sqrt{252}$. Drawdown : chute depuis le pic. VaR : seuil de perte ; ES : moyenne des pires pertes.'
+  en: 'Simple return $P_t/P_{t-1}-1$; log return additive. Volatility = standard deviation of returns, annualised by $\sqrt{252}$. Drawdown: fall from the peak. VaR: loss threshold; ES: average of the worst losses.'
+- id: c16
+  type: plus
+  fr: Pour approfondir, consulte [le cours Finance Theory du MIT](https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/) ; ce site demande une connexion.
+  en: For further study, see [MIT’s Finance Theory course](https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/); this site needs a connection.

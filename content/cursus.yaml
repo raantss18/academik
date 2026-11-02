@@ -154,3 +154,48 @@ modules:
       - { id: "15.4", titre: { fr: "La boucle d’agent" } }
       - { id: "15.5", titre: { fr: "Le protocole MCP" } }
       - { id: "15.boss", boss: true, titre: { fr: "Ton agent local" } }
+  - id: 16
+    titre: { fr: "Processus stochastiques", en: "Stochastic processes" }
+    niveaux:
+      - { id: "16.1", titre: { fr: "Équations différentielles et Euler" } }
+      - { id: "16.2", titre: { fr: "Marches aléatoires" } }
+      - { id: "16.3", titre: { fr: "Chaînes de Markov" } }
+      - { id: "16.4", titre: { fr: "Martingales" } }
+      - { id: "16.5", titre: { fr: "Mouvement brownien et EDS" } }
+      - { id: "16.boss", boss: true, titre: { fr: "Simuler des prix" } }
+  - id: 17
+    titre: { fr: "Recherche quantitative", en: "Quantitative research" }
+    niveaux:
+      - { id: "17.1", titre: { fr: "Rendements et risque" } }
+      - { id: "17.2", titre: { fr: "Portefeuilles et Markowitz" } }
+      - { id: "17.3", titre: { fr: "Facteurs et bêta" } }
+      - { id: "17.4", titre: { fr: "Options et absence d’arbitrage" } }
+      - { id: "17.5", titre: { fr: "Un backtest honnête" } }
+      - { id: "17.boss", boss: true, titre: { fr: "Le rapport qui rejette" } }
+  - id: 18
+    titre: { fr: "Performance", en: "Performance" }
+    niveaux:
+      - { id: "18.1", titre: { fr: "Compter les opérations" } }
+      - { id: "18.2", titre: { fr: "Mémoire, cache et localité" } }
+      - { id: "18.3", titre: { fr: "Éviter le travail inutile" } }
+      - { id: "18.4", titre: { fr: "Profiler avant d’optimiser" } }
+      - { id: "18.5", titre: { fr: "Vectoriser et paralléliser" } }
+      - { id: "18.boss", boss: true, titre: { fr: "Rends-le rapide" } }
+  - id: 19
+    titre: { fr: "Sécurité", en: "Security" }
+    niveaux:
+      - { id: "19.1", titre: { fr: "Réseaux et TLS" } }
+      - { id: "19.2", titre: { fr: "Cryptographie par bibliothèques" } }
+      - { id: "19.3", titre: { fr: "Programmer sans faille" } }
+      - { id: "19.4", titre: { fr: "Les risques des applications LLM" } }
+      - { id: "19.5", titre: { fr: "Le lab d’injection de prompt" } }
+      - { id: "19.boss", boss: true, titre: { fr: "Défends ton agent" } }
+  - id: 20
+    titre: { fr: "Évaluer et produire", en: "Evaluate and ship" }
+    niveaux:
+      - { id: "20.1", titre: { fr: "Évaluer un modèle" } }
+      - { id: "20.2", titre: { fr: "Des mesures honnêtes" } }
+      - { id: "20.3", titre: { fr: "Observer en production" } }
+      - { id: "20.4", titre: { fr: "Reproduire une expérience" } }
+      - { id: "20.5", titre: { fr: "Livrer avec éthique" } }
+      - { id: "20.boss", boss: true, titre: { fr: "Livre ton assistant" } }

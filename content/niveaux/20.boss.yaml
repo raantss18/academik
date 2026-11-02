@@ -1,0 +1,363 @@
+# Niveau 20.boss — Livre ton assistant (mission : décision de livraison avec raisons et dossier). Original academik ; notions des niveaux 20.1 à 20.5, vérifiées dans Mitchell et al. 2019 (arXiv 1810.03993) et le NIST AI RMF (cité).
+id: 20.boss
+module: 20
+duree_min: 14
+titre:
+  fr: Livre ton assistant
+  en: Ship your assistant
+ia:
+  fr: Kintana ne livre que ce qu’elle peut prouver, mesuré, expliqué et reproductible.
+  en: Kintana ships only what she can prove, measured, explained and reproducible.
+sources:
+- titre: Mitchell et al. — Model Cards for Model Reporting (2019)
+  url: https://arxiv.org/abs/1810.03993
+  licence: Article en accès libre ; idée citée
+- titre: NIST — AI Risk Management Framework (AI RMF 1.0)
+  url: https://www.nist.gov/itl/ai-risk-management-framework
+  licence: Domaine public (publication fédérale américaine) ; cadre cité
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Ton assistant a 91 % d’exactitude sur 200 questions. Avant de le livrer, que veux-tu savoir **en plus** de ce score ?
+  en: Your assistant has 91% accuracy on 200 questions. Before shipping it, what do you want to know **in addition** to this score?
+  choix:
+  - fr: Son intervalle de confiance, ses résultats par groupe, sa fiche complète et la reproductibilité de l’expérience
+    en: Its confidence interval, its results per group, its complete card and the experiment’s reproducibility
+    juste: true
+  - fr: 'Rien : 91 % suffit'
+    en: 'Nothing: 91% is enough'
+  - fr: La couleur de l’interface
+    en: The colour of the interface
+  indice:
+    fr: Un score seul laisse de côté l’incertitude, l’équité, la transparence et la possibilité de refaire la mesure.
+    en: A score alone leaves out uncertainty, fairness, transparency and the possibility of redoing the measurement.
+  explication:
+    fr: 'Une livraison responsable croise plusieurs **portes** : exactitude avec incertitude, équité, transparence, reproductibilité. **Toutes** doivent passer.'
+    en: 'A responsible release combines several **gates**: accuracy with uncertainty, fairness, transparency, reproducibility. **All** must pass.'
+- id: c2
+  type: idee
+  fr: 'Mission finale du module : écrire la **décision de livraison** de ton assistant. Elle prend le nombre de bonnes réponses, les taux par groupe, la fiche du modèle et l’empreinte de l’expérience. Elle renvoie `go` ou `no-go` **avec les raisons** de chaque porte qui échoue.'
+  en: 'Final mission of the module: write your assistant’s **release decision**. It takes the number of correct answers, the rates per group, the model card and the experiment fingerprint. It returns `go` or `no-go` **with the reasons** for each gate that fails.'
+  exemple:
+    fr: 'Les seuils sont fixés avant de regarder les résultats : 0,80 pour l’exactitude (borne basse) et pour le ratio d’impact.'
+    en: 'The thresholds are set before looking at the results: 0.80 for accuracy (lower bound) and for the impact ratio.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Quatre portes
+        en: Four gates
+      noeuds:
+      - fr: exactitude (borne basse)
+        en: accuracy (lower bound)
+      - fr: équité (ratio d’impact)
+        en: fairness (impact ratio)
+      - fr: fiche complète
+        en: complete card
+      - fr: empreinte consignée
+        en: fingerprint recorded
+        ton: ok
+    legende:
+      fr: Une seule porte fermée suffit à retarder la livraison.
+      en: A single closed gate is enough to delay the release.
+- id: c3
+  type: exemple
+  titre:
+    fr: Une porte d’exactitude
+    en: An accuracy gate
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      k, n = 182, 200
+      z = 1.96
+      p = k / n
+    fr: 182 bonnes réponses sur 200.
+    en: 182 correct answers out of 200.
+  - code: |-
+      d = 1 + z * z / n
+      centre = (p + z * z / (2 * n)) / d
+      marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    fr: On calcule l’intervalle de Wilson.
+    en: We compute the Wilson interval.
+  - code: print(round(centre - marge, 3), round(centre + marge, 3))
+    fr: 'On affiche `0.862 0.942` : la borne basse dépasse 0,80, la porte passe.'
+    en: 'We display `0.862 0.942`: the lower bound exceeds 0.80, the gate passes.'
+  verif: |-
+    import math
+    k, n = 182, 200
+    z = 1.96
+    p = k / n
+    d = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / d
+    marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    print(round(centre - marge, 3), round(centre + marge, 3))
+  sortie: 0.862 0.942
+- id: c4
+  type: idee
+  fr: 'On juge l’exactitude sur la **borne basse** de l’intervalle, pas sur le score observé. Avec 18 réussites sur 20 (90 %), la borne basse est d’environ 70 % : on ne peut pas affirmer plus de 80 %. Cela protège contre les petits jeux de test flatteurs. Il faut plus d’exemples pour être sûr.'
+  en: 'We judge accuracy on the interval’s **lower bound**, not the observed score. With 18 successes out of 20 (90%), the lower bound is about 70%: we cannot claim more than 80%. This protects against flattering small test sets. More examples are needed to be sure.'
+  exemple:
+    fr: '182 sur 200 (91 %) donne une borne basse de 86 % : la porte à 80 % passe.'
+    en: '182 out of 200 (91%) gives a lower bound of 86%: the 80% gate passes.'
+- id: c4c
+  type: idee
+  fr: 'Les seuils ne sont pas tous du même type. Certains sont **bloquants** : une fiche absente, une fuite de données. D’autres sont des **avertissements** : une latence un peu haute. Une bonne décision distingue les deux, pour que les avertissements s’accumulent visiblement sans tout bloquer.'
+  en: 'Thresholds are not all of the same kind. Some are **blocking**: a missing card, a data leak. Others are **warnings**: slightly high latency. A good decision distinguishes the two, so that warnings accumulate visibly without blocking everything.'
+  exemple:
+    fr: Une seule raison bloquante suffit à dire `no-go` ; trois avertissements peuvent demander une revue humaine.
+    en: A single blocking reason is enough to say `no-go`; three warnings may call for a human review.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Type
+      en: Type
+    - fr: Effet
+      en: Effect
+    cellules:
+    - - fr: bloquant
+        en: blocking
+      - fr: no-go
+        en: no-go
+        ton: bad
+    - - fr: avertissement
+        en: warning
+      - fr: revue humaine
+        en: human review
+    - - fr: conforme
+        en: compliant
+        ton: ok
+      - fr: go
+        en: go
+        ton: ok
+    legende:
+      fr: Les seuils de chaque type sont fixés à l’avance.
+      en: The thresholds of each type are set in advance.
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `decision_livraison(bons, total, taux_groupes, carte, empreinte)`** : `raisons = []`. Ajoute `"exactitude"` si la borne basse de `intervalle_wilson(bons, total)` est `< SEUIL_EXACTITUDE` ; `"equite"` si `ratio_impact(taux_groupes) < SEUIL_IMPACT` ; `"fiche"` si `champs_manquants(carte, REQUIS)` n’est pas vide ; `"reproductibilite"` si `empreinte` est vide. Renvoie `{"go": len(raisons) == 0, "raisons": raisons}`.'
+  en: 'Your turn. **Write `decision_livraison(bons, total, taux_groupes, carte, empreinte)`**: `raisons = []`. Add `"exactitude"` if the lower bound of `intervalle_wilson(bons, total)` is `< SEUIL_EXACTITUDE`; `"equite"` if `ratio_impact(taux_groupes) < SEUIL_IMPACT`; `"fiche"` if `champs_manquants(carte, REQUIS)` is not empty; `"reproductibilite"` if `empreinte` is empty. Return `{"go": len(raisons) == 0, "raisons": raisons}`.'
+  depart: |
+    import math
+
+    def intervalle_wilson(k, n, z=1.96):
+        p = k / n
+        d = 1 + z * z / n
+        centre = (p + z * z / (2 * n)) / d
+        marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+        return centre - marge, centre + marge
+
+    def ratio_impact(taux):
+        return min(taux.values()) / max(taux.values())
+
+    def champs_manquants(carte, requis):
+        return [c for c in requis if not carte.get(c)]
+
+    REQUIS = ["usage", "donnees", "limites", "licence"]
+    SEUIL_EXACTITUDE = 0.80
+    SEUIL_IMPACT = 0.80
+
+    # écris ta fonction decision_livraison ici
+  tests: |-
+    carte = {"usage": "cours", "donnees": "corpus academik", "limites": "peut se tromper", "licence": "Apache-2.0"}
+    g = {"fr": 0.92, "en": 0.90, "mg": 0.85}
+    r = decision_livraison(182, 200, g, carte, "ab12")
+    assert r == {"go": True, "raisons": []}
+    r = decision_livraison(18, 20, g, carte, "ab12")
+    assert r == {"go": False, "raisons": ["exactitude"]}
+    r = decision_livraison(182, 200, {"fr": 0.95, "mg": 0.60}, {"usage": "x"}, "")
+    assert r == {"go": False, "raisons": ["equite", "fiche", "reproductibilite"]}
+  solutionCode: |
+    import math
+
+    def intervalle_wilson(k, n, z=1.96):
+        p = k / n
+        d = 1 + z * z / n
+        centre = (p + z * z / (2 * n)) / d
+        marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+        return centre - marge, centre + marge
+
+    def ratio_impact(taux):
+        return min(taux.values()) / max(taux.values())
+
+    def champs_manquants(carte, requis):
+        return [c for c in requis if not carte.get(c)]
+
+    REQUIS = ["usage", "donnees", "limites", "licence"]
+    SEUIL_EXACTITUDE = 0.80
+    SEUIL_IMPACT = 0.80
+
+    def decision_livraison(bons, total, taux_groupes, carte, empreinte):
+        raisons = []
+        bas, _ = intervalle_wilson(bons, total)
+        if bas < SEUIL_EXACTITUDE:
+            raisons.append("exactitude")
+        if ratio_impact(taux_groupes) < SEUIL_IMPACT:
+            raisons.append("equite")
+        if champs_manquants(carte, REQUIS):
+            raisons.append("fiche")
+        if not empreinte:
+            raisons.append("reproductibilite")
+        return {"go": len(raisons) == 0, "raisons": raisons}
+  indice:
+    fr: Quatre `if` indépendants ajoutant des raisons ; `bas, _ = intervalle_wilson(bons, total)` donne la borne basse.
+    en: Four independent `if`s adding reasons; `bas, _ = intervalle_wilson(bons, total)` gives the lower bound.
+  explication:
+    fr: 'La liste des raisons dit exactement quoi corriger : un `no-go` sans explication ne sert à personne.'
+    en: 'The list of reasons says exactly what to fix: a `no-go` without explanation is useful to nobody.'
+- id: c6
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un assistant a des taux de réussite de 0,90 (groupe A) et 0,66 (groupe B). Le ratio d’impact atteint-il le seuil de 0,80 ? Réponds `oui` ou `non`.
+  en: An assistant has success rates of 0.90 (group A) and 0.66 (group B). Does the impact ratio reach the threshold of 0.80? Answer `oui` or `non`.
+  reponses:
+  - non
+  verif: print("oui" if 0.66 / 0.90 >= 0.80 else "non")
+  indice:
+    fr: Calcule le plus petit taux divisé par le plus grand.
+    en: Compute the smallest rate divided by the largest.
+  explication:
+    fr: '$0{,}66/0{,}90\approx0{,}73<0{,}80$ : la porte d’équité échoue.'
+    en: '$0.66/0.90\approx0.73<0.80$: the fairness gate fails.'
+- id: c7
+  type: piege
+  fr: 'Choisir les seuils **après** avoir vu les résultats annule le contrôle : on les ajuste pour que ça passe. Fixe-les à l’avance, consigne-les, et justifie-les. Et un `go` n’est pas une garantie : c’est le début de la surveillance en production (niveau 20.3), pas la fin du travail.'
+  en: 'Choosing thresholds **after** seeing the results cancels the check: we adjust them so it passes. Set them in advance, record them, and justify them. And a `go` is not a guarantee: it is the start of monitoring in production (level 20.3), not the end of the work.'
+- id: c8
+  type: idee
+  fr: Le **dossier de livraison** rassemble la décision et ses raisons, l’intervalle d’exactitude, les résultats par groupe, la fiche, l’empreinte, les seuils et la date. Il est consigné **avant** la mise en service.
+  en: The **release file** gathers the decision and its reasons, the accuracy interval, the results per group, the card, the fingerprint, the thresholds and the date. It is recorded **before** going into service.
+  exemple:
+    fr: 'Six mois plus tard, quelqu’un demande « pourquoi cette version a-t-elle été livrée ? » : le dossier répond.'
+    en: 'Six months later, someone asks “why was this version shipped?”: the file answers.'
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 2
+  fr: 'Défi final. **Écris `dossier(bons, total, taux_groupes, carte, empreinte)`** : renvoie un dictionnaire avec `"decision"` (le résultat de `decision_livraison`), `"exactitude"` (le couple de `intervalle_wilson`, arrondi à 3 décimales) et `"impact"` (`round(ratio_impact(taux_groupes), 3)`).'
+  en: 'Final challenge. **Write `dossier(bons, total, taux_groupes, carte, empreinte)`**: return a dictionary with `"decision"` (the result of `decision_livraison`), `"exactitude"` (the pair from `intervalle_wilson`, rounded to 3 decimals) and `"impact"` (`round(ratio_impact(taux_groupes), 3)`).'
+  depart: |
+    import math
+
+    def intervalle_wilson(k, n, z=1.96):
+        p = k / n
+        d = 1 + z * z / n
+        centre = (p + z * z / (2 * n)) / d
+        marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+        return centre - marge, centre + marge
+
+    def ratio_impact(taux):
+        return min(taux.values()) / max(taux.values())
+
+    def champs_manquants(carte, requis):
+        return [c for c in requis if not carte.get(c)]
+
+    REQUIS = ["usage", "donnees", "limites", "licence"]
+    SEUIL_EXACTITUDE = 0.80
+    SEUIL_IMPACT = 0.80
+
+    def decision_livraison(bons, total, taux_groupes, carte, empreinte):
+        raisons = []
+        bas, _ = intervalle_wilson(bons, total)
+        if bas < SEUIL_EXACTITUDE:
+            raisons.append("exactitude")
+        if ratio_impact(taux_groupes) < SEUIL_IMPACT:
+            raisons.append("equite")
+        if champs_manquants(carte, REQUIS):
+            raisons.append("fiche")
+        if not empreinte:
+            raisons.append("reproductibilite")
+        return {"go": len(raisons) == 0, "raisons": raisons}
+
+    # écris ta fonction dossier ici
+  tests: |-
+    carte = {"usage": "cours", "donnees": "corpus", "limites": "erreurs", "licence": "Apache-2.0"}
+    d = dossier(182, 200, {"fr": 0.92, "mg": 0.85}, carte, "ab12")
+    assert d["decision"] == {"go": True, "raisons": []}
+    assert d["exactitude"] == (0.862, 0.942)
+    assert d["impact"] == 0.924
+    d2 = dossier(18, 20, {"fr": 0.9, "mg": 0.9}, carte, "x")
+    assert d2["decision"]["go"] is False and d2["impact"] == 1.0
+  solutionCode: |
+    import math
+
+    def intervalle_wilson(k, n, z=1.96):
+        p = k / n
+        d = 1 + z * z / n
+        centre = (p + z * z / (2 * n)) / d
+        marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+        return centre - marge, centre + marge
+
+    def ratio_impact(taux):
+        return min(taux.values()) / max(taux.values())
+
+    def champs_manquants(carte, requis):
+        return [c for c in requis if not carte.get(c)]
+
+    REQUIS = ["usage", "donnees", "limites", "licence"]
+    SEUIL_EXACTITUDE = 0.80
+    SEUIL_IMPACT = 0.80
+
+    def decision_livraison(bons, total, taux_groupes, carte, empreinte):
+        raisons = []
+        bas, _ = intervalle_wilson(bons, total)
+        if bas < SEUIL_EXACTITUDE:
+            raisons.append("exactitude")
+        if ratio_impact(taux_groupes) < SEUIL_IMPACT:
+            raisons.append("equite")
+        if champs_manquants(carte, REQUIS):
+            raisons.append("fiche")
+        if not empreinte:
+            raisons.append("reproductibilite")
+        return {"go": len(raisons) == 0, "raisons": raisons}
+
+    def dossier(bons, total, taux_groupes, carte, empreinte):
+        bas, haut = intervalle_wilson(bons, total)
+        return {"decision": decision_livraison(bons, total, taux_groupes, carte, empreinte), "exactitude": (round(bas, 3), round(haut, 3)), "impact": round(ratio_impact(taux_groupes), 3)}
+  indice:
+    fr: 'Trois ingrédients : la décision, l’intervalle arrondi, le ratio d’impact arrondi, rangés dans un dictionnaire.'
+    en: 'Three ingredients: the decision, the rounded interval, the rounded impact ratio, stored in a dictionary.'
+  explication:
+    fr: 'Tu as écrit la dernière brique : un assistant livré avec sa preuve, son incertitude et ses limites.'
+    en: 'You have written the last brick: an assistant shipped with its proof, its uncertainty and its limits.'
+- id: c10
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un dossier de livraison contient la décision, l’exactitude, l’impact, la fiche, l’empreinte, les versions, les seuils et la date. Combien d’éléments sont énumérés ici ?
+  en: A release file contains the decision, the accuracy, the impact, the card, the fingerprint, the versions, the thresholds and the date. How many items are listed here?
+  reponses:
+  - '8'
+  verif: print(len(["decision", "exactitude", "impact", "fiche", "empreinte", "versions", "seuils", "date"]))
+  indice:
+    fr: Compte chaque élément séparé par une virgule.
+    en: Count each item separated by a comma.
+  explication:
+    fr: 'Huit éléments : chacun répond à une question que quelqu’un posera.'
+    en: 'Eight items: each answers a question someone will ask.'
+- id: c11
+  type: idee
+  fr: 'Tu as parcouru toute la chaîne, des maths à l’IA locale, du RAG aux agents, de la sécurité à la livraison. Le **boss final** du cursus rassemble tout : un agent local teste une hypothèse hors ligne, puis rend un rapport sourcé qui **rejette** le faux.'
+  en: 'You have gone through the whole chain, from maths to local AI, from RAG to agents, from security to delivery. The curriculum’s **final boss** brings it all together: a local agent tests a hypothesis offline, then returns a sourced report that **rejects** the false.'
+  exemple:
+    fr: 'Ce cadre reste strictement pédagogique : aucune recommandation d’investissement personnalisée.'
+    en: 'This framework remains strictly educational: no personalised investment recommendation.'
+- id: c12
+  type: retenir
+  fr: 'Livraison responsable : exactitude jugée sur la borne basse, équité par groupe, fiche complète, empreinte consignée. Seuils fixés à l’avance. Décision avec raisons, dossier complet, surveillance ensuite.'
+  en: 'Responsible release: accuracy judged on the lower bound, fairness per group, complete card, fingerprint recorded. Thresholds set in advance. Decision with reasons, complete file, monitoring afterwards.'
+- id: c13
+  type: plus
+  fr: Pour aller plus loin, consulte [le cadre NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) ; cette page demande une connexion.
+  en: To go further, see [the NIST AI RMF framework](https://www.nist.gov/itl/ai-risk-management-framework); this page needs a connection.

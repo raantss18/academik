@@ -1,0 +1,310 @@
+# Niveau 20.2 — Évaluer et produire 2 : incertitude d’un score, taille d’échantillon, comparaison de modèles. Original academik ; notions vérifiées dans Wilson 1927 (lien) et Dietterich 1998 (lien).
+id: '20.2'
+module: 20
+duree_min: 20
+titre:
+  fr: Des mesures honnêtes
+  en: Honest measurements
+ia:
+  fr: Kintana annonce un score avec son incertitude et sait quand une différence est réelle.
+  en: Kintana announces a score with its uncertainty and knows when a difference is real.
+sources:
+- titre: Wilson, E. B. — Probable inference, the law of succession, and statistical inference (1927)
+  url: https://doi.org/10.1080/01621459.1927.10502953
+  licence: Lien seulement ; texte non repris
+- titre: Dietterich — Approximate Statistical Tests for Comparing Supervised Classification Learning Algorithms (1998)
+  url: https://doi.org/10.1162/089976698300017197
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Ton modèle réussit 18 questions sur 20 de ton jeu de test : 90 %. Peut-on dire que sa vraie exactitude est de 90 % ?'
+  en: 'Your model gets 18 questions out of 20 on your test set: 90%. Can we say its true accuracy is 90%?'
+  choix:
+  - fr: 'Non : avec seulement 20 exemples, l’incertitude est grande, la vraie valeur peut être bien plus basse ou plus haute'
+    en: 'No: with only 20 examples, the uncertainty is large, the true value can be much lower or higher'
+    juste: true
+  - fr: Oui, 90 % est exact
+    en: Yes, 90% is exact
+  - fr: Oui, si le modèle est grand
+    en: Yes, if the model is large
+  indice:
+    fr: Un score sur un échantillon est une estimation (niveau 7.2). Quelle quantité mesure son incertitude ?
+    en: A score on a sample is an estimate (level 7.2). Which quantity measures its uncertainty?
+  explication:
+    fr: Un score mesuré sur $n$ exemples a une **incertitude** qui décroît en $1/\sqrt n$. On donne un **intervalle de confiance**, pas un nombre seul.
+    en: A score measured on $n$ examples has an **uncertainty** that decreases as $1/\sqrt n$. We give a **confidence interval**, not a single number.
+- id: c2
+  type: idee
+  fr: 'L’exactitude mesurée est une proportion $\hat p=k/n$. Son erreur typique est $\sqrt{\hat p(1-\hat p)/n}$ : pour $n=20$ et $\hat p=0{,}9$, environ $6{,}7$ points. L’intervalle de **Wilson** donne des bornes fiables même près de 0 ou 1, ce que la formule simple fait mal.'
+  en: 'The measured accuracy is a proportion $\hat p=k/n$. Its typical error is $\sqrt{\hat p(1-\hat p)/n}$: for $n=20$ and $\hat p=0.9$, about $6.7$ points. The **Wilson** interval gives reliable bounds even near 0 or 1, which the simple formula handles poorly.'
+  exemple:
+    fr: '18 sur 20 : l’intervalle de Wilson à 95 % est environ $[0{,}70;\,0{,}97]$. La vraie exactitude peut être 70 %.'
+    en: '18 out of 20: the 95% Wilson interval is about $[0.70;\,0.97]$. The true accuracy can be 70%.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Exemples $n$
+      en: Examples $n$
+    - fr: Score
+      en: Score
+    - fr: Intervalle à 95 %
+      en: 95% interval
+    cellules:
+    - - '20'
+      - 90 %
+      - 70 – 97 %
+    - - '200'
+      - 90 %
+      - 85 – 93 %
+    - - fr: 2 000
+        en: 2,000
+        ton: ok
+      - fr: 90 %
+        en: 90%
+        ton: ok
+      - fr: 89 – 91 %
+        en: 89 – 91%
+        ton: ok
+    legende:
+      fr: Dix fois plus d’exemples, un intervalle environ 3 fois plus étroit.
+      en: Ten times more examples, an interval about 3 times narrower.
+- id: c2b
+  type: exemple
+  titre:
+    fr: Un intervalle à la main
+    en: An interval by hand
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      k, n, z = 18, 20, 1.96
+      p = k / n
+    fr: 18 réussites sur 20 exemples.
+    en: 18 successes out of 20 examples.
+  - code: |-
+      d = 1 + z * z / n
+      centre = (p + z * z / (2 * n)) / d
+      marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    fr: On applique la formule de Wilson.
+    en: We apply the Wilson formula.
+  - code: print(round(centre - marge, 2), round(centre + marge, 2))
+    fr: 'On affiche `0.7 0.97` : la vraie exactitude peut être bien plus basse que 90 %.'
+    en: 'We display `0.7 0.97`: the true accuracy can be much lower than 90%.'
+  verif: |-
+    import math
+    k, n, z = 18, 20, 1.96
+    p = k / n
+    d = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / d
+    marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    print(round(centre - marge, 2), round(centre + marge, 2))
+  sortie: 0.7 0.97
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `intervalle_wilson(k, n, z=1.96)`** : `p = k / n`, `d = 1 + z*z/n`, `centre = (p + z*z/(2*n)) / d`, `marge = z * math.sqrt(p*(1-p)/n + z*z/(4*n*n)) / d`. Renvoie `(centre - marge, centre + marge)`.'
+  en: 'Your turn. **Write `intervalle_wilson(k, n, z=1.96)`**: `p = k / n`, `d = 1 + z*z/n`, `centre = (p + z*z/(2*n)) / d`, `marge = z * math.sqrt(p*(1-p)/n + z*z/(4*n*n)) / d`. Return `(centre - marge, centre + marge)`.'
+  depart: |
+    import math
+
+    # écris ta fonction intervalle_wilson ici
+  tests: |-
+    lo, hi = intervalle_wilson(18, 20)
+    assert abs(lo - 0.699) < 0.005 and abs(hi - 0.972) < 0.005
+    lo, hi = intervalle_wilson(180, 200)
+    assert abs(lo - 0.8503) < 0.005 and abs(hi - 0.9331) < 0.005
+    lo, hi = intervalle_wilson(20, 20)
+    assert hi <= 1.0000001 and lo > 0.8
+    lo, hi = intervalle_wilson(0, 20)
+    assert lo >= -1e-9 and hi < 0.2
+  solutionCode: |
+    import math
+
+    def intervalle_wilson(k, n, z=1.96):
+        p = k / n
+        d = 1 + z * z / n
+        centre = (p + z * z / (2 * n)) / d
+        marge = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+        return centre - marge, centre + marge
+  indice:
+    fr: 'Recopie les formules dans l’ordre : `p`, `d`, `centre`, `marge`, puis le couple.'
+    en: 'Copy the formulas in order: `p`, `d`, `centre`, `marge`, then the pair.'
+  explication:
+    fr: 'Même avec 20 sur 20, la borne basse reste sous 1 : jamais de certitude à partir d’un petit échantillon.'
+    en: 'Even with 20 out of 20, the lower bound stays below 1: never certainty from a small sample.'
+- id: c4
+  type: idee
+  fr: 'Pour une **marge d’erreur** $m$, il faut $n\ge z^2\,p(1-p)/m^2$ exemples. Pour $\pm5$ points à 95 % : 385. Pour $\pm1$ point : 9 604. Le coût d’annotation monte vite.'
+  en: 'For a **margin of error** $m$, we need $n\ge z^2\,p(1-p)/m^2$ examples. For $\pm5$ points at 95%: 385. For $\pm1$ point: 9,604. The annotation cost rises fast.'
+  exemple:
+    fr: Diviser la marge par 5 demande $25$ fois plus d’exemples.
+    en: Dividing the margin by 5 requires $25$ times more examples.
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `taille_echantillon(marge, p=0.5, z=1.96)`** : `math.ceil(z * z * p * (1 - p) / (marge * marge))`.'
+  en: '**Write `taille_echantillon(marge, p=0.5, z=1.96)`**: `math.ceil(z * z * p * (1 - p) / (marge * marge))`.'
+  depart: |
+    import math
+
+    # écris ta fonction taille_echantillon ici
+  tests: |-
+    assert taille_echantillon(0.05) == 385
+    assert taille_echantillon(0.01) == 9604
+    assert taille_echantillon(0.05, p=0.9) == 139
+    assert taille_echantillon(0.1) == 97
+  solutionCode: |
+    import math
+
+    def taille_echantillon(marge, p=0.5, z=1.96):
+        return math.ceil(z * z * p * (1 - p) / (marge * marge))
+  indice:
+    fr: Une ligne, avec `math.ceil` pour arrondir au nombre entier supérieur.
+    en: A single line, with `math.ceil` to round up to the next integer.
+  explication:
+    fr: Si tu sais que le score sera proche de 90 %, 139 exemples suffisent pour ±5 points au lieu de 385.
+    en: If you know the score will be close to 90%, 139 examples are enough for ±5 points instead of 385.
+- id: c5b
+  type: idee
+  fr: Le score d’un modèle varie aussi avec l’**aléa** de l’entraînement. Deux graines différentes donnent deux scores un peu différents. On entraîne donc plusieurs fois, et on donne la **moyenne** et la **dispersion** des scores, pas le meilleur tirage.
+  en: A model’s score also varies with the **randomness** of training. Two different seeds give two slightly different scores. So we train several times, and give the **mean** and **spread** of the scores, not the best draw.
+  exemple:
+    fr: 'Cinq graines : 88, 90, 91, 89, 92 %. On rapporte « 90 ± 1,6 % », pas « 92 % ».'
+    en: 'Five seeds: 88, 90, 91, 89, 92%. We report “90 ± 1.6%”, not “92%”.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Rapporter honnêtement
+        en: Reporting honestly
+      noeuds:
+      - fr: plusieurs graines
+        en: several seeds
+      - fr: moyenne et dispersion
+        en: mean and spread
+      - fr: intervalle de confiance
+        en: confidence interval
+      - fr: pas le meilleur tirage
+        en: not the best draw
+        ton: ok
+    legende:
+      fr: Le meilleur de $N$ essais gonfle le résultat (niveau 17.5).
+      en: The best of $N$ trials inflates the result (level 17.5).
+- id: c6
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Pour une marge de $\pm2$ points à 95 % dans le pire cas, combien d’exemples faut-il ? (Utilise $1{,}96^2\times0{,}25/0{,}02^2$, arrondi à l’entier supérieur.)
+  en: For a margin of $\pm2$ points at 95% in the worst case, how many examples are needed? (Use $1.96^2\times0.25/0.02^2$, rounded up.)
+  reponses:
+  - '2401'
+  verif: |-
+    import math
+    print(math.ceil(1.96 ** 2 * 0.25 / 0.02 ** 2))
+  indice:
+    fr: Calcule le numérateur $1{,}96^2\times0{,}25$ puis divise par $0{,}0004$.
+    en: Compute the numerator $1.96^2\times0.25$ then divide by $0.0004$.
+  explication:
+    fr: $0{,}9604/0{,}0004=2\,401$ exemples.
+    en: $0.9604/0.0004=2{,}401$ examples.
+- id: c7
+  type: idee
+  fr: 'Comparer **deux modèles** sur le même jeu : on regarde les exemples où ils **diffèrent**. Si $A$ a raison et $B$ tort sur $b$ exemples, et l’inverse sur $c$, les exemples où ils s’accordent n’apportent rien. Si $A$ était vraiment meilleur, on s’attend à $b>c$ plus qu’au hasard.'
+  en: 'To compare **two models** on the same set: we look at the examples where they **differ**. If $A$ is right and $B$ wrong on $b$ examples, and the reverse on $c$, the examples where they agree add nothing. If $A$ were really better, we expect $b>c$ more than by chance.'
+  exemple:
+    fr: 'Sur 100 exemples, $A$ seul juste : 12 ; $B$ seul juste : 4 ; accord : 84. Seules les 16 divergences comptent.'
+    en: 'On 100 examples, $A$ alone right: 12; $B$ alone right: 4; agreement: 84. Only the 16 disagreements count.'
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `discordants(pred_a, pred_b, ref)`** : renvoie `(a_seul, b_seul)`, le nombre d’exemples où seul A a la bonne réponse (`a == r` et `b != r`) et celui où seul B l’a.'
+  en: '**Write `discordants(pred_a, pred_b, ref)`**: return `(a_seul, b_seul)`, the number of examples where only A has the right answer (`a == r` and `b != r`) and the number where only B does.'
+  depart: |
+    # écris ta fonction discordants ici
+  tests: |-
+    assert discordants([1, 1, 0, 0], [1, 0, 1, 0], [1, 1, 1, 1]) == (1, 1)
+    assert discordants([1, 1, 1], [0, 0, 0], [1, 1, 1]) == (3, 0)
+    assert discordants([1, 0], [1, 0], [1, 0]) == (0, 0)
+    assert discordants([], [], []) == (0, 0)
+  solutionCode: |
+    def discordants(pred_a, pred_b, ref):
+        a_seul = sum(1 for a, b, r in zip(pred_a, pred_b, ref) if a == r and b != r)
+        b_seul = sum(1 for a, b, r in zip(pred_a, pred_b, ref) if b == r and a != r)
+        return a_seul, b_seul
+  indice:
+    fr: 'Deux sommes avec `zip(pred_a, pred_b, ref)` : `a == r and b != r`, puis `b == r and a != r`.'
+    en: 'Two sums with `zip(pred_a, pred_b, ref)`: `a == r and b != r`, then `b == r and a != r`.'
+  explication:
+    fr: Si les deux ont tort ou les deux ont raison, l’exemple ne dit rien sur leur différence.
+    en: If both are wrong or both are right, the example says nothing about their difference.
+- id: c9
+  type: idee
+  fr: 'Le **test du signe** répond : « cette différence peut-elle être due au hasard ? ». Sous l’hypothèse où les deux modèles se valent, chaque divergence est un pile ou face équilibré. La p-valeur bilatérale est $2\,P(X\ge\max(b,c))$ pour $X\sim\text{Binomiale}(b+c,\tfrac12)$.'
+  en: 'The **sign test** answers: “can this difference be due to chance?”. Under the hypothesis that the two models are equal, each disagreement is a fair coin flip. The two-sided p-value is $2\,P(X\ge\max(b,c))$ for $X\sim\text{Binomial}(b+c,\tfrac12)$.'
+  exemple:
+    fr: '12 contre 4 sur 16 divergences : p-valeur $\approx0{,}077$, non significatif à 5 %. 20 contre 4 sur 24 : $\approx0{,}0015$.'
+    en: '12 against 4 out of 16 disagreements: p-value $\approx0.077$, not significant at 5%. 20 against 4 out of 24: $\approx0.0015$.'
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `test_signe(a_seul, b_seul)`** : `n = a_seul + b_seul` (renvoie `1.0` si `n` vaut `0`), `k = max(a_seul, b_seul)`, `queue = sum(math.comb(n, i) for i in range(k, n + 1)) / 2 ** n`, et renvoie `min(1.0, 2 * queue)`.'
+  en: 'Challenge. **Write `test_signe(a_seul, b_seul)`**: `n = a_seul + b_seul` (return `1.0` if `n` is `0`), `k = max(a_seul, b_seul)`, `queue = sum(math.comb(n, i) for i in range(k, n + 1)) / 2 ** n`, and return `min(1.0, 2 * queue)`.'
+  depart: |
+    import math
+
+    # écris ta fonction test_signe ici
+  tests: |-
+    assert abs(test_signe(12, 4) - 0.0768) < 1e-3
+    assert abs(test_signe(20, 4) - 0.00155) < 1e-4
+    assert test_signe(5, 5) == 1.0
+    assert test_signe(0, 0) == 1.0
+    assert test_signe(10, 0) < 0.003
+  solutionCode: |
+    import math
+
+    def test_signe(a_seul, b_seul):
+        n = a_seul + b_seul
+        if n == 0:
+            return 1.0
+        k = max(a_seul, b_seul)
+        queue = sum(math.comb(n, i) for i in range(k, n + 1)) / 2 ** n
+        return min(1.0, 2 * queue)
+  indice:
+    fr: La queue de la loi binomiale vaut la somme des `math.comb(n, i)` pour `i` de `k` à `n`, divisée par `2 ** n`.
+    en: The binomial tail is the sum of `math.comb(n, i)` for `i` from `k` to `n`, divided by `2 ** n`.
+  explication:
+    fr: 'Un modèle « meilleur de 3 points » sur 100 exemples n’est souvent pas distinguable du hasard : l’écart doit dépasser le bruit.'
+    en: 'A model “better by 3 points” on 100 examples is often indistinguishable from chance: the gap must exceed the noise.'
+- id: c11
+  type: piege
+  fr: 'Régler le modèle sur le jeu de test, puis annoncer le score sur ce même jeu, gonfle les résultats. Utilise trois jeux : **entraînement**, **validation** (pour régler) et **test** (pour la note finale, une seule fois). Et si tu compares beaucoup de variantes, corrige pour les essais multiples (niveau 17.5).'
+  en: 'Tuning the model on the test set, then announcing the score on that same set, inflates the results. Use three sets: **training**, **validation** (for tuning) and **test** (for the final score, once). And if you compare many variants, correct for multiple trials (level 17.5).'
+- id: c12
+  type: idee
+  fr: 'Autres bonnes pratiques. **Stratifier** : garder les mêmes proportions de classes. Rapporter les résultats **par sous-groupe**, car un bon score global peut cacher un échec. Publier le **jeu de test**, les **versions** et les **réglages**.'
+  en: 'Other good practices. **Stratify**: keep the same class proportions. Report results **per subgroup**, because a good overall score can hide a failure. Publish the **test set**, the **versions** and the **settings**.'
+  exemple:
+    fr: Un assistant exact à 95 % en moyenne mais à 60 % pour les questions en malgache a un problème que la moyenne cache.
+    en: An assistant 95% accurate on average but 60% for Malagasy questions has a problem the average hides.
+- id: c13
+  type: retenir
+  fr: 'Score = estimation : donner un intervalle (Wilson), choisir la taille selon la marge ($n\ge z^2p(1-p)/m^2$). Comparer deux modèles par leurs divergences, test du signe. Trois jeux : entraînement, validation, test. Résultats par sous-groupe.'
+  en: 'Score = estimate: give an interval (Wilson), choose the size according to the margin ($n\ge z^2p(1-p)/m^2$). Compare two models by their disagreements, sign test. Three sets: training, validation, test. Results per subgroup.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [l’article de Dietterich sur la comparaison de classifieurs](https://doi.org/10.1162/089976698300017197) ; cet article demande une connexion.
+  en: For further study, see [Dietterich’s paper on comparing classifiers](https://doi.org/10.1162/089976698300017197); this paper needs a connection.
