@@ -4,6 +4,9 @@
   const fr = $derived(i18n.lang === 'fr');
   const app = $derived(updates.visibleApp);
   const t = (n: { fr: string; en: string }) => i18n.t(n);
+  // Message d'information seulement : il disparaît seul et se ferme d'un geste (il ne doit jamais masquer la ville).
+  let hideNeeds = $state(false);
+  $effect(() => { if (updates.status === 'needs-app') { const id = setTimeout(() => (hideNeeds = true), 6000); return () => clearTimeout(id); } });
 </script>
 
 {#if updates.needRefresh}
@@ -41,12 +44,13 @@
 {#if updates.contentChanged.length}
   <div class="b" role="status"><span>{fr ? `Contenu mis à jour (${updates.contentChanged.length}). Aucune installation nécessaire.` : `Content updated (${updates.contentChanged.length}). No install needed.`}</span><button class="btn" onclick={() => (updates.contentChanged = [])}>OK</button></div>
 {/if}
-{#if updates.status === 'needs-app'}
-  <div class="b" role="status"><span>{fr ? 'Du nouveau contenu attend une version plus récente de l’application.' : 'New content is waiting for a newer version of the app.'}</span></div>
+{#if updates.status === 'needs-app' && !hideNeeds}
+  <div class="b small" role="status"><span>{fr ? 'Du nouveau contenu attend une mise à jour de l’app.' : 'New content is waiting for an app update.'}</span><button class="x" onclick={() => (hideNeeds = true)} aria-label={fr ? 'Fermer' : 'Close'}>✕</button></div>
 {/if}
 
 <style>
   .b { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 12px 14px; margin: 8px 0; border-radius: 16px; background: var(--c-primary-soft); border: 1px solid var(--c-primary); }
+  .b.small { padding: 6px 8px 6px 14px; margin: 0; font-size: .85rem; flex-wrap: nowrap; width: fit-content; max-width: 100%; background: rgb(10 14 36 / .72); backdrop-filter: blur(8px); } .x { width: 36px; height: 36px; border: 0; background: none; color: inherit; cursor: pointer; font-size: 1rem; }
   .b.must { background: var(--c-accent-soft); border-color: var(--c-accent); }
   details { font-size: .9rem; } summary { cursor: pointer; font-weight: 600; } details ul { margin: 6px 0 0; padding-left: 1.1em; }
   .prog { height: 8px; background: var(--c-surface-2); border-radius: 99px; overflow: hidden; margin-top: 6px; } .prog div { height: 100%; background: var(--c-primary); transition: width .2s; } .err { color: var(--c-accent); }

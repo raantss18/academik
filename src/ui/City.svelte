@@ -20,6 +20,31 @@
   let centered = false;
   $effect(() => { if (out && box && !centered) { centered = true; void tick().then(() => box?.querySelector<SVGElement>(`.pin[data-id="${current}"]`)?.scrollIntoView({ block: 'center', inline: 'center' })); } });
 
+  // Zoom : pincement à deux doigts, Ctrl + molette, double toucher et boutons ＋/−. Le point sous les doigts reste en place.
+  let z = $state(1);
+  const MAXZ = 3.5, pts = new Map<number, { x: number; y: number }>();
+  let d0 = 0, z0 = 1, lastTap = 0;
+  function zoomTo(nz: number, fx?: number, fy?: number) {
+    const svg = box?.querySelector<SVGElement>('svg'); if (!box || !svg) return;
+    nz = Math.min(MAXZ, Math.max(1, nz)); const r = box.getBoundingClientRect();
+    const px = fx ?? r.width / 2, py = fy ?? r.height / 2, cx = (box.scrollLeft + px) / z, cy = (box.scrollTop + py) / z;
+    z = nz; svg.style.width = `${nz * 100}%`; svg.style.minWidth = `${900 * nz}px`;
+    box.scrollLeft = cx * nz - px; box.scrollTop = cy * nz - py;
+  }
+  const rel = (e: PointerEvent) => { const r = box!.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  const dist = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+  function down(e: PointerEvent) { pts.set(e.pointerId, rel(e)); if (pts.size === 2) { d0 = dist(); z0 = z; } }
+  function move(e: PointerEvent) {
+    if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, rel(e));
+    if (pts.size === 2 && d0 > 0) { const [a, b] = [...pts.values()]; zoomTo(z0 * dist() / d0, (a.x + b.x) / 2, (a.y + b.y) / 2); }
+  }
+  function up(e: PointerEvent) {
+    const wasOne = pts.size === 1; pts.delete(e.pointerId);
+    if (wasOne && e.pointerType === 'touch' && !(e.target as Element).closest('.pin')) { const n = Date.now(); if (n - lastTap < 320) { const p = rel(e); zoomTo(z > 1.5 ? 1 : 2.2, p.x, p.y); lastTap = 0; } else lastTap = n; }
+  }
+  const wheel = (e: WheelEvent) => { if (!e.ctrlKey) return; e.preventDefault(); const p = { x: e.clientX - box!.getBoundingClientRect().left, y: e.clientY - box!.getBoundingClientRect().top }; zoomTo(z * Math.exp(-e.deltaY / 300), p.x, p.y); };
+  $effect(() => { const b = box; if (!b) return; b.addEventListener('wheel', wheel, { passive: false }); return () => b.removeEventListener('wheel', wheel); });
+
   const pick = (e: Event) => { const p = (e.target as Element).closest<SVGElement>('.pin'); if (p?.dataset.id) { sel = p.dataset.id; void tick().then(() => play?.focus()); } };
   const key = (e: KeyboardEvent) => { if ((e.key === 'Enter' || e.key === ' ') && (e.target as Element).closest('.pin')) { e.preventDefault(); pick(e); } if (e.key === 'Escape') sel = null; };
   /** Bouton retour : ferme d'abord la fiche du niveau (false = rien à fermer). */
@@ -33,9 +58,16 @@
   });
 </script>
 
-<div class="city" bind:this={box} onclick={pick} onkeydown={key} role="presentation">
+<div class="city" bind:this={box} onclick={pick} onkeydown={key} onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={up} role="presentation">
   {#if out}{@html out.svg}{:else if failed}<p class="msg">{fr ? 'La carte n’a pas pu se charger : utilise la vue liste.' : 'The map could not load: use the list view.'}</p>{:else}<p class="msg">…</p>{/if}
 </div>
+
+{#if out}
+  <div class="zoom" role="group" aria-label={fr ? 'Zoom' : 'Zoom'}>
+    <button onclick={() => zoomTo(z * 1.5)} aria-label={fr ? 'Zoomer' : 'Zoom in'} disabled={z >= MAXZ}>＋</button>
+    <button onclick={() => zoomTo(z / 1.5)} aria-label={fr ? 'Dézoomer' : 'Zoom out'} disabled={z <= 1}>−</button>
+  </div>
+{/if}
 
 {#if info}
   <div class="scrim" onclick={() => (sel = null)} role="presentation"></div>
@@ -58,8 +90,10 @@
 {/if}
 
 <style>
-  .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; background: radial-gradient(120% 50% at 50% 0%, #3b2d5c, #18214a 45%, #0b1026 100%); }
+  .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; background: radial-gradient(120% 50% at 50% 0%, #3b2d5c, #18214a 45%, #0b1026 100%); }
   .city :global(svg) { display: block; min-width: 900px; width: 100%; height: auto; }
+  .zoom { position: fixed; right: calc(var(--sar) + 12px); top: 50%; z-index: 6; display: grid; gap: 6px; transform: translateY(-50%); }
+  .zoom button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .22); background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); color: #f2f4ff; font-size: 1.4rem; line-height: 1; cursor: pointer; } .zoom button:disabled { opacity: .35; }
   .msg { color: #cfd3ec; text-align: center; padding: 40px 16px; }
   .city :global(.pin) { cursor: pointer; } .city :global(.pin:focus) { outline: none; } .city :global(.pin:focus-visible .hit) { stroke: #fff; stroke-width: 3; }
   .city :global(.pulse) { animation: pulse 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }

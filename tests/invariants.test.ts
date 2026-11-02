@@ -188,4 +188,10 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
   });
   it('l’étoile flottante est remplacée par un repère rouge façon carte', () => { expect(gen).toContain('class="drop"'); expect(gen).toContain('#ea4335'); expect(gen).not.toContain('class="float"'); });
   it('allumage progressif selon le score, tout allumé seulement à 100 %', () => { expect(gen).toContain('.1 + .72 * Lv.score'); expect(read('src/lib/city/index.ts')).toContain('s >= 1 - 1e-9'); });
+  it('E20 : la ville reste visible — message d’info qui se ferme, boutons compacts, zoom au pincement', () => {
+    const ban = read('src/ui/UpdateBanner.svelte'), cityUi = read('src/ui/City.svelte'), map = read('src/ui/Map.svelte');
+    expect(ban).toContain('hideNeeds'); expect(ban).toContain('setTimeout');
+    expect(cityUi).toContain('pointerdown'); expect(cityUi).toContain('zoomTo'); expect(cityUi).toContain('touch-action: pan-x pan-y');
+    expect(map).toContain('class="btn review"'); expect(map).toContain('badge'); expect(map).not.toMatch(/\.dock \{[^}]*display: grid/);
+  });
 });
