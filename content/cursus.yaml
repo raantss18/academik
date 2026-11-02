@@ -109,3 +109,12 @@ modules:
       - { id: "10.4", titre: { fr: "Prévoir : le modèle AR(1)" } }
       - { id: "10.5", titre: { fr: "Volatilité" } }
       - { id: "10.boss", boss: true, titre: { fr: "Prévoir sans tricher" } }
+  - id: 11
+    titre: { fr: "Réseaux de neurones", en: "Neural networks" }
+    niveaux:
+      - { id: "11.1", titre: { fr: "Le neurone" } }
+      - { id: "11.2", titre: { fr: "Le graphe de calcul" } }
+      - { id: "11.3", titre: { fr: "Rétropropagation" } }
+      - { id: "11.4", titre: { fr: "Apprendre XOR" } }
+      - { id: "11.5", titre: { fr: "Optimiseurs" } }
+      - { id: "11.boss", boss: true, titre: { fr: "Ton micrograd" } }

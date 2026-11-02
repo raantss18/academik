@@ -295,4 +295,9 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(route).toContain('role="progressbar"'); expect(route).toContain('aria-valuenow'); expect(route).toContain('prefers-reduced-motion');
     expect(amb).toContain('class:on={f.rang < nbAllumees}'); expect(amb).toContain('prefers-reduced-motion'); expect(amb).toContain('aria-hidden="true"');
   });
+  it('E35 : récompenses de jeu rares et discrètes (luciole après 3 réussites d’affilée, fête à la fin d’un boss réussi), jamais sans respecter « moins d’animations »', () => {
+    const les = read('src/ui/Lesson.svelte'), amb = read('src/ui/Ambiance.svelte');
+    expect(les).toContain('serie % 3 === 0'); expect(les).toContain("level.id.endsWith('.boss')"); expect(les).toContain('{eclat}');
+    expect(amb).toContain('class="luciole"'); expect(amb).toContain('class="fete"'); expect(amb).toContain('.luciole { animation: none; display: none; }');
+  });
 });

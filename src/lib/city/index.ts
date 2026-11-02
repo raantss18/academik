@@ -9,7 +9,7 @@ export interface CityLevel { id: string; short: string; aria: string; st: PinSta
 export interface CityDistrict { n: number; theme: number; name: string; label: string; color: string; reached: boolean; progress: number; levels: CityLevel[] }
 
 /** Couleur de chaque module (panneau du quartier, épingles réussies), reprise de la maquette. */
-export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B', '#C0792B', '#26A69A', '#7E57C2'];
+export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B', '#C0792B', '#26A69A', '#7E57C2', '#5C6BC0'];
 
 export interface CityInput {
   modules: CursusModule[]; levels: Record<string, Level>; scores: Record<string, number>;
@@ -47,4 +47,5 @@ export const THEMES_EN = [
   { place: 'The Archives', blurb: 'Shelves, registers and stamps: data gets tidied here.' },
   { place: 'The Laboratory', blurb: 'Test tubes, scales and blackboards: tuning, measuring, comparing.' },
   { place: 'The Clock Quay', blurb: 'Clocks, rails and platforms: time passes, every instant is noted.' },
+  { place: 'Neuron Crossroads', blurb: 'Pylons, fibres and glowing nodes: the signal goes forward, the correction comes back.' },
 ];

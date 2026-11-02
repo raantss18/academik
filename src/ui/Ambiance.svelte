@@ -6,7 +6,7 @@
   import { ambianceDe, melange, rgb, type Palette } from '../lib/ambiance';
   import { theme } from '../lib/theme.svelte';
 
-  let { module, lit = 0 }: { module: number; lit?: number } = $props();
+  let { module, lit = 0, eclat = 0, fete = false }: { module: number; lit?: number; eclat?: number; fete?: boolean } = $props();
   let canvas: HTMLCanvasElement | undefined = $state(), prefersDark = $state(typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches);
   const nuit = $derived(theme.value === 'dark' || (theme.value === 'auto' && prefersDark));
   const pal = $derived<Palette>(nuit ? ambianceDe(module).nuit : ambianceDe(module).jour);
@@ -21,7 +21,7 @@
     const ordre = liste.flatMap(b => b.f), rangs = ordre.map((_, i) => i).sort(() => r() - 0.5);
     ordre.forEach((f, i) => { f.rang = rangs[i]; }); return liste;
   });
-  const total = $derived(immeubles.reduce((s, b) => s + b.f.length, 0)), nbAllumees = $derived(Math.round(total * Math.max(0, Math.min(1, lit))));
+  const total = $derived(immeubles.reduce((s, b) => s + b.f.length, 0)), nbAllumees = $derived(Math.round(total * Math.max(0, Math.min(1, fete ? 1 : lit))));
   const tour = $derived(melange(pal.haut, pal.bas, nuit ? 0.15 : 0.55)), eteint = $derived(melange(pal.haut, pal.bas, nuit ? 0.55 : 0.8));
 
   onMount(() => {
@@ -72,6 +72,8 @@
 
 <div class="amb" style="--haut:{pal.haut};--bas:{pal.bas};--tour:{tour};--eteint:{eteint};--allume:{nuit ? '#ffd36b' : '#e0a21a'};--halo:{nuit ? '#ffcf80' : '#e8b44a'}" aria-hidden="true">
   <canvas bind:this={canvas}></canvas>
+  {#if eclat > 0}{#key eclat}<span class="luciole" style="top:{18 + (eclat * 23) % 40}%"></span>{/key}{/if}
+  {#if fete}<div class="fete"></div>{/if}
   <svg class="ville" viewBox="0 0 300 120" preserveAspectRatio="xMidYMax slice">
     {#each immeubles as b}
       <rect x={b.x} y={120 - b.h} width={b.w} height={b.h} fill="var(--tour)" />
@@ -85,5 +87,10 @@
   canvas { width: 100%; height: 100%; display: block; }
   .ville { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: min(24vh, 190px); }
   .fen { fill: var(--eteint); transition: fill .6s, filter .6s; } .fen.on { fill: var(--allume); filter: drop-shadow(0 0 1.6px var(--halo)); }
-  @media (prefers-reduced-motion: reduce) { .fen { transition: none; } }
+  /* Récompenses rares et discrètes : une luciole traverse l'écran après trois bonnes réponses d'affilée ; la fin d'un boss réussi allume tout le quartier. */
+  .luciole { position: absolute; left: -6%; width: 9px; height: 9px; border-radius: 50%; background: var(--allume); box-shadow: 0 0 14px 5px var(--halo); animation: traverse 4.2s ease-in-out forwards; }
+  @keyframes traverse { 0% { transform: translate(0, 0); opacity: 0; } 12% { opacity: .9; } 50% { transform: translate(60vw, -26px); } 88% { opacity: .9; } 100% { transform: translate(112vw, 10px); opacity: 0; } }
+  .fete { position: absolute; left: 0; right: 0; bottom: 0; height: 38vh; background: radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--halo) 45%, transparent), transparent 70%); animation: monte 1.6s ease-out both; }
+  @keyframes monte { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .fen { transition: none; } .luciole { animation: none; display: none; } .fete { animation: none; } }
 </style>

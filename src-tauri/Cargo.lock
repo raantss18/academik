@@ -4,7 +4,7 @@ version = 3
 
 [[package]]
 name = "academik"
-version = "0.3.21"
+version = "0.3.22"
 dependencies = [
  "reqwest 0.12.28",
  "sha2",

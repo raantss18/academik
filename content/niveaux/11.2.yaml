@@ -1,0 +1,187 @@
+# Niveau 11.2 — Réseaux de neurones 2 : le graphe de calcul. Original academik ; notions vérifiées dans Goodfellow, Bengio et Courville, Deep Learning (chap. 6.5, graphes de calcul, lecture en ligne, texte non repris) et la série « Zero to Hero » d'A. Karpathy (citée, code non repris).
+id: '11.2'
+module: 11
+duree_min: 16
+titre: { fr: 'Le graphe de calcul', en: 'The computation graph' }
+ia: { fr: 'Kintana représente un calcul comme un graphe de petites opérations, qu’elle peut parcourir dans les deux sens.', en: 'Kintana represents a computation as a graph of small operations, which she can walk through in both directions.' }
+sources:
+  - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, section 6.5 (graphes de calcul)', url: 'https://www.deeplearningbook.org/contents/mlp.html', licence: 'Lecture en ligne ; texte non repris' }
+  - { titre: 'A. Karpathy — Neural Networks: Zero to Hero (micrograd)', url: 'https://karpathy.ai/zero-to-hero.html', licence: 'Cours en ligne ; contenu cité, code non repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'On calcule $e=(a\times b)+c$ avec $a=2$, $b=3$ et $c=4$. Quelle est la valeur de $e$ ?'
+    en: 'We compute $e=(a\times b)+c$ with $a=2$, $b=3$ and $c=4$. What is the value of $e$?'
+    choix:
+      - { fr: '$10$', en: '$10$', juste: true }
+      - { fr: '$24$', en: '$24$' }
+      - { fr: '$9$', en: '$9$' }
+    indice: { fr: 'Fais la multiplication avant l’addition.', en: 'Do the multiplication before the addition.' }
+    explication: { fr: '$2\times3=6$, puis $6+4=10$ : deux opérations, l’une après l’autre.', en: '$2\times3=6$, then $6+4=10$: two operations, one after the other.' }
+  - id: c2
+    type: idee
+    fr: 'Un **graphe de calcul** décompose une formule en **petites opérations**. Chaque **nœud** est le résultat d’une opération sur d’autres nœuds ; les **entrées** n’ont pas de parent. Le résultat final est le dernier nœud.'
+    en: 'A **computation graph** breaks a formula into **small operations**. Each **node** is the result of an operation on other nodes; the **inputs** have no parent. The final result is the last node.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: '$e=(a\times b)+c$', en: '$e=(a\times b)+c$' }
+          noeuds: [{ fr: 'entrées $a$, $b$, $c$', en: 'inputs $a$, $b$, $c$' }, { fr: '$d=a\times b$', en: '$d=a\times b$' }, { fr: '$e=d+c$', en: '$e=d+c$', ton: ok }]
+      legende: { fr: 'Le nœud intermédiaire $d$ n’existe pas dans la formule : le graphe le nomme.', en: 'The intermediate node $d$ does not exist in the formula: the graph names it.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un graphe sous forme de liste', en: 'A graph as a list' }
+    lang: python
+    etapes:
+      - { code: 'graphe = [("d", "mul", "a", "b"), ("e", "add", "d", "c")]', fr: 'Chaque nœud : (nom, opération, parent 1, parent 2). L’ordre compte : `d` vient avant `e`.', en: 'Each node: (name, operation, parent 1, parent 2). Order matters: `d` comes before `e`.' }
+      - { code: 'v = {"a": 2, "b": 3, "c": 4}', fr: 'Les valeurs des entrées.', en: 'The values of the inputs.' }
+      - { code: 'for nom, op, p, q in graphe:\n    v[nom] = v[p] * v[q] if op == "mul" else v[p] + v[q]', fr: 'On calcule chaque nœud à partir de ses parents, déjà connus.', en: 'We compute each node from its parents, already known.' }
+      - { code: 'print(v["d"], v["e"])', fr: 'On affiche `6 10`.', en: 'We display `6 10`.' }
+    verif: |-
+      graphe = [("d", "mul", "a", "b"), ("e", "add", "d", "c")]
+      v = {"a": 2, "b": 3, "c": 4}
+      for nom, op, p, q in graphe:
+          v[nom] = v[p] * v[q] if op == "mul" else v[p] + v[q]
+      print(v["d"], v["e"])
+    sortie: '6 10'
+  - id: d_ordre
+    type: idee
+    fr: 'On évalue un nœud **seulement après ses parents**. Cet ordre s’appelle l’**ordre topologique**. Sur un graphe sans cycle, il existe toujours ; un cycle (un nœud qui dépend de lui-même) rendrait le calcul impossible.'
+    en: 'We evaluate a node **only after its parents**. This order is called the **topological order**. On a graph without cycles it always exists; a cycle (a node depending on itself) would make the computation impossible.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Ordre testé', en: 'Order tried' }, { fr: 'Résultat', en: 'Result' }]
+      cellules:
+        - ['`d`, puis `e`', { fr: 'correct : `d` est prêt quand on calcule `e`', en: 'correct: `d` is ready when `e` is computed', ton: ok }]
+        - ['`e`, puis `d`', { fr: 'erreur : `e` a besoin de `d`, pas encore calculé', en: 'error: `e` needs `d`, not yet computed', ton: bad }]
+      legende: { fr: 'C’est la même idée que le parcours de graphe du niveau 3.5, avec des dépendances.', en: 'It is the same idea as the graph traversal of level 3.5, with dependencies.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `evaluer(graphe, entrees)`** : renvoie le dictionnaire de **toutes** les valeurs (entrées et nœuds). Les opérations sont `"add"`, `"mul"` et `"tanh"` (ce dernier n’utilise que le premier parent).'
+    en: 'Your turn. **Write `evaluer(graphe, entrees)`**: return the dictionary of **all** values (inputs and nodes). The operations are `"add"`, `"mul"` and `"tanh"` (the latter uses only the first parent).'
+    depart: |
+      import math
+
+      # écris ta fonction evaluer ici
+    tests: |
+      g = [("d", "mul", "a", "b"), ("e", "add", "d", "c")]
+      v = evaluer(g, {"a": 2, "b": 3, "c": 4})
+      assert v == {"a": 2, "b": 3, "c": 4, "d": 6, "e": 10}
+      h = [("s", "add", "x", "x"), ("t", "tanh", "s", None)]
+      w = evaluer(h, {"x": 0.5})
+      assert w["s"] == 1.0 and abs(w["t"] - math.tanh(1.0)) < 1e-12
+      assert evaluer([], {"u": 1}) == {"u": 1}
+    solutionCode: |
+      import math
+
+      def evaluer(graphe, entrees):
+          v = dict(entrees)
+          for nom, op, p, q in graphe:
+              if op == "mul":
+                  v[nom] = v[p] * v[q]
+              elif op == "add":
+                  v[nom] = v[p] + v[q]
+              else:
+                  v[nom] = math.tanh(v[p])
+          return v
+    indice: { fr: 'Copie les entrées dans un dictionnaire, puis parcours le graphe dans l’ordre : une opération selon `op`.', en: 'Copy the inputs into a dictionary, then go through the graph in order: one operation according to `op`.' }
+    explication: { fr: 'On copie `entrees` pour ne pas modifier le dictionnaire de l’appelant.', en: 'We copy `entrees` so as not to modify the caller’s dictionary.' }
+  - id: d_reutilise
+    type: idee
+    fr: 'Un nœud peut servir **plusieurs fois**. Dans $f=a\times a+a$, la valeur $a$ est utilisée trois fois. Le graphe garde une trace de chaque usage : c’est ce qui permettra, au niveau 11.3, de **sommer** les influences de $a$.'
+    en: 'A node can be used **several times**. In $f=a\times a+a$, the value $a$ is used three times. The graph keeps track of each use: this will let us, in level 11.3, **add up** the influences of $a$.'
+    exemple: { fr: 'Pour $a=3$ : $f=9+3=12$. Si $a$ monte de $\varepsilon$, $f$ monte d’environ $(2a+1)\varepsilon=7\varepsilon$ : deux contributions de $a\times a$, plus une de $+a$.', en: 'For $a=3$: $f=9+3=12$. If $a$ rises by $\varepsilon$, $f$ rises by about $(2a+1)\varepsilon=7\varepsilon$: two contributions from $a\times a$, plus one from $+a$.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour $f=a\times a+a$ avec $a=4$, combien vaut $f$ ?'
+    en: 'For $f=a\times a+a$ with $a=4$, what is $f$?'
+    reponses: ['20']
+    verif: |-
+      a = 4
+      print(a * a + a)
+    indice: { fr: 'Remplace $a$ par $4$ à chacun de ses trois usages.', en: 'Replace $a$ with $4$ at each of its three uses.' }
+    explication: { fr: '$4\times4+4=16+4=20$.', en: '$4\times4+4=16+4=20$.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `est_ordonne(graphe, entrees)`** : `True` si chaque parent d’un nœud est une entrée ou un nœud déjà défini plus haut dans la liste ; `False` sinon. Pour `"tanh"`, seul le premier parent compte.'
+    en: '**Write `est_ordonne(graphe, entrees)`**: `True` if every parent of a node is an input or a node already defined earlier in the list; `False` otherwise. For `"tanh"`, only the first parent counts.'
+    depart: |
+      # écris ta fonction est_ordonne ici
+    tests: |
+      g = [("d", "mul", "a", "b"), ("e", "add", "d", "c")]
+      assert est_ordonne(g, {"a": 1, "b": 1, "c": 1}) is True
+      assert est_ordonne(list(reversed(g)), {"a": 1, "b": 1, "c": 1}) is False
+      assert est_ordonne([("t", "tanh", "x", None)], {"x": 0}) is True
+      assert est_ordonne([("t", "tanh", "y", None)], {"x": 0}) is False
+    solutionCode: |
+      def est_ordonne(graphe, entrees):
+          connus = set(entrees)
+          for nom, op, p, q in graphe:
+              parents = [p] if op == "tanh" else [p, q]
+              if any(x not in connus for x in parents):
+                  return False
+              connus.add(nom)
+          return True
+    indice: { fr: 'Un ensemble `connus` de noms disponibles ; vérifie les parents avant d’y ajouter le nœud.', en: 'A set `connus` of available names; check the parents before adding the node to it.' }
+    explication: { fr: 'Vérifier l’ordre avant de calculer donne un message clair plutôt qu’une erreur obscure `KeyError`.', en: 'Checking the order before computing gives a clear message rather than an obscure `KeyError`.' }
+  - id: d_derniere
+    type: idee
+    fr: 'Dans la liste ordonnée, la **dernière** ligne est la sortie du réseau. Pour la lire, on parcourt la liste une fois, du haut vers le bas, et on garde chaque valeur calculée dans un dictionnaire.'
+    en: 'In the ordered list, the **last** line is the network output. To read it, we walk the list once, top to bottom, keeping each computed value in a dictionary.'
+    exemple: { fr: 'Pour `[("d","mul","a","b"), ("e","add","d","c")]`, on calcule `d` puis `e` : la sortie est la valeur de `e`.', en: 'For `[("d","mul","a","b"), ("e","add","d","c")]`, we compute `d` then `e`: the output is the value of `e`.' }
+  - id: d_p_cycle
+    type: piege
+    fr: 'Un **cycle** (le nœud $a$ dépend de $b$ qui dépend de $a$) est interdit dans un graphe de calcul : aucun ordre topologique n’existe. Les réseaux qui paraissent « bouclés » sont en réalité dépliés dans le temps, étape par étape.'
+    en: 'A **cycle** (node $a$ depends on $b$ which depends on $a$) is forbidden in a computation graph: no topological order exists. Networks that seem “looped” are actually unrolled in time, step by step.'
+  - id: d_lien
+    type: idee
+    fr: 'Pourquoi tout ce détail ? Parce que la **rétropropagation** (niveau 11.3) parcourt ce même graphe **à l’envers**. Elle ira de la sortie vers les entrées et appliquera la règle de chaîne (niveau 5.7) à chaque opération.'
+    en: 'Why all this detail? Because **backpropagation** (level 11.3) walks through this same graph **in reverse**. It will go from the output to the inputs and will apply the chain rule (level 5.7) at each operation.'
+    exemple: { fr: 'Chaque petite opération (addition, produit, tanh) a une dérivée simple. Le graphe permet de les combiner automatiquement, sans jamais écrire la dérivée de toute la formule.', en: 'Each small operation (addition, product, tanh) has a simple derivative. The graph lets us combine them automatically, without ever writing the derivative of the whole formula.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `ordonner(noeuds)`** : `noeuds` est un dictionnaire `nom → (op, parent1, parent2)` dans un ordre quelconque, les entrées étant les noms de parents absents du dictionnaire. Renvoie la liste des noms de nœuds dans un ordre topologique (récursivité du niveau 3.6).'
+    en: 'Challenge. **Write `ordonner(noeuds)`**: `noeuds` is a dictionary `name → (op, parent1, parent2)` in arbitrary order, the inputs being the parent names absent from the dictionary. Return the list of node names in a topological order (recursion from level 3.6).'
+    depart: |
+      # écris ta fonction ordonner ici
+    tests: |
+      n = {"e": ("add", "d", "c"), "d": ("mul", "a", "b")}
+      o = ordonner(n)
+      assert o == ["d", "e"]
+      m = {"z": ("add", "y", "y"), "y": ("tanh", "x", None), "w": ("mul", "z", "y")}
+      o2 = ordonner(m)
+      assert sorted(o2) == ["w", "y", "z"] and o2.index("y") < o2.index("z") < o2.index("w")
+      assert ordonner({}) == []
+    solutionCode: |
+      def ordonner(noeuds):
+          ordre, vus = [], set()
+
+          def visiter(nom):
+              if nom in vus or nom not in noeuds:
+                  return
+              vus.add(nom)
+              op, p, q = noeuds[nom]
+              visiter(p)
+              if op != "tanh":
+                  visiter(q)
+              ordre.append(nom)
+
+          for nom in sorted(noeuds):
+              visiter(nom)
+          return ordre
+    indice: { fr: 'Parcours en profondeur : pour chaque nœud, visite d’abord ses parents (récursion), puis ajoute le nœud à la liste. Un ensemble `vus` évite les doublons.', en: 'Depth-first traversal: for each node, first visit its parents (recursion), then add the node to the list. A `vus` set avoids duplicates.' }
+    explication: { fr: 'Le nœud est ajouté **après** ses parents : c’est exactement la définition de l’ordre topologique.', en: 'The node is added **after** its parents: this is exactly the definition of the topological order.' }
+  - id: c8
+    type: retenir
+    fr: 'Graphe de calcul = nœuds (petites opérations) reliés à leurs parents. On évalue dans l’ordre topologique ; un nœud réutilisé garde la trace de chaque usage ; pas de cycle. La rétropropagation le parcourt à l’envers.'
+    en: 'Computation graph = nodes (small operations) linked to their parents. Evaluate in topological order; a reused node keeps track of each use; no cycle. Backpropagation walks it in reverse.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [Deep Learning — Graphes de calcul](https://www.deeplearningbook.org/contents/mlp.html) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [Deep Learning — Computational graphs](https://www.deeplearningbook.org/contents/mlp.html); this optional reading needs a connection.'

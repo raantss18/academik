@@ -45,8 +45,8 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **3.2** Trier | Kintana ordonne ses documents pour préparer la recherche. | — | 3.4, 3.6 |
 | **3.3** Dichotomie | Kintana retrouve un identifiant dans une liste triée sans tout parcourir. | 3.1 | 3.4 |
 | **3.4** Hachage | Kintana associe chaque mot aux identifiants de ses documents. | 0.4, 3.2, 3.3 | — |
-| **3.5** Graphes | Kintana explore les liens entre documents par distance croissante. | — | 3.7, 3.8 |
-| **3.6** Récursivité | Kintana résout un problème en le ramenant à un problème plus petit de même forme. | 3.2 | 3.7, 3.boss, 9.6 |
+| **3.5** Graphes | Kintana explore les liens entre documents par distance croissante. | — | 3.7, 3.8, 11.2 |
+| **3.6** Récursivité | Kintana résout un problème en le ramenant à un problème plus petit de même forme. | 3.2 | 3.7, 3.boss, 9.6, 11.2 |
 | **3.7** Piles | Kintana vérifie que les parenthèses de ses formules sont bien fermées, grâce à une pile. | 3.5, 3.6 | — |
 | **3.8** Plus courts chemins | Kintana trouve le chemin le moins coûteux entre deux documents, quand chaque lien a un poids. | 3.1, 3.5 | 3.boss |
 | **3.boss** L'index inversé | Kintana sait retrouver un document vite : index inversé, tri, recherche. | 3.6, 3.8 | — |
@@ -56,11 +56,11 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
 | **4.1** Vecteurs | Kintana représente un texte par un vecteur de comptage, première brique de la similarité. | — | 9.boss |
-| **4.2** Produit scalaire | Kintana compare les directions des vecteurs de textes grâce au cosinus. | — | 4.6, 9.boss |
-| **4.3** Matrices | Kintana range les textes en lignes et calcule plusieurs scores en une opération matricielle. | — | 4.6 |
+| **4.2** Produit scalaire | Kintana compare les directions des vecteurs de textes grâce au cosinus. | — | 4.6, 9.boss, 11.1 |
+| **4.3** Matrices | Kintana range les textes en lignes et calcule plusieurs scores en une opération matricielle. | — | 4.6, 11.1 |
 | **4.4** Systèmes | Kintana retrouve des poids à partir de scores et détecte des contraintes incompatibles. | — | 4.7 |
 | **4.5** SVD | Kintana découvre comment réduire les dimensions de ses vecteurs, au prix d’une perte d’information. | — | 4.7 |
-| **4.6** Applications linéaires | Kintana comprend qu’une matrice est une machine qui transforme des vecteurs, et sait en enchaîner plusieurs. | 4.2, 4.3 | — |
+| **4.6** Applications linéaires | Kintana comprend qu’une matrice est une machine qui transforme des vecteurs, et sait en enchaîner plusieurs. | 4.2, 4.3 | 11.1 |
 | **4.7** Rang, noyau et bases | Kintana sait combien de directions vraiment différentes une matrice produit, et ce qu’elle écrase. | 4.4, 4.5 | — |
 | **4.boss** Le moteur de similarité | Kintana sait mesurer la ressemblance de deux textes (vecteurs de comptage et cosinus). | — | 9.boss |
 
@@ -72,9 +72,9 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **5.2** Dérivées | Kintana mesure comment son erreur varie quand un paramètre change. | — | 5.8 |
 | **5.3** Gradient | Kintana mesure la sensibilité de son erreur à plusieurs paramètres. | — | 9.1 |
 | **5.4** Convexité | Kintana reconnaît les erreurs convexes, pour lesquelles un point stationnaire est un minimum global. | — | — |
-| **5.5** Descente | Kintana sait apprendre ses propres paramètres par descente de gradient. | — | 5.7, 9.1 |
+| **5.5** Descente | Kintana sait apprendre ses propres paramètres par descente de gradient. | — | 5.7, 9.1, 11.3, 11.4, 11.5 |
 | **5.6** Exponentielle et logarithme | Kintana transforme des produits en sommes avec le logarithme, pour ne plus perdre de petits nombres. | 3.1 | 6.5, 9.3 |
-| **5.7** Règle de chaîne | Kintana sait dériver une fonction construite en plusieurs étapes, ce qui permettra d’apprendre à travers plusieurs couches. | 5.5 | 9.1 |
+| **5.7** Règle de chaîne | Kintana sait dériver une fonction construite en plusieurs étapes, ce qui permettra d’apprendre à travers plusieurs couches. | 5.5 | 9.1, 11.2, 11.3 |
 | **5.8** Intégrales | Kintana mesure une aire sous une courbe, ce qui lui servira à calculer des probabilités et des moyennes continues. | 5.2 | 6.3 |
 | **5.boss** La pente la plus raide | Kintana règle un paramètre par descente de gradient sur une vraie erreur : les moindres carrés. | 5.1 | — |
 
@@ -115,9 +115,9 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
-| **9.1** Ajuster une droite | Kintana apprend ses premiers réglages : la droite qui passe au plus près d’un nuage de points. | 5.3, 5.5, 5.7, 8.5 | 10.4 |
+| **9.1** Ajuster une droite | Kintana apprend ses premiers réglages : la droite qui passe au plus près d’un nuage de points. | 5.3, 5.5, 5.7, 8.5 | 10.4, 11.3, 11.4 |
 | **9.2** Biais et variance | Kintana règle la souplesse de son modèle : ni trop rigide pour comprendre, ni trop souple pour ne pas apprendre par cœur. | 8.5 | 9.5, 9.6, 10.1 |
-| **9.3** Classer | Kintana apprend à répondre par une catégorie, avec une probabilité, grâce à la régression logistique. | 2.5, 5.6 | 9.4, 9.5, 9.6 |
+| **9.3** Classer | Kintana apprend à répondre par une catégorie, avec une probabilité, grâce à la régression logistique. | 2.5, 5.6 | 9.4, 9.5, 9.6, 11.1 |
 | **9.4** Mesurer une classification | Kintana mesure honnêtement ses réponses : combien de bonnes, combien de fausses alertes, combien d’oublis. | 7.2, 8.5, 9.3 | 9.boss, 10.boss |
 | **9.5** Régularisation et validation croisée | Kintana retient ses réglages pour ne pas s’emballer, et choisit ses hyperparamètres sans jamais toucher au test. | 8.3, 8.boss, 9.2, 9.3 | 10.boss |
 | **9.6** Arbres de décision | Kintana décide en posant une suite de questions simples, et apprend elle-même quelles questions poser. | 3.6, 9.2, 9.3 | — |
@@ -133,3 +133,14 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **10.4** Prévoir : le modèle AR(1) | Kintana prévoit la valeur suivante d’une série stable en s’appuyant sur la valeur actuelle. | 8.5, 9.1, 10.3 | 10.boss |
 | **10.5** Volatilité | Kintana mesure l’agitation d’une série, c’est-à-dire le risque, même quand elle ne sait pas prévoir son sens. | 8.3, 10.1, 10.3 | — |
 | **10.boss** Prévoir sans tricher | Kintana évalue ses prévisions comme dans la vraie vie : au fil du temps, sans jamais regarder le futur. | 8.5, 8.boss, 9.4, 9.5, 10.4 | — |
+
+## 11 · Réseaux de neurones
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **11.1** Le neurone | Kintana calcule la sortie d’un neurone artificiel : une somme pondérée, puis une activation. | 4.2, 4.3, 4.6, 9.3 | 11.4 |
+| **11.2** Le graphe de calcul | Kintana représente un calcul comme un graphe de petites opérations, qu’elle peut parcourir dans les deux sens. | 3.5, 3.6, 5.7 | 11.3 |
+| **11.3** Rétropropagation | Kintana calcule d’un seul coup l’influence de chaque réglage sur l’erreur, en parcourant le graphe à l’envers. | 5.5, 5.7, 9.1, 11.2 | 11.4 |
+| **11.4** Apprendre XOR | Kintana entraîne un petit réseau qui apprend seul une règle qu’aucune droite ne peut représenter. | 5.5, 9.1, 11.1, 11.3 | 11.boss |
+| **11.5** Optimiseurs | Kintana descend plus vite et plus droit : elle garde la mémoire de ses pas précédents. | 5.5 | — |
+| **11.boss** Ton micrograd | Kintana apprend seule : tu as construit le moteur qui entraîne un réseau, de la passe avant à la mise à jour. | 11.4 | — |

@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.22] — 2026-11-02
+
+### Message fr
+Un nouveau module t'attend : « Réseaux de neurones ». Tu construis un mini-micrograd, du neurone à un réseau qui apprend XOR tout seul. Pendant les leçons, une luciole traverse l'écran après trois réussites de suite, et le boss s'allume en fête.
+
+### Message en
+A new module awaits: “Neural networks”. You build a mini-micrograd, from a single neuron to a network that learns XOR on its own. During lessons, a firefly crosses the screen after three right answers in a row, and the boss lights up in celebration.
+
 ## [0.3.21] — 2026-11-02
 
 ### Message fr

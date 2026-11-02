@@ -1,0 +1,176 @@
+# Niveau 11.1 — Réseaux de neurones 1 : le neurone. Original academik ; notions vérifiées dans Goodfellow, Bengio et Courville, Deep Learning (chap. 6, lecture en ligne, texte non repris) et dans la série « Neural Networks: Zero to Hero » d'A. Karpathy (citée, code non repris).
+id: '11.1'
+module: 11
+duree_min: 16
+titre: { fr: 'Le neurone', en: 'The neuron' }
+ia: { fr: 'Kintana calcule la sortie d’un neurone artificiel : une somme pondérée, puis une activation.', en: 'Kintana computes the output of an artificial neuron: a weighted sum, then an activation.' }
+sources:
+  - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, chap. 6 (réseaux profonds)', url: 'https://www.deeplearningbook.org/contents/mlp.html', licence: 'Lecture en ligne ; texte non repris' }
+  - { titre: 'A. Karpathy — Neural Networks: Zero to Hero', url: 'https://karpathy.ai/zero-to-hero.html', licence: 'Cours en ligne ; contenu cité, code non repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un neurone reçoit $x=(3,4)$ avec les poids $w=(2,-1)$ et le biais $b=1$. Quelle est sa somme pondérée $w\cdot x+b$ ?'
+    en: 'A neuron receives $x=(3,4)$ with weights $w=(2,-1)$ and bias $b=1$. What is its weighted sum $w\cdot x+b$?'
+    choix:
+      - { fr: '$3$', en: '$3$', juste: true }
+      - { fr: '$11$', en: '$11$' }
+      - { fr: '$2$', en: '$2$' }
+    indice: { fr: 'Fais le produit scalaire (niveau 4.2), puis ajoute le biais.', en: 'Take the dot product (level 4.2), then add the bias.' }
+    explication: { fr: '$2\times3+(-1)\times4+1=6-4+1=3$.', en: '$2\times3+(-1)\times4+1=6-4+1=3$.' }
+  - id: c2
+    type: idee
+    fr: 'Un **neurone artificiel** fait deux choses. D’abord une **somme pondérée** $z=w\cdot x+b$ de ses entrées. Puis une **activation** $a=f(z)$ qui décide de sa sortie. Les poids $w$ et le biais $b$ sont ses réglages.'
+    en: 'An **artificial neuron** does two things. First a **weighted sum** $z=w\cdot x+b$ of its inputs. Then an **activation** $a=f(z)$ that decides its output. The weights $w$ and the bias $b$ are its settings.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Un neurone', en: 'One neuron' }
+          noeuds: [{ fr: 'entrées $x_1,x_2$', en: 'inputs $x_1,x_2$' }, { fr: '$z=w_1x_1+w_2x_2+b$', en: '$z=w_1x_1+w_2x_2+b$' }, { fr: '$a=f(z)$', en: '$a=f(z)$', ton: ok }]
+      legende: { fr: 'C’est la régression logistique du niveau 9.3 : $f$ était la sigmoïde.', en: 'It is the logistic regression of level 9.3: $f$ was the sigmoid.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un neurone en Python', en: 'A neuron in Python' }
+    lang: python
+    etapes:
+      - { code: 'import math\nx, w, b = [3, 4], [2, -1], 1', fr: 'Les entrées, les poids et le biais de la carte d’amorce.', en: 'The inputs, weights and bias from the opening card.' }
+      - { code: 'z = sum(wi * xi for wi, xi in zip(w, x)) + b', fr: 'La somme pondérée : `3`.', en: 'The weighted sum: `3`.' }
+      - { code: 'a = math.tanh(z)\nprint(round(z, 3), round(a, 3))', fr: 'L’activation `tanh` écrase `3` en `0.995`. On affiche `3 0.995`.', en: 'The `tanh` activation squashes `3` into `0.995`. We display `3 0.995`.' }
+    verif: |-
+      import math
+      x, w, b = [3, 4], [2, -1], 1
+      z = sum(wi * xi for wi, xi in zip(w, x)) + b
+      a = math.tanh(z)
+      print(round(z, 3), round(a, 3))
+    sortie: '3 0.995'
+  - id: d_act
+    type: idee
+    fr: 'Trois activations courantes : **ReLU**, **sigmoïde** (sortie entre 0 et 1) et **tanh** (sortie entre $-1$ et $1$). Elles courbent la droite, donc le réseau apprend autre chose que du linéaire.'
+    en: 'Three common activations: **ReLU**, **sigmoid** (output between 0 and 1) and **tanh** (output between $-1$ and $1$). They bend the line, so the network learns more than linear things.'
+    figure:
+      kind: tableau
+      entetes: ['$z$', 'ReLU', '$\tanh z$']
+      cellules:
+        - ['$-2$', '$0$', '$-0{,}964$']
+        - ['$0$', '$0$', '$0$']
+        - ['$2$', '$2$', { fr: '$0{,}964$', en: '$0.964$', ton: ok }]
+      legende: { fr: 'La sigmoïde et le tanh saturent aux grandes valeurs ; ReLU continue de croître.', en: 'Sigmoid and tanh saturate at large values; ReLU keeps growing.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `relu(z)`** et **`neurone(x, w, b, f)`** : le second calcule `f(w · x + b)` pour des listes `x` et `w`.'
+    en: 'Your turn. **Write `relu(z)`** and **`neurone(x, w, b, f)`**: the second computes `f(w · x + b)` for lists `x` and `w`.'
+    depart: |
+      # écris tes fonctions relu et neurone ici
+    tests: |
+      import math
+      assert relu(-2) == 0 and relu(0) == 0 and relu(2) == 2
+      assert neurone([3, 4], [2, -1], 1, lambda z: z) == 3
+      assert abs(neurone([3, 4], [2, -1], 1, math.tanh) - math.tanh(3)) < 1e-12
+      assert neurone([1, 1], [-1, -1], 0, relu) == 0
+    solutionCode: |
+      def relu(z):
+          return max(0, z)
+
+      def neurone(x, w, b, f):
+          z = sum(wi * xi for wi, xi in zip(w, x)) + b
+          return f(z)
+    indice: { fr: '`max(0, z)` pour ReLU ; pour le neurone, la somme pondérée du niveau 4.2 plus le biais, puis `f` appliquée au résultat.', en: '`max(0, z)` for ReLU; for the neuron, the weighted sum from level 4.2 plus the bias, then `f` applied to the result.' }
+    explication: { fr: 'La fonction `f` est un **paramètre** : on peut changer d’activation sans réécrire le neurone.', en: 'The function `f` is a **parameter**: we can change the activation without rewriting the neuron.' }
+  - id: d_lineaire
+    type: idee
+    fr: 'Pourquoi une activation ? Sans elle, empiler des neurones ne sert à rien : deux transformations linéaires de suite font encore **une seule** transformation linéaire (niveau 4.6). La courbure de $f$ permet de dessiner des frontières non droites.'
+    en: 'Why an activation? Without it, stacking neurons is pointless: two linear transformations in a row make **one** linear transformation (level 4.6). The curvature of $f$ lets us draw non-straight boundaries.'
+    exemple: { fr: 'Sans activation : $x\mapsto2x$ puis $y\mapsto3y$ donne $x\mapsto6x$, une droite. Avec ReLU entre les deux, on obtient une fonction « coudée » que ni $2x$ ni $6x$ ne peuvent imiter.', en: 'Without activation: $x\mapsto2x$ then $y\mapsto3y$ gives $x\mapsto6x$, a line. With ReLU in between, we get a “bent” function that neither $2x$ nor $6x$ can imitate.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un neurone ReLU reçoit $z=-3{,}5$. Quelle est sa sortie ?'
+    en: 'A ReLU neuron receives $z=-3.5$. What is its output?'
+    reponses: ['0']
+    verif: 'print(max(0, -3.5))'
+    indice: { fr: 'ReLU garde le nombre s’il est positif, sinon elle donne zéro.', en: 'ReLU keeps the number if it is positive, otherwise it gives zero.' }
+    explication: { fr: 'Pour $z<0$, ReLU vaut $0$ : le neurone est « éteint » pour cette entrée.', en: 'For $z<0$, ReLU is $0$: the neuron is “off” for this input.' }
+  - id: d_couche
+    type: idee
+    fr: 'Une **couche** est un groupe de neurones qui reçoivent les mêmes entrées. Chacun a ses propres poids : la couche produit une liste de sorties. Une couche de $n$ neurones est une matrice $W$ ($n$ lignes) appliquée à $x$ (niveau 4.3).'
+    en: 'A **layer** is a group of neurons receiving the same inputs. Each has its own weights: the layer produces a list of outputs. A layer of $n$ neurons is a matrix $W$ ($n$ rows) applied to $x$ (level 4.3).'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Neurone', en: 'Neuron' }, { fr: 'Poids (ligne de $W$)', en: 'Weights (row of $W$)' }, { fr: 'Sortie pour $x=(3,4)$, $b=0$', en: 'Output for $x=(3,4)$, $b=0$' }]
+      cellules:
+        - ['$1$', '$(1,0)$', '$3$']
+        - ['$2$', '$(0,1)$', '$4$']
+        - ['$3$', '$(1,1)$', { fr: '$7$', en: '$7$', ton: ok }]
+      legende: { fr: 'Trois neurones, trois sorties : la couche transforme un vecteur de 2 nombres en un vecteur de 3.', en: 'Three neurons, three outputs: the layer turns a 2-number vector into a 3-number vector.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `couche(x, W, b, f)`** : la liste des sorties d’une couche. `W` est une liste de lignes de poids, `b` la liste des biais (un par neurone). `neurone` est fournie.'
+    en: '**Write `couche(x, W, b, f)`**: the list of a layer’s outputs. `W` is a list of weight rows, `b` the list of biases (one per neuron). `neurone` is provided.'
+    depart: |
+      def neurone(x, w, b, f):
+          return f(sum(wi * xi for wi, xi in zip(w, x)) + b)
+
+      # écris ta fonction couche ici
+    tests: |
+      ident = lambda z: z
+      assert couche([3, 4], [[1, 0], [0, 1], [1, 1]], [0, 0, 0], ident) == [3, 4, 7]
+      assert couche([3, 4], [[1, 0], [0, 1]], [10, -10], ident) == [13, -6]
+      assert couche([1], [[2]], [0], lambda z: max(0, z)) == [2]
+      assert couche([5, 5], [], [], ident) == []
+    solutionCode: |
+      def neurone(x, w, b, f):
+          return f(sum(wi * xi for wi, xi in zip(w, x)) + b)
+
+      def couche(x, W, b, f):
+          return [neurone(x, w, bi, f) for w, bi in zip(W, b)]
+    indice: { fr: 'Un neurone par couple (ligne de poids, biais) : `zip(W, b)`.', en: 'One neuron per (weight row, bias) pair: `zip(W, b)`.' }
+    explication: { fr: 'Une couche, c’est le même neurone répété avec des réglages différents.', en: 'A layer is the same neuron repeated with different settings.' }
+  - id: d_p_zero
+    type: piege
+    fr: 'Initialiser **tous les poids à zéro** (ou à la même valeur) est une erreur. Tous les neurones d’une couche calculent la même chose et reçoivent les mêmes corrections. Ils restent donc identiques. On commence par de petits nombres **différents**.'
+    en: 'Initialising **all weights to zero** (or to the same value) is a mistake. All neurons in a layer compute the same thing and receive the same corrections. They stay identical. We start with small **different** numbers.'
+  - id: d_lien
+    type: idee
+    fr: 'Tu retrouves tout ce que tu connais : produit scalaire (niveau 4.2), matrices (4.3), régression logistique (9.3). Au niveau 11.2, tu verras comment suivre le calcul pas à pas dans un **graphe**, ce qui préparera la rétropropagation du niveau 11.3.'
+    en: 'You recognise everything you know: dot product (level 4.2), matrices (4.3), logistic regression (9.3). In level 11.2, you will see how to follow the computation step by step in a **graph**, which will prepare the backpropagation of level 11.3.'
+    exemple: { fr: 'Un réseau de neurones n’est pas un nouvel objet : ce sont des neurones comme celui-ci, rangés en couches et enchaînés, avec de très nombreux réglages à apprendre.', en: 'A neural network is not a new object: it is neurons like this one, arranged in layers and chained, with a great many settings to learn.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `reseau(x, couches, f)`** : fais passer `x` à travers une liste de couches `[(W1, b1), (W2, b2), …]` ; la sortie d’une couche est l’entrée de la suivante, avec l’activation `f` partout. `couche` est fournie.'
+    en: 'Challenge. **Write `reseau(x, couches, f)`**: pass `x` through a list of layers `[(W1, b1), (W2, b2), …]`; one layer’s output is the next one’s input, with activation `f` everywhere. `couche` is provided.'
+    depart: |
+      def couche(x, W, b, f):
+          return [f(sum(wi * xi for wi, xi in zip(w, x)) + bi) for w, bi in zip(W, b)]
+
+      # écris ta fonction reseau ici
+    tests: |
+      ident = lambda z: z
+      c1 = ([[1, 1], [1, -1]], [0, 0])
+      c2 = ([[2, 3]], [1])
+      assert reseau([3, 4], [c1, c2], ident) == [2 * 7 + 3 * (-1) + 1]
+      assert reseau([5], [], ident) == [5]
+      relu = lambda z: max(0, z)
+      assert reseau([1, 2], [([[-1, -1]], [0]), ([[5]], [1])], relu) == [1]
+    solutionCode: |
+      def couche(x, W, b, f):
+          return [f(sum(wi * xi for wi, xi in zip(w, x)) + bi) for w, bi in zip(W, b)]
+
+      def reseau(x, couches, f):
+          for W, b in couches:
+              x = couche(x, W, b, f)
+          return x
+    indice: { fr: 'Une boucle sur les couches : à chaque tour, remplace `x` par la sortie de la couche.', en: 'A loop over the layers: at each turn, replace `x` with the layer’s output.' }
+    explication: { fr: 'C’est la **passe avant** d’un réseau : une simple boucle qui enchaîne les couches.', en: 'This is the **forward pass** of a network: a simple loop chaining the layers.' }
+  - id: c8
+    type: retenir
+    fr: 'Neurone = somme pondérée $w\cdot x+b$ puis activation ($\text{ReLU}$, $\sigma$, $\tanh$). Une couche = plusieurs neurones sur les mêmes entrées ; un réseau = des couches enchaînées. Sans activation, tout reste linéaire ; jamais de poids tous égaux.'
+    en: 'Neuron = weighted sum $w\cdot x+b$ then activation ($\text{ReLU}$, $\sigma$, $\tanh$). A layer = several neurons on the same inputs; a network = chained layers. Without activation, everything stays linear; never all-equal weights.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [Deep Learning — Réseaux feedforward](https://www.deeplearningbook.org/contents/mlp.html) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [Deep Learning — Feedforward networks](https://www.deeplearningbook.org/contents/mlp.html); this optional reading needs a connection.'

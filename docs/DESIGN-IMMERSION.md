@@ -3,7 +3,7 @@
 > Demande d'Antsa : utiliser le GPU de l'appareil (« ça bug un peu »), relier le fond de chaque carte à l'accueil, donner une
 > idée d'**immersion et de jeu** dans chaque carte, sans perturber la concentration et **sans rien casser**.
 > État : étude + prototype jouable (`prototypes/immersion/index.html`). **Réponses d'Antsa (2 nov.)** : zoom d'abord, décor discret, fond par module, version jour de chaque quartier.
-> **Fait** : étape 1 (zoom par `transform`, 49,8 → 21,1 ms par image mesuré), étape 2 (fond de leçon aux couleurs du quartier, jour et nuit), étape 3 (chemin du quartier à la place de la barre) et étape 4 (silhouette dont les fenêtres s'allument aux bonnes réponses). Reste l'étape 5 (détails de jeu).
+> **Fait** : étape 1 (zoom par `transform`, 49,8 → 21,1 ms par image mesuré), étape 2 (fond de leçon aux couleurs du quartier, jour et nuit), étape 3 (chemin du quartier à la place de la barre) et étape 4 (silhouette dont les fenêtres s'allument aux bonnes réponses). Étape 5 (lucioles de série, scène de fin de boss) faite en 0.3.22.
 
 ## 1. Pourquoi ça « bugue » : mesures sur la carte actuelle
 

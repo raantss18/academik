@@ -1,0 +1,141 @@
+# Niveau 11.5 — Réseaux de neurones 5 : optimiseurs. Original academik ; notions vérifiées dans Goodfellow, Bengio et Courville, Deep Learning (chap. 8.3 et 8.5, lecture en ligne, texte non repris) et Kingma et Ba, Adam: A Method for Stochastic Optimization (arXiv 1412.6980, formules citées).
+id: '11.5'
+module: 11
+duree_min: 12
+titre: { fr: 'Optimiseurs', en: 'Optimizers' }
+ia: { fr: 'Kintana descend plus vite et plus droit : elle garde la mémoire de ses pas précédents.', en: 'Kintana descends faster and straighter: it keeps a memory of its previous steps.' }
+sources:
+  - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, chap. 8 (optimisation)', url: 'https://www.deeplearningbook.org/contents/optimization.html', licence: 'Lecture en ligne ; texte non repris' }
+  - { titre: 'Kingma, Ba — Adam: A Method for Stochastic Optimization', url: 'https://arxiv.org/abs/1412.6980', licence: 'Article en accès libre ; formules citées' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Une bille roule dans une vallée étroite et longue. À chaque instant elle suit la pente locale, mais la pente la fait zigzaguer d’un bord à l’autre. Quelle idée l’aiderait à avancer plus droit ?'
+    en: 'A ball rolls in a long, narrow valley. At each instant it follows the local slope, but the slope makes it zigzag from one side to the other. Which idea would help it go straighter?'
+    choix:
+      - { fr: 'Garder une partie de sa vitesse précédente', en: 'Keep part of its previous speed', juste: true }
+      - { fr: 'Oublier chaque pas après l’avoir fait', en: 'Forget each step after taking it' }
+      - { fr: 'Partir toujours du même point', en: 'Always start from the same point' }
+    indice: { fr: 'Une vraie bille a de l’inertie : que garde-t-elle d’un instant à l’autre ?', en: 'A real ball has inertia: what does it keep from one instant to the next?' }
+    explication: { fr: 'Les zigzags se compensent d’un pas à l’autre, alors que la direction du fond de la vallée s’additionne : c’est le **momentum**.', en: 'The zigzags cancel from one step to the next, while the direction of the valley floor adds up: this is **momentum**.' }
+  - id: c2
+    type: idee
+    fr: 'La descente de gradient simple (niveau 5.5) ne retient rien : chaque pas ne dépend que de la pente du moment. Dans une vallée étroite, elle zigzague et avance lentement. Un **optimiseur** est une règle plus maligne pour déplacer les réglages.'
+    en: 'Plain gradient descent (level 5.5) remembers nothing: each step depends only on the current slope. In a narrow valley, it zigzags and moves slowly. An **optimizer** is a smarter rule to move the settings.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Optimiseur', en: 'Optimizer' }, { fr: 'Ce qu’il retient', en: 'What it remembers' }]
+      cellules:
+        - [{ fr: 'Descente simple', en: 'Plain descent' }, { fr: 'rien', en: 'nothing' }]
+        - [{ fr: 'Momentum', en: 'Momentum' }, { fr: 'une vitesse', en: 'a velocity' }]
+        - [{ fr: 'Adam', en: 'Adam' }, { fr: 'vitesse et échelle des pentes', en: 'velocity and slope scale' }]
+      legende: { fr: 'Plus l’optimiseur retient, plus il adapte ses pas.', en: 'The more the optimizer remembers, the more it adapts its steps.' }
+  - id: c3
+    type: idee
+    fr: 'Le **momentum** garde une vitesse $v$. À chaque pas : $v\leftarrow\beta v-\eta g$, puis $p\leftarrow p+v$. Le coefficient $\beta$ (souvent $0{,}9$) dit quelle part de l’ancienne vitesse on conserve ; $g$ est la pente.'
+    en: '**Momentum** keeps a velocity $v$. At each step: $v\leftarrow\beta v-\eta g$, then $p\leftarrow p+v$. The coefficient $\beta$ (often $0.9$) says how much of the old velocity we keep; $g$ is the slope.'
+    exemple: { fr: 'Avec $p=1$, $v=0$, $g=0{,}5$, $\eta=0{,}1$, $\beta=0{,}9$ : $v=-0{,}05$ et $p=0{,}95$. Au pas suivant, avec la même pente : $v=0{,}9\times(-0{,}05)-0{,}05=-0{,}095$ et $p=0{,}855$. Le pas grandit.', en: 'With $p=1$, $v=0$, $g=0.5$, $\eta=0.1$, $\beta=0.9$: $v=-0.05$ and $p=0.95$. At the next step, with the same slope: $v=0.9\times(-0.05)-0.05=-0.095$ and $p=0.855$. The step grows.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `pas_momentum(p, v, g, eta, beta)`** qui renvoie le couple `(p, v)` après un pas : la nouvelle vitesse `v = beta * v - eta * g`, puis `p = p + v`.'
+    en: 'Your turn. **Write `pas_momentum(p, v, g, eta, beta)`** which returns the pair `(p, v)` after one step: the new velocity `v = beta * v - eta * g`, then `p = p + v`.'
+    depart: |
+      # écris ta fonction pas_momentum ici
+    tests: |
+      p, v = pas_momentum(1.0, 0.0, 0.5, 0.1, 0.9)
+      assert abs(p - 0.95) < 1e-9 and abs(v + 0.05) < 1e-9
+      p, v = pas_momentum(p, v, 0.5, 0.1, 0.9)
+      assert abs(p - 0.855) < 1e-9 and abs(v + 0.095) < 1e-9
+      assert pas_momentum(2.0, 0.0, 0.0, 0.1, 0.9) == (2.0, 0.0)
+    solutionCode: |
+      def pas_momentum(p, v, g, eta, beta):
+          v = beta * v - eta * g
+          return p + v, v
+    indice: { fr: 'Calcule d’abord la nouvelle vitesse, puis ajoute-la à `p`, et renvoie les deux.', en: 'First compute the new velocity, then add it to `p`, and return both.' }
+    explication: { fr: 'Avec `beta = 0`, on retrouve exactement la descente simple : le momentum n’est qu’une mémoire ajoutée.', en: 'With `beta = 0`, we get plain descent exactly: momentum is only a memory added on top.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Même situation que l’exemple, mais avec $\beta=0$ (aucune mémoire) : $p=1$, $v=0$, $g=0{,}5$, $\eta=0{,}1$. Quelle est la valeur de $p$ après un pas ?'
+    en: 'Same situation as the example, but with $\beta=0$ (no memory): $p=1$, $v=0$, $g=0.5$, $\eta=0.1$. What is $p$ after one step?'
+    reponses: ['0.95', '0,95']
+    verif: |-
+      v = 0 * 0.0 - 0.1 * 0.5
+      print(round(1.0 + v, 2))
+    indice: { fr: 'Avec $\beta=0$, la vitesse vaut simplement $-\eta g$.', en: 'With $\beta=0$, the velocity is simply $-\eta g$.' }
+    explication: { fr: '$v=-0{,}1\times0{,}5=-0{,}05$, donc $p=0{,}95$ : la descente simple.', en: '$v=-0.1\times0.5=-0.05$, so $p=0.95$: plain descent.' }
+  - id: c6
+    type: idee
+    fr: '**Adam** retient deux moyennes mobiles : celle des pentes ($m$) et celle de leurs carrés ($v$). Il divise le pas par la racine de $v$. Un réglage à grande pente avance prudemment, un réglage à pente faible avance plus vite.'
+    en: '**Adam** keeps two moving averages: that of the slopes ($m$) and that of their squares ($v$). It divides the step by the root of $v$. A setting with a large slope moves carefully, one with a small slope moves faster.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Un pas d’Adam', en: 'One Adam step' }
+          noeuds: [{ fr: 'moyenne $m$ des pentes', en: 'average $m$ of slopes' }, { fr: 'moyenne $v$ des carrés', en: 'average $v$ of squares' }, { fr: 'corriger le biais', en: 'correct the bias' }, { fr: 'pas $\eta\,\hat m/\sqrt{\hat v}$', en: 'step $\eta\,\hat m/\sqrt{\hat v}$', ton: ok }]
+      legende: { fr: 'Les valeurs corrigées $\hat m$ et $\hat v$ évitent un premier pas trop petit.', en: 'The corrected values $\hat m$ and $\hat v$ avoid a first step that is too small.' }
+  - id: c7
+    type: exemple
+    titre: { fr: 'Un premier pas d’Adam', en: 'A first Adam step' }
+    lang: python
+    etapes:
+      - { code: 'g, m, v, t = 0.5, 0.0, 0.0, 1\nm = 0.9 * m + 0.1 * g\nv = 0.999 * v + 0.001 * g * g', fr: 'On met à jour les deux moyennes : `m` vaut `0.05`, `v` vaut `0.00025`.', en: 'We update the two averages: `m` is `0.05`, `v` is `0.00025`.' }
+      - { code: 'mh = m / (1 - 0.9 ** t)\nvh = v / (1 - 0.999 ** t)', fr: 'On corrige le biais du début : `mh` vaut `0.5`, `vh` vaut `0.25`.', en: 'We correct the early bias: `mh` is `0.5`, `vh` is `0.25`.' }
+      - { code: 'print(round(1.0 - 0.1 * mh / (vh ** 0.5 + 1e-8), 4))', fr: 'Le pas vaut $0{,}1\times0{,}5/0{,}5=0{,}1$ : on affiche `0.9`.', en: 'The step is $0.1\times0.5/0.5=0.1$: we display `0.9`.' }
+    verif: |-
+      g, m, v, t = 0.5, 0.0, 0.0, 1
+      m = 0.9 * m + 0.1 * g
+      v = 0.999 * v + 0.001 * g * g
+      mh = m / (1 - 0.9 ** t)
+      vh = v / (1 - 0.999 ** t)
+      print(round(1.0 - 0.1 * mh / (vh ** 0.5 + 1e-8), 4))
+    sortie: '0.9'
+  - id: c8
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `pas_adam(p, m, v, g, t, eta)`** qui renvoie `(p, m, v)` après un pas, avec $\beta_1=0{,}9$, $\beta_2=0{,}999$ et $\varepsilon=10^{-8}$. Mets à jour `m` et `v`, corrige le biais avec `t`, puis `p -= eta * mh / (vh ** 0.5 + 1e-8)`.'
+    en: 'Challenge. **Write `pas_adam(p, m, v, g, t, eta)`** which returns `(p, m, v)` after one step, with $\beta_1=0.9$, $\beta_2=0.999$ and $\varepsilon=10^{-8}$. Update `m` and `v`, correct the bias with `t`, then `p -= eta * mh / (vh ** 0.5 + 1e-8)`.'
+    depart: |
+      # écris ta fonction pas_adam ici
+    tests: |
+      p, m, v = pas_adam(1.0, 0.0, 0.0, 0.5, 1, 0.1)
+      assert abs(p - 0.9) < 1e-6 and abs(m - 0.05) < 1e-9 and abs(v - 0.00025) < 1e-9
+      p2, m2, v2 = pas_adam(p, m, v, 0.5, 2, 0.1)
+      assert p2 < p and abs(m2 - 0.095) < 1e-9
+      q, _, _ = pas_adam(3.0, 0.0, 0.0, 100.0, 1, 0.1)
+      assert abs(q - 2.9) < 1e-6
+    solutionCode: |
+      def pas_adam(p, m, v, g, t, eta):
+          m = 0.9 * m + 0.1 * g
+          v = 0.999 * v + 0.001 * g * g
+          mh = m / (1 - 0.9 ** t)
+          vh = v / (1 - 0.999 ** t)
+          p -= eta * mh / (vh ** 0.5 + 1e-8)
+          return p, m, v
+    indice: { fr: 'Suis les trois étapes de l’exemple : moyennes `m` et `v`, valeurs corrigées `mh` et `vh`, puis le déplacement de `p`.', en: 'Follow the three steps of the example: averages `m` and `v`, corrected values `mh` and `vh`, then the move of `p`.' }
+    explication: { fr: 'Remarque : avec une pente de `100` ou de `0.5`, le premier pas vaut `0.1` dans les deux cas. Adam **normalise** l’échelle des pentes.', en: 'Note: with a slope of `100` or `0.5`, the first step is `0.1` in both cases. Adam **normalizes** the scale of the slopes.' }
+  - id: d_pourquoi
+    type: idee
+    fr: 'Pourquoi corriger le biais ? Au premier pas, $m$ et $v$ partent de zéro, donc ils sont trop petits. Diviser par $1-\beta^t$ les remet à l’échelle ; l’effet disparaît quand $t$ grandit.'
+    en: 'Why correct the bias? At the first step, $m$ and $v$ start from zero, so they are too small. Dividing by $1-\beta^t$ rescales them; the effect fades as $t$ grows.'
+    exemple: { fr: 'Au pas $t=1$ : $1-0{,}9^1=0{,}1$, donc $\hat m=0{,}05/0{,}1=0{,}5$. Au pas $t=50$ : $1-0{,}9^{50}\approx1$, la correction ne change presque plus rien.', en: 'At step $t=1$: $1-0.9^1=0.1$, so $\hat m=0.05/0.1=0.5$. At step $t=50$: $1-0.9^{50}\approx1$, the correction barely changes anything.' }
+  - id: d_p_eta
+    type: piege
+    fr: 'Un optimiseur plus malin ne dispense pas de choisir le pas $\eta$. Trop grand, le réseau diverge ; trop petit, il n’apprend presque rien. On essaie plusieurs valeurs (souvent $0{,}001$ pour Adam) et on regarde la courbe de la perte.'
+    en: 'A smarter optimizer does not excuse you from choosing the step $\eta$. Too large, the network diverges; too small, it learns almost nothing. We try several values (often $0.001$ for Adam) and watch the loss curve.'
+  - id: d_lien
+    type: idee
+    fr: 'Les grands modèles de langage sont entraînés avec une variante d’Adam. Au niveau suivant, tu assembleras tout ce module : un graphe, la rétropropagation, une perte et un optimiseur, dans ton propre mini-micrograd.'
+    en: 'Large language models are trained with a variant of Adam. In the next level, you will assemble this whole module: a graph, backpropagation, a loss and an optimizer, in your own mini-micrograd.'
+    exemple: { fr: 'Pour un modèle à un milliard de réglages, Adam garde deux nombres de plus par réglage : $m$ et $v$. La mémoire de l’entraînement triple environ.', en: 'For a model with a billion settings, Adam keeps two more numbers per setting: $m$ and $v$. Training memory roughly triples.' }
+  - id: c9
+    type: retenir
+    fr: 'Momentum : $v\leftarrow\beta v-\eta g$, $p\leftarrow p+v$. Adam : moyennes $m$ des pentes et $v$ des carrés, avec correction du biais, et pas $\eta\,\hat m/(\sqrt{\hat v}+\varepsilon)$. Le pas $\eta$ reste à choisir.'
+    en: 'Momentum: $v\leftarrow\beta v-\eta g$, $p\leftarrow p+v$. Adam: averages $m$ of slopes and $v$ of squares, with bias correction, and step $\eta\,\hat m/(\sqrt{\hat v}+\varepsilon)$. The step $\eta$ is still yours to choose.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980) ; cet article demande une connexion.'
+    en: 'For further study, see [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980); this paper needs a connection.'

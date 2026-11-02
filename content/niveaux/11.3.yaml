@@ -1,0 +1,220 @@
+# Niveau 11.3 — Réseaux de neurones 3 : la rétropropagation. Original academik ; notions vérifiées dans Goodfellow, Bengio et Courville, Deep Learning (chap. 6.5, rétropropagation, lecture en ligne, texte non repris), dans la série « Zero to Hero » d'A. Karpathy (citée, code non repris) et dans les niveaux 5.7 et 11.2.
+id: '11.3'
+module: 11
+duree_min: 16
+titre: { fr: 'Rétropropagation', en: 'Backpropagation' }
+ia: { fr: 'Kintana calcule d’un seul coup l’influence de chaque réglage sur l’erreur, en parcourant le graphe à l’envers.', en: 'Kintana computes in one go the influence of each setting on the error, by walking the graph backwards.' }
+sources:
+  - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, section 6.5 (rétropropagation)', url: 'https://www.deeplearningbook.org/contents/mlp.html', licence: 'Lecture en ligne ; texte non repris' }
+  - { titre: 'A. Karpathy — Neural Networks: Zero to Hero (micrograd)', url: 'https://karpathy.ai/zero-to-hero.html', licence: 'Cours en ligne ; contenu cité, code non repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Pour $e=a\times b$ avec $a=2$ et $b=3$, de combien monte $e$ si on augmente $a$ de $1$, **à peu près** (pour une toute petite hausse proportionnellement) ?'
+    en: 'For $e=a\times b$ with $a=2$ and $b=3$, by how much does $e$ rise if we increase $a$ by $1$, **roughly** (proportionally for a tiny rise)?'
+    choix:
+      - { fr: 'De $3$ : la valeur de $b$', en: 'By $3$: the value of $b$', juste: true }
+      - { fr: 'De $2$ : la valeur de $a$', en: 'By $2$: the value of $a$' }
+      - { fr: 'De $6$ : la valeur de $e$', en: 'By $6$: the value of $e$' }
+    indice: { fr: 'Compare $2\times3$ à $3\times3$ : de combien a-t-on changé ?', en: 'Compare $2\times3$ with $3\times3$: by how much did it change?' }
+    explication: { fr: '$e$ passe de $6$ à $9$ : $+3$. La pente de $a\times b$ par rapport à $a$ est $b$.', en: '$e$ goes from $6$ to $9$: $+3$. The slope of $a\times b$ with respect to $a$ is $b$.' }
+  - id: c2
+    type: idee
+    fr: 'La **rétropropagation** calcule la pente de la sortie par rapport à **chaque** nœud. On part de la sortie, dont la pente par rapport à elle-même vaut $1$, puis on remonte le graphe. À chaque nœud, on **passe la pente au parent** après l’avoir multipliée par la dérivée de l’opération.'
+    en: '**Backpropagation** computes the slope of the output with respect to **every** node. Start from the output, whose slope with respect to itself is $1$, then go back up the graph. At each node, we **pass the slope to the parent** after multiplying it by the operation’s derivative.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Opération du nœud', en: 'Node operation' }, { fr: 'Pente envoyée au parent 1', en: 'Slope sent to parent 1' }, { fr: 'Pente envoyée au parent 2', en: 'Slope sent to parent 2' }]
+      cellules:
+        - ['$n=p+q$', '$g\times1$', '$g\times1$']
+        - ['$n=p\times q$', '$g\times q$', '$g\times p$']
+        - ['$n=\tanh p$', '$g\times(1-n^2)$', { fr: '—', en: '—' }]
+      legende: { fr: '$g$ est la pente déjà calculée pour le nœud $n$ ; $p$, $q$ sont ses valeurs de parents.', en: '$g$ is the slope already computed for node $n$; $p$, $q$ are its parents’ values.' }
+  - id: d_chaine
+    type: idee
+    fr: 'C’est exactement la **règle de chaîne** du niveau 5.7, appliquée pas à pas : pente totale = pente du nœud $\times$ pente locale. On n’écrit jamais la dérivée de la formule entière : chaque opération connaît seulement la sienne.'
+    en: 'It is exactly the **chain rule** of level 5.7, applied step by step: total slope = node slope $\times$ local slope. We never write the derivative of the whole formula: each operation only knows its own.'
+    exemple: { fr: 'Pour $e=a\times b+c$ avec $a=2$, $b=3$, $c=4$ : la pente de $e$ vaut $1$. L’addition envoie $1$ à $d=a\times b$ et $1$ à $c$. Le produit envoie $1\times b=3$ à $a$ et $1\times a=2$ à $b$.', en: 'For $e=a\times b+c$ with $a=2$, $b=3$, $c=4$: the slope of $e$ is $1$. The addition sends $1$ to $d=a\times b$ and $1$ to $c$. The product sends $1\times b=3$ to $a$ and $1\times a=2$ to $b$.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Vérifier avec une mesure', en: 'Checking with a measurement' }
+    lang: python
+    etapes:
+      - { code: 'f = lambda a, b, c: a * b + c\neps = 1e-6', fr: 'La formule, et un tout petit pas.', en: 'The formula, and a tiny step.' }
+      - { code: 'da = (f(2 + eps, 3, 4) - f(2 - eps, 3, 4)) / (2 * eps)\ndb = (f(2, 3 + eps, 4) - f(2, 3 - eps, 4)) / (2 * eps)', fr: 'On mesure la pente par différence centrée (niveau 5.7), pour $a$ puis pour $b$.', en: 'We measure the slope by central difference (level 5.7), for $a$ then for $b$.' }
+      - { code: 'print(round(da, 3), round(db, 3))', fr: 'On affiche `3.0 2.0` : exactement ce que la rétropropagation donne, $b$ et $a$.', en: 'We display `3.0 2.0`: exactly what backpropagation gives, $b$ and $a$.' }
+    verif: |-
+      f = lambda a, b, c: a * b + c
+      eps = 1e-6
+      da = (f(2 + eps, 3, 4) - f(2 - eps, 3, 4)) / (2 * eps)
+      db = (f(2, 3 + eps, 4) - f(2, 3 - eps, 4)) / (2 * eps)
+      print(round(da, 3), round(db, 3))
+    sortie: '3.0 2.0'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `deriv_locale(op, vp, vq, vn)`** : le couple `(dp, dq)` des dérivées du nœud `vn` par rapport à ses parents `vp` et `vq`. L’opération `op` est `"add"`, `"mul"` ou `"tanh"` ; pour `"tanh"`, `dq` vaut `0`.'
+    en: 'Your turn. **Write `deriv_locale(op, vp, vq, vn)`**: the pair `(dp, dq)` of the derivatives of node `vn` with respect to its parents `vp` and `vq`. The operation `op` is `"add"`, `"mul"` or `"tanh"`; for `"tanh"`, `dq` is `0`.'
+    depart: |
+      # écris ta fonction deriv_locale ici
+    tests: |
+      import math
+      assert deriv_locale("add", 2, 3, 5) == (1, 1)
+      assert deriv_locale("mul", 2, 3, 6) == (3, 2)
+      t = math.tanh(0.5)
+      dp, dq = deriv_locale("tanh", 0.5, None, t)
+      assert abs(dp - (1 - t * t)) < 1e-12 and dq == 0
+    solutionCode: |
+      def deriv_locale(op, vp, vq, vn):
+          if op == "add":
+              return (1, 1)
+          if op == "mul":
+              return (vq, vp)
+          return (1 - vn * vn, 0)
+    indice: { fr: 'Reprends le tableau de la carte précédente : pour le produit, chaque parent reçoit la valeur de l’**autre**.', en: 'Reuse the table from the earlier card: for the product, each parent receives the value of the **other** one.' }
+    explication: { fr: 'La dérivée de $\tanh$ s’écrit avec sa propre valeur : $1-\tanh^2$, ce qui évite de la recalculer.', en: 'The derivative of $\tanh$ is written with its own value: $1-\tanh^2$, which avoids recomputing it.' }
+  - id: d_somme
+    type: idee
+    fr: 'Quand un nœud sert **plusieurs fois**, ses pentes s’**additionnent** : on écrit `grad[p] += …` et non `grad[p] = …`. Chaque usage est un chemin vers la sortie, et chaque chemin contribue.'
+    en: 'When a node is used **several times**, its slopes **add up**: we write `grad[p] += …` and not `grad[p] = …`. Each use is a path to the output, and each path contributes.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Pour $f=a\times a+a$, $a=3$', en: 'For $f=a\times a+a$, $a=3$' }, { fr: 'Contribution à la pente de $a$', en: 'Contribution to the slope of $a$' }]
+      cellules:
+        - [{ fr: 'premier $a$ du produit', en: 'first $a$ of the product' }, '$3$']
+        - [{ fr: 'second $a$ du produit', en: 'second $a$ of the product' }, '$3$']
+        - [{ fr: 'le $+a$ final', en: 'the final $+a$' }, '$1$']
+        - [{ fr: 'total', en: 'total' }, { fr: '$7$ (comme $2a+1$)', en: '$7$ (like $2a+1$)', ton: ok }]
+      legende: { fr: 'On retrouve la dérivée $2a+1$ du niveau 11.2, sans l’avoir calculée à la main.', en: 'We find the derivative $2a+1$ from level 11.2, without having computed it by hand.' }
+  - id: d_p_egal
+    type: piege
+    fr: 'Écrire `grad[p] = …` au lieu de `grad[p] += …` est l’erreur classique : la dernière contribution écrase les précédentes. Le résultat paraît plausible et reste **faux** dès qu’un nœud sert deux fois.'
+    en: 'Writing `grad[p] = …` instead of `grad[p] += …` is the classic mistake: the last contribution overwrites the earlier ones. The result looks plausible and stays **wrong** as soon as a node is used twice.'
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `retropropager(graphe, v, sortie)`** : `v` contient les valeurs (déjà calculées par `evaluer`). Renvoie le dictionnaire des pentes de `sortie` par rapport à **chaque** nom (entrées et nœuds). `deriv_locale` est fournie.'
+    en: '**Write `retropropager(graphe, v, sortie)`**: `v` holds the values (already computed by `evaluer`). Return the dictionary of the slopes of `sortie` with respect to **every** name (inputs and nodes). `deriv_locale` is provided.'
+    depart: |
+      import math
+
+      def evaluer(graphe, entrees):
+          v = dict(entrees)
+          for nom, op, p, q in graphe:
+              v[nom] = v[p] * v[q] if op == "mul" else (v[p] + v[q] if op == "add" else math.tanh(v[p]))
+          return v
+
+      def deriv_locale(op, vp, vq, vn):
+          if op == "add":
+              return (1, 1)
+          if op == "mul":
+              return (vq, vp)
+          return (1 - vn * vn, 0)
+
+      # écris ta fonction retropropager ici
+    tests: |
+      g = [("d", "mul", "a", "b"), ("e", "add", "d", "c")]
+      v = evaluer(g, {"a": 2, "b": 3, "c": 4})
+      assert retropropager(g, v, "e") == {"a": 3, "b": 2, "c": 1, "d": 1, "e": 1}
+      h = [("m", "mul", "a", "a"), ("f", "add", "m", "a")]
+      w = evaluer(h, {"a": 3})
+      assert retropropager(h, w, "f")["a"] == 7
+      t = [("s", "mul", "w", "x"), ("n", "tanh", "s", None)]
+      u = evaluer(t, {"w": 0.5, "x": 2.0})
+      r = retropropager(t, u, "n")
+      assert abs(r["w"] - 2.0 * (1 - math.tanh(1.0) ** 2)) < 1e-12
+    solutionCode: |
+      import math
+
+      def evaluer(graphe, entrees):
+          v = dict(entrees)
+          for nom, op, p, q in graphe:
+              v[nom] = v[p] * v[q] if op == "mul" else (v[p] + v[q] if op == "add" else math.tanh(v[p]))
+          return v
+
+      def deriv_locale(op, vp, vq, vn):
+          if op == "add":
+              return (1, 1)
+          if op == "mul":
+              return (vq, vp)
+          return (1 - vn * vn, 0)
+
+      def retropropager(graphe, v, sortie):
+          grad = {nom: 0 for nom in v}
+          grad[sortie] = 1
+          for nom, op, p, q in reversed(graphe):
+              dp, dq = deriv_locale(op, v[p], v[q] if q is not None else None, v[nom])
+              grad[p] += grad[nom] * dp
+              if op != "tanh":
+                  grad[q] += grad[nom] * dq
+          return grad
+    indice: { fr: 'Un dictionnaire de pentes à 0, `grad[sortie] = 1`, puis `reversed(graphe)` : pour chaque nœud, ajoute (`+=`) `grad[nom] * dérivée locale` à chaque parent.', en: 'A dictionary of slopes at 0, `grad[sortie] = 1`, then `reversed(graphe)`: for each node, add (`+=`) `grad[nom] * local derivative` to each parent.' }
+    explication: { fr: 'Le parcours **inverse** garantit que la pente d’un nœud est complète (tous ses usages vus) avant qu’on la passe à ses parents.', en: 'The **reverse** pass guarantees that a node’s slope is complete (all its uses seen) before it is passed to its parents.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans $e=a\times b+c$ avec $a=2$, $b=3$, $c=4$, quelle est la pente de $e$ par rapport à $c$ ?'
+    en: 'In $e=a\times b+c$ with $a=2$, $b=3$, $c=4$, what is the slope of $e$ with respect to $c$?'
+    reponses: ['1']
+    verif: 'print(1)'
+    indice: { fr: '$c$ est ajouté tel quel : de combien $e$ monte-t-il si $c$ monte de $1$ ?', en: '$c$ is added as is: by how much does $e$ rise if $c$ rises by $1$?' }
+    explication: { fr: 'L’addition envoie la pente $1$ à chacun de ses parents.', en: 'The addition sends the slope $1$ to each of its parents.' }
+  - id: d_verif
+    type: idee
+    fr: 'Une rétropropagation fausse ne plante pas : elle donne des pentes fausses, et le réseau apprend mal sans prévenir. On la **vérifie** toujours en comparant avec la mesure par petit pas (niveau 5.7) sur quelques cas.'
+    en: 'A wrong backpropagation does not crash: it gives wrong slopes, and the network learns badly without warning. We always **check** it by comparing with the small-step measurement (level 5.7) on a few cases.'
+    exemple: { fr: 'On accepte un écart de l’ordre de $10^{-6}$ avec la différence centrée ; un écart de $10^{-1}$ trahit une erreur de formule ou un `=` au lieu de `+=`.', en: 'We accept a gap of the order of $10^{-6}$ with the central difference; a gap of $10^{-1}$ betrays a formula error or an `=` instead of `+=`.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `pente_numerique(graphe, entrees, sortie, nom)`** : la pente de `sortie` par rapport à l’entrée `nom`, par différence centrée avec `eps = 1e-6`. `evaluer` est fournie.'
+    en: 'Challenge. **Write `pente_numerique(graphe, entrees, sortie, nom)`**: the slope of `sortie` with respect to the input `nom`, by central difference with `eps = 1e-6`. `evaluer` is provided.'
+    depart: |
+      import math
+
+      def evaluer(graphe, entrees):
+          v = dict(entrees)
+          for nom, op, p, q in graphe:
+              v[nom] = v[p] * v[q] if op == "mul" else (v[p] + v[q] if op == "add" else math.tanh(v[p]))
+          return v
+
+      # écris ta fonction pente_numerique ici
+    tests: |
+      g = [("d", "mul", "a", "b"), ("e", "add", "d", "c")]
+      e = {"a": 2, "b": 3, "c": 4}
+      assert abs(pente_numerique(g, e, "e", "a") - 3) < 1e-6
+      assert abs(pente_numerique(g, e, "e", "b") - 2) < 1e-6
+      assert abs(pente_numerique(g, e, "e", "c") - 1) < 1e-6
+      h = [("m", "mul", "a", "a"), ("f", "add", "m", "a")]
+      assert abs(pente_numerique(h, {"a": 3}, "f", "a") - 7) < 1e-5
+    solutionCode: |
+      import math
+
+      def evaluer(graphe, entrees):
+          v = dict(entrees)
+          for nom, op, p, q in graphe:
+              v[nom] = v[p] * v[q] if op == "mul" else (v[p] + v[q] if op == "add" else math.tanh(v[p]))
+          return v
+
+      def pente_numerique(graphe, entrees, sortie, nom):
+          eps = 1e-6
+          haut = dict(entrees); haut[nom] = entrees[nom] + eps
+          bas = dict(entrees); bas[nom] = entrees[nom] - eps
+          return (evaluer(graphe, haut)[sortie] - evaluer(graphe, bas)[sortie]) / (2 * eps)
+    indice: { fr: 'Deux copies des entrées, l’une avec `nom` plus `eps`, l’autre moins `eps` ; évalue chacune puis fais la différence centrée.', en: 'Two copies of the inputs, one with `nom` plus `eps`, the other minus `eps`; evaluate each then take the central difference.' }
+    explication: { fr: 'C’est ton **vérificateur** : pour chaque entrée, il doit retrouver ce que `retropropager` annonce.', en: 'This is your **checker**: for each input, it must find what `retropropager` announces.' }
+  - id: d_lien
+    type: idee
+    fr: 'Voilà le cœur de l’apprentissage profond. Au niveau 11.4, tu fabriqueras un réseau et une **perte** (niveau 9.1). Tu appliqueras cette rétropropagation, puis la descente de gradient (niveau 5.5).'
+    en: 'This is the heart of deep learning. In level 11.4, you will build a network and a **loss** (level 9.1). You will apply this backpropagation, then gradient descent (level 5.5).'
+    exemple: { fr: 'Les bibliothèques (PyTorch, JAX…) font cela pour des millions de réglages ; l’idée, elle, tient en quelques lignes, comme tu viens de le voir.', en: 'Libraries (PyTorch, JAX…) do this for millions of settings; the idea itself fits in a few lines, as you have just seen.' }
+  - id: c8
+    type: retenir
+    fr: 'Rétropropagation : pente 1 sur la sortie, puis on remonte le graphe ; chaque nœud passe à ses parents sa pente multipliée par la dérivée locale ; les pentes s’additionnent (`+=`). On vérifie par différence centrée.'
+    en: 'Backpropagation: slope 1 on the output, then go back up the graph; each node passes to its parents its slope times the local derivative; slopes add up (`+=`). Check by central difference.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [A. Karpathy — Zero to Hero, micrograd](https://karpathy.ai/zero-to-hero.html) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [A. Karpathy — Zero to Hero, micrograd](https://karpathy.ai/zero-to-hero.html); this optional reading needs a connection.'
