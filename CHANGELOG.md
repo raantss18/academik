@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.13] — 2026-11-02
+
+### Message fr
+Tu peux commencer chaque module quand tu veux : son premier niveau est toujours ouvert, il n'est pas nécessaire de tout réussir pour avancer. La page « À propos » donne aussi le contact de l'auteur et un lien pour télécharger l'application.
+
+### Message en
+You can start every module whenever you like: its first level is always open, you do not need to pass everything to move on. The “About” page also gives the author’s contact and a link to download the app.
+
 ## [0.3.12] — 2026-11-02
 
 ### Message fr

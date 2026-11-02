@@ -79,7 +79,7 @@ Public : l'auteur (Antsa), les étudiants L1–M1, les lycéens COMIMa (module 0
 
 ## 6. Règles de déblocage (testées)
 
-- Niveau suivant débloqué quand le score du niveau précédent **≥ 50 %** (`UNLOCK_THRESHOLD`, configurable).
+- Niveau suivant débloqué quand le score du niveau précédent **≥ 50 %** (`UNLOCK_THRESHOLD`, configurable). **Le premier niveau de chaque module est toujours ouvert** : il n'est pas nécessaire de tout réussir pour avancer (demande d'Antsa, 2 nov. 2026, D-029).
 - Étoiles : ★ ≥ 50 %, ★★ ≥ 80 %, ★★★ = 100 % (maîtrise). Reprise illimitée ; on garde le meilleur score.
 - Les niveaux passés reviennent en révision espacée (FSRS, rétention cible 90 % réglable).
 

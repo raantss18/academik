@@ -19,7 +19,7 @@
     <h2>{fr ? 'Jouer' : 'Playing'}</h2>
     <ul>
       <li>{fr ? 'Une leçon dure 10 à 15 minutes. Le cours est dans la leçon : essaie, lis, puis réponds.' : 'A lesson takes 10 to 15 minutes. The course is inside the lesson: try, read, then answer.'}</li>
-      <li>{fr ? `Le niveau suivant s'ouvre quand tu atteins ${UNLOCK_THRESHOLD * 100} % au niveau précédent.` : `The next level opens when you reach ${UNLOCK_THRESHOLD * 100}% on the previous one.`}</li>
+      <li>{fr ? `Le niveau suivant s'ouvre quand tu atteins ${UNLOCK_THRESHOLD * 100} % au niveau précédent. Le premier niveau de chaque module est toujours ouvert : tu peux commencer où tu veux.` : `The next level opens when you reach ${UNLOCK_THRESHOLD * 100}% on the previous one. The first level of every module is always open: start wherever you like.`}</li>
       <li>{fr ? 'Étoiles : ★ à 50 %, ★★ à 80 %, ★★★ à 100 %. Tu peux rejouer autant que tu veux : on garde ton meilleur score.' : 'Stars: ★ at 50%, ★★ at 80%, ★★★ at 100%. Replay as often as you like: your best score is kept.'}</li>
       <li>{fr ? 'Une seule tentative par carte à chaque partie ; un indice réduit le point à moitié. Si tu te trompes, la réponse n’est jamais montrée : tu rejoues le niveau quand tu veux.' : 'One attempt per card in each run; a hint halves the point. If you get it wrong, the answer is never shown: replay the level whenever you like.'}</li>
       <li>{fr ? 'Quand tu as juste, une explication te dit pourquoi ; sinon tu as un indice, jamais la solution.' : 'When you are right, an explanation tells you why; otherwise you get a hint, never the solution.'}</li>
@@ -59,6 +59,19 @@
       <li>{fr ? 'Cybersécurité : défensive et éthique, uniquement dans des labs locaux.' : 'Cybersecurity: defensive and ethical, only in local labs.'}</li>
     </ul>
   </section>
+
+  <section class="card" id="a-propos">
+    <h2>{fr ? 'À propos' : 'About'}</h2>
+    <p>{fr ? 'academik est un jeu pour apprendre, du lycée à la recherche, en construisant sa propre IA locale. Il fonctionne hors ligne, en français et en anglais.' : 'academik is a game for learning, from high school to research, by building your own local AI. It works offline, in French and English.'}</p>
+    <p>{fr ? 'Conception et développement : ' : 'Design and development: '}<strong>RANIRIAMANJAKA Antsa</strong></p>
+    <ul class="links">
+      <li>{fr ? 'E-mail : ' : 'E-mail: '}<a href="mailto:antsa.raniriamanjaka@univ-antananarivo.mg">antsa.raniriamanjaka@univ-antananarivo.mg</a></li>
+      <li>{fr ? 'Téléphone / WhatsApp : ' : 'Phone / WhatsApp: '}<a href="https://wa.me/261334383882" target="_blank" rel="noopener noreferrer">+261 33 43 838 82</a></li>
+      <li>GitHub : <a href="https://github.com/raantss18/academik" target="_blank" rel="noopener noreferrer">github.com/raantss18/academik</a></li>
+    </ul>
+    <p><a class="dl" href="https://github.com/raantss18/academik/releases/latest" target="_blank" rel="noopener noreferrer">{fr ? 'Télécharger l’application (Android, Linux)' : 'Download the app (Android, Linux)'}</a></p>
+    <p class="muted">{fr ? 'Code sous licence Apache-2.0 ; chaque contenu garde la licence de sa source.' : 'Code under the Apache-2.0 licence; each piece of content keeps its source’s licence.'}</p>
+  </section>
 </div>
 
-<style> .hd { display: flex; justify-content: space-between; align-items: center; } h2 { margin-top: 0; } section { margin: 14px 0; } ul { padding-left: 1.2em; margin: 0; } li { margin: .35em 0; } </style>
+<style> .links { list-style: none; padding: 0; } .links li { margin: .5em 0; } a { overflow-wrap: anywhere; } .dl { font-weight: 700; } .hd { display: flex; justify-content: space-between; align-items: center; } h2 { margin-top: 0; } section { margin: 14px 0; } ul { padding-left: 1.2em; margin: 0; } li { margin: .35em 0; } </style>
