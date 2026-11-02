@@ -218,3 +218,6 @@ modules:
     niveaux:
       - { id: "23.1", titre: { fr: "Trouve l’erreur dans la preuve" } }
       - { id: "23.2", titre: { fr: "Trouve le bogue" } }
+      - { id: "23.3", titre: { fr: "Statistiques trompeuses" } }
+      - { id: "23.4", titre: { fr: "La fuite dans le backtest" } }
+      - { id: "23.5", titre: { fr: "La faille dans l’agent" } }

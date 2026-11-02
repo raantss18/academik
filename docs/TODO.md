@@ -1,7 +1,7 @@
 # TODO d'academik
 
 > Source unique du « qui fait quoi, où on en est ». Mis à jour à chaque tâche. Légende : ✅ fait · 🔄 en cours · ⏳ à faire · ⛔ bloqué · ❓ décision d'Antsa.
-> Dernière mise à jour : 2 nov. 2026 (v0.3.29 : module bonus Enquêtes, manifeste des sources complet ; v0.3.28 publiée : monuments par niveau, enseignes sans chevauchement, module Recherche). Règles : `CONSIGNES.md` ; décisions : `DECISIONS.md` ; Codex : `docs/CODEX.md`.
+> Dernière mise à jour : 2 nov. 2026 (v0.3.30 : module Enquêtes complet, 5 niveaux ; v0.3.29 publiée : manifeste des sources complet, critères de la 0.4.0). Règles : `CONSIGNES.md` ; décisions : `DECISIONS.md` ; Codex : `docs/CODEX.md`.
 
 ## 0. Corrections signalées par Antsa (journal)
 > **Processus (obligatoire)** : dès qu'Antsa signale une erreur → (1) l'inscrire ici **avant** de corriger ; (2) corriger la **cause**, pas seulement le symptôme ;
@@ -78,14 +78,15 @@
 | 16 Processus stochastiques, 17 Recherche quantitative | ✅ 6 niveaux chacun |
 | 18 Performance, 19 Sécurité, 20 Évaluer et produire | ✅ 6 niveaux chacun |
 | 21 Boss final « Kintana, chercheuse honnête » | ✅ 1 niveau (exploration, confirmation, rapport qui rejette) |
-| 23 Enquêtes (bonus) : trouver l'erreur dans une preuve, trouver le bogue | ✅ 2 niveaux (3 à 5 autres à écrire : statistiques trompeuses, backtest, défense d'agent) |
+| 23 Enquêtes (bonus) : preuve, bogue, statistiques trompeuses, fuite de backtest, faille d'un agent | ✅ 5 niveaux (chiffres et sorties exécutés ; données de Simpson inventées et dites telles ; backtest sur données simulées) |
 | 22 Recherche (bonus) : Lean 4, récurrence, spécification, Hessienne, entropie croisée/KL/perplexité, experts et patchs, boss « Prouve ton code » | ✅ 7 niveaux (preuves compilées par Lean 4.35) |
 - ✅ **Vérification du 2 nov.** : 136 niveaux ; toutes les solutions exécutées en vrai Python ; toutes les formules rendues par KaTeX ; une seule bonne réponse par QCM ; traduction anglaise partout ; 165 liens contrôlés (153 joignables, DOI confirmés par Crossref) ; chiffres des modules 11 à 21 recalculés
 - ⏳ **Relecture croisée par Codex** des modules 11 à 22 (écrits par Claude) : Codex résout sans voir les solutions
 - ⏳ **Vrais élèves** : tester 3 à 5 niveaux avec des élèves COMIMa et des L1 ; mesurer les temps réels (durées actuelles = estimations)
+- ✅ 179 liens contrôlés le 2 nov. (nouveaux liens du module 23 tous joignables ; 3 DOI renvoient 429 = limite de débit de Crossref, déjà confirmés plus tôt)
 - ⏳ Liens non joignables depuis la machine de vérification (à recontrôler d'un autre réseau) : `nlp.stanford.edu/IR-book`, `otexts.com/fpp3` ; bloqués aux robots (pages réelles) : Cloudflare Learning
 - ✅ `content/manifest.json` complet (196 sources, garde-fou E44) ; reste à vérifier la licence exacte de chaque source avant tout embarquement (aucune n'est embarquée : mode `lien`)
-- 🔄 Niveaux « enquête » : module 23 commencé (23.1 preuves, 23.2 bogues) ; défis ★★ facultatifs, paquet NumPy/pandas facultatif téléchargé à la demande
+- ✅ Niveaux « enquête » : module 23 complet (5 niveaux) ; ⏳ défis ★★ facultatifs, paquet NumPy/pandas facultatif téléchargé à la demande
 - ⏳ Données publiques redistribuables pour le volet quant (aujourd'hui : synthétiques, générateur reproductible)
 
 ## 3. Qualité de la présentation (`docs/QUALITE-COURS.md`)
@@ -110,7 +111,7 @@ Le contenu (modules 0 à 23) et le moteur sont complets ; la 0.4.0 marque le pas
 - [ ] Accessibilité : un passage avec TalkBack ou Orca sans point bloquant
 - [ ] Relecture croisée des modules 11 à 23 (Codex, ou relecture d'Antsa si le quota manque)
 - ❓ Comptes et synchronisation : **non requis** pour la 0.4.0 (mode invité 100 % local) ; proposition : en faire la 0.5.0
-- ✅ v0.1.0 → v0.3.29 (site, APK, AppImage, `release.json` signé) ; chaque version : CI verte avant fusion
+- ✅ v0.1.0 → v0.3.30 (site, APK, AppImage, `release.json` signé) ; chaque version : CI verte avant fusion
 - ⏳ **Sauvegarder `release-keys/`** hors de la machine (clé Android et `update.key`) : perdre l'une = plus de mises à jour acceptées
 - ⏳ Supprimer l'étiquette fantôme `v0.3.16` (`git push origin :refs/tags/v0.3.16`, à faire par Antsa)
 - ⏳ Fiches de campagne / affiches de version quand le produit sera stabilisé
