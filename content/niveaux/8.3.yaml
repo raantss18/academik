@@ -1,7 +1,7 @@
 # Niveau 8.3 — Données 3 : résumer. Original academik ; notions vérifiées dans la documentation officielle Python (module statistics).
 id: '8.3'
 module: 8
-duree_min: 18
+duree_min: 15
 titre: { fr: 'Résumer', en: 'Summarising' }
 ia: { fr: 'Kintana résume une colonne de nombres en quelques chiffres et compare des groupes.', en: 'Kintana summarises a column of numbers in a few figures and compares groups.' }
 sources:

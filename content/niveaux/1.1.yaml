@@ -1,7 +1,7 @@
 # Niveau 1.1 — Le terminal 1 : se repérer. Original academik ; notions vérifiées dans le manuel GNU Coreutils (pwd, ls) et le manuel de Bash (cd).
 id: '1.1'
 module: 1
-duree_min: 18
+duree_min: 13
 titre: { fr: 'Se repérer', en: 'Finding your way' }
 ia: { fr: 'Kintana sait où elle se trouve et se déplace dans ses dossiers.', en: 'Kintana knows where she is and moves around her folders.' }
 sources:

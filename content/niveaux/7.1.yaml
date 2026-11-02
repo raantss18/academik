@@ -1,12 +1,12 @@
 id: "7.1"
 module: 7
-duree_min: 17
+duree_min: 10
 titre:
   fr: Estimer
   en: Estimation
 ia:
-  fr: Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs.
-  en: Kintana can distinguish a real signal from chance and reject false positives.
+  fr: "Kintana estime une valeur inconnue à partir d’un échantillon, et sait ce qu’est une vraisemblance."
+  en: "Kintana estimates an unknown value from a sample, and knows what a likelihood is."
 sources:
   - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
     url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/
@@ -248,6 +248,10 @@ cartes:
       en: "Add successes and trials: $(2+10)/(4+16)=0.6$. Batch sizes determine the weights."
     defi: true
     id: c11
+  - id: d_lien
+    type: idee
+    fr: 'Estimer est la base du module : les intervalles du niveau 7.2 mesurent l’incertitude d’une estimation. La vraisemblance reviendra au niveau 9.3.'
+    en: 'Estimating is the basis of the module: the intervals of level 7.2 measure the uncertainty of an estimate. Likelihood will come back in level 9.3.'
   - type: retenir
     fr: "À retenir : Kintana estime à partir des observations, compare les vraisemblances sous un modèle explicite et garde l’incertitude pour la suite."
     en: "Remember: Kintana estimates from observations, compares likelihoods under an explicit model, and keeps uncertainty in view."

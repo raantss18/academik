@@ -1,7 +1,7 @@
 # Niveau 1.3 — Le terminal 3 : droits. Original academik ; notions vérifiées dans le manuel GNU Coreutils (chmod, ls) et le manuel de Bash.
 id: '1.3'
 module: 1
-duree_min: 17
+duree_min: 14
 titre: { fr: 'Droits', en: 'Permissions' }
 ia: { fr: 'Kintana protège ses fichiers : elle décide qui peut les lire, les modifier ou les lancer.', en: 'Kintana protects her files: she decides who may read, change or run them.' }
 sources:

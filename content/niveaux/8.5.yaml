@@ -1,7 +1,7 @@
 # Niveau 8.5 — Données 5 : entraîner et tester. Original academik ; notions vérifiées dans la documentation officielle scikit-learn (Cross-validation : evaluating estimator performance, Common pitfalls) et la documentation Python (random).
 id: '8.5'
 module: 8
-duree_min: 18
+duree_min: 16
 titre: { fr: 'Entraîner et tester', en: 'Training and testing' }
 ia: { fr: 'Kintana met de côté des données qu’elle ne regarde pas pendant qu’elle apprend, pour mesurer honnêtement ce qu’elle sait.', en: 'Kintana sets aside data she does not look at while she learns, to honestly measure what she knows.' }
 sources:

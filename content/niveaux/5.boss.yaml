@@ -1,8 +1,8 @@
 id: '5.boss'
 module: 5
-duree_min: 18
+duree_min: 11
 titre: { fr: 'La pente la plus raide', en: 'The steepest slope' }
-ia: { fr: 'Kintana sait apprendre ses propres paramètres par descente de gradient.', en: 'Kintana can learn its own parameters through gradient descent.' }
+ia: { fr: 'Kintana règle un paramètre par descente de gradient sur une vraie erreur : les moindres carrés.', en: 'Kintana tunes a parameter by gradient descent on a real error: least squares.' }
 sources:
   - { titre: 'Boyd et Vandenberghe — Convex Optimization, chapitres 3 et 9', url: 'https://web.stanford.edu/~boyd/cvxbook/', licence: 'Copyright Cambridge University Press ; référence en lien seulement, aucun extrait repris' }
   - { titre: 'MIT OCW — 18.02SC, Partial Derivatives', url: 'https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/pages/2.-partial-derivatives/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
@@ -150,6 +150,10 @@ cartes:
       F = lambda b: 20+b*b
       print((F(1+h)-F(1-h))/(2*h))
     explication: { fr: 'En gardant $w$ fixe, $\partial_bF=2b=2$ ; le gradient complet vaut $(-8,2)$ et son opposé donne la direction de plus forte baisse locale en norme euclidienne.', en: 'Holding $w$ fixed gives $\partial_bF=2b=2$; the full gradient is $(-8,2)$, and its negative gives the steepest local descent direction in the Euclidean norm.' }
+  - id: d_lien
+    type: idee
+    fr: 'Tu as réuni limites (niveau 5.1), dérivées (5.2), gradient (5.3), convexité (5.4), descente (5.5) et règle de chaîne (5.7). Le module 9 les réutilisera.'
+    en: 'You have brought together limits (level 5.1), derivatives (5.2), gradient (5.3), convexity (5.4), descent (5.5) and chain rule (5.7). Module 9 will reuse them.'
   - id: c12
     type: retenir
     fr: 'À retenir : dérive la perte, ajuste les paramètres, vérifie la baisse et distingue limite et arrêt fini ; Kintana sait apprendre ses propres paramètres par descente de gradient.'

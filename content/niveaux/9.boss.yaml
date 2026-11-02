@@ -1,0 +1,285 @@
+# Niveau 9.boss — Classer une demande (mission : jeu de test local gelé). Original academik ; notions vérifiées dans la documentation scikit-learn (Common pitfalls, Metrics), la documentation Python (hashlib) et les niveaux 4.1, 4.2, 8.5, 9.4.
+id: '9.boss'
+module: 9
+duree_min: 22
+titre: { fr: 'Classer une demande', en: 'Classifying a request' }
+ia: { fr: 'Kintana comprend l’intention d’une demande (salut, heure, aide), et prouve son score sur un jeu de test gelé.', en: 'Kintana understands the intent of a request (greeting, time, help), and proves her score on a frozen test set.' }
+sources:
+  - { titre: 'scikit-learn — Common pitfalls and recommended practices', url: 'https://scikit-learn.org/stable/common_pitfalls.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+  - { titre: 'Python — module hashlib', url: 'https://docs.python.org/3/library/hashlib.html', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'NIST — FIPS 180-4, Secure Hash Standard (SHA-256)', url: 'https://csrc.nist.gov/pubs/fips/180-4/upd1/final', licence: 'Domaine public (publication du gouvernement des États-Unis)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Pourquoi dit-on qu’un jeu de test doit être **gelé** ?'
+    en: 'Why do we say a test set must be **frozen**?'
+    choix:
+      - { fr: 'Pour qu’on ne puisse ni le modifier ni s’en servir pour régler le modèle', en: 'So it can be neither modified nor used to tune the model', juste: true }
+      - { fr: 'Pour qu’il prenne moins de place', en: 'So it takes less space' }
+      - { fr: 'Pour l’utiliser autant de fois qu’on veut', en: 'So it can be used as many times as we like' }
+    explication: { fr: 'Un test qui change, ou qui sert à choisir, n’est plus neuf : le score devient trop beau pour être vrai.', en: 'A test set that changes, or serves to choose, is no longer new: the score becomes too good to be true.' }
+  - id: c2
+    type: idee
+    fr: 'Mission : classer une demande en une **intention**. On réutilise tout : le texte devient un **vecteur de comptage** (niveau 4.1), on le compare par le **cosinus** (4.2), puis on **mesure** honnêtement (8.5, 9.4).'
+    en: 'Mission: classify a request into an **intent**. We reuse everything: the text becomes a **count vector** (level 4.1), we compare it by **cosine** (4.2), then we **measure** honestly (8.5, 9.4).'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Le trajet d’une demande', en: 'A request’s journey' }
+          noeuds: [{ fr: 'texte', en: 'text' }, { fr: 'vecteur de comptage', en: 'count vector' }, { fr: 'cosinus avec chaque intention', en: 'cosine with each intent' }, { fr: 'intention la plus proche', en: 'closest intent', ton: ok }]
+      legende: { fr: 'Le vocabulaire et les profils d’intention se calculent sur l’entraînement seul.', en: 'The vocabulary and intent profiles are computed on training only.' }
+  - id: d_vocab
+    type: idee
+    fr: 'Le **vocabulaire** est la liste des mots connus, établie sur l’**entraînement seul** (leçon du niveau 8.boss). Un mot absent du vocabulaire est **ignoré** : il ne change aucun comptage.'
+    en: 'The **vocabulary** is the list of known words, established on **training alone** (lesson of level 8.boss). A word absent from the vocabulary is **ignored**: it changes no count.'
+    exemple: { fr: 'Avec le vocabulaire `(bonjour, salut, heure, aide)`, « salut salut bonjour » donne `[1, 2, 0, 0]` ; « xyz » donne `[0, 0, 0, 0]`, le vecteur nul.', en: 'With the vocabulary `(bonjour, salut, heure, aide)`, “salut salut bonjour” gives `[1, 2, 0, 0]`; “xyz” gives `[0, 0, 0, 0]`, the zero vector.' }
+  - id: c3
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `vectoriser(texte, vocab)`** : la liste des comptages de chaque mot de `vocab` dans `texte` (mots séparés par des espaces, en minuscules).'
+    en: 'Your turn. **Write `vectoriser(texte, vocab)`**: the list of counts of each word of `vocab` in `texte` (words separated by spaces, lowercase).'
+    depart: |
+      # écris ta fonction vectoriser ici
+    tests: |
+      vocab = ["bonjour", "salut", "heure", "aide"]
+      assert vectoriser("salut salut bonjour", vocab) == [1, 2, 0, 0]
+      assert vectoriser("xyz", vocab) == [0, 0, 0, 0]
+      assert vectoriser("", vocab) == [0, 0, 0, 0]
+      assert vectoriser("Aide aide", vocab) == [0, 0, 0, 2]
+    solutionCode: |
+      def vectoriser(texte, vocab):
+          mots = texte.lower().split()
+          return [mots.count(m) for m in vocab]
+    indice: { fr: 'Découpe `texte.lower().split()`, puis pour chaque mot du vocabulaire, `mots.count(m)`.', en: 'Split `texte.lower().split()`, then for each vocabulary word, `mots.count(m)`.' }
+    explication: { fr: 'On passe en minuscules d’abord : « Aide » et « aide » comptent pour le même mot (niveau 2.boss).', en: 'We lowercase first: “Aide” and “aide” count as the same word (level 2.boss).' }
+  - id: d_centroide
+    type: idee
+    fr: 'Pour chaque intention, on calcule son **profil** : la **moyenne** des vecteurs de ses exemples d’entraînement (le **centroïde**). Une demande reçoit l’intention dont le profil a le **cosinus le plus grand** avec son vecteur.'
+    en: 'For each intent, we compute its **profile**: the **mean** of the vectors of its training examples (the **centroid**). A request receives the intent whose profile has the **largest cosine** with its vector.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Intention', en: 'Intent' }, { fr: 'Exemples (vecteurs)', en: 'Examples (vectors)' }, { fr: 'Profil (moyenne)', en: 'Profile (mean)' }]
+      cellules:
+        - ['`salut`', '`[1, 1]`, `[1, 0]`', '`[1, 0.5]`']
+        - ['`heure`', '`[0, 2]`, `[0, 4]`', { fr: '`[0, 3]`', en: '`[0, 3]`', ton: ok }]
+      legende: { fr: 'Vocabulaire à deux mots pour l’illustration : le profil est la moyenne coordonnée par coordonnée.', en: 'Two-word vocabulary for illustration: the profile is the coordinate-by-coordinate mean.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `profils(vecteurs, etiquettes)`** : un dictionnaire `intention → profil` (liste moyenne des vecteurs de cette intention).'
+    en: '**Write `profils(vecteurs, etiquettes)`**: a dictionary `intent → profile` (mean list of the vectors of that intent).'
+    depart: |
+      # écris ta fonction profils ici
+    tests: |
+      v = [[1, 1], [1, 0], [0, 2], [0, 4]]
+      e = ["salut", "salut", "heure", "heure"]
+      assert profils(v, e) == {"salut": [1.0, 0.5], "heure": [0.0, 3.0]}
+      assert profils([[2, 2]], ["a"]) == {"a": [2.0, 2.0]}
+      assert profils([], []) == {}
+    solutionCode: |
+      def profils(vecteurs, etiquettes):
+          groupes = {}
+          for v, e in zip(vecteurs, etiquettes):
+              groupes.setdefault(e, []).append(v)
+          return {e: [sum(col) / len(vs) for col in zip(*vs)] for e, vs in groupes.items()}
+    indice: { fr: 'Regroupe les vecteurs par intention (`setdefault`), puis `zip(*vs)` donne les colonnes à moyenner.', en: 'Group the vectors by intent (`setdefault`), then `zip(*vs)` gives the columns to average.' }
+    explication: { fr: 'C’est le « group by » du niveau 8.3, appliqué à des vecteurs plutôt qu’à des nombres.', en: 'This is the “group by” of level 8.3, applied to vectors rather than numbers.' }
+  - id: d_resolu
+    type: exemple
+    titre: { fr: 'Classer « quelle heure » à la main', en: 'Classifying “quelle heure” by hand' }
+    lang: python
+    etapes:
+      - { code: 'import math\nvocab = ["salut", "heure"]\nprofils = {"salut": [1.0, 0.5], "heure": [0.0, 3.0]}', fr: 'Un vocabulaire de deux mots et deux profils d’intention, comme dans la figure.', en: 'A two-word vocabulary and two intent profiles, as in the figure.' }
+      - { code: 'def cosinus(u, v):\n    return sum(a * b for a, b in zip(u, v)) / (math.sqrt(sum(a * a for a in u)) * math.sqrt(sum(b * b for b in v)))', fr: 'Le cosinus du niveau 4.2, écrit en une ligne.', en: 'The cosine from level 4.2, written in one line.' }
+      - { code: 'vec = [0, 1]\nprint({k: round(cosinus(vec, p), 2) for k, p in profils.items()})', fr: 'La demande « quelle heure » donne le vecteur `[0, 1]`. Cosinus avec `salut` : `0.45` ; avec `heure` : `1.0`. La plus proche est `heure`.', en: 'The request “quelle heure” gives the vector `[0, 1]`. Cosine with `salut`: `0.45`; with `heure`: `1.0`. The closest is `heure`.' }
+    verif: |-
+      import math
+      vocab = ["salut", "heure"]
+      profils = {"salut": [1.0, 0.5], "heure": [0.0, 3.0]}
+      def cosinus(u, v):
+          return sum(a * b for a, b in zip(u, v)) / (math.sqrt(sum(a * a for a in u)) * math.sqrt(sum(b * b for b in v)))
+      vec = [0, 1]
+      print({k: round(cosinus(vec, p), 2) for k, p in profils.items()})
+    sortie: "{'salut': 0.45, 'heure': 1.0}"
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `predire(vec, les_profils)`** : l’intention au cosinus le plus grand. Si `vec` est nul, renvoie `"inconnu"`. La fonction `cosinus` est fournie ; en cas d’égalité, l’intention la plus petite par ordre alphabétique.'
+    en: '**Write `predire(vec, les_profils)`**: the intent with the largest cosine. If `vec` is zero, return `"inconnu"`. The `cosinus` function is provided; on a tie, the alphabetically smallest intent.'
+    depart: |
+      import math
+
+      def cosinus(u, v):
+          nu = math.sqrt(sum(a * a for a in u))
+          nv = math.sqrt(sum(b * b for b in v))
+          if nu == 0 or nv == 0:
+              return 0.0
+          return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+      # écris ta fonction predire ici
+    tests: |
+      p = {"salut": [1.0, 0.5], "heure": [0.0, 3.0]}
+      assert predire([2, 0], p) == "salut"
+      assert predire([0, 1], p) == "heure"
+      assert predire([0, 0], p) == "inconnu"
+      assert predire([1, 1], {"b": [1.0, 1.0], "a": [2.0, 2.0]}) == "a"
+    solutionCode: |
+      import math
+
+      def cosinus(u, v):
+          nu = math.sqrt(sum(a * a for a in u))
+          nv = math.sqrt(sum(b * b for b in v))
+          if nu == 0 or nv == 0:
+              return 0.0
+          return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+      def predire(vec, les_profils):
+          if all(x == 0 for x in vec):
+              return "inconnu"
+          meilleur = None
+          meilleur_score = -1
+          for nom in sorted(les_profils):
+              s = cosinus(vec, les_profils[nom])
+              if s > meilleur_score + 1e-12:
+                  meilleur = nom
+                  meilleur_score = s
+          return meilleur
+    indice: { fr: 'Traite d’abord le vecteur nul. Puis parcours `sorted(les_profils)` en gardant l’intention de cosinus strictement plus grand.', en: 'Handle the zero vector first. Then go through `sorted(les_profils)` keeping the intent with a strictly larger cosine.' }
+    explication: { fr: 'Le vecteur nul n’a pas de direction : on refuse de deviner, comme au niveau 4.boss (`None` au cosinus indéfini).', en: 'The zero vector has no direction: we refuse to guess, as in level 4.boss (`None` for an undefined cosine).' }
+  - id: d_gel
+    type: idee
+    fr: 'Comment **prouver** qu’un jeu de test n’a pas été modifié ? Avec une **empreinte** : une fonction de hachage comme SHA-256 transforme le texte en une courte signature. Si une seule lettre change, l’empreinte change complètement.'
+    en: 'How to **prove** a test set has not been modified? With a **fingerprint**: a hash function such as SHA-256 turns text into a short signature. If a single letter changes, the fingerprint changes completely.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Jeu de test', en: 'Test set' }, { fr: 'Empreinte (8 premiers caractères)', en: 'Fingerprint (first 8 characters)' }]
+      cellules:
+        - ['`bonjour`, `heure`', { fr: '`2f129933`', en: '`2f129933`', ton: ok }]
+        - ['`bonjour`, `heure!`', { fr: '`18ecc2b7`', en: '`18ecc2b7`', ton: bad }]
+      legende: { fr: 'Un seul caractère ajouté change toute l’empreinte : on le détecte immédiatement.', en: 'A single added character changes the whole fingerprint: it is detected at once.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `empreinte(textes)`** : les 8 premiers caractères hexadécimaux du SHA-256 des textes joints par un retour à la ligne. Utilise `hashlib.sha256(chaine.encode()).hexdigest()`.'
+    en: '**Write `empreinte(textes)`**: the first 8 hexadecimal characters of the SHA-256 of the texts joined by a newline. Use `hashlib.sha256(string.encode()).hexdigest()`.'
+    depart: |
+      import hashlib
+
+      # écris ta fonction empreinte ici
+    tests: |
+      assert empreinte(["bonjour", "heure"]) == "2f129933"
+      assert empreinte(["bonjour", "heure!"]) == "18ecc2b7"
+      assert empreinte(["bonjour", "heure"]) == empreinte(["bonjour", "heure"])
+      assert len(empreinte([])) == 8
+    solutionCode: |
+      import hashlib
+
+      def empreinte(textes):
+          return hashlib.sha256("\n".join(textes).encode()).hexdigest()[:8]
+    indice: { fr: 'Joins avec `"\\n".join(textes)`, encode, hache, puis garde `[:8]`.', en: 'Join with `"\\n".join(textes)`, encode, hash, then keep `[:8]`.' }
+    explication: { fr: 'On note l’empreinte **avant** d’entraîner ; si elle change plus tard, le jeu de test a été touché.', en: 'We record the fingerprint **before** training; if it changes later, the test set was tampered with.' }
+  - id: d_p_gel
+    type: piege
+    fr: 'Un jeu de test « gelé » n’a de valeur que si **personne ne l’a consulté** pour choisir. Avoir lu les erreurs du test puis « corrigé » le modèle, c’est déjà l’avoir utilisé pour apprendre : le gel ne protège pas contre cela.'
+    en: 'A “frozen” test set only has value if **nobody consulted it** to choose. Having read the test errors then “fixed” the model is already using it to learn: freezing does not protect against that.'
+  - id: d_rapport
+    type: idee
+    fr: 'Un rapport honnête annonce la **référence naïve**, le score sur le test **gelé**, la matrice de confusion et la **marge d’erreur** (niveau 9.4). Il liste aussi ce qui reste mal classé. Avec 6 exemples de test, aucun score n’est solide.'
+    en: 'An honest report states the **naive baseline**, the score on the **frozen** test, the confusion matrix and the **margin of error** (level 9.4). It also lists what remains misclassified. With 6 test examples, no score is solid.'
+    exemple: { fr: 'Sur 6 exemples de test avec 5 bons : exactitude $0{,}83$, mais marge $\pm0{,}30$. Entre $0{,}53$ et $1{,}0$, on ne peut presque rien affirmer.', en: 'On 6 test examples with 5 right: accuracy $0.83$, but margin $\pm0.30$. Between $0.53$ and $1.0$, we can state almost nothing.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi final. **Écris `evaluer(train, test)`** : `train` et `test` sont des listes de couples `(texte, intention)`. Construis le vocabulaire (mots triés) **sur `train` seul**, les profils, puis renvoie l’exactitude sur `test`. `vectoriser`, `profils` et `predire` sont déjà écrites.'
+    en: 'Final challenge. **Write `evaluer(train, test)`**: `train` and `test` are lists of `(text, intent)` pairs. Build the vocabulary (sorted words) **on `train` alone**, the profiles, then return the accuracy on `test`. `vectoriser`, `profils` and `predire` are already written.'
+    depart: |
+      import math
+
+      def vectoriser(texte, vocab):
+          mots = texte.lower().split()
+          return [mots.count(m) for m in vocab]
+
+      def profils(vecteurs, etiquettes):
+          groupes = {}
+          for v, e in zip(vecteurs, etiquettes):
+              groupes.setdefault(e, []).append(v)
+          return {e: [sum(col) / len(vs) for col in zip(*vs)] for e, vs in groupes.items()}
+
+      def cosinus(u, v):
+          nu = math.sqrt(sum(a * a for a in u))
+          nv = math.sqrt(sum(b * b for b in v))
+          if nu == 0 or nv == 0:
+              return 0.0
+          return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+      def predire(vec, les_profils):
+          if all(x == 0 for x in vec):
+              return "inconnu"
+          meilleur = None
+          meilleur_score = -1
+          for nom in sorted(les_profils):
+              s = cosinus(vec, les_profils[nom])
+              if s > meilleur_score + 1e-12:
+                  meilleur = nom
+                  meilleur_score = s
+          return meilleur
+
+      # écris ta fonction evaluer ici
+    tests: |
+      train = [("bonjour salut", "salut"), ("salut bonjour toi", "salut"), ("quelle heure est il", "heure"), ("heure actuelle", "heure"), ("aide moi svp", "aide"), ("besoin aide", "aide")]
+      assert evaluer(train, [("salut", "salut"), ("quelle heure", "heure"), ("aide", "aide"), ("bonjour", "salut")]) == 1.0
+      assert evaluer(train, [("salut", "salut"), ("xyz", "aide")]) == 0.5
+      assert evaluer(train, [("heure", "aide")]) == 0.0
+    solutionCode: |
+      import math
+
+      def vectoriser(texte, vocab):
+          mots = texte.lower().split()
+          return [mots.count(m) for m in vocab]
+
+      def profils(vecteurs, etiquettes):
+          groupes = {}
+          for v, e in zip(vecteurs, etiquettes):
+              groupes.setdefault(e, []).append(v)
+          return {e: [sum(col) / len(vs) for col in zip(*vs)] for e, vs in groupes.items()}
+
+      def cosinus(u, v):
+          nu = math.sqrt(sum(a * a for a in u))
+          nv = math.sqrt(sum(b * b for b in v))
+          if nu == 0 or nv == 0:
+              return 0.0
+          return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+      def predire(vec, les_profils):
+          if all(x == 0 for x in vec):
+              return "inconnu"
+          meilleur = None
+          meilleur_score = -1
+          for nom in sorted(les_profils):
+              s = cosinus(vec, les_profils[nom])
+              if s > meilleur_score + 1e-12:
+                  meilleur = nom
+                  meilleur_score = s
+          return meilleur
+
+      def evaluer(train, test):
+          vocab = sorted({m for t, _ in train for m in t.lower().split()})
+          vecs = [vectoriser(t, vocab) for t, _ in train]
+          les_profils = profils(vecs, [e for _, e in train])
+          bons = 0
+          for t, e in test:
+              if predire(vectoriser(t, vocab), les_profils) == e:
+                  bons = bons + 1
+          return bons / len(test)
+    indice: { fr: 'Vocabulaire : l’ensemble des mots de `train` seul. Vectorise `train`, calcule les `profils`, puis pour chaque exemple de `test`, compare `predire(...)` à la vraie intention.', en: 'Vocabulary: the set of words from `train` alone. Vectorise `train`, compute the `profils`, then for each `test` example, compare `predire(...)` with the true intent.' }
+    explication: { fr: 'Le mot « xyz » n’est pas dans le vocabulaire d’entraînement : son vecteur est nul, la réponse est « inconnu », donc fausse (test 2).', en: 'The word “xyz” is not in the training vocabulary: its vector is zero, the answer is “inconnu”, hence wrong (test 2).' }
+  - id: c8
+    type: retenir
+    fr: 'Classer une demande : vecteur de comptage → profil moyen par intention → cosinus. Vocabulaire et profils sur l’entraînement seul ; test gelé (empreinte SHA-256), utilisé une fois ; rapport honnête avec référence naïve et marge d’erreur.'
+    en: 'Classifying a request: count vector → mean profile per intent → cosine. Vocabulary and profiles on training alone; frozen test (SHA-256 fingerprint), used once; honest report with naive baseline and margin of error.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [scikit-learn — Pièges courants](https://scikit-learn.org/stable/common_pitfalls.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [scikit-learn — Common pitfalls](https://scikit-learn.org/stable/common_pitfalls.html); this optional reading needs a connection.

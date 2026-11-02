@@ -1,7 +1,7 @@
 # Niveau 2.4 — Python 4 : fonctions. Original academik ; notions vérifiées dans le tutoriel officiel Python (définir des fonctions, portée des noms).
 id: '2.4'
 module: 2
-duree_min: 18
+duree_min: 16
 titre: { fr: 'Fonctions', en: 'Functions' }
 ia: { fr: 'Kintana range ses gestes dans des fonctions qu’elle peut réutiliser.', en: 'Kintana packs her moves into functions she can reuse.' }
 sources:

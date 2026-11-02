@@ -1,6 +1,6 @@
 id: '3.4'
 module: 3
-duree_min: 20
+duree_min: 11
 titre: { fr: 'Hachage', en: 'Hashing' }
 ia: { fr: 'Kintana associe chaque mot aux identifiants de ses documents.', en: 'Kintana maps each word to its document IDs.' }
 sources:
@@ -269,6 +269,10 @@ cartes:
     verif: "docs = {1: 'riz eau riz', 2: 'eau sel', 3: 'riz sel'}\nindex = {}\nfor doc, text in docs.items():\n    for word in text.split():\n        index.setdefault(word, set()).add(doc)\nprint(len(index['riz']))"
     indice: { fr: 'Associe un ensemble d’identifiants à chaque mot.', en: 'Associate a set of IDs with each word.' }
     explication: { fr: 'L’entrée contient les identifiants $1$ et $3$ ; les deux occurrences de `riz` dans le document $1$ ne comptent qu’une fois.', en: 'The entry contains IDs $1$ and $3$; the two occurrences of `riz` in document $1$ count only once.' }
+  - id: d_lien
+    type: idee
+    fr: 'Le hachage est la troisième façon de chercher vite, après le tri (niveau 3.2) et la dichotomie (niveau 3.3). Le boss 3.boss les réunira.'
+    en: 'Hashing is the third way to search fast, after sorting (level 3.2) and binary search (level 3.3). Boss 3.boss will bring them together.'
   - id: c11
     type: retenir
     fr: 'Hacher oriente la recherche, comparer les clés la confirme : Kintana peut construire un index mot → documents sans perdre les collisions.'

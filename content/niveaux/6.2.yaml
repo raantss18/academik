@@ -1,12 +1,12 @@
 id: "6.2"
 module: 6
-duree_min: 17
+duree_min: 10
 titre:
   fr: Probabilité conditionnelle, indépendance et Bayes
   en: Conditional probability, independence, and Bayes
 ia:
-  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
-  en: "Kintana can predict the next word: a bigram model built by hand."
+  fr: "Kintana met à jour ce qu’elle croit quand elle apprend un nouvel indice (conditionnement, Bayes)."
+  en: "Kintana updates what she believes when she learns a new clue (conditioning, Bayes)."
 sources:
   - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
     url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf
@@ -248,6 +248,10 @@ cartes:
     indice:
       fr: Sur 50 messages, compte les utiles signalés, puis tous les signalés ; divise ces effectifs.
       en: Among 50 messages, count flagged useful messages, then all flagged messages; divide these counts.
+  - id: d_lien
+    type: idee
+    fr: 'Bayes inverse un conditionnement. Au niveau 7.3, une p-valeur sera justement une probabilité conditionnelle, calculée sous l’hypothèse nulle.'
+    en: 'Bayes inverts a conditioning. In level 7.3, a p-value will be exactly a conditional probability, computed under the null hypothesis.'
   - type: retenir
     fr: "À retenir : choisis le bon groupe de référence et garde la fréquence de départ dans le calcul de Bayes pour Kintana."
     en: "Remember: choose the correct reference group and retain the prior frequency in Kintana’s Bayes calculation."

@@ -1,6 +1,6 @@
 id: '5.4'
 module: 5
-duree_min: 17
+duree_min: 9
 titre: { fr: 'Convexité', en: 'Convexity' }
 ia: { fr: 'Kintana reconnaît les erreurs convexes, pour lesquelles un point stationnaire est un minimum global.', en: 'Kintana recognizes convex losses, for which a stationary point is a global minimum.' }
 sources:
@@ -137,6 +137,10 @@ cartes:
       print(Fraction(sum(targets),len(targets)))
     indice: { fr: 'Additionne les dérivées et cherche leur zéro.', en: 'Add the derivatives and find their zero.' }
     explication: { fr: '$J''(w)=4w-12$ s’annule en $3$ ; $J''''=4>0$, donc c’est l’unique minimiseur.', en: '$J''(w)=4w-12$ vanishes at $3$; $J''''=4>0$, so this is the unique minimizer.' }
+  - id: d_lien
+    type: idee
+    fr: 'La convexité garantit qu’une pente nulle est un minimum. La descente de gradient du niveau 5.5 en profitera pour s’arrêter au bon endroit.'
+    en: 'Convexity guarantees that a zero slope is a minimum. The gradient descent of level 5.5 will take advantage of it to stop at the right place.'
   - id: c11
     type: retenir
     fr: 'À retenir : la convexité transforme un minimum local en minimum global ; Kintana peut certifier un réglage stationnaire pour une erreur convexe différentiable sans contrainte.'

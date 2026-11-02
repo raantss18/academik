@@ -1,7 +1,7 @@
 # Niveau 3.6 — Algorithmes 6 : récursivité. Original academik ; notions vérifiées dans la documentation officielle Python (définition de fonctions, limite de récursion, functools.cache) et dans Mon_livre_d_algo (récursivité, notions reprises et réécrites).
 id: '3.6'
 module: 3
-duree_min: 18
+duree_min: 16
 titre: { fr: 'Récursivité', en: 'Recursion' }
 ia: { fr: 'Kintana résout un problème en le ramenant à un problème plus petit de même forme.', en: 'Kintana solves a problem by reducing it to a smaller problem of the same shape.' }
 sources:

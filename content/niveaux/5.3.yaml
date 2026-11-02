@@ -1,6 +1,6 @@
 id: '5.3'
 module: 5
-duree_min: 17
+duree_min: 9
 titre: { fr: 'Gradient et dérivées partielles', en: 'Gradient and partial derivatives' }
 ia: { fr: 'Kintana mesure la sensibilité de son erreur à plusieurs paramètres.', en: 'Kintana measures how sensitive its error is to several parameters.' }
 sources:

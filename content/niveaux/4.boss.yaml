@@ -1,6 +1,6 @@
 id: '4.boss'
 module: 4
-duree_min: 18
+duree_min: 11
 titre: { fr: 'Le moteur de similarité', en: 'The similarity engine' }
 ia: { fr: 'Kintana sait mesurer la ressemblance de deux textes (vecteurs de comptage et cosinus).', en: 'Kintana can measure how similar two texts are using count vectors and cosine similarity.' }
 sources:

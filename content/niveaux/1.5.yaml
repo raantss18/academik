@@ -1,7 +1,7 @@
 # Niveau 1.5 — Le terminal 5 : Git. Original academik ; notions vérifiées dans Pro Git, 2e éd. (chap. 2, bases de Git ; source citée, texte non repris).
 id: '1.5'
 module: 1
-duree_min: 17
+duree_min: 8
 titre: { fr: 'Git', en: 'Git' }
 ia: { fr: 'Kintana garde l’historique de son travail : elle peut revenir en arrière et ne perd plus rien.', en: 'Kintana keeps the history of her work: she can go back and never loses anything again.' }
 sources:
@@ -127,6 +127,10 @@ cartes:
     verif: 'print("git commit -m \"ajoute le plan\"")'
     indice: { fr: '`git commit`, l’option du message, puis le message entre guillemets.', en: '`git commit`, the message option, then the message in quotes.' }
     explication: { fr: '`-m` introduit le message, écrit entre guillemets.', en: '`-m` introduces the message, written in quotes.' }
+  - id: d_lien
+    type: idee
+    fr: 'Git garde aussi l’historique du code que tu écriras en Python (module 2). N’y mets jamais un secret : les droits du niveau 1.3 ne suffisent pas.'
+    en: 'Git also keeps the history of the code you will write in Python (module 2). Never put a secret in it: the permissions of level 1.3 are not enough.'
   - id: c8
     type: retenir
     fr: 'Modifier, `git add` (préparer), `git commit -m "message"` (enregistrer), `git log` (relire). `git status` dit où tu en es ; `.gitignore` écarte les secrets.'

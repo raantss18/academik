@@ -1,0 +1,208 @@
+# Niveau 9.5 — Apprentissage automatique 5 : régularisation et validation croisée. Original academik ; notions vérifiées dans Stanford CS229 (régularisation) et la documentation scikit-learn (Cross-validation).
+id: '9.5'
+module: 9
+duree_min: 19
+titre: { fr: 'Régularisation et validation croisée', en: 'Regularisation and cross-validation' }
+ia: { fr: 'Kintana retient ses réglages pour ne pas s’emballer, et choisit ses hyperparamètres sans jamais toucher au test.', en: 'Kintana holds her settings back so they do not run away, and chooses her hyperparameters without ever touching the test set.' }
+sources:
+  - { titre: 'Stanford CS229 — Machine Learning (régularisation)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
+  - { titre: 'scikit-learn — Cross-validation: evaluating estimator performance', url: 'https://scikit-learn.org/stable/modules/cross_validation.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'On ajoute à la perte une **pénalité** $\lambda w^2$. Si $\lambda$ est très grand, que devient le réglage $w$ après apprentissage ?'
+    en: 'We add a **penalty** $\lambda w^2$ to the loss. If $\lambda$ is very large, what becomes of the setting $w$ after learning?'
+    choix:
+      - { fr: 'Il est écrasé vers 0', en: 'It is crushed toward 0', juste: true }
+      - { fr: 'Il explose vers l’infini', en: 'It explodes toward infinity' }
+      - { fr: 'Il ne change pas', en: 'It does not change' }
+    explication: { fr: 'Une pénalité énorme sur $w^2$ rend tout réglage non nul très coûteux : $w$ est tiré vers $0$.', en: 'A huge penalty on $w^2$ makes any non-zero setting very costly: $w$ is pulled toward $0$.' }
+  - id: c2
+    type: idee
+    fr: 'La **régularisation** ajoute à la perte une **pénalité** qui punit les grands réglages : perte totale $=$ perte $+\lambda\,w^2$. Le modèle doit rester à la fois **juste** et **modeste**. Le réglage $\lambda\geq0$ dose la retenue.'
+    en: '**Regularisation** adds to the loss a **penalty** that punishes large settings: total loss $=$ loss $+\lambda\,w^2$. The model must stay both **accurate** and **modest**. The setting $\lambda\geq0$ doses the restraint.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Deux forces', en: 'Two forces' }
+          noeuds: [{ fr: 'coller aux exemples (perte)', en: 'stick to the examples (loss)' }, { fr: 'garder $w$ petit (pénalité)', en: 'keep $w$ small (penalty)' }, { fr: 'compromis réglé par $\lambda$', en: 'compromise set by $\lambda$', ton: ok }]
+      legende: { fr: '$\lambda=0$ : aucune retenue. $\lambda$ très grand : le modèle ne bouge plus (sous-apprentissage).', en: '$\lambda=0$: no restraint. Very large $\lambda$: the model no longer moves (underfitting).' }
+  - id: d_grad
+    type: idee
+    fr: 'Dans la descente, la pénalité ajoute **$2\lambda w$** à la pente de $w$. À chaque pas, $w$ est donc légèrement **tiré vers zéro**, en plus de suivre les exemples. On ne pénalise pas $b$.'
+    en: 'In the descent, the penalty adds **$2\lambda w$** to the slope of $w$. At each step, $w$ is therefore slightly **pulled toward zero**, in addition to following the examples. We do not penalise $b$.'
+    exemple: { fr: 'Pente de la perte : $-0{,}75$. Avec $w=1$ et $\lambda=0{,}1$ : la pente totale vaut $-0{,}75+2\times0{,}1\times1=-0{,}55$. La pente est réduite : la descente avance moins vite.', en: 'Slope of the loss: $-0.75$. With $w=1$ and $\lambda=0.1$: the total slope is $-0.75+2\times0.1\times1=-0.55$. The slope is reduced: the descent advances less quickly.' }
+  - id: c3
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `pente_reg(pente, w, lam)`** : la pente totale de $w$, c’est-à-dire `pente + 2 * lam * w`.'
+    en: 'Your turn. **Write `pente_reg(pente, w, lam)`**: the total slope of $w$, that is `pente + 2 * lam * w`.'
+    depart: |
+      # écris ta fonction pente_reg ici
+    tests: |
+      assert abs(pente_reg(-0.75, 1, 0.1) - (-0.55)) < 1e-12
+      assert pente_reg(2, 5, 0) == 2
+      assert pente_reg(0, 3, 0.5) == 3
+      assert pente_reg(0, 0, 10) == 0
+    solutionCode: |
+      def pente_reg(pente, w, lam):
+          return pente + 2 * lam * w
+    indice: { fr: 'Une seule ligne : la pente de la perte plus $2\lambda w$.', en: 'A single line: the slope of the loss plus $2\lambda w$.' }
+    explication: { fr: 'À $w=0$, la pénalité n’a aucun effet : elle ne se fait sentir que quand $w$ s’éloigne de zéro.', en: 'At $w=0$, the penalty has no effect: it is only felt when $w$ moves away from zero.' }
+  - id: c4
+    type: exemple
+    titre: { fr: 'Freiner le classifieur', en: 'Restraining the classifier' }
+    lang: python
+    etapes:
+      - { code: 'import math\nxs = [1, 2, 3, 4, 5, 6]\nys = [0, 0, 0, 1, 1, 1]', fr: 'Les mêmes données séparables qu’au niveau 9.3.', en: 'The same separable data as in level 9.3.' }
+      - { code: 'def fit(lam):\n    w = b = 0.0\n    for _ in range(5000):\n        ps = [1 / (1 + math.exp(-(w * x + b))) for x in xs]\n        gw = sum((p - y) * x for p, y, x in zip(ps, ys, xs)) / 6 + 2 * lam * w\n        gb = sum(p - y for p, y in zip(ps, ys)) / 6\n        w, b = w - 0.5 * gw, b - 0.5 * gb\n    return round(w, 1), round(b, 1)', fr: 'Même descente qu’avant, avec la pénalité $2\lambda w$ ajoutée à la pente de `w`.', en: 'Same descent as before, with the penalty $2\lambda w$ added to the slope of `w`.' }
+      - { code: 'print(fit(0), fit(0.1))', fr: 'Sans pénalité, $w$ vaut `5.7` et continuerait de grandir. Avec $\lambda=0{,}1$, $w$ se stabilise à `1.0`. La frontière reste la même, près de 3,5, mais le modèle est bien moins catégorique.', en: 'Without penalty, $w$ is `5.7` and would keep growing. With $\lambda=0.1$, $w$ stabilises at `1.0`. The boundary stays the same, near 3.5, but the model is much less categorical.' }
+    verif: |-
+      import math
+      xs = [1, 2, 3, 4, 5, 6]
+      ys = [0, 0, 0, 1, 1, 1]
+      def fit(lam):
+          w = b = 0.0
+          for _ in range(5000):
+              ps = [1 / (1 + math.exp(-(w * x + b))) for x in xs]
+              gw = sum((p - y) * x for p, y, x in zip(ps, ys, xs)) / 6 + 2 * lam * w
+              gb = sum(p - y for p, y in zip(ps, ys)) / 6
+              w, b = w - 0.5 * gw, b - 0.5 * gb
+          return round(w, 1), round(b, 1)
+      print(fit(0), fit(0.1))
+    sortie: '(5.7, -19.7) (1.0, -3.6)'
+  - id: d_lambda
+    type: idee
+    fr: 'Le choix de $\lambda$ est un compromis, comme $k$ au niveau 9.2. Trop petit : le modèle s’emballe. Trop grand : il devient **trop timide** et ne retient plus rien des exemples.'
+    en: 'Choosing $\lambda$ is a compromise, like $k$ in level 9.2. Too small: the model runs away. Too large: it becomes **too timid** and learns nothing from the examples.'
+    figure:
+      kind: tableau
+      entetes: ['$\lambda$', { fr: '$w$ appris (5000 pas)', en: 'Learned $w$ (5000 steps)' }, { fr: 'Lecture', en: 'Reading' }]
+      cellules:
+        - ['$0$', '$5{,}7$', { fr: 'sans frein, continue de grandir', en: 'unrestrained, keeps growing', ton: bad }]
+        - ['$0{,}1$', '$1{,}0$', { fr: 'modéré, stable', en: 'moderate, stable', ton: ok }]
+        - ['$1$', { fr: '$-0{,}4$', en: '$-0.4$' }, { fr: 'trop fort : le modèle est détruit', en: 'too strong: the model is ruined', ton: bad }]
+      legende: { fr: 'Avec $\lambda=1$, la pénalité domine : le signe de $w$ est même faux, le modèle ne sépare plus les classes.', en: 'With $\lambda=1$, the penalty dominates: the sign of $w$ is even wrong, the model no longer separates the classes.' }
+  - id: d_cv
+    type: idee
+    fr: 'Comment choisir $\lambda$ ? Sur un seul jeu de validation, le résultat dépend du hasard du découpage. La **validation croisée en $k$ blocs** coupe les données en $k$ morceaux : chacun sert à son tour de validation, les autres à l’entraînement. On **moyenne** les $k$ scores.'
+    en: 'How to choose $\lambda$? With a single validation set, the result depends on the luck of the split. **$k$-fold cross-validation** cuts the data into $k$ pieces: each one serves in turn as validation, the others as training. We **average** the $k$ scores.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Tour', en: 'Round' }, { fr: 'Validation', en: 'Validation' }, { fr: 'Entraînement', en: 'Training' }]
+      cellules:
+        - ['$1$', { fr: 'bloc A', en: 'block A', ton: bad }, { fr: 'blocs B, C', en: 'blocks B, C' }]
+        - ['$2$', { fr: 'bloc B', en: 'block B', ton: bad }, { fr: 'blocs A, C', en: 'blocks A, C' }]
+        - ['$3$', { fr: 'bloc C', en: 'block C', ton: bad }, { fr: 'blocs A, B', en: 'blocks A, B' }]
+      legende: { fr: 'Avec $k=3$ blocs, chaque exemple est utilisé une fois pour valider et deux fois pour entraîner.', en: 'With $k=3$ blocks, each example is used once for validation and twice for training.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `plis(n, k)`** : une liste de `k` listes d’indices (de `0` à `n-1`), en blocs consécutifs. Si `n` n’est pas divisible par `k`, les premiers blocs ont **un indice de plus**.'
+    en: '**Write `plis(n, k)`**: a list of `k` lists of indices (from `0` to `n-1`), in consecutive blocks. If `n` is not divisible by `k`, the first blocks get **one more index**.'
+    depart: |
+      # écris ta fonction plis ici
+    tests: |
+      assert plis(6, 3) == [[0, 1], [2, 3], [4, 5]]
+      assert plis(7, 3) == [[0, 1, 2], [3, 4], [5, 6]]
+      assert plis(4, 4) == [[0], [1], [2], [3]]
+      assert plis(5, 2) == [[0, 1, 2], [3, 4]]
+    solutionCode: |
+      def plis(n, k):
+          base, reste = divmod(n, k)
+          blocs = []
+          debut = 0
+          for i in range(k):
+              taille = base + (1 if i < reste else 0)
+              blocs.append(list(range(debut, debut + taille)))
+              debut = debut + taille
+          return blocs
+    indice: { fr: '`divmod(n, k)` donne la taille de base et le reste. Les `reste` premiers blocs ont `base + 1` indices.', en: '`divmod(n, k)` gives the base size and the remainder. The first `reste` blocks have `base + 1` indices.' }
+    explication: { fr: 'Tous les indices apparaissent exactement une fois : aucun exemple n’est perdu ni compté deux fois.', en: 'All indices appear exactly once: no example is lost or counted twice.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `validation_croisee(xs, ys, k, score)`** : pour chaque bloc de `plis(len(xs), k)`, appelle `score(train_x, train_y, val_x, val_y)`. L’entraînement prend les exemples hors du bloc ; la validation, ceux du bloc. Renvoie la **moyenne** des scores. `plis` est déjà écrite.'
+    en: '**Write `validation_croisee(xs, ys, k, score)`**: for each block of `plis(len(xs), k)`, call `score(train_x, train_y, val_x, val_y)`. Training takes the examples outside the block; validation, those in the block. Return the **mean** of the scores. `plis` is already written.'
+    depart: |
+      def plis(n, k):
+          base, reste = divmod(n, k)
+          blocs = []
+          debut = 0
+          for i in range(k):
+              taille = base + (1 if i < reste else 0)
+              blocs.append(list(range(debut, debut + taille)))
+              debut = debut + taille
+          return blocs
+
+      # écris ta fonction validation_croisee ici
+    tests: |
+      xs = [10, 20, 30, 40, 50, 60]
+      ys = [1, 2, 3, 4, 5, 6]
+      assert validation_croisee(xs, ys, 3, lambda tx, ty, vx, vy: len(vx)) == 2
+      assert validation_croisee(xs, ys, 3, lambda tx, ty, vx, vy: len(tx)) == 4
+      assert validation_croisee(xs, ys, 6, lambda tx, ty, vx, vy: vy[0]) == 3.5
+      assert validation_croisee(xs, ys, 2, lambda tx, ty, vx, vy: sum(vx) / len(vx)) == 35
+    solutionCode: |
+      def plis(n, k):
+          base, reste = divmod(n, k)
+          blocs = []
+          debut = 0
+          for i in range(k):
+              taille = base + (1 if i < reste else 0)
+              blocs.append(list(range(debut, debut + taille)))
+              debut = debut + taille
+          return blocs
+
+      def validation_croisee(xs, ys, k, score):
+          scores = []
+          for bloc in plis(len(xs), k):
+              dehors = [i for i in range(len(xs)) if i not in bloc]
+              scores.append(score([xs[i] for i in dehors], [ys[i] for i in dehors], [xs[i] for i in bloc], [ys[i] for i in bloc]))
+          return sum(scores) / len(scores)
+    indice: { fr: 'Pour chaque `bloc`, construis la liste `dehors` des indices absents du bloc, appelle `score`, garde le résultat, puis moyenne.', en: 'For each `bloc`, build the list `dehors` of indices absent from the block, call `score`, keep the result, then average.' }
+    explication: { fr: 'Les tests utilisent des « scores » factices pour vérifier le découpage : taille des blocs, taille de l’entraînement, valeurs vues.', en: 'The tests use dummy “scores” to check the split: block sizes, training size, values seen.' }
+  - id: d_p_cv
+    type: piege
+    fr: 'Toute étape qui apprend quelque chose des données (centrer, choisir $\lambda$, supprimer des colonnes) doit se faire **à l’intérieur** de chaque tour, sur l’entraînement seul. Sinon, la validation a déjà « vu » les blocs : c’est la fuite du niveau 8.boss.'
+    en: 'Any step that learns something from the data (centring, choosing $\lambda$, dropping columns) must be done **inside** each round, on training alone. Otherwise, validation has already “seen” the blocks: this is the leak from level 8.boss.'
+  - id: d_final
+    type: idee
+    fr: 'Une fois $\lambda$ choisi grâce à la validation croisée, on **réentraîne** sur tout l’entraînement. Le **jeu de test**, mis de côté depuis le début, ne sert qu’**une fois**, pour annoncer le score final.'
+    en: 'Once $\lambda$ is chosen thanks to cross-validation, we **retrain** on the whole training set. The **test set**, set aside from the start, is used only **once**, to announce the final score.'
+    exemple: { fr: 'Plan complet : mettre le test de côté → pour chaque $\lambda$ : validation croisée sur l’entraînement → garder le meilleur $\lambda$ → réentraîner → tester une fois.', en: 'Full plan: set the test aside → for each $\lambda$: cross-validation on training → keep the best $\lambda$ → retrain → test once.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `resume_scores(scores)`** : renvoie `(moyenne, ecart_type)` d’une liste de scores de validation croisée (écart-type de la population). Il dit si le score est **stable** d’un bloc à l’autre.'
+    en: 'Challenge. **Write `resume_scores(scores)`**: return `(mean, standard_deviation)` of a list of cross-validation scores (population standard deviation). It says whether the score is **stable** from one block to another.'
+    depart: |
+      import math
+
+      # écris ta fonction resume_scores ici
+    tests: |
+      m, s = resume_scores([0.8, 0.8, 0.8])
+      assert abs(m - 0.8) < 1e-12 and abs(s) < 1e-12
+      m, s = resume_scores([0.6, 1.0])
+      assert abs(m - 0.8) < 1e-12 and abs(s - 0.2) < 1e-12
+      m, s = resume_scores([1])
+      assert abs(m - 1) < 1e-12 and abs(s) < 1e-12
+    solutionCode: |
+      import math
+
+      def resume_scores(scores):
+          m = sum(scores) / len(scores)
+          v = sum((s - m) ** 2 for s in scores) / len(scores)
+          return (m, math.sqrt(v))
+    indice: { fr: 'La moyenne, puis la racine de la moyenne des carrés des écarts (niveau 8.3).', en: 'The mean, then the root of the mean of the squared gaps (level 8.3).' }
+    explication: { fr: 'Un score moyen de 0,8 avec un écart-type de 0,2 est bien moins fiable qu’un 0,8 avec 0,01.', en: 'A mean score of 0.8 with a standard deviation of 0.2 is far less reliable than 0.8 with 0.01.' }
+  - id: c8
+    type: retenir
+    fr: 'Régularisation : perte + $\lambda w^2$, pente + $2\lambda w$ ; $\lambda$ trop grand détruit le modèle. Validation croisée : $k$ blocs tour à tour en validation, moyenne des scores ; tout apprentissage dans chaque tour ; test scellé jusqu’à la fin.'
+    en: 'Regularisation: loss + $\lambda w^2$, slope + $2\lambda w$; too large a $\lambda$ ruins the model. Cross-validation: $k$ blocks in turn as validation, mean of the scores; all learning inside each round; test sealed until the end.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [scikit-learn — Validation croisée](https://scikit-learn.org/stable/modules/cross_validation.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [scikit-learn — Cross-validation](https://scikit-learn.org/stable/modules/cross_validation.html); this optional reading needs a connection.

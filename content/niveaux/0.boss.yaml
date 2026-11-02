@@ -1,6 +1,6 @@
 id: '0.boss'
 module: 0
-duree_min: 20
+duree_min: 13
 titre: { fr: 'Le message secret', en: 'The secret message' }
 ia: { fr: 'Kintana sait chiffrer et déchiffrer un message (César, affine).', en: 'Kintana can encrypt and decrypt a message (Caesar and affine ciphers).' }
 sources:
@@ -244,6 +244,10 @@ cartes:
         - [{ fr: 'Congruences (0.5)', en: 'Congruences (0.5)' }, { fr: 'calculer modulo $26$ et inverser la clé', en: 'compute modulo $26$ and invert the key' }]
       legende: { fr: 'Le prochain quartier de Kintana : le terminal.', en: 'Kintana’s next district: the terminal.' }
 
+  - id: d_lien
+    type: idee
+    fr: 'Tu as chiffré à la main. Le terminal (niveau 1.1) puis Python (niveau 2.1) feront ce travail à ta place, et tu reverras la cryptographie moderne plus tard.'
+    en: 'You encrypted by hand. The terminal (level 1.1) then Python (level 2.1) will do this work for you, and you will see modern cryptography later.'
   - id: d_retenir
     type: retenir
     fr: Kintana sait chiffrer et déchiffrer un message (César, affine).

@@ -1,6 +1,6 @@
 id: '3.2'
 module: 3
-duree_min: 20
+duree_min: 11
 titre: { fr: 'Trier', en: 'Sorting' }
 ia:
   {

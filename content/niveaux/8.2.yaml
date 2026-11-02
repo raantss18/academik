@@ -1,7 +1,7 @@
 # Niveau 8.2 — Données 2 : nettoyer. Original academik ; notions vérifiées dans la documentation officielle Python (méthodes de chaînes, dict.fromkeys) et dans la documentation scikit-learn (valeurs manquantes, imputation).
 id: '8.2'
 module: 8
-duree_min: 18
+duree_min: 16
 titre: { fr: 'Nettoyer', en: 'Cleaning' }
 ia: { fr: 'Kintana repère les valeurs manquantes, les doublons et les valeurs impossibles avant de calculer quoi que ce soit.', en: 'Kintana spots missing values, duplicates and impossible values before computing anything.' }
 sources:
@@ -184,6 +184,10 @@ cartes:
           return (gardes, ecartes)
     indice: { fr: 'Même test de validité que 8.2, avec un compteur supplémentaire dans le `else`.', en: 'Same validity test as before, with an extra counter in the `else`.' }
     explication: { fr: 'On rend à la fois le résultat **et** le nombre de lignes écartées : la trace dont on parlait.', en: 'We return both the result **and** the number of dropped rows: the record we spoke about.' }
+  - id: d_lien
+    type: idee
+    fr: 'Nettoyer prépare la suite : tu verras le résumé au niveau 8.3 et le découpage entraînement/test au niveau 8.5. Note toujours ce que tu écartes.'
+    en: 'Cleaning prepares what follows: you will see the summary in level 8.3 and the train/test split in level 8.5. Always record what you drop.'
   - id: c8
     type: retenir
     fr: 'Avant de calculer : `strip` les espaces, `isdigit()` avant `int`. Manquants : une règle explicite, jamais 0 par défaut. Borner les valeurs, retirer les doublons, noter ce qu’on écarte.'

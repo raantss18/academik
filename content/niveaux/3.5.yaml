@@ -1,6 +1,6 @@
 id: '3.5'
 module: 3
-duree_min: 20
+duree_min: 12
 titre: { fr: 'Graphes : parcours en largeur', en: 'Graphs: breadth-first search' }
 ia: { fr: 'Kintana explore les liens entre documents par distance croissante.', en: 'Kintana explores links between documents in increasing distance order.' }
 sources:

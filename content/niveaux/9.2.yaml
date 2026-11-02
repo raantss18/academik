@@ -1,0 +1,195 @@
+# Niveau 9.2 — Apprentissage automatique 2 : biais et variance. Original academik ; notions vérifiées dans Stanford CS229 (biais, variance, sur-apprentissage) et la documentation scikit-learn (Underfitting vs. Overfitting).
+id: '9.2'
+module: 9
+duree_min: 16
+titre: { fr: 'Biais et variance', en: 'Bias and variance' }
+ia: { fr: 'Kintana règle la souplesse de son modèle : ni trop rigide pour comprendre, ni trop souple pour ne pas apprendre par cœur.', en: 'Kintana tunes the flexibility of her model: not too rigid to understand, not too flexible to avoid memorising.' }
+sources:
+  - { titre: 'Stanford CS229 — Machine Learning (biais et variance)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
+  - { titre: 'scikit-learn — Underfitting vs. Overfitting', url: 'https://scikit-learn.org/stable/auto_examples/model_selection/plot_underfitting_overfitting.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un modèle répond **toujours la moyenne** des exemples, quelle que soit l’entrée. Que lui reproche-t-on ?'
+    en: 'A model **always answers the mean** of the examples, whatever the input. What is wrong with it?'
+    choix:
+      - { fr: 'Il est trop simple : il rate la forme des données', en: 'It is too simple: it misses the shape of the data', juste: true }
+      - { fr: 'Il apprend par cœur les exemples', en: 'It memorises the examples' }
+      - { fr: 'Rien : une moyenne est toujours juste', en: 'Nothing: a mean is always right' }
+    explication: { fr: 'Ignorer l’entrée donne une erreur **systématique**. C’est le **sous-apprentissage** : un biais fort.', en: 'Ignoring the input gives a **systematic** error. This is **underfitting**: high bias.' }
+  - id: c2
+    type: idee
+    fr: 'Deux sources d’erreur s’opposent. Le **biais** est l’erreur d’un modèle **trop simple**, qui rate la réalité. La **variance** est la sensibilité d’un modèle **trop souple**, qui change beaucoup quand les exemples changent.'
+    en: 'Two sources of error pull against each other. **Bias** is the error of a model that is **too simple**, which misses reality. **Variance** is the sensitivity of a model that is **too flexible**, which changes a lot when the examples change.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Modèle', en: 'Model' }, { fr: 'Biais', en: 'Bias' }, { fr: 'Variance', en: 'Variance' }]
+      cellules:
+        - [{ fr: 'toujours la moyenne', en: 'always the mean' }, { fr: 'fort', en: 'high', ton: bad }, { fr: 'faible', en: 'low', ton: ok }]
+        - [{ fr: 'copie le voisin le plus proche', en: 'copies the nearest neighbour' }, { fr: 'faible', en: 'low', ton: ok }, { fr: 'forte', en: 'high', ton: bad }]
+      legende: { fr: 'On cherche entre les deux un modèle de souplesse moyenne.', en: 'We look in between for a model of medium flexibility.' }
+  - id: d_knn
+    type: idee
+    fr: 'Pour voir ce compromis, utilisons les **$k$ plus proches voisins**. Pour prédire en un point $x$, on prend les $k$ exemples les plus proches. On **moyenne leurs $y$**. Le réglage $k$ règle la souplesse.'
+    en: 'To see this trade-off, use the **$k$ nearest neighbours**. To predict at a point $x$, take the $k$ closest examples. **Average their $y$**. The setting $k$ controls flexibility.'
+    figure:
+      kind: tableau
+      entetes: ['$k$', { fr: 'Modèle obtenu', en: 'Resulting model' }, { fr: 'Souplesse', en: 'Flexibility' }]
+      cellules:
+        - ['$1$', { fr: 'copie le plus proche', en: 'copies the closest' }, { fr: 'maximale', en: 'maximal', ton: bad }]
+        - ['$3$', { fr: 'moyenne locale de 3 points', en: 'local average of 3 points' }, { fr: 'moyenne', en: 'medium', ton: ok }]
+        - [{ fr: '$k=n$ (tous)', en: '$k=n$ (all)' }, { fr: 'toujours la moyenne', en: 'always the mean' }, { fr: 'nulle', en: 'none' }]
+      legende: { fr: 'Plus $k$ est petit, plus le modèle colle aux exemples ; plus il est grand, plus il lisse.', en: 'The smaller $k$ is, the closer the model sticks to the examples; the larger, the smoother.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Prédire avec les voisins', en: 'Predicting with neighbours' }
+    lang: python
+    etapes:
+      - { code: 'xs = [0, 1, 2, 3, 4, 5, 6, 7]\nys = [0.5, 2.5, 3.5, 6.5, 7.5, 10.5, 11.5, 14.5]', fr: 'Des exemples proches de la droite $y=2x$, avec un peu de bruit.', en: 'Examples close to the line $y=2x$, with a little noise.' }
+      - { code: 'def knn(x, k):\n    idx = sorted(range(len(xs)), key=lambda i: (abs(xs[i] - x), xs[i]))[:k]\n    return sum(ys[i] for i in idx) / k', fr: 'On trie les exemples par distance à `x`, on garde les `k` premiers et on moyenne leurs `y`.', en: 'We sort the examples by distance to `x`, keep the first `k` and average their `y`.' }
+      - { code: 'print(knn(3.2, 1), knn(3.2, 3))', fr: 'Avec $k=1$ : `6.5` (le point en 3). Avec $k=3$ : `5.833…`, la moyenne de 6,5, 7,5 et 3,5.', en: 'With $k=1$: `6.5` (the point at 3). With $k=3$: `5.833…`, the mean of 6.5, 7.5 and 3.5.' }
+    verif: |-
+      xs = [0, 1, 2, 3, 4, 5, 6, 7]
+      ys = [0.5, 2.5, 3.5, 6.5, 7.5, 10.5, 11.5, 14.5]
+      def knn(x, k):
+          idx = sorted(range(len(xs)), key=lambda i: (abs(xs[i] - x), xs[i]))[:k]
+          return sum(ys[i] for i in idx) / k
+      print(knn(3.2, 1), round(knn(3.2, 3), 3))
+    sortie: '6.5 5.833'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `knn(xs, ys, x, k)`** : la moyenne des `y` des `k` exemples les plus proches de `x`. En cas d’égalité de distance, le plus petit `x` passe d’abord.'
+    en: 'Your turn. **Write `knn(xs, ys, x, k)`**: the mean of the `y` of the `k` examples closest to `x`. On a distance tie, the smaller `x` comes first.'
+    depart: |
+      # écris ta fonction knn ici
+    tests: |
+      xs = [0, 1, 2, 3, 4, 5, 6, 7]
+      ys = [0.5, 2.5, 3.5, 6.5, 7.5, 10.5, 11.5, 14.5]
+      assert knn(xs, ys, 3.2, 1) == 6.5
+      assert abs(knn(xs, ys, 3.2, 3) - 5.8333333) < 1e-6
+      assert abs(knn(xs, ys, 0.5, 1) - 0.5) < 1e-9
+      assert abs(knn(xs, ys, 0, 8) - 7.125) < 1e-9
+    solutionCode: |
+      def knn(xs, ys, x, k):
+          idx = sorted(range(len(xs)), key=lambda i: (abs(xs[i] - x), xs[i]))[:k]
+          return sum(ys[i] for i in idx) / k
+    indice: { fr: 'Trie les **indices** par `(abs(xs[i] - x), xs[i])`, garde les `k` premiers, puis moyenne les `ys` correspondants.', en: 'Sort the **indices** by `(abs(xs[i] - x), xs[i])`, keep the first `k`, then average the corresponding `ys`.' }
+    explication: { fr: 'Avec $k=8$ (tous les exemples), on retrouve la moyenne des `y` : $7{,}125$, le modèle constant.', en: 'With $k=8$ (all the examples), we find the mean of the `y`: $7.125$, the constant model.' }
+  - id: d_erreurs
+    type: idee
+    fr: 'Mesurons deux erreurs : celle sur les exemples d’**entraînement** (déjà vus) et celle sur des exemples de **test** (jamais vus). Le bon modèle est celui dont l’erreur de **test** est la plus basse.'
+    en: 'Let us measure two errors: the one on **training** examples (already seen) and the one on **test** examples (never seen). The good model is the one with the lowest **test** error.'
+    figure:
+      kind: tableau
+      entetes: ['$k$', { fr: 'Erreur d’entraînement', en: 'Training error' }, { fr: 'Erreur de test', en: 'Test error' }]
+      cellules:
+        - ['$1$', { fr: '$0$ (copie parfaite)', en: '$0$ (perfect copy)', ton: bad }, '$1{,}11$']
+        - ['$3$', '$1{,}32$', { fr: '$0{,}98$ (la plus basse)', en: '$0.98$ (the lowest)', ton: ok }]
+        - ['$8$', '$20{,}5$', '$16{,}0$']
+      legende: { fr: 'Test aux points $0{,}5;1{,}5;\dots;6{,}5$ de la vraie droite $y=2x$. $k=1$ colle au bruit ; $k=8$ rate la pente.', en: 'Test at points $0.5;1.5;\dots;6.5$ of the true line $y=2x$. $k=1$ sticks to the noise; $k=8$ misses the slope.' }
+  - id: d_hyper
+    type: idee
+    fr: 'Les **réglages appris** (comme $w$ et $b$) se trouvent par descente. Les **hyperparamètres** (comme $k$) se choisissent **avant**, par essai. Ils décident de la forme du modèle, pas de ses valeurs.'
+    en: 'The **learned settings** (like $w$ and $b$) are found by descent. The **hyperparameters** (like $k$) are chosen **beforehand**, by trial. They decide the shape of the model, not its values.'
+    exemple: { fr: 'Pour les voisins : $k$ est un hyperparamètre. Pour la droite : le **degré** du polynôme en serait un, alors que ses coefficients sont appris.', en: 'For neighbours: $k$ is a hyperparameter. For a fitted curve: the **degree** of the polynomial would be one, while its coefficients are learned.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec $k=1$, l’erreur d’**entraînement** vaut toujours $0$ (chaque point est son propre voisin le plus proche). Cela prouve-t-il que le modèle est bon ? Réponds `oui` ou `non`.'
+    en: 'With $k=1$, the **training** error is always $0$ (each point is its own nearest neighbour). Does this prove the model is good? Answer `oui` or `non`.'
+    reponses: ['non']
+    verif: 'print("non")'
+    indice: { fr: 'Pense à l’erreur de **test** : $1{,}11$ pour $k=1$, contre $0{,}98$ pour $k=3$.', en: 'Think of the **test** error: $1.11$ for $k=1$, against $0.98$ for $k=3$.' }
+    explication: { fr: 'Une erreur d’entraînement nulle peut venir d’un apprentissage par cœur : seule l’erreur de test dit si le modèle généralise.', en: 'A zero training error can come from memorisation: only the test error tells whether the model generalises.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `eqm_knn(train, test, k)`** : `train` et `test` sont des couples de listes `(xs, ys)`. Renvoie l’erreur quadratique moyenne des prédictions des `k` voisins (calculées avec `train`) sur les points de `test`. La fonction `knn` est déjà écrite.'
+    en: '**Write `eqm_knn(train, test, k)`**: `train` and `test` are pairs of lists `(xs, ys)`. Return the mean squared error of the `k`-neighbours predictions (computed from `train`) on the `test` points. The function `knn` is already written.'
+    depart: |
+      def knn(xs, ys, x, k):
+          idx = sorted(range(len(xs)), key=lambda i: (abs(xs[i] - x), xs[i]))[:k]
+          return sum(ys[i] for i in idx) / k
+
+      # écris ta fonction eqm_knn ici
+    tests: |
+      train = ([0, 1, 2, 3, 4, 5, 6, 7], [0.5, 2.5, 3.5, 6.5, 7.5, 10.5, 11.5, 14.5])
+      test = ([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5], [1, 3, 5, 7, 9, 11, 13])
+      assert abs(eqm_knn(train, train, 1)) < 1e-12
+      assert abs(eqm_knn(train, test, 1) - 1.107) < 1e-3
+      assert abs(eqm_knn(train, test, 3) - 0.980) < 1e-3
+      assert abs(eqm_knn(train, test, 8) - 16.016) < 1e-3
+    solutionCode: |
+      def knn(xs, ys, x, k):
+          idx = sorted(range(len(xs)), key=lambda i: (abs(xs[i] - x), xs[i]))[:k]
+          return sum(ys[i] for i in idx) / k
+
+      def eqm_knn(train, test, k):
+          txs, tys = test
+          erreurs = [(knn(train[0], train[1], x, k) - y) ** 2 for x, y in zip(txs, tys)]
+          return sum(erreurs) / len(erreurs)
+    indice: { fr: 'Pour chaque point de test, prédis avec `knn` **à partir de `train`**, compare à son vrai `y`, élève au carré, puis moyenne.', en: 'For each test point, predict with `knn` **from `train`**, compare with its true `y`, square, then average.' }
+    explication: { fr: 'Évaluer sur `train` avec $k=1$ donne 0 : c’est justement pourquoi on évalue sur un autre jeu.', en: 'Evaluating on `train` with $k=1$ gives 0: this is exactly why we evaluate on another set.' }
+  - id: d_u
+    type: idee
+    fr: 'En traçant l’erreur de test selon la souplesse, on obtient une courbe **en U** : trop rigide à gauche (biais), trop souple à droite (variance). On choisit le fond du U avec un jeu de **validation**, pas avec le jeu de test.'
+    en: 'Plotting the test error against flexibility gives a **U-shaped** curve: too rigid on the left (bias), too flexible on the right (variance). We pick the bottom of the U with a **validation** set, not with the test set.'
+    exemple: { fr: 'Ici $k=3$ est le fond du U. Sur de vraies données, on teste plusieurs $k$ sur la validation, on garde le meilleur, et le test ne sert qu’une fois à la fin (niveau 8.5).', en: 'Here $k=3$ is the bottom of the U. On real data, we try several $k$ on validation, keep the best, and the test set is used only once at the end (level 8.5).' }
+  - id: d_p_test
+    type: piege
+    fr: 'Choisir $k$ en regardant l’erreur de **test** triche : le test n’est plus neuf et l’estimation devient trop optimiste. Garde le test **scellé** jusqu’au bout.'
+    en: 'Choosing $k$ by looking at the **test** error is cheating: the test set is no longer new and the estimate becomes too optimistic. Keep the test set **sealed** until the end.'
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `meilleur_k(train, valid, ks)`** : parmi la liste `ks`, renvoie le `k` qui donne la plus petite erreur sur `valid` (en cas d’égalité, le plus petit `k`). `knn` et `eqm_knn` sont déjà écrites.'
+    en: 'Challenge. **Write `meilleur_k(train, valid, ks)`**: among the list `ks`, return the `k` giving the smallest error on `valid` (on a tie, the smallest `k`). `knn` and `eqm_knn` are already written.'
+    depart: |
+      def knn(xs, ys, x, k):
+          idx = sorted(range(len(xs)), key=lambda i: (abs(xs[i] - x), xs[i]))[:k]
+          return sum(ys[i] for i in idx) / k
+
+      def eqm_knn(train, test, k):
+          txs, tys = test
+          erreurs = [(knn(train[0], train[1], x, k) - y) ** 2 for x, y in zip(txs, tys)]
+          return sum(erreurs) / len(erreurs)
+
+      # écris ta fonction meilleur_k ici
+    tests: |
+      train = ([0, 1, 2, 3, 4, 5, 6, 7], [0.5, 2.5, 3.5, 6.5, 7.5, 10.5, 11.5, 14.5])
+      valid = ([0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5], [1, 3, 5, 7, 9, 11, 13])
+      assert meilleur_k(train, valid, [1, 3, 8]) == 3
+      assert meilleur_k(train, valid, [8, 1]) == 1
+      assert meilleur_k(train, valid, [3]) == 3
+    solutionCode: |
+      def knn(xs, ys, x, k):
+          idx = sorted(range(len(xs)), key=lambda i: (abs(xs[i] - x), xs[i]))[:k]
+          return sum(ys[i] for i in idx) / k
+
+      def eqm_knn(train, test, k):
+          txs, tys = test
+          erreurs = [(knn(train[0], train[1], x, k) - y) ** 2 for x, y in zip(txs, tys)]
+          return sum(erreurs) / len(erreurs)
+
+      def meilleur_k(train, valid, ks):
+          meilleur = None
+          meilleure_erreur = None
+          for k in sorted(ks):
+              e = eqm_knn(train, valid, k)
+              if meilleure_erreur is None or e < meilleure_erreur:
+                  meilleur = k
+                  meilleure_erreur = e
+          return meilleur
+    indice: { fr: 'Parcours `sorted(ks)` ; garde le `k` dont l’erreur est strictement plus petite que la meilleure vue jusqu’ici.', en: 'Go through `sorted(ks)`; keep the `k` whose error is strictly smaller than the best seen so far.' }
+    explication: { fr: 'Le parcours en ordre croissant avec une comparaison stricte garantit le plus petit `k` en cas d’égalité.', en: 'Going in increasing order with a strict comparison guarantees the smallest `k` on a tie.' }
+  - id: c8
+    type: retenir
+    fr: 'Biais = erreur d’un modèle trop simple ; variance = sensibilité d’un modèle trop souple. Une erreur d’entraînement nulle ne prouve rien. On règle la souplesse sur une validation, et le test reste scellé.'
+    en: 'Bias = error of a model that is too simple; variance = sensitivity of a model that is too flexible. A zero training error proves nothing. Tune flexibility on a validation set, and keep the test set sealed.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [scikit-learn — Sous- et sur-apprentissage](https://scikit-learn.org/stable/auto_examples/model_selection/plot_underfitting_overfitting.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [scikit-learn — Underfitting vs. overfitting](https://scikit-learn.org/stable/auto_examples/model_selection/plot_underfitting_overfitting.html); this optional reading needs a connection.

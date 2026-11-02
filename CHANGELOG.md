@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.16] — 2026-11-02
+
+### Message fr
+Le cours s'agrandit encore : fin des modules 3, 4 et 5, et un nouveau module « Apprentissage automatique » (droite, biais et variance, classer, mesurer, régularisation, arbres). Les niveaux sont reliés entre eux, les durées affichées sont plus justes, et quand tu te trompes, une carte te renvoie vers l'explication à relire.
+
+### Message en
+The course grows again: end of modules 3, 4 and 5, and a new “Machine learning” module (line fitting, bias and variance, classifying, measuring, regularisation, trees). Levels are linked together, displayed durations are more accurate, and when you get something wrong, a card points you back to the explanation to reread.
+
 ## [0.3.15] — 2026-11-02
 
 ### Message fr

@@ -1,6 +1,6 @@
 id: '3.1'
 module: 3
-duree_min: 20
+duree_min: 10
 titre: { fr: 'Complexité', en: 'Complexity' }
 ia: { fr: 'Kintana estime comment le coût de recherche grandit avec ses documents.', en: 'Kintana estimates how search cost grows with its documents.' }
 sources:

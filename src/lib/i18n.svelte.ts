@@ -11,7 +11,7 @@ class I18n {
 export const i18n = new I18n();
 
 const UI: Record<string, Text> = {
-  continue: { fr: 'Continuer', en: 'Continue' }, check: { fr: 'Vérifier', en: 'Check' }, hint: { fr: 'Indice', en: 'Hint' },
+  continue: { fr: 'Continuer', en: 'Continue' }, check: { fr: 'Vérifier', en: 'Check' }, hint: { fr: 'Indice', en: 'Hint' }, hint_reread: { fr: 'Relis la carte', en: 'Reread the card' }, hint_reread_generic: { fr: 'Relis les cartes d’explication de ce niveau.', en: 'Reread the explanation cards of this level.' },
   right: { fr: 'Juste !', en: 'Correct!' }, notyet: { fr: 'Pas encore', en: 'Not yet' }, answer: { fr: 'Réponse attendue', en: 'Expected answer' },
   next_step: { fr: 'Étape suivante', en: 'Next step' }, type_here: { fr: 'Ta réponse', en: 'Your answer' }, leave: { fr: 'Quitter', en: 'Leave' },
   score: { fr: 'Score', en: 'Score' }, stars: { fr: 'Étoiles', en: 'Stars' }, replay: { fr: 'Rejouer', en: 'Replay' }, back: { fr: 'Retour à la carte', en: 'Back to the map' },

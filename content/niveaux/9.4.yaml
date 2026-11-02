@@ -1,0 +1,210 @@
+# Niveau 9.4 — Apprentissage automatique 4 : mesurer une classification. Original academik ; notions vérifiées dans la documentation scikit-learn (Metrics and scoring, Common pitfalls) et dans Stanford CS229.
+id: '9.4'
+module: 9
+duree_min: 20
+titre: { fr: 'Mesurer une classification', en: 'Measuring a classification' }
+ia: { fr: 'Kintana mesure honnêtement ses réponses : combien de bonnes, combien de fausses alertes, combien d’oublis.', en: 'Kintana honestly measures her answers: how many right, how many false alarms, how many misses.' }
+sources:
+  - { titre: 'scikit-learn — Metrics and scoring', url: 'https://scikit-learn.org/stable/modules/model_evaluation.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+  - { titre: 'Stanford CS229 — Machine Learning', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Sur 100 messages, 90 sont **normaux** et 10 sont du **spam**. Un « modèle » répond toujours « normal ». Quelle part de ses réponses est juste ?'
+    en: 'Out of 100 messages, 90 are **normal** and 10 are **spam**. A “model” always answers “normal”. What share of its answers is right?'
+    choix:
+      - { fr: '$90\,\%$', en: '$90\,\%$', juste: true }
+      - { fr: '$10\,\%$', en: '$10\,\%$' }
+      - { fr: '$50\,\%$', en: '$50\,\%$' }
+    explication: { fr: 'Il a raison 90 fois sur 100 sans jamais détecter un spam : l’exactitude seule est trompeuse.', en: 'It is right 90 times out of 100 without ever detecting a spam: accuracy alone is misleading.' }
+  - id: c2
+    type: idee
+    fr: 'Pour juger un classifieur, on compte quatre cas dans une **matrice de confusion** : **VP** (bien trouvé), **FP** (fausse alerte), **FN** (oubli), **VN** (bien écarté).'
+    en: 'To judge a classifier, we count four cases in a **confusion matrix**: **TP** (correctly found), **FP** (false alarm), **FN** (miss), **TN** (correctly dismissed).'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Cas', en: 'Case' }, { fr: 'Prédit « oui »', en: 'Predicted “yes”' }, { fr: 'Prédit « non »', en: 'Predicted “no”' }]
+      cellules:
+        - [{ fr: 'vraiment oui', en: 'really yes' }, { fr: 'VP : bien trouvé', en: 'TP: correctly found', ton: ok }, { fr: 'FN : oublié', en: 'FN: missed', ton: bad }]
+        - [{ fr: 'vraiment non', en: 'really no' }, { fr: 'FP : fausse alerte', en: 'FP: false alarm', ton: bad }, { fr: 'VN : bien écarté', en: 'TN: correctly dismissed', ton: ok }]
+      legende: { fr: 'La diagonale (VP et VN) contient les bonnes réponses ; les deux autres cases sont les deux sortes d’erreur.', en: 'The diagonal (TP and TN) holds the right answers; the other two cells are the two kinds of error.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Remplir la matrice', en: 'Filling the matrix' }
+    lang: python
+    etapes:
+      - { code: 'vrais   = [1, 1, 1, 0, 0, 0, 0, 0]\npredits = [1, 1, 0, 1, 0, 0, 0, 0]', fr: 'Huit messages : `1` signifie « spam ». Le modèle se trompe deux fois.', en: 'Eight messages: `1` means “spam”. The model is wrong twice.' }
+      - { code: 'vp = sum(1 for v, p in zip(vrais, predits) if v == 1 and p == 1)\nfn = sum(1 for v, p in zip(vrais, predits) if v == 1 and p == 0)', fr: 'On compte les spams trouvés (VP) puis ceux oubliés (FN).', en: 'We count the spams found (TP) then those missed (FN).' }
+      - { code: 'fp = sum(1 for v, p in zip(vrais, predits) if v == 0 and p == 1)\nvn = sum(1 for v, p in zip(vrais, predits) if v == 0 and p == 0)', fr: 'Puis les fausses alertes (FP) et les messages normaux bien écartés (VN).', en: 'Then the false alarms (FP) and the normal messages correctly dismissed (TN).' }
+      - { code: 'print(vp, fn, fp, vn)', fr: 'On affiche `2 1 1 4` : deux spams trouvés, un oublié, une fausse alerte, quatre messages normaux bien classés.', en: 'We display `2 1 1 4`: two spams found, one missed, one false alarm, four normal messages correctly classified.' }
+    verif: |-
+      vrais   = [1, 1, 1, 0, 0, 0, 0, 0]
+      predits = [1, 1, 0, 1, 0, 0, 0, 0]
+      vp = sum(1 for v, p in zip(vrais, predits) if v == 1 and p == 1)
+      fn = sum(1 for v, p in zip(vrais, predits) if v == 1 and p == 0)
+      fp = sum(1 for v, p in zip(vrais, predits) if v == 0 and p == 1)
+      vn = sum(1 for v, p in zip(vrais, predits) if v == 0 and p == 0)
+      print(vp, fn, fp, vn)
+    sortie: '2 1 1 4'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `confusion(vrais, predits)`** : renvoie le quadruplet `(vp, fp, fn, vn)` pour deux listes de 0 et de 1 de même longueur.'
+    en: 'Your turn. **Write `confusion(vrais, predits)`**: return the quadruple `(vp, fp, fn, vn)` for two lists of 0s and 1s of the same length.'
+    depart: |
+      # écris ta fonction confusion ici
+    tests: |
+      assert confusion([1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 0, 1, 0, 0, 0, 0]) == (2, 1, 1, 4)
+      assert confusion([1, 0], [1, 0]) == (1, 0, 0, 1)
+      assert confusion([0, 0], [1, 1]) == (0, 2, 0, 0)
+      assert confusion([], []) == (0, 0, 0, 0)
+    solutionCode: |
+      def confusion(vrais, predits):
+          vp = fp = fn = vn = 0
+          for v, p in zip(vrais, predits):
+              if v == 1 and p == 1:
+                  vp = vp + 1
+              elif v == 0 and p == 1:
+                  fp = fp + 1
+              elif v == 1 and p == 0:
+                  fn = fn + 1
+              else:
+                  vn = vn + 1
+          return (vp, fp, fn, vn)
+    indice: { fr: 'Quatre compteurs et un `if / elif / else` sur le couple `(v, p)` à chaque tour de boucle.', en: 'Four counters and an `if / elif / else` on the pair `(v, p)` at each loop turn.' }
+    explication: { fr: 'Attention à l’ordre du quadruplet : `(vp, fp, fn, vn)`, comme dans la plupart des bibliothèques.', en: 'Mind the order of the quadruple: `(vp, fp, fn, vn)`, as in most libraries.' }
+  - id: d_pr
+    type: idee
+    fr: 'La **précision** $\dfrac{VP}{VP+FP}$ dit si un « oui » est fiable. Le **rappel** $\dfrac{VP}{VP+FN}$ dit si on a trouvé tous les « oui ».'
+    en: '**Precision** $\dfrac{TP}{TP+FP}$ says whether a “yes” is reliable. **Recall** $\dfrac{TP}{TP+FN}$ says whether we found all the “yes”.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Avec VP=2, FP=1, FN=1', en: 'With TP=2, FP=1, FN=1' }, { fr: 'Calcul', en: 'Computation' }, { fr: 'Valeur', en: 'Value' }]
+      cellules:
+        - [{ fr: 'précision', en: 'precision' }, '$\frac{2}{2+1}$', '$\frac23$']
+        - [{ fr: 'rappel', en: 'recall' }, '$\frac{2}{2+1}$', '$\frac23$']
+        - [{ fr: 'exactitude (VN=4)', en: 'accuracy (TN=4)' }, '$\frac{2+4}{8}$', { fr: '$\frac34$', en: '$\frac34$', ton: ok }]
+      legende: { fr: 'L’exactitude compte aussi les vrais négatifs, qui sont nombreux et faciles : elle flatte le modèle.', en: 'Accuracy also counts true negatives, which are numerous and easy: it flatters the model.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un détecteur trouve 8 vrais spams, en rate 2, et lance 4 fausses alertes. Quel est son **rappel**, en pourcentage ?'
+    en: 'A detector finds 8 real spams, misses 2, and raises 4 false alarms. What is its **recall**, as a percentage?'
+    reponses: ['80']
+    verif: 'print(round(8 / (8 + 2) * 100))'
+    indice: { fr: 'Rappel = VP / (VP + FN) : les fausses alertes n’y entrent pas.', en: 'Recall = TP / (TP + FN): false alarms do not enter.' }
+    explication: { fr: '$8/(8+2)=0{,}8$, soit $80\,\%$. Sa précision serait $8/12\approx67\,\%$.', en: '$8/(8+2)=0.8$, i.e. $80\,\%$. Its precision would be $8/12\approx67\,\%$.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `precision_rappel(vp, fp, fn)`** : renvoie le couple `(precision, rappel)`. Si un dénominateur vaut 0, la valeur correspondante est `0.0`.'
+    en: '**Write `precision_rappel(vp, fp, fn)`**: return the pair `(precision, recall)`. If a denominator is 0, the corresponding value is `0.0`.'
+    depart: |
+      # écris ta fonction precision_rappel ici
+    tests: |
+      p, r = precision_rappel(2, 1, 1)
+      assert abs(p - 2 / 3) < 1e-12 and abs(r - 2 / 3) < 1e-12
+      assert precision_rappel(8, 4, 2) == (8 / 12, 0.8)
+      assert precision_rappel(0, 0, 0) == (0.0, 0.0)
+      assert precision_rappel(0, 3, 0) == (0.0, 0.0)
+    solutionCode: |
+      def precision_rappel(vp, fp, fn):
+          precision = vp / (vp + fp) if vp + fp > 0 else 0.0
+          rappel = vp / (vp + fn) if vp + fn > 0 else 0.0
+          return (precision, rappel)
+    indice: { fr: 'Pour chacun, `valeur if dénominateur > 0 else 0.0`.', en: 'For each one, `value if denominator > 0 else 0.0`.' }
+    explication: { fr: 'Un modèle qui ne dit jamais « oui » n’a pas de précision définie : on convient de `0.0` plutôt que de planter.', en: 'A model that never says “yes” has no defined precision: we agree on `0.0` rather than crash.' }
+  - id: d_f1
+    type: idee
+    fr: 'Pour résumer précision $P$ et rappel $R$ en un nombre, on utilise leur **moyenne harmonique**, le score $F_1=\dfrac{2PR}{P+R}$. Elle est basse si l’un des deux est bas : on ne peut pas tricher en excellant sur un seul.'
+    en: 'To summarise precision $P$ and recall $R$ in one number, we use their **harmonic mean**, the score $F_1=\dfrac{2PR}{P+R}$. It is low if either is low: you cannot cheat by excelling at only one.'
+    figure:
+      kind: tableau
+      entetes: ['$P$', '$R$', '$F_1$']
+      cellules:
+        - ['$0{,}9$', '$0{,}9$', '$0{,}9$']
+        - ['$1$', '$0{,}1$', { fr: '$0{,}18$ (la moyenne simple dirait $0{,}55$)', en: '$0.18$ (the simple mean would say $0.55$)', ton: bad }]
+        - ['$0{,}5$', '$0{,}5$', '$0{,}5$']
+      legende: { fr: 'Un modèle qui ne trouve presque rien mais ne se trompe jamais ($P=1$, $R=0{,}1$) a un $F_1$ très bas.', en: 'A model that finds almost nothing but is never wrong ($P=1$, $R=0.1$) has a very low $F_1$.' }
+  - id: d_seuil
+    type: idee
+    fr: 'Un classifieur donne une probabilité ; le **seuil** décide à partir de quand on répond « oui ». Baisser le seuil trouve plus de vrais « oui » (le rappel monte) mais lance plus de fausses alertes (la précision baisse).'
+    en: 'A classifier gives a probability; the **threshold** decides from when we answer “yes”. Lowering the threshold finds more true “yes” (recall rises) but raises more false alarms (precision drops).'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Probabilités `0.9, 0.8, 0.6, 0.4, 0.3, 0.1`', en: 'Probabilities `0.9, 0.8, 0.6, 0.4, 0.3, 0.1`' }, { fr: 'Précision', en: 'Precision' }, { fr: 'Rappel', en: 'Recall' }]
+      cellules:
+        - [{ fr: 'seuil $0{,}7$', en: 'threshold $0.7$' }, '$1$', '$\frac23$']
+        - [{ fr: 'seuil $0{,}5$', en: 'threshold $0.5$' }, '$\frac23$', '$\frac23$']
+        - [{ fr: 'seuil $0{,}35$', en: 'threshold $0.35$' }, '$\frac34$', { fr: '$1$', en: '$1$', ton: ok }]
+      legende: { fr: 'Vraies réponses : `1, 1, 0, 1, 0, 0`. Le bon seuil dépend du coût d’un oubli par rapport à une fausse alerte.', en: 'True answers: `1, 1, 0, 1, 0, 0`. The right threshold depends on the cost of a miss versus a false alarm.' }
+  - id: c7
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `au_seuil(probas, seuil)`** : la liste des prédictions (`1` si la probabilité est **supérieure ou égale** au seuil, sinon `0`).'
+    en: '**Write `au_seuil(probas, seuil)`**: the list of predictions (`1` if the probability is **greater than or equal to** the threshold, otherwise `0`).'
+    depart: |
+      # écris ta fonction au_seuil ici
+    tests: |
+      assert au_seuil([0.9, 0.8, 0.6, 0.4, 0.3, 0.1], 0.5) == [1, 1, 1, 0, 0, 0]
+      assert au_seuil([0.9, 0.8, 0.6, 0.4, 0.3, 0.1], 0.7) == [1, 1, 0, 0, 0, 0]
+      assert au_seuil([0.5], 0.5) == [1]
+      assert au_seuil([], 0.5) == []
+    solutionCode: |
+      def au_seuil(probas, seuil):
+          return [1 if p >= seuil else 0 for p in probas]
+    indice: { fr: 'Une liste construite avec `1 if p >= seuil else 0` pour chaque `p`.', en: 'A list built with `1 if p >= seuil else 0` for each `p`.' }
+    explication: { fr: 'On retrouve la règle de décision de `predire` du niveau 9.3, avec un seuil réglable.', en: 'We find the decision rule of `predire` from level 9.3, with an adjustable threshold.' }
+  - id: d_incert
+    type: idee
+    fr: 'Une mesure sur $n$ exemples est **incertaine**. Pour une exactitude $p$, une marge approchée à $95\,\%$ est $1{,}96\sqrt{\dfrac{p(1-p)}{n}}$ (niveau 7.2). Avec peu d’exemples, deux modèles proches ne se distinguent pas.'
+    en: 'A measure on $n$ examples is **uncertain**. For an accuracy $p$, an approximate $95\,\%$ margin is $1.96\sqrt{\dfrac{p(1-p)}{n}}$ (level 7.2). With few examples, two close models cannot be told apart.'
+    exemple: { fr: 'Exactitude $0{,}9$ : sur $n=100$ exemples, la marge est $\pm0{,}059$ ; sur $n=1000$, $\pm0{,}019$. Comparer $0{,}90$ et $0{,}92$ sur 100 exemples n’a aucun sens.', en: 'Accuracy $0.9$: on $n=100$ examples, the margin is $\pm0.059$; on $n=1000$, $\pm0.019$. Comparing $0.90$ and $0.92$ on 100 examples is meaningless.' }
+  - id: d_p_acc
+    type: piege
+    fr: 'Ne donne jamais l’**exactitude seule** quand une classe est rare. Donne la matrice de confusion, la précision et le rappel, **et** la référence naïve (toujours la classe la plus fréquente, niveau 8.5).'
+    en: 'Never report **accuracy alone** when a class is rare. Give the confusion matrix, precision and recall, **and** the naive baseline (always the most frequent class, level 8.5).'
+  - id: c8
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `rapport(vrais, predits)`** : un dictionnaire avec les clés `"exactitude"`, `"precision"`, `"rappel"` et `"f1"`. Utilise `0.0` quand un dénominateur est nul.'
+    en: 'Challenge. **Write `rapport(vrais, predits)`**: a dictionary with the keys `"exactitude"`, `"precision"`, `"rappel"` and `"f1"`. Use `0.0` when a denominator is zero.'
+    depart: |
+      # écris ta fonction rapport ici
+    tests: |
+      r = rapport([1, 1, 1, 0, 0, 0, 0, 0], [1, 1, 0, 1, 0, 0, 0, 0])
+      assert abs(r["exactitude"] - 0.75) < 1e-12
+      assert abs(r["precision"] - 2 / 3) < 1e-12
+      assert abs(r["rappel"] - 2 / 3) < 1e-12
+      assert abs(r["f1"] - 2 / 3) < 1e-12
+      z = rapport([0, 0, 0], [0, 0, 0])
+      assert z == {"exactitude": 1.0, "precision": 0.0, "rappel": 0.0, "f1": 0.0}
+    solutionCode: |
+      def rapport(vrais, predits):
+          vp = fp = fn = vn = 0
+          for v, p in zip(vrais, predits):
+              if v == 1 and p == 1:
+                  vp += 1
+              elif v == 0 and p == 1:
+                  fp += 1
+              elif v == 1 and p == 0:
+                  fn += 1
+              else:
+                  vn += 1
+          total = vp + fp + fn + vn
+          precision = vp / (vp + fp) if vp + fp > 0 else 0.0
+          rappel = vp / (vp + fn) if vp + fn > 0 else 0.0
+          f1 = 2 * precision * rappel / (precision + rappel) if precision + rappel > 0 else 0.0
+          return {"exactitude": (vp + vn) / total, "precision": precision, "rappel": rappel, "f1": f1}
+    indice: { fr: 'Compte VP, FP, FN, VN, puis calcule les quatre mesures. Le $F_1$ est nul si précision et rappel sont nuls.', en: 'Count TP, FP, FN, TN, then compute the four measures. $F_1$ is zero if precision and recall are zero.' }
+    explication: { fr: 'Dans le dernier test, le modèle n’annonce jamais « oui » : exactitude parfaite (1.0) mais précision, rappel et $F_1$ nuls. C’est exactement le piège de l’exactitude seule.', en: 'In the last test, the model never announces “yes”: perfect accuracy (1.0) but zero precision, recall and $F_1$. This is exactly the trap of accuracy alone.' }
+  - id: c9
+    type: retenir
+    fr: 'Matrice de confusion : VP, FP, FN, VN. Précision = VP/(VP+FP), rappel = VP/(VP+FN), $F_1$ = leur moyenne harmonique. Le seuil les arbitre ; l’exactitude seule trompe quand une classe est rare ; une mesure a une marge d’erreur.'
+    en: 'Confusion matrix: TP, FP, FN, TN. Precision = TP/(TP+FP), recall = TP/(TP+FN), $F_1$ = their harmonic mean. The threshold arbitrates between them; accuracy alone misleads when a class is rare; a measure has a margin of error.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [scikit-learn — Métriques de classification](https://scikit-learn.org/stable/modules/model_evaluation.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [scikit-learn — Classification metrics](https://scikit-learn.org/stable/modules/model_evaluation.html); this optional reading needs a connection.

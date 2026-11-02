@@ -1,7 +1,7 @@
 # Niveau 2.boss — Le chatbot à règles (mission : une entrée mal validée). Original academik ; notions vérifiées dans le tutoriel officiel Python (chaînes, dictionnaires, fonctions).
 id: '2.boss'
 module: 2
-duree_min: 19
+duree_min: 22
 titre: { fr: 'Le chatbot à règles', en: 'The rule-based chatbot' }
 ia: { fr: 'Kintana répond à des messages simples grâce à un dictionnaire de règles, et refuse les entrées mal formées.', en: 'Kintana answers simple messages with a dictionary of rules, and rejects malformed input.' }
 sources:

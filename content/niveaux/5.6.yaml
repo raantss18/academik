@@ -1,7 +1,7 @@
 # Niveau 5.6 — Analyse 6 : exponentielle et logarithme. Original academik ; notions vérifiées dans MIT 18.01 (exponentielle, logarithme naturel, dérivées) et la documentation officielle Python (module math).
 id: '5.6'
 module: 5
-duree_min: 18
+duree_min: 15
 titre: { fr: 'Exponentielle et logarithme', en: 'Exponential and logarithm' }
 ia: { fr: 'Kintana transforme des produits en sommes avec le logarithme, pour ne plus perdre de petits nombres.', en: 'Kintana turns products into sums with the logarithm, so she stops losing small numbers.' }
 sources:
@@ -130,8 +130,8 @@ cartes:
     sortie: '0.0 -921.0'
   - id: d_ml
     type: idee
-    fr: 'C’est pourquoi l’apprentissage automatique travaille presque toujours avec des **logarithmes de probabilités** : on additionne au lieu de multiplier. On l’a déjà vu avec l’entropie (niveau 6.5), et on le retrouvera au module 9.'
-    en: 'This is why machine learning almost always works with **logarithms of probabilities**: we add instead of multiplying. We have already seen it with entropy (level 6.5), and we will find it again in module 9.'
+    fr: 'C’est pourquoi l’apprentissage automatique travaille presque toujours avec des **logarithmes de probabilités** : on additionne au lieu de multiplier. On le verra avec l’entropie (niveau 6.5), puis on le retrouvera au module 9.'
+    en: 'This is why machine learning almost always works with **logarithms of probabilities**: we add instead of multiplying. We will see it with entropy (level 6.5), then find it again in module 9.'
     exemple: { fr: 'Comparer deux modèles revient à comparer leurs sommes de logarithmes : la plus grande (la moins négative) correspond au modèle le plus probable.', en: 'Comparing two models comes down to comparing their sums of logarithms: the largest (the least negative) corresponds to the most probable model.' }
   - id: c6
     type: code

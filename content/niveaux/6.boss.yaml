@@ -1,6 +1,6 @@
 id: 6.boss
 module: 6
-duree_min: 18
+duree_min: 11
 titre:
   fr: Le modèle bigramme
   en: The bigram model
@@ -289,6 +289,10 @@ cartes:
       - 1/2
     defi: true
     id: c11
+  - id: d_lien
+    type: idee
+    fr: 'Tu as prédit le mot suivant avec des comptages. Le même schéma (compter, normaliser, mesurer) deviendra un classifieur au niveau 9.3.'
+    en: 'You predicted the next word with counts. The same pattern (count, normalise, measure) will become a classifier in level 9.3.'
   - type: retenir
     fr: Kintana compte les voisins et prédit le successeur le plus probable ; son contexte se limite au mot précédent.
     en: Kintana counts neighbors and predicts the most likely successor; its context is limited to the previous word.

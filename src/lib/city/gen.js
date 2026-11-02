@@ -86,6 +86,15 @@ const THEMES = [
     kinds: { hall: 3, house: 3, tower: 1.5, shop: 1 }, count: 24, align: .8,
     props: { lamp: 6, person: 3, crate: 4, car: 1 },
     lm: ['hall', 'clock', 'tower', 'hall', 'house'], boss: 'dome' },
+  { place: 'Le Laboratoire', blurb: 'Éprouvettes, balances et tableaux noirs : on y règle, on mesure, on compare.', path: 1, smooth: true,
+    top: '#3a4a55', cliff: '#445562', lip: '#4f7a6a', road: '#2c3a46', roadHi: '#bfe3e0', dash: true, night: '#0c1b24',
+    patches: ['#456a6a', '#355058', '#4a6a55'],
+    walls: ['#dfe9ea', '#c4d6d9', '#a9c3c7', '#e8eef0', '#9fb7bd'], roofs: ['#3f6f7a', '#2f5a66', '#4a7a85'],
+    roofW: { flat: 4, hip: 2, gable: 1 }, win: ['#cfeeff', '#ffe9a8', '#b9f5ee'], leaf: ['#2f6b50', '#3f8a65', '#5aa57a'],
+    trees: { round: 1, conifer: 2, bush: 2 }, nTrees: 18,
+    kinds: { hall: 2, tower: 2, house: 2, dome: 1.5 }, count: 24, align: .85,
+    props: { lamp: 7, person: 3, car: 2, crate: 3 },
+    lm: ['dome', 'tower', 'hall', 'datacenter', 'tower'], boss: 'lighthouse' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

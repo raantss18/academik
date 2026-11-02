@@ -1,7 +1,7 @@
 # Niveau 1.4 — Le terminal 4 : tuyaux. Original academik ; notions vérifiées dans le manuel GNU Coreutils (wc, sort, uniq, head, tail), le manuel de grep et le manuel de Bash (pipelines).
 id: '1.4'
 module: 1
-duree_min: 17
+duree_min: 15
 titre: { fr: 'Tuyaux', en: 'Pipes' }
 ia: { fr: 'Kintana enchaîne de petites commandes pour trier, compter et filtrer ses fichiers.', en: 'Kintana chains small commands to sort, count and filter her files.' }
 sources:

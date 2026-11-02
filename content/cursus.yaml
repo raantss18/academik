@@ -90,3 +90,13 @@ modules:
       - { id: "8.4", titre: { fr: "Voir les données" } }
       - { id: "8.5", titre: { fr: "Entraîner et tester" } }
       - { id: "8.boss", boss: true, titre: { fr: "La fuite d’information" } }
+  - id: 9
+    titre: { fr: "Apprentissage automatique", en: "Machine learning" }
+    niveaux:
+      - { id: "9.1", titre: { fr: "Ajuster une droite" } }
+      - { id: "9.2", titre: { fr: "Biais et variance" } }
+      - { id: "9.3", titre: { fr: "Classer" } }
+      - { id: "9.4", titre: { fr: "Mesurer une classification" } }
+      - { id: "9.5", titre: { fr: "Régularisation et validation croisée" } }
+      - { id: "9.6", titre: { fr: "Arbres de décision" } }
+      - { id: "9.boss", boss: true, titre: { fr: "Classer une demande" } }

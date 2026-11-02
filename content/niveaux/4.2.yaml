@@ -1,6 +1,6 @@
 id: '4.2'
 module: 4
-duree_min: 17
+duree_min: 10
 titre: { fr: 'Produit scalaire et norme', en: 'Dot product and norm' }
 ia: { fr: 'Kintana compare les directions des vecteurs de textes grâce au cosinus.', en: 'Kintana compares text vector directions using cosine similarity.' }
 sources:

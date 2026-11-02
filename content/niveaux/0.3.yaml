@@ -1,6 +1,6 @@
 id: '0.3'
 module: 0
-duree_min: 18
+duree_min: 10
 titre: { fr: 'Récurrence', en: 'Mathematical induction' }
 ia: { fr: 'Kintana justifie une règle qui reste vraie à chaque étape de traitement.', en: 'Kintana justifies a rule that remains true at every processing step.' }
 sources:
@@ -174,6 +174,10 @@ cartes:
         - [{ fr: 'Conclusion', en: 'Conclusion' }, { fr: '$P(n)$ vraie pour tout $n\geq n_0$', en: '$P(n)$ true for every $n\geq n_0$', ton: ok }]
       legende: { fr: 'Les trois lignes sont obligatoires dans une rédaction.', en: 'All three rows are required in a written proof.' }
 
+  - id: d_lien
+    type: idee
+    fr: 'La récurrence répète un même pas à l’infini. Tu retrouveras cette idée dans les boucles (niveau 2.3) puis dans la récursivité (niveau 3.6).'
+    en: 'Induction repeats the same step forever. You will find this idea again in loops (level 2.3) then in recursion (level 3.6).'
   - id: d_retenir
     type: retenir
     fr: Kintana justifie une règle qui reste vraie à chaque étape de traitement.

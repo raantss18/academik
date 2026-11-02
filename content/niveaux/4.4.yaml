@@ -1,6 +1,6 @@
 id: '4.4'
 module: 4
-duree_min: 17
+duree_min: 9
 titre: { fr: 'Systèmes linéaires', en: 'Linear systems' }
 ia: { fr: 'Kintana retrouve des poids à partir de scores et détecte des contraintes incompatibles.', en: 'Kintana recovers weights from scores and detects incompatible constraints.' }
 sources:

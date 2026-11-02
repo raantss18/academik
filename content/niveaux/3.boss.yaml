@@ -1,6 +1,6 @@
 id: '3.boss'
 module: 3
-duree_min: 20
+duree_min: 13
 titre: { fr: 'L’index inversé', en: 'The inverted index' }
 ia: { fr: 'Kintana sait retrouver un document vite : index inversé, tri, recherche.', en: 'Kintana can find a document quickly: inverted indexing, sorting, and searching.' }
 sources:
@@ -312,6 +312,10 @@ cartes:
     verif: "from collections import deque\ndocs = {1: 'riz eau riz', 2: 'eau sel', 3: 'riz sel', 4: 'eau riz sel'}\nindex = {}\nfor doc, text in docs.items():\n    for word in text.split():\n        index.setdefault(word, set()).add(doc)\ng = {1: [2, 3], 2: [4], 3: [4], 4: [1]}\nd = {1: 0}; q = deque([1])\nwhile q:\n    u = q.popleft()\n    for v in g[u]:\n        if v not in d:\n            d[v] = d[u]+1; q.append(v)\nresult = sorted(index['riz'] & index['sel'] & {v for v in d if d[v] <= 1})\nassert len(result) == 1\nprint(result[0])"
     indice: { fr: 'Construis séparément l’ensemble des réponses textuelles et celui des documents proches, puis intersecte-les.', en: 'Build the set of text matches and the set of nearby documents separately, then intersect them.' }
     explication: { fr: 'Le texte donne $\{3,4\}$ ; la distance donne $\{1,2,3\}$ ; leur intersection est $\{3\}$.', en: 'The text gives $\{3,4\}$; distance gives $\{1,2,3\}$; their intersection is $\{3\}$.' }
+  - id: d_lien
+    type: idee
+    fr: 'Tu as combiné hachage, tri, dichotomie et parcours de graphe. La boîte à outils s’enrichira avec la récursivité (niveau 3.6) et Dijkstra (niveau 3.8).'
+    en: 'You combined hashing, sorting, binary search and graph traversal. The toolbox will grow with recursion (level 3.6) and Dijkstra (level 3.8).'
   - id: c12
     type: retenir
     fr: 'Kintana sait retrouver un document vite. Index inversé pour les mots, tri et dichotomie pour les listes, BFS pour les liens ; la complexité estime le coût.'

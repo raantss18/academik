@@ -1,7 +1,7 @@
 # Niveau 5.7 — Analyse 7 : règle de chaîne. Original academik ; notions vérifiées dans MIT 18.01 (règle de chaîne) et MIT 18.02 (dérivées de fonctions composées).
 id: '5.7'
 module: 5
-duree_min: 18
+duree_min: 15
 titre: { fr: 'Règle de chaîne', en: 'Chain rule' }
 ia: { fr: 'Kintana sait dériver une fonction construite en plusieurs étapes, ce qui permettra d’apprendre à travers plusieurs couches.', en: 'Kintana can differentiate a function built in several steps, which will allow learning through several layers.' }
 sources:

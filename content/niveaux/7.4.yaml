@@ -1,12 +1,12 @@
 id: "7.4"
 module: 7
-duree_min: 17
+duree_min: 10
 titre:
   fr: Bootstrap
   en: Bootstrap
 ia:
-  fr: Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs.
-  en: Kintana can distinguish a real signal from chance and reject false positives.
+  fr: "Kintana mesure la variabilité de son estimation en rééchantillonnant ses données (bootstrap)."
+  en: "Kintana measures the variability of her estimate by resampling her data (bootstrap)."
 sources:
   - titre: SciPy — scipy.stats.bootstrap, documentation actuelle
     url: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html
@@ -299,6 +299,10 @@ cartes:
       en: Each draw avoids $5$ with probability $3/4$. Draws are independent conditional on the sample, so $(3/4)^4=81/256$.
     defi: true
     id: c11
+  - id: d_lien
+    type: idee
+    fr: 'Le bootstrap remplace une formule d’intervalle (niveau 7.2) par une simulation : utile quand la formule est difficile à écrire.'
+    en: 'The bootstrap replaces an interval formula (level 7.2) with a simulation: useful when the formula is hard to write.'
   - type: retenir
     fr: "À retenir : Kintana rééchantillonne avec remise pour explorer la variabilité, en conservant les doublons et sans confondre simulations supplémentaires et nouvelles données."
     en: "Remember: Kintana resamples with replacement to explore variability, preserves duplicates, and distinguishes additional simulations from new data."

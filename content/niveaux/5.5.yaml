@@ -1,6 +1,6 @@
 id: '5.5'
 module: 5
-duree_min: 17
+duree_min: 9
 titre: { fr: 'Descente de gradient', en: 'Gradient descent' }
 ia: { fr: 'Kintana sait apprendre ses propres paramètres par descente de gradient.', en: 'Kintana can learn its own parameters through gradient descent.' }
 sources:
