@@ -9,7 +9,7 @@
 4. **Tester l'APK sur l'émulateur par-dessus la version précédente** : la progression doit être conservée.
 5. `node scripts/release.mjs` : écrit et **signe** `public/app/release.json(.sig)` (clé : `release-keys/update.key`).
 6. Release GitHub **avant** de fusionner (les liens de `release.json` doivent exister) :
-   `gh release create vX.Y.Z release-out/* --title "academik X.Y.Z" --notes-file …` (marquée *Latest*), puis PR + fusion : le site publie `release.json`.
+   `bash scripts/publish-release.sh` (étiquette, fiche lisible générée depuis `CHANGELOG.md` par `scripts/release-notes.mjs`, fichiers versionnés **et** noms stables `academik.apk` / `academik-x86_64.AppImage` pour le lien « télécharger » qui ne change jamais ; marquée *Latest*), puis PR + fusion : le site publie `release.json`.
 7. Le **numéro de version n'est jamais affiché sur le site** (seulement dans l'APK/AppImage et sur GitHub).
 
 Clés (jamais dans Git, à sauvegarder) : `release-keys/academik.jks` (signature Android), `release-keys/update.key` (signature de `release.json`).

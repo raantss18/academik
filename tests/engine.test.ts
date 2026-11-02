@@ -34,6 +34,7 @@ describe('déblocage à 50 %', () => {
     expect(unlockedLevels(order, { '0.1': .49 }).has('0.2')).toBe(false);
     expect(unlockedLevels(order, { '0.1': .5 }).has('0.2')).toBe(true);
   });
+  it('le début de chaque module est toujours ouvert (starts)', () => { const o = unlockedLevels(order, {}, .5, new Set(), new Set(), new Set(['0.1', '0.3'])); expect(o.has('0.3')).toBe(true); expect(o.has('0.2')).toBe(false); });
   it('ne saute pas de niveau', () => expect(unlockedLevels(order, { '0.1': 1 }).has('0.3')).toBe(false));
   it('le seuil est configurable', () => expect(unlockedLevels(order, { '0.1': .6 }, .7).has('0.2')).toBe(false));
   it('un test de placement ouvre le niveau', () => expect(unlockedLevels(order, {}, .5, new Set(['0.3'])).has('0.3')).toBe(true));

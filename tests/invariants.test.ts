@@ -201,4 +201,10 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(md('[x](javascript:alert(1))')).not.toContain('<a');
     expect(read('src/app.css')).toMatch(/\.callout \{ overflow-wrap: anywhere/);
   });
+  it('E23 : début de chaque module ouvert, à propos avec contact et lien de téléchargement, fiche de release générée', () => {
+    expect(read('src/ui/Map.svelte')).toContain('new Set(content.modules.map(m => m.niveaux[0]?.id))');
+    const about = read('src/ui/Consignes.svelte');
+    expect(about).toContain('https://wa.me/261334383882'); expect(about).toContain('mailto:antsa.raniriamanjaka@univ-antananarivo.mg'); expect(about).toContain('github.com/raantss18/academik/releases/latest');
+    expect(read('scripts/publish-release.sh')).toContain('release-notes.mjs'); expect(read('scripts/release-notes.mjs')).toContain('CHANGELOG.md');
+  });
 });

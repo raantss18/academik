@@ -15,7 +15,7 @@
   let { onplay, onrules, onreview }: { onplay: (id: string) => void; onrules: () => void; onreview: () => void } = $props();
 
   const scores = $derived(Object.fromEntries(content.order.map(id => [id, content.levels[id] ? levelScore(scoredItems(content.levels[id]), progress.best(id)) : 0])));
-  const open = $derived(unlockedLevels(content.order, scores, undefined, undefined, content.empty));
+  const open = $derived(unlockedLevels(content.order, scores, undefined, undefined, content.empty, new Set(content.modules.map(m => m.niveaux[0]?.id))));
   const current = $derived(nextLevel(content.order, scores, open, id => !!content.levels[id]));
   const where = $derived(current && content.levels[current] ? resume.get(current, content.levels[current].cartes.length) : 0);
   const fr = $derived(i18n.lang === 'fr');
