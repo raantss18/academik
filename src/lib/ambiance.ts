@@ -20,6 +20,7 @@ export const AMBIANCES: Ambiance[] = [
   { nom: 'Le Quai des Horloges', nuit: { haut: '#13121c', bas: '#35344a', lueur: '#ffe0a0' }, jour: { haut: '#efeff5', bas: '#cfcee0', lueur: '#52408c' } },
   { nom: 'Le Carrefour des Neurones', nuit: { haut: '#120f2e', bas: '#2f2a66', lueur: '#d0c2ff' }, jour: { haut: '#eeeafc', bas: '#cdc4f2', lueur: '#43358f' } },
   { nom: 'L’Atelier des Tisseurs', nuit: { haut: '#1d130f', bas: '#4a2f22', lueur: '#ffd79a' }, jour: { haut: '#f8ecd9', bas: '#e6caa2', lueur: '#7a3f12' } },
+  { nom: 'Le Garage des Modèles', nuit: { haut: '#0f1a1d', bas: '#26434a', lueur: '#d6f2a0' }, jour: { haut: '#e6f1f1', bas: '#bcd5d8', lueur: '#1f5a66' } },
 ];
 
 export const ambianceDe = (module: number): Ambiance => AMBIANCES[((module % AMBIANCES.length) + AMBIANCES.length) % AMBIANCES.length];

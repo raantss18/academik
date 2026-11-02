@@ -1,0 +1,249 @@
+# Niveau 13.2 — LLM locaux 2 : budget mémoire (poids, cache KV, marge). Original academik ; notions vérifiées dans la documentation de llama.cpp (citée) et le cours LLM de Hugging Face (cité).
+id: '13.2'
+module: 13
+duree_min: 16
+titre:
+  fr: Le budget mémoire
+  en: The memory budget
+ia:
+  fr: Kintana sait calculer si un modèle tient dans la mémoire de ton appareil.
+  en: Kintana can calculate whether a model fits in your device’s memory.
+sources:
+- titre: llama.cpp — dépôt officiel (quantification, mémoire, formats GGUF)
+  url: https://github.com/ggml-org/llama.cpp
+  licence: MIT ; documentation citée
+- titre: Hugging Face — LLM Course
+  url: https://huggingface.co/learn/llm-course
+  licence: Cours en ligne ; contenu cité, texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un modèle a 7 milliards de paramètres, chacun stocké sur 2 octets (16 bits). Combien de mémoire faut-il au minimum pour seulement charger les poids ?
+  en: A model has 7 billion parameters, each stored on 2 bytes (16 bits). How much memory is needed at minimum just to load the weights?
+  choix:
+  - fr: Environ 14 Go
+    en: About 14 GB
+    juste: true
+  - fr: Environ 7 Go
+    en: About 7 GB
+  - fr: Environ 140 Go
+    en: About 140 GB
+  indice:
+    fr: Multiplie le nombre de paramètres par le nombre d’octets de chacun.
+    en: Multiply the number of parameters by the number of bytes of each.
+  explication:
+    fr: $7\times10^9\times2$ octets $=14\times10^9$ octets, soit **14 Go**. C’est le point de départ de tout budget mémoire.
+    en: $7\times10^9\times2$ bytes $=14\times10^9$ bytes, that is **14 GB**. This is the starting point of any memory budget.
+- id: c2
+  type: idee
+  fr: 'La mémoire des poids vaut : **nombre de paramètres × octets par paramètre**. En 32 bits un paramètre prend 4 octets, en 16 bits 2 octets, en 8 bits 1 octet, en 4 bits un demi-octet. Moins de bits, c’est moins de mémoire.'
+  en: 'Weight memory is: **number of parameters × bytes per parameter**. At 32 bits a parameter takes 4 bytes, at 16 bits 2 bytes, at 8 bits 1 byte, at 4 bits half a byte. Fewer bits means less memory.'
+  exemple:
+    fr: 'Pour 7 milliards de paramètres : 28 Go en 32 bits, 14 Go en 16 bits, 7 Go en 8 bits, 3,5 Go en 4 bits.'
+    en: 'For 7 billion parameters: 28 GB at 32 bits, 14 GB at 16 bits, 7 GB at 8 bits, 3.5 GB at 4 bits.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Précision
+      en: Precision
+    - fr: Octets
+      en: Bytes
+    - fr: 7 milliards
+      en: 7 billion
+    cellules:
+    - - 32 bits
+      - '4'
+      - 28 Go
+    - - 16 bits
+      - '2'
+      - 14 Go
+    - - 8 bits
+      - '1'
+      - 7 Go
+    - - fr: 4 bits
+        en: 4 bits
+        ton: ok
+      - fr: 0,5
+        en: '0.5'
+        ton: ok
+      - fr: 3,5 Go
+        en: 3.5 GB
+        ton: ok
+    legende:
+      fr: Chaque division par deux des bits divise la mémoire par deux.
+      en: Each halving of the bits halves the memory.
+- id: c2b
+  type: idee
+  fr: 'Les poids sont stockés dans un fichier, le plus souvent au format **GGUF** pour llama.cpp. Au lancement, ils sont chargés en mémoire : taille du fichier et mémoire utilisée sont donc du même ordre de grandeur.'
+  en: 'Weights are stored in a file, most often in **GGUF** format for llama.cpp. At launch, they are loaded into memory: file size and memory used are therefore of the same order of magnitude.'
+  exemple:
+    fr: Un fichier de 4 Go demande un peu plus de 4 Go de RAM une fois chargé, avant même le cache KV.
+    en: A 4 GB file needs a little over 4 GB of RAM once loaded, even before the KV cache.
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `memoire_go(n_params_milliards, bits)`** : la mémoire des poids en gigaoctets, soit `n_params_milliards * bits / 8` (un milliard d’octets = 1 Go).'
+  en: 'Your turn. **Write `memoire_go(n_params_milliards, bits)`**: the weight memory in gigabytes, that is `n_params_milliards * bits / 8` (a billion bytes = 1 GB).'
+  depart: |
+    # écris ta fonction memoire_go ici
+  tests: |-
+    assert memoire_go(7, 16) == 14
+    assert memoire_go(7, 4) == 3.5
+    assert memoire_go(1, 8) == 1
+    assert memoire_go(0, 16) == 0
+  solutionCode: |
+    def memoire_go(n_params_milliards, bits):
+        return n_params_milliards * bits / 8
+  indice:
+    fr: Les bits divisés par 8 donnent les octets par paramètre ; multiplie par les milliards de paramètres.
+    en: The bits divided by 8 give the bytes per parameter; multiply by the billions of parameters.
+  explication:
+    fr: 'Le milliard de paramètres et le milliard d’octets se compensent : le résultat est directement en Go.'
+    en: 'The billion parameters and the billion bytes cancel out: the result is directly in GB.'
+- id: c4
+  type: idee
+  fr: 'Les poids ne sont pas tout. Pendant la génération, le modèle garde en mémoire les clés et les valeurs de tous les tokens déjà lus : le **cache KV**. Il grandit avec la longueur du contexte : plus la conversation est longue, plus il pèse.'
+  en: 'Weights are not everything. During generation, the model keeps in memory the keys and values of all tokens already read: the **KV cache**. It grows with the context length: the longer the conversation, the heavier it gets.'
+  exemple:
+    fr: 'Pour 32 couches, 8 têtes de clés, dimension 128, 4 000 tokens, en 2 octets : environ 0,52 Go.'
+    en: 'For 32 layers, 8 key heads, dimension 128, 4,000 tokens, at 2 bytes: about 0.52 GB.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Où part la mémoire
+        en: Where the memory goes
+      noeuds:
+      - fr: poids fixes
+        en: fixed weights
+      - fr: cache KV qui grandit
+        en: growing KV cache
+      - fr: calculs temporaires
+        en: temporary computations
+      - fr: total à ne pas dépasser
+        en: total not to exceed
+        ton: ok
+    legende:
+      fr: Le cache KV est proportionnel à la longueur du contexte.
+      en: The KV cache is proportional to the context length.
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `kv_cache_go(couches, tetes_kv, dim_tete, longueur, octets=2)`** : `2 * couches * tetes_kv * dim_tete * longueur * octets`, divisé par `1e9` pour avoir des Go (le `2` compte une clé et une valeur).'
+  en: '**Write `kv_cache_go(couches, tetes_kv, dim_tete, longueur, octets=2)`**: `2 * couches * tetes_kv * dim_tete * longueur * octets`, divided by `1e9` to get GB (the `2` counts one key and one value).'
+  depart: |
+    # écris ta fonction kv_cache_go ici
+  tests: |-
+    assert abs(kv_cache_go(32, 8, 128, 4000) - 0.524288) < 1e-6
+    assert kv_cache_go(1, 1, 1, 1, 1) == 2e-9
+    assert kv_cache_go(32, 8, 128, 8000) == 2 * kv_cache_go(32, 8, 128, 4000)
+  solutionCode: |
+    def kv_cache_go(couches, tetes_kv, dim_tete, longueur, octets=2):
+        return 2 * couches * tetes_kv * dim_tete * longueur * octets / 1e9
+  indice:
+    fr: 'Une seule expression : le produit des six facteurs, puis la division par un milliard.'
+    en: 'A single expression: the product of the six factors, then the division by one billion.'
+  explication:
+    fr: 'Doubler la longueur double le cache : une conversation de 128 000 tokens peut coûter plusieurs Go de plus que les poids ne le laissent croire.'
+    en: 'Doubling the length doubles the cache: a 128,000-token conversation can cost several GB more than the weights suggest.'
+- id: c5b
+  type: idee
+  fr: Sur un appareil sans carte graphique, tout vit dans la RAM. Avec une carte graphique, on peut décharger certaines couches vers sa mémoire vidéo (VRAM), plus rapide mais plus petite. Le budget se fait alors sur les deux.
+  en: On a device without a graphics card, everything lives in RAM. With a graphics card, some layers can be offloaded to its video memory (VRAM), faster but smaller. The budget is then made on both.
+  exemple:
+    fr: Un modèle de 8 Go peut mettre 6 Go de couches en VRAM et garder 2 Go en RAM.
+    en: An 8 GB model can put 6 GB of layers in VRAM and keep 2 GB in RAM.
+- id: c6
+  type: exemple
+  titre:
+    fr: Un budget complet
+    en: A complete budget
+  lang: python
+  etapes:
+  - code: poids = 7 * 4 / 8
+    fr: 'Les poids d’un modèle de 7 milliards en 4 bits : `3.5` Go.'
+    en: 'The weights of a 7-billion model at 4 bits: `3.5` GB.'
+  - code: cache = 2 * 32 * 8 * 128 * 4000 * 2 / 1e9
+    fr: 'Le cache KV pour 4 000 tokens : environ `0.52` Go.'
+    en: 'The KV cache for 4,000 tokens: about `0.52` GB.'
+  - code: print(round(poids + cache, 2))
+    fr: Total `4.02` Go, avant la marge pour les calculs temporaires.
+    en: Total `4.02` GB, before the margin for temporary computations.
+  verif: |-
+    poids = 7 * 4 / 8
+    cache = 2 * 32 * 8 * 128 * 4000 * 2 / 1e9
+    print(round(poids + cache, 2))
+  sortie: '4.02'
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'Un modèle de 3 milliards de paramètres en 8 bits : combien de Go pour les seuls poids ?'
+  en: 'A model of 3 billion parameters at 8 bits: how many GB for the weights alone?'
+  reponses:
+  - '3'
+  verif: print(int(3 * 8 / 8))
+  indice:
+    fr: 8 bits font combien d’octets par paramètre ?
+    en: How many bytes per parameter are 8 bits?
+  explication:
+    fr: 'Un octet par paramètre : $3\times10^9$ octets $=3$ Go.'
+    en: 'One byte per parameter: $3\times10^9$ bytes $=3$ GB.'
+- id: c8
+  type: piege
+  fr: Un modèle qui « tient juste » dans la RAM ne tourne pas. Il faut de la place pour le cache KV, pour les calculs temporaires, pour le système et les autres applications. On garde une **marge** d’environ 20 % ou plus.
+  en: A model that “just fits” in RAM does not run. Room is needed for the KV cache, for temporary computations, for the system and other applications. We keep a **margin** of about 20% or more.
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `tient(n_params_milliards, bits, ram_go, marge=1.2)`** : `True` si la mémoire des poids multipliée par `marge` ne dépasse pas `ram_go`. `memoire_go` est fournie.'
+  en: 'Challenge. **Write `tient(n_params_milliards, bits, ram_go, marge=1.2)`**: `True` if the weight memory multiplied by `marge` does not exceed `ram_go`. `memoire_go` is provided.'
+  depart: |
+    def memoire_go(n_params_milliards, bits):
+        return n_params_milliards * bits / 8
+
+    # écris ta fonction tient ici
+  tests: |-
+    assert tient(7, 4, 8) is True
+    assert tient(7, 16, 16) is False
+    assert tient(7, 16, 17) is True
+    assert tient(70, 4, 32) is False
+    assert tient(7, 8, 8, marge=1.0) is True
+  solutionCode: |
+    def memoire_go(n_params_milliards, bits):
+        return n_params_milliards * bits / 8
+
+    def tient(n_params_milliards, bits, ram_go, marge=1.2):
+        return memoire_go(n_params_milliards, bits) * marge <= ram_go
+  indice:
+    fr: Compare `memoire_go(...) * marge` à `ram_go` avec `<=`.
+    en: Compare `memoire_go(...) * marge` with `ram_go` using `<=`.
+  explication:
+    fr: Un modèle de 7 milliards en 16 bits (14 Go) ne tient pas dans 16 Go avec une marge de 20 % ; en 4 bits, il tient dans 8 Go.
+    en: A 7-billion model at 16 bits (14 GB) does not fit in 16 GB with a 20% margin; at 4 bits, it fits in 8 GB.
+- id: c10
+  type: idee
+  fr: 'Pour réduire la mémoire sans changer de modèle, on baisse la précision des poids : ce sera la **quantification**, objet du niveau 13.3. Elle fait passer un modèle de 14 Go à 4 Go, au prix d’une petite perte de qualité.'
+  en: 'To reduce memory without changing model, we lower the weights’ precision: this will be **quantisation**, the subject of level 13.3. It takes a model from 14 GB to 4 GB, at the price of a small loss of quality.'
+  exemple:
+    fr: 'Les formats courants dans llama.cpp s’appellent par exemple Q8 ou Q4 : le nombre indique les bits par poids.'
+    en: 'Common formats in llama.cpp are called for example Q8 or Q4: the number indicates the bits per weight.'
+- id: c11
+  type: retenir
+  fr: Mémoire des poids = paramètres × octets par paramètre. S’y ajoutent le cache KV (proportionnel à la longueur du contexte) et une marge. Moins de bits, moins de mémoire.
+  en: Weight memory = parameters × bytes per parameter. Added to this are the KV cache (proportional to the context length) and a margin. Fewer bits, less memory.
+- id: c12
+  type: plus
+  fr: Pour approfondir, consulte [le dépôt llama.cpp](https://github.com/ggml-org/llama.cpp) ; ce site demande une connexion.
+  en: For further study, see [the llama.cpp repository](https://github.com/ggml-org/llama.cpp); this site needs a connection.
