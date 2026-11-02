@@ -1,0 +1,210 @@
+# Niveau 3.6 — Algorithmes 6 : récursivité. Original academik ; notions vérifiées dans la documentation officielle Python (définition de fonctions, limite de récursion, functools.cache) et dans Mon_livre_d_algo (récursivité, notions reprises et réécrites).
+id: '3.6'
+module: 3
+duree_min: 18
+titre: { fr: 'Récursivité', en: 'Recursion' }
+ia: { fr: 'Kintana résout un problème en le ramenant à un problème plus petit de même forme.', en: 'Kintana solves a problem by reducing it to a smaller problem of the same shape.' }
+sources:
+  - { titre: 'Python — Tutoriel, définir des fonctions', url: 'https://docs.python.org/3/tutorial/controlflow.html#defining-functions', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — sys.getrecursionlimit', url: 'https://docs.python.org/3/library/sys.html#sys.getrecursionlimit', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — functools.cache', url: 'https://docs.python.org/3/library/functools.html#functools.cache', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      def f(n):
+          if n == 0:
+              return 0
+          return n + f(n - 1)
+      print(f(3))
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      def f(n):
+          if n == 0:
+              return 0
+          return n + f(n - 1)
+      print(f(3))
+      ```
+    choix:
+      - { fr: '`3`', en: '`3`' }
+      - { fr: '`6`', en: '`6`', juste: true }
+      - { fr: '`RecursionError`', en: '`RecursionError`' }
+    verif: |-
+      def f(n):
+          if n == 0:
+              return 0
+          return n + f(n - 1)
+      print(f(3))
+    sortie: '6'
+    explication: { fr: '`f(3)` = 3 + `f(2)` = 3 + 2 + `f(1)` = 3 + 2 + 1 + `f(0)` = 6 : la fonction s’appelle elle-même.', en: '`f(3)` = 3 + `f(2)` = 3 + 2 + `f(1)` = 3 + 2 + 1 + `f(0)` = 6: the function calls itself.' }
+  - id: c2
+    type: idee
+    fr: 'Une fonction **récursive** s’appelle elle-même sur un problème **plus petit**. Elle a toujours deux parties : un **cas de base** qui s’arrête, et un **appel récursif** qui se rapproche du cas de base.'
+    en: 'A **recursive** function calls itself on a **smaller** problem. It always has two parts: a **base case** that stops, and a **recursive call** that gets closer to the base case.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: '`f(3)` descend, puis remonte', en: '`f(3)` goes down, then back up' }
+          noeuds: ['`f(3) = 3 + f(2)`', '`f(2) = 2 + f(1)`', '`f(1) = 1 + f(0)`', { fr: '`f(0) = 0` : cas de base', en: '`f(0) = 0`: base case', ton: ok }]
+      legende: { fr: 'Une fois le cas de base atteint, les résultats remontent : 0, puis 1, puis 3, puis 6.', en: 'Once the base case is reached, results go back up: 0, then 1, then 3, then 6.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'La factorielle, récursivement', en: 'The factorial, recursively' }
+    lang: python
+    etapes:
+      - { code: 'def fact(n):', fr: 'On définit `fact`, qui doit renvoyer $n!=1\times2\times\dots\times n$.', en: 'We define `fact`, which must return $n!=1\times2\times\dots\times n$.' }
+      - { code: '    if n <= 1:\n        return 1', fr: 'Cas de base : `fact(0)` et `fact(1)` valent 1. Rien d’autre à calculer.', en: 'Base case: `fact(0)` and `fact(1)` are 1. Nothing else to compute.' }
+      - { code: '    return n * fact(n - 1)', fr: 'Cas général : $n!=n\times(n-1)!$. Le problème est plus petit d’un cran.', en: 'General case: $n!=n\times(n-1)!$. The problem is smaller by one step.' }
+      - { code: 'print(fact(4))', fr: '`fact(4)` = 4 × 3 × 2 × 1 = 24, calculé en remontant les appels.', en: '`fact(4)` = 4 × 3 × 2 × 1 = 24, computed by going back up the calls.' }
+    verif: |-
+      def fact(n):
+          if n <= 1:
+              return 1
+          return n * fact(n - 1)
+      print(fact(4))
+    sortie: '24'
+  - id: d_pile
+    type: idee
+    fr: 'Chaque appel **attend** le résultat du suivant : Python garde la liste des appels en attente, la **pile d’appels**. Elle grandit à la descente et se vide à la remontée.'
+    en: 'Each call **waits** for the result of the next: Python keeps the list of pending calls, the **call stack**. It grows on the way down and empties on the way up.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Moment (`fact(3)`)', en: 'Moment (`fact(3)`)' }, { fr: 'Appels en attente', en: 'Pending calls' }]
+      cellules:
+        - [{ fr: 'au départ', en: 'at the start' }, '`fact(3)`']
+        - [{ fr: 'après un appel', en: 'after one call' }, '`fact(3)`, `fact(2)`']
+        - [{ fr: 'au plus profond', en: 'at the deepest' }, { fr: '`fact(3)`, `fact(2)`, `fact(1)`', en: '`fact(3)`, `fact(2)`, `fact(1)`', ton: bad }]
+        - [{ fr: 'à la fin', en: 'at the end' }, { fr: 'vide', en: 'empty', ton: ok }]
+      legende: { fr: 'Plus la récursion est profonde, plus la pile est haute et consomme de mémoire.', en: 'The deeper the recursion, the taller the stack and the more memory it uses.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `puissance(a, n)`** récursive : elle renvoie $a^n$ pour $n\geq0$, avec $a^0=1$ et $a^n=a\times a^{n-1}$. N’utilise pas l’opérateur `**`.'
+    en: 'Your turn. **Write a recursive `puissance(a, n)`**: it returns $a^n$ for $n\geq0$, with $a^0=1$ and $a^n=a\times a^{n-1}$. Do not use the `**` operator.'
+    depart: |
+      # écris ta fonction puissance ici
+    tests: |
+      assert puissance(2, 10) == 1024
+      assert puissance(5, 0) == 1
+      assert puissance(3, 1) == 3
+      assert puissance(-2, 3) == -8
+    solutionCode: |
+      def puissance(a, n):
+          if n == 0:
+              return 1
+          return a * puissance(a, n - 1)
+    indice: { fr: 'Cas de base : `n == 0` renvoie 1. Sinon `a` multiplié par la puissance d’un cran plus petit.', en: 'Base case: `n == 0` returns 1. Otherwise `a` multiplied by the power one step smaller.' }
+    explication: { fr: 'L’exposant diminue de 1 à chaque appel et finit par atteindre le cas de base 0.', en: 'The exponent decreases by 1 at each call and ends up reaching the base case 0.' }
+  - id: d_base
+    type: idee
+    fr: 'Sans cas de base, ou si l’appel ne se **rapproche pas** de lui, la récursion ne s’arrête jamais. Python coupe alors au bout d’environ mille appels avec l’erreur `RecursionError`.'
+    en: 'Without a base case, or if the call does not **get closer** to it, the recursion never stops. Python then cuts it off after about a thousand calls with the error `RecursionError`.'
+    exemple: { fr: '`def f(n): return f(n - 1)` n’a aucun cas de base : `f(3)` appelle `f(2)`, `f(1)`, `f(0)`, `f(-1)`… sans fin.', en: '`def f(n): return f(n - 1)` has no base case: `f(3)` calls `f(2)`, `f(1)`, `f(0)`, `f(-1)`… endlessly.' }
+  - id: d_p_base
+    type: piege
+    fr: 'Vérifie toujours que chaque appel **réduit** vraiment le problème. Écrire `f(n + 1)` au lieu de `f(n - 1)` éloigne du cas de base : la récursion ne finit jamais.'
+    en: 'Always check that each call really **shrinks** the problem. Writing `f(n + 1)` instead of `f(n - 1)` moves away from the base case: the recursion never ends.'
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Combien d’appels à `f` (y compris le premier) exécute `f(5)` pour la fonction `f(n) = 0 si n == 0, sinon n + f(n - 1)` ?'
+    en: 'How many calls to `f` (including the first) does `f(5)` run for the function `f(n) = 0 if n == 0, else n + f(n - 1)`?'
+    reponses: ['6']
+    verif: |-
+      def appels(n):
+          return 1 if n == 0 else 1 + appels(n - 1)
+      print(appels(5))
+    indice: { fr: 'Les appels portent sur 5, 4, 3, 2, 1 et 0.', en: 'The calls are on 5, 4, 3, 2, 1 and 0.' }
+    explication: { fr: 'Six appels : un par valeur de 5 à 0, le dernier étant le cas de base.', en: 'Six calls: one per value from 5 down to 0, the last being the base case.' }
+  - id: d_fib
+    type: idee
+    fr: 'Quand une fonction s’appelle **deux fois** (Fibonacci : $F(n)=F(n-1)+F(n-2)$), les mêmes calculs sont refaits très souvent. Le nombre d’appels explose.'
+    en: 'When a function calls itself **twice** (Fibonacci: $F(n)=F(n-1)+F(n-2)$), the same computations are redone very often. The number of calls explodes.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Valeur de $n$', en: 'Value of $n$' }, { fr: 'Appels pour calculer $F(n)$', en: 'Calls to compute $F(n)$' }]
+      cellules:
+        - ['$1$', '$1$']
+        - ['$3$', '$5$']
+        - ['$5$', '$15$']
+        - ['$6$', { fr: '$25$', en: '$25$', ton: bad }]
+      legende: { fr: 'Le nombre d’appels grandit comme une puissance : chaque cran de plus presque le multiplie par 1,6.', en: 'The number of calls grows like a power: each extra step multiplies it by about 1.6.' }
+  - id: d_memo
+    type: exemple
+    titre: { fr: 'Se souvenir pour ne pas recalculer', en: 'Remembering so as not to recompute' }
+    lang: python
+    etapes:
+      - { code: 'memo = {}', fr: 'Un dictionnaire garde les résultats déjà calculés : c’est la **mémoïsation**.', en: 'A dictionary keeps results already computed: this is **memoisation**.' }
+      - { code: 'def fib(n):\n    if n < 2:\n        return n', fr: 'Cas de base : $F(0)=0$ et $F(1)=1$.', en: 'Base case: $F(0)=0$ and $F(1)=1$.' }
+      - { code: '    if n not in memo:\n        memo[n] = fib(n - 1) + fib(n - 2)\n    return memo[n]', fr: 'On ne calcule `n` que s’il n’est pas déjà dans `memo`. Chaque valeur est donc calculée une seule fois.', en: 'We only compute `n` if it is not already in `memo`. Each value is thus computed only once.' }
+      - { code: 'print(fib(30))', fr: '`fib(30)` répond tout de suite : `832040`. Sans mémoire, cela ferait plus d’un million d’appels.', en: '`fib(30)` answers at once: `832040`. Without memory, that would be over a million calls.' }
+    verif: |-
+      memo = {}
+      def fib(n):
+          if n < 2:
+              return n
+          if n not in memo:
+              memo[n] = fib(n - 1) + fib(n - 2)
+          return memo[n]
+      print(fib(30))
+    sortie: '832040'
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `pgcd(a, b)`** récursive (algorithme d’Euclide) : si `b` vaut 0, le résultat est `a` ; sinon c’est `pgcd(b, a % b)`.'
+    en: '**Write a recursive `pgcd(a, b)`** (Euclid’s algorithm): if `b` is 0, the result is `a`; otherwise it is `pgcd(b, a % b)`.'
+    depart: |
+      # écris ta fonction pgcd ici
+    tests: |
+      assert pgcd(12, 18) == 6
+      assert pgcd(7, 13) == 1
+      assert pgcd(10, 0) == 10
+      assert pgcd(100, 75) == 25
+    solutionCode: |
+      def pgcd(a, b):
+          if b == 0:
+              return a
+          return pgcd(b, a % b)
+    indice: { fr: 'Le cas de base est donné dans l’énoncé ; l’appel récursif aussi : recopie-les sous forme de `if` et de `return`.', en: 'The base case is given in the statement; so is the recursive call: write them as an `if` and a `return`.' }
+    explication: { fr: 'Le reste `a % b` est plus petit que `b` : le second argument diminue à chaque appel jusqu’à 0.', en: 'The remainder `a % b` is smaller than `b`: the second argument decreases at each call down to 0.' }
+  - id: d_lien
+    type: idee
+    fr: 'Tu connais déjà une idée récursive : le **tri fusion** (niveau 3.2) coupe la liste en deux, trie chaque moitié **avec la même méthode**, puis fusionne. La dichotomie (3.3) réduit aussi le problème de moitié.'
+    en: 'You already know a recursive idea: **merge sort** (level 3.2) splits the list in two, sorts each half **with the same method**, then merges. Binary search (3.3) also halves the problem.'
+    exemple: { fr: 'Cas de base du tri fusion : une liste d’un élément est déjà triée. Appel récursif : trier chaque moitié, deux fois plus petites.', en: 'Base case of merge sort: a one-element list is already sorted. Recursive call: sort each half, twice as small.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `palindrome(s)`** récursive : elle renvoie `True` si le texte `s` se lit pareil dans les deux sens. Une chaîne de 0 ou 1 caractère en est un ; sinon, compare le premier et le dernier, puis le milieu.'
+    en: 'Challenge. **Write a recursive `palindrome(s)`**: it returns `True` if the text `s` reads the same in both directions. A string of 0 or 1 characters is one; otherwise compare the first and last, then the middle.'
+    depart: |
+      # écris ta fonction palindrome ici
+    tests: |
+      assert palindrome("") is True
+      assert palindrome("a") is True
+      assert palindrome("radar") is True
+      assert palindrome("rado") is False
+      assert palindrome("abba") is True
+    solutionCode: |
+      def palindrome(s):
+          if len(s) <= 1:
+              return True
+          return s[0] == s[-1] and palindrome(s[1:-1])
+    indice: { fr: '`s[0]` est le premier, `s[-1]` le dernier, `s[1:-1]` le milieu. Le `and` ne rappelle la fonction que si les extrémités sont égales.', en: '`s[0]` is the first, `s[-1]` the last, `s[1:-1]` the middle. The `and` only calls the function again if the ends are equal.' }
+    explication: { fr: 'Chaque appel retire deux caractères : le texte rétrécit jusqu’au cas de base.', en: 'Each call removes two characters: the text shrinks down to the base case.' }
+  - id: c8
+    type: retenir
+    fr: 'Récursivité = un cas de base + un appel sur un problème plus petit. La pile d’appels grandit avec la profondeur ; deux appels par niveau explosent, la mémoïsation les évite.'
+    en: 'Recursion = a base case + a call on a smaller problem. The call stack grows with depth; two calls per level explode, memoisation avoids that.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — functools.cache](https://docs.python.org/3/library/functools.html#functools.cache) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — functools.cache](https://docs.python.org/3/library/functools.html#functools.cache); this optional reading needs a connection.

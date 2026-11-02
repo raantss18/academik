@@ -1,0 +1,218 @@
+# Niveau 3.7 — Algorithmes 7 : piles. Original academik ; notions vérifiées dans la documentation officielle Python (listes utilisées comme piles) et dans Mon_livre_d_algo (structures de données, notions reprises et réécrites).
+id: '3.7'
+module: 3
+duree_min: 17
+titre: { fr: 'Piles', en: 'Stacks' }
+ia: { fr: 'Kintana vérifie que les parenthèses de ses formules sont bien fermées, grâce à une pile.', en: 'Kintana checks that the brackets in her formulas are properly closed, using a stack.' }
+sources:
+  - { titre: 'Python — Tutoriel, utiliser les listes comme des piles', url: 'https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — Tutoriel, listes', url: 'https://docs.python.org/3/tutorial/datastructures.html#more-on-lists', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      p = []
+      p.append(1)
+      p.append(2)
+      p.pop()
+      p.append(3)
+      print(p)
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      p = []
+      p.append(1)
+      p.append(2)
+      p.pop()
+      p.append(3)
+      print(p)
+      ```
+    choix:
+      - { fr: '`[1, 3]`', en: '`[1, 3]`', juste: true }
+      - { fr: '`[2, 3]`', en: '`[2, 3]`' }
+      - { fr: '`[1, 2, 3]`', en: '`[1, 2, 3]`' }
+    verif: |-
+      p = []
+      p.append(1)
+      p.append(2)
+      p.pop()
+      p.append(3)
+      print(p)
+    sortie: '[1, 3]'
+    explication: { fr: '`pop()` retire le **dernier** élément ajouté (le 2). Il reste `[1]`, puis on ajoute 3.', en: '`pop()` removes the **last** element added (the 2). `[1]` remains, then we add 3.' }
+  - id: c2
+    type: idee
+    fr: 'Une **pile** est une liste où l’on ajoute et retire **par le même bout** : le dernier arrivé est le premier sorti. On dit **LIFO** (« last in, first out »), comme une pile d’assiettes.'
+    en: 'A **stack** is a list where you add and remove **at the same end**: the last one in is the first one out. It is called **LIFO** (“last in, first out”), like a pile of plates.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'On empile 1, 2, 3, puis on dépile', en: 'Push 1, 2, 3, then pop' }
+          noeuds: ['`append(1)`', '`append(2)`', '`append(3)`', { fr: '`pop()` → 3', en: '`pop()` → 3', ton: ok }, { fr: '`pop()` → 2', en: '`pop()` → 2', ton: ok }]
+      legende: { fr: 'En Python, `append` empile et `pop()` dépile par la fin de la liste.', en: 'In Python, `append` pushes and `pop()` pops from the end of the list.' }
+  - id: d_cmp
+    type: idee
+    fr: 'Pile et **file** (niveau 3.5) rangent des éléments, mais sortent dans un ordre opposé. La pile redonne le **dernier** entré ; la file redonne le **premier** entré.'
+    en: 'A stack and a **queue** (level 3.5) both store elements, but release them in opposite orders. The stack gives back the **last** one in; the queue gives back the **first** one in.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Entrées : 1, 2, 3', en: 'Inputs: 1, 2, 3' }, { fr: 'Ordre de sortie', en: 'Output order' }]
+      cellules:
+        - [{ fr: 'pile (LIFO)', en: 'stack (LIFO)' }, '`3, 2, 1`']
+        - [{ fr: 'file (FIFO)', en: 'queue (FIFO)' }, { fr: '`1, 2, 3`', en: '`1, 2, 3`', ton: ok }]
+      legende: { fr: 'Même données, structure différente : l’ordre de sortie change.', en: 'Same data, different structure: the output order changes.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Parenthèses bien fermées ?', en: 'Properly closed brackets?' }
+    lang: python
+    etapes:
+      - { code: 's = "(()"', fr: 'On veut savoir si chaque `(` est refermée par une `)`.', en: 'We want to know whether each `(` is closed by a `)`.' }
+      - { code: 'pile = []\nfor c in s:', fr: 'On lit les caractères un par un, avec une pile vide au départ.', en: 'We read characters one by one, with an empty stack at the start.' }
+      - { code: '    if c == "(":\n        pile.append(c)\n    elif pile:\n        pile.pop()', fr: 'Une `(` s’empile. Une `)` dépile une `(` en attente, s’il y en a une.', en: 'A `(` is pushed. A `)` pops a pending `(`, if there is one.' }
+      - { code: 'print(len(pile))', fr: 'Il reste une `(` jamais refermée : on affiche `1`. La chaîne est donc **mal** fermée.', en: 'One `(` is left never closed: we display `1`. The string is therefore **not** properly closed.' }
+    verif: |-
+      s = "(()"
+      pile = []
+      for c in s:
+          if c == "(":
+              pile.append(c)
+          elif pile:
+              pile.pop()
+      print(len(pile))
+    sortie: '1'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `equilibre(s)`** : renvoie `True` si les parenthèses `(` et `)` de `s` sont bien appariées (chacune fermée, jamais de `)` en trop), `False` sinon.'
+    en: 'Your turn. **Write `equilibre(s)`**: return `True` if the brackets `(` and `)` of `s` are properly paired (each one closed, never an extra `)`), `False` otherwise.'
+    depart: |
+      # écris ta fonction equilibre ici
+    tests: |
+      assert equilibre("(())") is True
+      assert equilibre("()()") is True
+      assert equilibre("(()") is False
+      assert equilibre("())") is False
+      assert equilibre(")(") is False
+      assert equilibre("") is True
+    solutionCode: |
+      def equilibre(s):
+          pile = []
+          for c in s:
+              if c == "(":
+                  pile.append(c)
+              elif c == ")":
+                  if not pile:
+                      return False
+                  pile.pop()
+          return len(pile) == 0
+    indice: { fr: 'Une `)` alors que la pile est vide est déjà une erreur. À la fin, la pile doit être vide.', en: 'A `)` while the stack is empty is already an error. At the end, the stack must be empty.' }
+    explication: { fr: 'Deux échecs possibles : une `)` en trop (pile vide) ou une `(` jamais refermée (pile non vide à la fin).', en: 'Two possible failures: an extra `)` (empty stack) or an unclosed `(` (non-empty stack at the end).' }
+  - id: d_p_vide
+    type: piege
+    fr: 'Appeler `pop()` sur une pile **vide** provoque une erreur (`IndexError`). Teste `if pile:` avant de dépiler, sauf si la logique garantit qu’elle n’est pas vide.'
+    en: 'Calling `pop()` on an **empty** stack causes an error (`IndexError`). Test `if pile:` before popping, unless the logic guarantees it is not empty.'
+  - id: d_usage
+    type: idee
+    fr: 'Les piles sont partout : le bouton **annuler** d’un éditeur, le bouton **retour** d’un navigateur, la pile d’appels de la récursion (niveau 3.6). Dans chaque cas, on revient à la **dernière** chose faite.'
+    en: 'Stacks are everywhere: the **undo** button of an editor, the **back** button of a browser, the call stack of recursion (level 3.6). In each case, we go back to the **last** thing done.'
+    exemple: { fr: 'Tu visites A, puis B, puis C. « Retour » te ramène en B (dernier dépilé), puis en A. L’historique est une pile.', en: 'You visit A, then B, then C. “Back” takes you to B (last popped), then to A. The history is a stack.' }
+  - id: d_rpn
+    type: idee
+    fr: 'Une **expression postfixée** écrit l’opérateur **après** ses deux nombres : `3 4 +` signifie $3+4$. Une pile l’évalue sans parenthèses : un nombre s’empile, un opérateur dépile deux nombres et empile le résultat.'
+    en: 'A **postfix expression** writes the operator **after** its two numbers: `3 4 +` means $3+4$. A stack evaluates it without brackets: a number is pushed, an operator pops two numbers and pushes the result.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Lecture de `3 4 + 2 *`', en: 'Reading `3 4 + 2 *`' }, { fr: 'Pile après', en: 'Stack after' }]
+      cellules:
+        - ['`3`', '`[3]`']
+        - ['`4`', '`[3, 4]`']
+        - ['`+`', '`[7]`']
+        - ['`2`', '`[7, 2]`']
+        - ['`*`', { fr: '`[14]`', en: '`[14]`', ton: ok }]
+      legende: { fr: 'L’expression vaut $(3+4)\times2=14$ ; le résultat est le dernier élément de la pile.', en: 'The expression equals $(3+4)\times2=14$; the result is the last element of the stack.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quelle est la valeur de l’expression postfixée `5 1 2 + 4 * +` ?'
+    en: 'What is the value of the postfix expression `5 1 2 + 4 * +`?'
+    reponses: ['17']
+    verif: 'print(5 + (1 + 2) * 4)'
+    indice: { fr: 'Évalue en suivant la pile : `1 2 +` donne 3 ; puis `3 4 *` ; enfin le 5 et le `+` final.', en: 'Evaluate following the stack: `1 2 +` gives 3; then `3 4 *`; finally the 5 and the last `+`.' }
+    explication: { fr: '$5+(1+2)\times4=5+12=17$.', en: '$5+(1+2)\times4=5+12=17$.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `rpn(texte)`** : elle évalue une expression postfixée de nombres entiers, séparés par des espaces, avec les opérateurs `+`, `-` et `*`. Le deuxième dépilé est le **premier** opérande.'
+    en: '**Write `rpn(texte)`**: it evaluates a postfix expression of integers, separated by spaces, with the operators `+`, `-` and `*`. The second popped is the **first** operand.'
+    depart: |
+      # écris ta fonction rpn ici
+    tests: |
+      assert rpn("3 4 +") == 7
+      assert rpn("3 4 + 2 *") == 14
+      assert rpn("10 4 -") == 6
+      assert rpn("5 1 2 + 4 * +") == 17
+      assert rpn("7") == 7
+    solutionCode: |
+      def rpn(texte):
+          pile = []
+          for mot in texte.split():
+              if mot in "+-*":
+                  b = pile.pop()
+                  a = pile.pop()
+                  if mot == "+":
+                      pile.append(a + b)
+                  elif mot == "-":
+                      pile.append(a - b)
+                  else:
+                      pile.append(a * b)
+              else:
+                  pile.append(int(mot))
+          return pile[-1]
+    indice: { fr: 'Un opérateur dépile `b` d’abord, puis `a` : le résultat est `a` (opérateur) `b`, ce qui compte pour `-`.', en: 'An operator pops `b` first, then `a`: the result is `a` (operator) `b`, which matters for `-`.' }
+    explication: { fr: 'L’ordre de dépilement est la clé : pour `10 4 -`, `b` vaut 4 et `a` vaut 10, donc $10-4=6$.', en: 'The popping order is the key: for `10 4 -`, `b` is 4 and `a` is 10, so $10-4=6$.' }
+  - id: d_lien
+    type: idee
+    fr: 'Une récursion peut toujours s’écrire avec une **pile explicite**, et inversement : la pile d’appels du niveau 3.6 fait exactement ce travail. Utiliser une pile à la main évite la limite de profondeur de Python.'
+    en: 'A recursion can always be written with an **explicit stack**, and vice versa: the call stack from level 3.6 does exactly this job. Using a stack by hand avoids Python’s depth limit.'
+    exemple: { fr: 'Parcourir un arbre de dossiers : on empile le dossier racine, puis on dépile un dossier et on empile ses sous-dossiers, jusqu’à pile vide.', en: 'Walking a folder tree: push the root folder, then pop one folder and push its subfolders, until the stack is empty.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `bien_forme(s)`** avec **trois** sortes de parenthèses : `()`, `[]` et `{}`. Une fermante doit correspondre à la dernière ouvrante en attente.'
+    en: 'Challenge. **Write `bien_forme(s)`** with **three** kinds of brackets: `()`, `[]` and `{}`. A closing one must match the last pending opening one.'
+    depart: |
+      # écris ta fonction bien_forme ici
+    tests: |
+      assert bien_forme("([]{})") is True
+      assert bien_forme("([)]") is False
+      assert bien_forme("{") is False
+      assert bien_forme("") is True
+      assert bien_forme("a(b)c") is True
+    solutionCode: |
+      def bien_forme(s):
+          paires = {")": "(", "]": "[", "}": "{"}
+          pile = []
+          for c in s:
+              if c in "([{":
+                  pile.append(c)
+              elif c in paires:
+                  if not pile or pile.pop() != paires[c]:
+                      return False
+          return len(pile) == 0
+    indice: { fr: 'Un dictionnaire relie chaque fermante à son ouvrante. Dépile et compare dès qu’une fermante arrive.', en: 'A dictionary links each closing bracket to its opening one. Pop and compare as soon as a closing one arrives.' }
+    explication: { fr: 'Dans `([)]`, la `)` arrive alors que la dernière ouvrante en attente est `[` : mal formé, ce que seule une pile détecte.', en: 'In `([)]`, the `)` arrives while the last pending opening is `[`: ill-formed, which only a stack detects.' }
+  - id: c8
+    type: retenir
+    fr: 'Pile = LIFO : `append` empile, `pop()` dépile par la fin ; le dernier entré sort le premier. Utile pour apparier des parenthèses, annuler, évaluer du postfixe, remplacer une récursion.'
+    en: 'Stack = LIFO: `append` pushes, `pop()` pops from the end; the last in comes out first. Useful for pairing brackets, undoing, evaluating postfix, replacing a recursion.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — Les listes comme piles](https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — Lists as stacks](https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks); this optional reading needs a connection.
