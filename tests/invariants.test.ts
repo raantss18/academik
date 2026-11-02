@@ -167,7 +167,7 @@ describe('E17 · profondeur des leçons (barre de clarté C8)', () => {
     return g;
   };
   // Niveaux à approfondir (tâches Codex T-013 à T-015, relais Claude). Cette liste ne fait que RÉTRÉCIR.
-  const DEEP_PENDING = new Set<string>(['3.1', '3.2', '3.3', '3.4', '3.5', '3.boss', '4.1', '4.2', '4.3', '4.4', '4.5', '4.boss', '5.1', '5.2', '5.3', '5.4', '5.5', '5.boss']);
+  const DEEP_PENDING = new Set<string>(['4.1', '4.2', '4.3', '4.4', '4.5', '4.boss', '5.1', '5.2', '5.3', '5.4', '5.5', '5.boss']);
   const all = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => parse(read(`content/niveaux/${f}`)) as { id: string; duree_min: number; cartes: C[] });
   it('chaque niveau hors liste d’attente a des leçons détaillées et illustrées', () => {
     expect(Object.fromEntries(all.filter(l => !DEEP_PENDING.has(l.id)).map(l => [l.id, depthGaps(l)]).filter(([, g]) => g.length))).toEqual({});
