@@ -5,7 +5,7 @@
   import { i18n, ui } from '../lib/i18n.svelte';
   import { md } from '../lib/md';
   import { content } from '../lib/content.svelte';
-  import { THEMES_EN, type CityDistrict } from '../lib/city/index';
+  import { THEMES_EN, MONUMENTS, monumentEtat, type CityDistrict } from '../lib/city/index';
 
   let { districts, current, onplay }: { districts: CityDistrict[]; current: string | null | undefined; onplay: (id: string) => void } = $props();
 
@@ -65,7 +65,8 @@
     if (!sel) return null;
     const d = districts.find(x => x.levels.some(l => l.id === sel))!, l = d.levels.find(x => x.id === sel)!, L = content.levels[sel];
     const place = fr ? gen?.themeInfo(d.theme) : THEMES_EN[d.theme % THEMES_EN.length];
-    return { d, l, L, place };
+    const mon = gen ? MONUMENTS[gen.monumentKind(d.theme, d.levels.indexOf(l), !!l.boss)] : null;
+    return { d, l, L, place, monument: mon ? monumentEtat(mon, l.score, fr) : null };
   });
 </script>
 
@@ -92,6 +93,7 @@
       {#if info.l.st === 'locked'} · {fr ? 'se débloque à 50 % au niveau précédent' : 'unlocks at 50% on the previous level'}{/if}
       {#if info.l.st === 'soon'}{ui('soon')}{/if}
     </p>
+    {#if info.monument}<p class="mon"><span aria-hidden="true">🏛️</span> {info.monument}</p>{/if}
     {#if info.L}<div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(i18n.t(info.L.ia))}{#if info.place}<br /><span class="muted">{info.place.blurb}</span>{/if}</div>{/if}
     <div class="row">
       <button class="btn" onclick={() => (sel = null)}>{fr ? 'Fermer' : 'Close'}</button>
@@ -118,6 +120,7 @@
   .kicker { font-size: .8rem; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; margin: 0; }
   h2 { margin: 4px 0 6px; font-size: 1.35rem; } h2 :global(p) { margin: 0; }
   .meta { margin: 0 0 10px; color: var(--c-text-muted); } .stars { color: #e0a800; letter-spacing: 2px; } .off { opacity: .25; }
+  .mon { margin: 0 0 8px; font-weight: 700; color: var(--c-text); }
   .ia { background: var(--c-surface-2); border-radius: 16px; padding: 10px 14px; margin: 10px 0 14px; font-size: .95rem; } .ia :global(p) { display: inline; margin: 0; }
   .muted { color: var(--c-text-muted); } .row { display: flex; gap: 10px; } .row .btn { flex: 1; }
 </style>

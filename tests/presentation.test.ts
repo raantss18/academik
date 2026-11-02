@@ -24,6 +24,11 @@ describe('coloration du code', () => {
     expect(h).toContain('<span class="tk-k">for</span>'); expect(h).toContain('<span class="tk-k">in</span>'); expect(h).toContain('<span class="tk-b">range</span>');
     expect(h).toContain('<span class="tk-n">42</span>'); expect(h).toContain('<span class="tk-s">&quot;a&quot;</span>'.replace(/&quot;/g, '"')); expect(h).toContain('<span class="tk-c"># boucle</span>');
   });
+  it('colore Lean 4 (module R) sans jamais produire de HTML', () => {
+    const h = highlight('theorem t (n : Nat) : 0 + n = n := by -- preuve\n  induction n <;> simp', 'lean');
+    expect(h).toContain('<span class="tk-k">theorem</span>'); expect(h).toContain('<span class="tk-b">Nat</span>');
+    expect(h).toContain('<span class="tk-c">-- preuve</span>'); expect(h).toContain('&lt;;&gt;');
+  });
   it('échappe le code (jamais de HTML)', () => { expect(highlight('<script>alert(1)</script>', 'python')).not.toContain('<script>'); expect(highlight('a < b', '')).toBe('a &lt; b'); });
   it('shell : commande, option, variable, chaîne', () => {
     const h = highlight('ls -la "$HOME"', 'bash'); expect(h).toContain('<span class="tk-k">ls</span>'); expect(h).toContain('tk-b'); expect(h).toContain('tk-s');

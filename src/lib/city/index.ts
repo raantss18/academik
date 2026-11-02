@@ -9,7 +9,22 @@ export interface CityLevel { id: string; short: string; aria: string; st: PinSta
 export interface CityDistrict { n: number; theme: number; name: string; label: string; color: string; reached: boolean; progress: number; levels: CityLevel[] }
 
 /** Couleur de chaque module (panneau du quartier, épingles réussies), reprise de la maquette. */
-export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B', '#C0792B', '#26A69A', '#7E57C2', '#5C6BC0', '#A1662F', '#4E7F8C', '#8D6E63', '#00897B', '#3949AB', '#D84315', '#546E7A', '#37474F', '#2E7D32', '#B71C1C'];
+export const MODULE_COLORS = ['#E64A19', '#546E7A', '#6A4FB6', '#3A6EA5', '#3F51B5', '#F9A825', '#8E24AA', '#00897B', '#C0792B', '#26A69A', '#7E57C2', '#5C6BC0', '#A1662F', '#4E7F8C', '#8D6E63', '#00897B', '#3949AB', '#D84315', '#546E7A', '#37474F', '#2E7D32', '#B71C1C', '#5E35B1'];
+
+/** Nom de chaque monument (clé de `K` dans gen.js) : le bâtiment du niveau, qui s'allume avec son score. */
+export const MONUMENTS: Record<string, { fr: string; en: string }> = {
+  house: { fr: 'la maison', en: 'the house' }, shop: { fr: 'la boutique', en: 'the shop' }, hotel: { fr: 'l’hôtel', en: 'the hotel' }, farm: { fr: 'la ferme', en: 'the farm' },
+  tower: { fr: 'la tour', en: 'the tower' }, hall: { fr: 'la grande halle', en: 'the great hall' }, containers: { fr: 'les conteneurs', en: 'the containers' }, silo: { fr: 'le silo', en: 'the silo' },
+  tank: { fr: 'la citerne', en: 'the tank' }, tent: { fr: 'le chapiteau', en: 'the big top' }, pagoda: { fr: 'la pagode', en: 'the pagoda' }, church: { fr: 'l’église', en: 'the church' },
+  clock: { fr: 'la tour de l’horloge', en: 'the clock tower' }, dome: { fr: 'le dôme', en: 'the dome' }, crystal: { fr: 'le cristal', en: 'the crystal' }, windmill: { fr: 'le moulin', en: 'the windmill' },
+  ferris: { fr: 'la grande roue', en: 'the Ferris wheel' }, crane: { fr: 'la grue', en: 'the crane' }, datacenter: { fr: 'le centre de données', en: 'the data centre' }, lighthouse: { fr: 'le phare', en: 'the lighthouse' },
+  greenhouse: { fr: 'la serre', en: 'the greenhouse' }, pavilion: { fr: 'le pavillon', en: 'the pavilion' }, rova: { fr: 'le palais du Rova', en: 'the Rova palace' },
+};
+/** « Monument : la tour · allumage 40 % » (sans accord à faire : le genre du nom ne compte pas). */
+export function monumentEtat(nom: { fr: string; en: string }, score: number, fr: boolean): string {
+  const full = score >= 1 - 1e-9, p = Math.round(score * 100);
+  return fr ? `Monument : ${nom.fr} · ${full ? 'allumage complet' : `allumage ${p} %`}` : `Landmark: ${nom.en} · ${full ? 'fully lit' : `${p}% lit`}`;
+}
 
 export interface CityInput {
   modules: CursusModule[]; levels: Record<string, Level>; scores: Record<string, number>;
@@ -58,4 +73,5 @@ export const THEMES_EN = [
   { place: 'The Citadel', blurb: 'Ramparts, portcullises and watchtowers: every entry is checked, no secret leaves.' },
   { place: 'The Shipping Port', blurb: 'Loading docks, scales and traffic lights: nothing leaves without a green light.' },
   { place: 'The Rova', blurb: 'Palace on the hill, terraces and lights: where all the bricks come together.' },
+  { place: 'The Academy of Proofs', blurb: 'Colonnades, domes and a lighthouse: every statement is checked before it is believed.' },
 ];

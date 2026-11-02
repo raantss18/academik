@@ -145,3 +145,8 @@
 - **Fait** : 165 liens contrôlés (DOI par Crossref), chiffres des modules 11 à 21 recalculés (un tableau inventé corrigé), audit du contenu (KaTeX, QCM, traductions) sur 136 niveaux ; CSP stricte site et AppImage (polices KaTeX débloquées sur Linux) ; audit axe-core à 0 violation ; réponses numériques tolérantes ; téléchargement des apps depuis le site ; boss final (module 21) ; 773 tests.
 - **Non vérifié** : appareils réels, lecteur d'écran, service worker réel, vrais élèves, relecture par Codex ; liens `nlp.stanford.edu` et `otexts.com` injoignables depuis cette machine.
 
+
+### Monuments, enseignes sans chevauchement, module bonus Recherche (2026-11-02, 0.3.28)
+
+- **Fait** : enseigne de quartier placée sans chevaucher les épingles (garde-fou E42, qui échoue avec l'ancien placement) ; chaque niveau a un monument nommé, affiché sur la fiche et l'écran de fin ; module 22 « Recherche » (7 niveaux, preuves Lean 4.35 compilées, exercices d'ordre à solution unique) ; coloration Lean ; thème de quartier et ambiance du module 22.
+- **Non vérifié** : rendu sur le téléphone d'Antsa (vérifié ici sur un écran de 375 px) ; appareils réels, lecteur d'écran, vrais élèves, relecture par Codex.

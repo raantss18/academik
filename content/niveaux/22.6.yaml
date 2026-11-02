@@ -1,0 +1,342 @@
+# Niveau 22.6 — Recherche 6 : experts et multimodalité. Original academik ; chiffres vérifiés dans les résumés arXiv de Mixtral (2401.04088), Shazeer (1701.06538), Switch (2101.03961) et ViT (2010.11929). Calculs exécutés.
+id: '22.6'
+module: 22
+duree_min: 21
+titre:
+  fr: Experts et modalités
+  en: Experts and modalities
+ia:
+  fr: Kintana sait pourquoi un modèle à experts calcule peu mais pèse lourd en mémoire, et comment une image devient une suite de jetons.
+  en: Kintana knows why an expert model computes little but weighs heavily in memory, and how an image becomes a sequence of tokens.
+sources:
+- titre: Jiang et al. — Mixtral of Experts (arXiv 2401.04088)
+  url: https://arxiv.org/abs/2401.04088
+  licence: Article en accès libre ; chiffres cités (8 experts, 2 actifs, 47 G / 13 G)
+- titre: 'Shazeer et al. — Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer (arXiv 1701.06538)'
+  url: https://arxiv.org/abs/1701.06538
+  licence: Article en accès libre ; idée citée
+- titre: Fedus, Zoph, Shazeer — Switch Transformers (arXiv 2101.03961)
+  url: https://arxiv.org/abs/2101.03961
+  licence: Article en accès libre ; difficultés citées
+- titre: Dosovitskiy et al. — An Image is Worth 16x16 Words (arXiv 2010.11929)
+  url: https://arxiv.org/abs/2010.11929
+  licence: Article en accès libre ; idée citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un modèle à experts contient 47 milliards de paramètres, mais seulement 13 milliards servent pour chaque jeton. Le **calcul** par jeton ressemble à celui de quel modèle ?
+  en: An expert model holds 47 billion parameters, but only 13 billion are used for each token. The **computation** per token resembles that of which model?
+  choix:
+  - fr: Un modèle dense d’environ 13 milliards de paramètres
+    en: A dense model of about 13 billion parameters
+    juste: true
+  - fr: Un modèle dense de 47 milliards de paramètres
+    en: A dense model of 47 billion parameters
+  - fr: Un modèle de 60 milliards de paramètres
+    en: A model of 60 billion parameters
+  indice:
+    fr: Le calcul suit les paramètres réellement utilisés pour ce jeton.
+    en: Computation follows the parameters actually used for this token.
+  explication:
+    fr: 'Le calcul suit les paramètres **actifs** : environ 13 milliards. La **mémoire**, elle, doit contenir les 47 milliards.'
+    en: 'Computation follows the **active** parameters: about 13 billion. **Memory**, though, must hold all 47 billion.'
+- id: c2
+  type: idee
+  fr: Un modèle à **mélange d’experts** (MoE) remplace un grand bloc par plusieurs blocs, les **experts**. Un petit réseau, le **routeur**, choisit pour chaque jeton quelques experts seulement. Le modèle est grand, mais chaque jeton n’en utilise qu’une part.
+  en: A **mixture-of-experts** (MoE) model replaces one large block by several blocks, the **experts**. A small network, the **router**, picks only a few experts for each token. The model is large, but each token uses only part of it.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le trajet d’un jeton
+        en: A token’s path
+      noeuds:
+      - fr: jeton
+        en: token
+      - fr: routeur
+        en: router
+      - fr: 2 experts sur 8
+        en: 2 experts out of 8
+      - fr: somme pondérée
+        en: weighted sum
+        ton: ok
+    legende:
+      fr: Les experts non choisis ne calculent rien pour ce jeton.
+      en: The experts not chosen compute nothing for this token.
+- id: c3
+  type: idee
+  fr: Les articles donnent des chiffres précis. **Mixtral 8x7B** a 8 experts par couche, et le routeur en choisit 2 par jeton. Chaque jeton a accès à 47 milliards de paramètres mais n’en utilise que 13 milliards.
+  en: The papers give precise figures. **Mixtral 8x7B** has 8 experts per layer, and the router picks 2 per token. Each token has access to 47 billion parameters but uses only 13 billion.
+  exemple:
+    fr: La part active vaut $13/47\approx28\,\%$ des paramètres.
+    en: The active share is $13/47\approx28\%$ of the parameters.
+- id: c4
+  type: exemple
+  titre:
+    fr: Un routeur sur quatre experts
+    en: A router over four experts
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      scores = [2.0, 1.0, 0.5, -1.0]
+    fr: Le routeur donne un score à chacun des quatre experts pour ce jeton.
+    en: The router gives a score to each of the four experts for this token.
+  - code: 'choisis = sorted(range(4), key=lambda i: -scores[i])[:2]'
+    fr: 'On garde les deux meilleurs : les experts `0` et `1`.'
+    en: 'We keep the best two: experts `0` and `1`.'
+  - code: |-
+      e = [math.exp(scores[i]) for i in choisis]
+      print([round(x / sum(e), 3) for x in e])
+    fr: 'On répartit un poids entre eux : `[0.731, 0.269]`. La sortie est cette somme pondérée.'
+    en: 'We share a weight between them: `[0.731, 0.269]`. The output is this weighted sum.'
+  verif: |-
+    import math
+    scores = [2.0, 1.0, 0.5, -1.0]
+    choisis = sorted(range(4), key=lambda i: -scores[i])[:2]
+    e = [math.exp(scores[i]) for i in choisis]
+    print([round(x / sum(e), 3) for x in e])
+  sortie: '[0.731, 0.269]'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `routeur(scores, k)`** : renvoie `(indices, poids)` où `indices` sont les `k` plus grands scores (du plus grand au plus petit) et `poids` leur softmax, de somme 1.'
+  en: 'Your turn. **Write `routeur(scores, k)`**: return `(indices, poids)` where `indices` are the `k` highest scores (largest first) and `poids` their softmax, summing to 1.'
+  depart: |
+    import math
+
+    # écris ta fonction routeur ici
+  tests: |-
+    idx, w = routeur([2.0, 1.0, 0.5, -1.0], 2)
+    assert idx == [0, 1]
+    assert abs(w[0] - 0.7310585786300049) < 1e-12 and abs(w[1] - 0.2689414213699951) < 1e-12
+    idx, w = routeur([0.0, 0.0, 5.0], 1)
+    assert idx == [2] and w == [1.0]
+    assert abs(sum(routeur([1, 2, 3, 4], 3)[1]) - 1) < 1e-12
+  solutionCode: |
+    import math
+
+    def routeur(scores, k):
+        idx = sorted(range(len(scores)), key=lambda i: -scores[i])[:k]
+        exps = [math.exp(scores[i]) for i in idx]
+        z = sum(exps)
+        return idx, [e / z for e in exps]
+  indice:
+    fr: Trie les indices par score décroissant et garde `k` ; puis softmax sur ces `k` scores seulement.
+    en: Sort the indices by decreasing score and keep `k`; then softmax over those `k` scores only.
+  explication:
+    fr: Ce routeur-jouet suit l’idée générale. Les modèles réels ajoutent des détails que les articles décrivent.
+    en: This toy router follows the general idea. Real models add details that the papers describe.
+- id: c6
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Dans Mixtral, 13 milliards de paramètres sur 47 sont actifs. Quel pourcentage cela fait-il, arrondi à l’entier ?
+  en: In Mixtral, 13 billion parameters out of 47 are active. What percentage is that, rounded to the integer?
+  reponses:
+  - '28'
+  verif: print(round(100 * 13 / 47))
+  indice:
+    fr: Divise $13$ par $47$, puis multiplie par $100$.
+    en: Divide $13$ by $47$, then multiply by $100$.
+  explication:
+    fr: $13/47=0{,}2766$, soit $28\,\%$ après arrondi.
+    en: $13/47=0.2766$, that is $28\%$ after rounding.
+- id: c7
+  type: idee
+  fr: 'Pour un modèle à experts, le **calcul** suit les paramètres actifs et la **mémoire** suit tous les paramètres. En local, c’est la mémoire qui limite : il faut charger tous les experts, même ceux qu’un jeton n’utilise pas.'
+  en: 'For an expert model, **computation** follows the active parameters and **memory** follows all parameters. Locally, memory is the limit: every expert must be loaded, even those a token does not use.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Modèle
+      en: Model
+    - fr: Mémoire des poids en 4 bits
+      en: Weight memory at 4 bits
+    - fr: Calcul par jeton
+      en: Computation per token
+    cellules:
+    - - fr: dense 7 G
+        en: dense 7 B
+      - 3,5 Go
+      - fr: 7 G de paramètres
+        en: 7 B parameters
+    - - fr: experts 47 G (13 G actifs)
+        en: experts 47 B (13 B active)
+      - fr: 23,5 Go
+        en: 23.5 GB
+        ton: bad
+      - fr: 13 G de paramètres
+        en: 13 B parameters
+        ton: ok
+    legende:
+      fr: '4 bits = un demi-octet par paramètre : $47\times0{,}5=23{,}5$ Go (poids seuls, sans cache).'
+      en: '4 bits = half a byte per parameter: $47\times0.5=23.5$ GB (weights only, no cache).'
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `params(partage, expert, n_experts, k)`** : renvoie `(total, actifs)`. Le total est `partage + n_experts * expert`, les actifs `partage + k * expert`.'
+  en: '**Write `params(partage, expert, n_experts, k)`**: return `(total, actifs)`. The total is `partage + n_experts * expert`, the active ones `partage + k * expert`.'
+  depart: |
+    # écris ta fonction params ici
+  tests: |-
+    assert params(1, 5, 8, 2) == (41, 11)
+    assert params(0, 3, 4, 4) == (12, 12)
+    assert params(2, 1, 8, 1) == (10, 3)
+  solutionCode: |
+    def params(partage, expert, n_experts, k):
+        return partage + n_experts * expert, partage + k * expert
+  indice:
+    fr: 'Une ligne : renvoie le couple des deux formules de l’énoncé.'
+    en: 'One line: return the pair of the two formulas in the statement.'
+  explication:
+    fr: 'Avec `k = n_experts`, tous les experts servent : on retrouve un modèle dense.'
+    en: 'With `k = n_experts`, every expert is used: we recover a dense model.'
+- id: c9
+  type: exemple
+  titre:
+    fr: Retrouver la taille d’un expert
+    en: Recovering the size of an expert
+  lang: python
+  etapes:
+  - code: total, actifs = 47, 13
+    fr: Les deux chiffres publiés, en milliards (arrondis).
+    en: The two published figures, in billions (rounded).
+  - code: expert = (total - actifs) / (8 - 2)
+    fr: 'La différence vient des 6 experts non choisis : elle donne la taille d’un expert.'
+    en: 'The difference comes from the 6 unchosen experts: it gives the size of one expert.'
+  - code: print(round(expert, 1), round(actifs - 2 * expert, 1))
+    fr: 'Environ `5.7` milliards par expert et `1.7` milliard partagés. Un ordre de grandeur : les chiffres de départ sont arrondis.'
+    en: 'About `5.7` billion per expert and `1.7` billion shared. An order of magnitude: the starting figures are rounded.'
+  verif: |-
+    total, actifs = 47, 13
+    expert = (total - actifs) / (8 - 2)
+    print(round(expert, 1), round(actifs - 2 * expert, 1))
+  sortie: 5.7 1.7
+- id: c10
+  type: piege
+  fr: Un routeur peut envoyer presque tous les jetons vers les mêmes experts. Les autres ne servent alors à rien, et la capacité promise est gaspillée. Les articles évoquent aussi la complexité, le coût des communications et l’instabilité de l’entraînement.
+  en: A router may send almost every token to the same experts. The others are then useless, and the promised capacity is wasted. The papers also mention complexity, communication costs and training instability.
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `charges(affectations, n_experts)`** : `affectations` est la liste, jeton par jeton, des experts choisis. Renvoie la part de choix reçue par chaque expert (la somme vaut 1).'
+  en: 'Challenge. **Write `charges(affectations, n_experts)`**: `affectations` is the list, token by token, of the experts chosen. Return the share of choices received by each expert (the sum is 1).'
+  depart: |
+    # écris ta fonction charges ici
+  tests: |-
+    c = charges([[0, 1], [0, 2], [0, 1]], 3)
+    assert abs(c[0] - 0.5) < 1e-12 and abs(c[1] - 1 / 3) < 1e-12 and abs(c[2] - 1 / 6) < 1e-12
+    assert charges([[0], [0], [0]], 2) == [1.0, 0.0]
+    assert abs(sum(charges([[0, 1], [2, 3]], 4)) - 1) < 1e-12
+  solutionCode: |
+    def charges(affectations, n_experts):
+        compte = [0] * n_experts
+        for choix in affectations:
+            for e in choix:
+                compte[e] += 1
+        total = sum(compte)
+        return [c / total for c in compte]
+  indice:
+    fr: Compte dans une liste `[0] * n_experts`, puis divise chaque compte par le total des choix.
+    en: Count in a list `[0] * n_experts`, then divide each count by the total number of choices.
+  explication:
+    fr: Un bon routeur donne des parts proches de $1/n$ pour chaque expert.
+    en: A good router gives shares close to $1/n$ for each expert.
+- id: c12
+  type: idee
+  fr: Les modèles qui lisent des images utilisent la même idée de jeton. Un **Vision Transformer** découpe l’image en petits carrés, les **patchs**, par exemple de 16 pixels de côté. Chaque patch devient un jeton, comme un mot. Le transformer lit alors cette suite.
+  en: Models that read images use the same idea of token. A **Vision Transformer** cuts the image into small squares, the **patches**, for example 16 pixels wide. Each patch becomes a token, like a word. The transformer then reads this sequence.
+  exemple:
+    fr: Une image de $224\times224$ pixels en patchs de $16$ donne $14\times14=196$ jetons.
+    en: A $224\times224$ pixel image in $16$-pixel patches gives $14\times14=196$ tokens.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: De l’image à la suite de jetons
+        en: From image to token sequence
+      noeuds:
+      - fr: image
+        en: image
+      - fr: patchs 16×16
+        en: 16×16 patches
+      - fr: un vecteur par patch
+        en: one vector per patch
+      - fr: transformer
+        en: transformer
+        ton: ok
+    legende:
+      fr: Un texte et une image deviennent deux suites de vecteurs du même genre.
+      en: A text and an image become two sequences of vectors of the same kind.
+- id: c13
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `nb_patchs(h, w, p)`** : le nombre de patchs de côté `p` d’une image `h × w`. Si `h` ou `w` n’est pas multiple de `p`, lève `ValueError`.'
+  en: '**Write `nb_patchs(h, w, p)`**: the number of `p`-sided patches of an `h × w` image. If `h` or `w` is not a multiple of `p`, raise `ValueError`.'
+  depart: |
+    # écris ta fonction nb_patchs ici
+  tests: |-
+    assert nb_patchs(224, 224, 16) == 196
+    assert nb_patchs(32, 64, 16) == 8
+    try:
+        nb_patchs(100, 100, 16)
+        ok = False
+    except ValueError:
+        ok = True
+    assert ok
+  solutionCode: |
+    def nb_patchs(h, w, p):
+        if h % p or w % p:
+            raise ValueError("l'image ne se découpe pas en carrés entiers")
+        return (h // p) * (w // p)
+  indice:
+    fr: Teste d’abord `h % p` et `w % p`, puis multiplie `h // p` par `w // p`.
+    en: Test `h % p` and `w % p` first, then multiply `h // p` by `w // p`.
+  explication:
+    fr: Refuser le cas qui ne tombe pas juste évite de perdre des pixels sans le dire.
+    en: Refusing the case that does not divide evenly avoids silently losing pixels.
+- id: c14
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'Une image de $384\times384$ pixels, découpée en patchs de $16$ pixels : combien de jetons ?'
+  en: 'A $384\times384$ pixel image, cut into $16$-pixel patches: how many tokens?'
+  reponses:
+  - '576'
+  verif: print((384 // 16) ** 2)
+  indice:
+    fr: Divise le côté par $16$, puis élève au carré.
+    en: Divide the side by $16$, then square it.
+  explication:
+    fr: $384/16=24$, et $24^2=576$ jetons. Une image plus grande coûte beaucoup plus cher.
+    en: $384/16=24$, and $24^2=576$ tokens. A larger image costs far more.
+- id: c15
+  type: idee
+  fr: 'Le lien avec Kintana : un assistant multimodal lit du texte et des images dans la même suite de jetons. Un modèle à experts garde un coût de calcul raisonnable. Au boss de ce module, tu prouveras et testeras une fonction de Kintana.'
+  en: 'The link with Kintana: a multimodal assistant reads text and images in the same sequence of tokens. An expert model keeps a reasonable computation cost. In this module’s boss, you will prove and test one of Kintana’s functions.'
+  exemple:
+    fr: 'Mémoire pour tous les experts, calcul pour les seuls actifs : la règle de 22.6 pour tout budget local.'
+    en: 'Memory for all experts, computation for the active ones only: the rule of 22.6 for any local budget.'
+- id: c16
+  type: retenir
+  fr: 'Mélange d’experts : un routeur choisit $k$ experts par jeton. Calcul = paramètres actifs, mémoire = tous les paramètres. Mixtral : 8 experts, 2 actifs, 47 G au total pour 13 G actifs. Image : patchs de 16 pixels, un jeton par patch.'
+  en: 'Mixture of experts: a router picks $k$ experts per token. Computation = active parameters, memory = all parameters. Mixtral: 8 experts, 2 active, 47 B in total for 13 B active. Image: 16-pixel patches, one token per patch.'
+- id: c17
+  type: plus
+  fr: Pour aller plus loin, lis [Mixtral of Experts](https://arxiv.org/abs/2401.04088) et [An Image is Worth 16x16 Words](https://arxiv.org/abs/2010.11929) ; ces articles demandent une connexion.
+  en: To go further, read [Mixtral of Experts](https://arxiv.org/abs/2401.04088) and [An Image is Worth 16x16 Words](https://arxiv.org/abs/2010.11929); these papers need a connection.

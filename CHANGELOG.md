@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.28] — 2026-11-02
+
+### Message fr
+Chaque niveau a maintenant son monument : la fiche du niveau et l'écran de fin disent quel bâtiment de la ville s'allume, et de combien. Les enseignes des quartiers ne cachent plus les repères sur la carte. Nouveau module bonus « Recherche » : prouver du code avec Lean, lire la courbure d'une perte, mesurer l'entropie croisée et la perplexité, comprendre les modèles à experts.
+
+### Message en
+Each level now has its own landmark: the level sheet and the end screen say which building of the city lights up, and by how much. District signs no longer hide the map pins. New bonus module “Research”: prove code with Lean, read the curvature of a loss, measure cross-entropy and perplexity, understand expert models.
+
 ## [0.3.27] — 2026-11-02
 
 ### Message fr

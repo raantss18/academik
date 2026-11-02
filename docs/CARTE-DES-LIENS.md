@@ -97,7 +97,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **7.2** Intervalles | Kintana encadre son estimation par un intervalle de confiance honnête. | — | 7.4, 9.4, 10.3, 16.boss, 20.2 |
 | **7.3** Tester | Kintana teste si un résultat peut s’expliquer par le hasard (p-valeur). | — | — |
 | **7.4** Bootstrap | Kintana mesure la variabilité de son estimation en rééchantillonnant ses données (bootstrap). | 7.2 | — |
-| **7.5** Tests multiples | Kintana corrige ses seuils quand elle teste beaucoup d’idées à la fois. | — | 17.3, 21.boss |
+| **7.5** Tests multiples | Kintana corrige ses seuils quand elle teste beaucoup d’idées à la fois. | — | 17.3 |
 | **7.boss** Le faux signal | Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs. | — | — |
 
 ## 8 · Données
@@ -248,4 +248,16 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
-| **21.boss** Kintana, chercheuse honnête | Kintana mène une recherche de bout en bout et rejette la fausse découverte, même quand elle paraît significative. | 7.5, 17.5, 17.boss | — |
+| **21.boss** Kintana, chercheuse honnête | Kintana mène une recherche de bout en bout et rejette la fausse découverte, même quand elle paraît significative. | 17.5, 17.boss | — |
+
+## 22 · Recherche (bonus)
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **22.1** Une preuve est un programme | Kintana sait qu’un test réussi ne prouve pas tout, et écrit ses premiers théorèmes vérifiés par Lean. | — | 22.boss |
+| **22.2** La récurrence en Lean | Kintana prouve en Lean qu’une formule vaut pour tous les entiers, et pas seulement pour ceux qu’elle a testés. | — | — |
+| **22.3** Prouver une propriété de son code | Kintana écrit la spécification d’une de ses fonctions et la prouve en Lean pour toutes les listes. | — | — |
+| **22.4** Hessienne et convexité | Kintana lit la courbure de sa perte et choisit un pas de descente qui ne diverge pas. | — | — |
+| **22.5** Entropie croisée, KL et perplexité | Kintana mesure à quel point son modèle est surpris par un vrai texte, avec la perte qu’elle minimise à l’entraînement. | — | — |
+| **22.6** Experts et modalités | Kintana sait pourquoi un modèle à experts calcule peu mais pèse lourd en mémoire, et comment une image devient une suite de jetons. | — | — |
+| **22.boss** Prouve ton code | Kintana livre une fonction spécifiée, testée et prouvée : elle sait ce qu’elle garantit, et ce qu’elle ne garantit pas. | 22.1 | — |

@@ -2,9 +2,11 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const span = (c: string, s: string) => `<span class="tk-${c}">${esc(s)}</span>`;
 
 const PY_KW = new Set('False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield'.split(' '));
+const LEAN_KW = new Set('theorem lemma def example by fun match with induction cases intro intros exact apply rfl simp omega decide rw unfold at have show calc let in if then else do return'.split(' '));
+const LEAN_TYPE = new Set('Nat Int Prop Type List Bool True False'.split(' '));
 const PY_BUILTIN = new Set('print input len range int float str bool list dict set tuple sum min max abs sorted open type isinstance enumerate zip map filter round'.split(' '));
 
-/** Coloration légère (sans dépendance, hors ligne) pour Python et le shell. Texte échappé : jamais de HTML venant du contenu. */
+/** Coloration légère (sans dépendance, hors ligne) pour Python, le shell et Lean 4. Texte échappé : jamais de HTML venant du contenu. */
 export function highlight(code: string, lang = ''): string {
   const l = lang.toLowerCase();
   if (l === 'python' || l === 'py') return tokens(code, /(#[^\n]*)|([rRfFbB]{0,2}(?:'''[\s\S]*?'''|"""[\s\S]*?"""|'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"))|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)/g, (m) => {
@@ -16,6 +18,10 @@ export function highlight(code: string, lang = ''): string {
     if (m[4]) { const lead = m[4].match(/^(\s*(?:\$\s+)?)/)![1]; return esc(lead) + span('k', m[4].slice(lead.length)); }
     return span('b', m[5]);
   })).join('\n');
+  if (l === 'lean') return tokens(code, /(--[^\n]*)|("(?:\\.|[^"\\\n])*")|(\b\d+\b)|([A-Za-z_][\w.']*)/g, (m) => {
+    if (m[1]) return span('c', m[1]); if (m[2]) return span('s', m[2]); if (m[3]) return span('n', m[3]);
+    const w = m[4]; return LEAN_KW.has(w) ? span('k', w) : LEAN_TYPE.has(w) ? span('b', w) : esc(w);
+  });
   return esc(code);
 }
 
