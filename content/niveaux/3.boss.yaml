@@ -1,12 +1,22 @@
 id: '3.boss'
 module: 3
-duree_min: 15
+duree_min: 20
 titre: { fr: 'L’index inversé', en: 'The inverted index' }
 ia: { fr: 'Kintana sait retrouver un document vite : index inversé, tri, recherche.', en: 'Kintana can find a document quickly: inverted indexing, sorting, and searching.' }
 sources:
-  - { titre: 'Python — Data structures', url: 'https://docs.python.org/3/tutorial/datastructures.html', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
-  - { titre: 'Python — bisect', url: 'https://docs.python.org/3/library/bisect.html', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
-  - { titre: 'Pat Morin — Open Data Structures', url: 'https://opendatastructures.org/ods-python/', licence: 'CC BY 2.5 CA ; exercices originaux' }
+  - titre: Python — Data structures
+    url: https://docs.python.org/3/tutorial/datastructures.html
+    licence: PSF-2.0 ; exemples de la documentation également sous 0BSD
+  - titre: Python — bisect
+    url: https://docs.python.org/3/library/bisect.html
+    licence: PSF-2.0 ; exemples de la documentation également sous 0BSD
+  - titre: Pat Morin — Open Data Structures
+    url: https://opendatastructures.org/ods-python/
+    licence: CC BY 2.5 CA ; exercices originaux
+  - titre: Manning, Raghavan, Schütze — Introduction to Information Retrieval, Inverted index
+    url: https://nlp.stanford.edu/IR-book/html/htmledition/a-first-take-at-building-an-inverted-index-1.html
+    licence: © Cambridge University Press ; consultation et lien uniquement ; exemples originaux non
+      repris du livre
 cartes:
   - id: c1
     type: tentative
@@ -20,20 +30,85 @@ cartes:
     explication: { fr: 'Cet index inversé part du mot pour retrouver les documents qui le contiennent.', en: 'This inverted index starts from a word to retrieve the documents containing it.' }
   - id: c2
     type: idee
-    fr: 'Un **index inversé** associe à chaque mot l’ensemble des documents qui le contiennent. Pour une requête « mot1 ET mot2 », on prend l’**intersection** des deux ensembles.'
-    en: 'An **inverted index** maps each word to the set of documents that contain it. For a query “word1 AND word2”, take the **intersection** of the two sets.'
+    fr: Un **index inversé** associe chaque mot aux identifiants des documents qui le contiennent. Un
+      **ensemble** garde chaque identifiant une seule fois, même si le mot se répète.
+    en: An **inverted index** maps each word to the IDs of documents containing it. A **set** keeps each
+      ID only once, even when the word repeats.
+  - id: c2b
+    type: exemple
+    titre:
+      fr: Un corpus miniature pour préparer la mission
+      en: A miniature corpus to prepare the mission
+    etapes:
+      - fr: "Prenons `7: pin lac pin`, `8: lac`, `9: pin`. Le corpus est cette collection de trois
+          documents."
+        en: "Take `7: pin lac pin`, `8: lac`, `9: pin`. The corpus is this collection of three documents."
+      - fr: Pin apparaît dans les documents sept et neuf ; lac apparaît dans sept et huit.
+        en: Pin occurs in documents seven and nine; lac occurs in seven and eight.
+      - fr: Les trois occurrences de pin donnent seulement deux identifiants distincts.
+        en: The three occurrences of pin give only two distinct IDs.
+    verif: |-
+      docs={7:"pin lac pin",8:"lac",9:"pin"}; index={}
+      for doc,text in docs.items():
+          for word in text.split(): index.setdefault(word,set()).add(doc)
+      assert index["lac"]=={7,8}
+      print(sorted(index["pin"]))
+    sortie: "[7, 9]"
     figure:
       kind: tableau
-      entetes: [{ fr: 'Mot', en: 'Word' }, { fr: 'Documents (A : « chat noir », B : « chat blanc », C : « noir »)', en: 'Documents (A: “chat noir”, B: “chat blanc”, C: “noir”)' }]
+      entetes:
+        - fr: Mot
+          en: Word
+        - fr: Identifiants
+          en: IDs
       cellules:
-        - ['`chat`', '$\{A, B\}$']
-        - ['`noir`', '$\{A, C\}$']
-        - [{ fr: '`chat` ET `noir`', en: '`chat` AND `noir`' }, { fr: '$\{A,B\}\cap\{A,C\}=\{A\}$', en: '$\{A,B\}\cap\{A,C\}=\{A\}$', ton: ok }]
-      legende: { fr: 'On lit chaque document une seule fois pour construire l’index ; ensuite, une requête ne relit plus les textes.', en: 'Each document is read once to build the index; after that, a query never rereads the texts.' }
+        - - pin
+          - 7, 9
+        - - lac
+          - 7, 8
+      legende:
+        fr: L’index inverse le sens document → mots en mot → documents.
+        en: The index reverses document → words into word → documents.
+  - id: c2c
+    type: piege
+    fr: "Compter les occurrences de pin donnerait trois, mais compter ses documents donne deux : précise
+      toujours ce que tu comptes."
+    en: "Counting occurrences of pin gives three, but counting its documents gives two: always specify
+      what you count."
+  - id: c2d
+    type: idee
+    fr: "L’**intersection** garde les éléments communs à deux ensembles. Elle traduit « ET » : $A\\cap
+      B$ en mathématiques, `A & B` pour deux ensembles Python."
+    en: "**Intersection** keeps elements shared by two sets. It expresses “AND”: $A\\cap B$ in
+      mathematics, `A & B` for Python sets."
+  - id: c2e
+    type: exemple
+    titre:
+      fr: Deux mots exigés, un mot absent
+      en: Two required words, one missing word
+    etapes:
+      - fr: Pour pin ET lac, on croise les ensembles `{7, 9}` et `{7, 8}` ; seul sept appartient aux deux.
+        en: For pin AND lac, intersect sets `{7, 9}` and `{7, 8}`; only seven belongs to both.
+      - fr: Le mot mer est absent ; `index.get("mer", set())` fournit un ensemble vide sans erreur.
+        en: Word mer is absent; `index.get("mer", set())` supplies an empty set without an error.
+      - fr: L’intersection avec cet ensemble vide ne contient aucun document.
+        en: Intersection with that empty set contains no documents.
+    verif: |-
+      index={"pin":{7,9},"lac":{7,8}}
+      assert index["pin"] & index["lac"]=={7}
+      print(len(index.get("mer",set()) & index["pin"]))
+    sortie: "0"
+  - id: c2f
+    type: piege
+    fr: "L’union, écrite `A | B`, accepte l’un OU l’autre mot : elle ne remplace pas l’intersection pour
+      une requête ET."
+    en: "Union, written `A | B`, accepts either word: it cannot replace intersection for an AND query."
   - id: c2a
     type: idee
-    fr: 'Notre corpus : `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`, `4: ''eau riz sel''`. Les mots sont en minuscules, séparés par des espaces. Construire l’index parcourt les $T$ mots en temps moyen $O(T)$, grâce au hachage.'
-    en: 'Our corpus: `1: ''riz eau riz''`, `2: ''eau sel''`, `3: ''riz sel''`, `4: ''eau riz sel''`. Words are lowercase, separated by spaces. Building the index scans the $T$ words in average time $O(T)$, thanks to hashing.'
+    fr: "Notre corpus : `1: 'riz eau riz'`, `2: 'eau sel'`, `3: 'riz sel'`, `4: 'eau riz sel'`. Les mots
+      sont en minuscules, séparés par des espaces. Chaque occurrence est lue, même répétée."
+    en: "Our corpus: `1: 'riz eau riz'`, `2: 'eau sel'`, `3: 'riz sel'`, `4: 'eau riz sel'`. Words are
+      lowercase, separated by spaces. Every occurrence is read, including repetitions."
   - id: c3
     type: exemple
     lang: python
@@ -44,6 +119,31 @@ cartes:
         fr: '`setdefault` crée l’ensemble s’il manque ; `add` évite les identifiants répétés.'
         en: '`setdefault` creates the set if missing; `add` avoids repeated IDs.'
       - { code: "print(sorted(index['riz'] & index['eau']))", fr: 'Le résultat `[1, 4]` contient les documents ayant les deux mots.', en: 'The result `[1, 4]` contains documents with both words.' }
+  - id: c3a
+    type: idee
+    fr: Construire l’index traite chaque occurrence de mot. Le coût moyen est $O(T)$ pour $T$
+      occurrences, si hacher, comparer et ajouter coûtent un temps constant en moyenne.
+    en: Building the index processes every word occurrence. Expected cost is $O(T)$ for $T$ occurrences
+      if hashing, comparison, and insertion take constant expected time.
+  - id: c3b
+    type: exemple
+    titre:
+      fr: Compter avant de dédupliquer
+      en: Counting before deduplicating
+    etapes:
+      - fr: Le corpus miniature contient trois mots dans le document sept, un dans huit et un dans neuf.
+        en: The miniature corpus has three words in document seven, one in eight, and one in nine.
+      - fr: La construction lit donc cinq occurrences ; les ensembles conservent quatre associations
+          mot-document.
+        en: Construction therefore reads five occurrences; the sets keep four word-document associations.
+      - fr: Ce modèle suppose des mots de taille bornée ; des chaînes très longues ajoutent un coût de
+          lecture et de hachage.
+        en: This model assumes bounded word lengths; very long strings add reading and hashing costs.
+    verif: |-
+      docs={7:"pin lac pin",8:"lac",9:"pin"}
+      assert sum(len(set(t.split())) for t in docs.values())==4
+      print(sum(len(t.split()) for t in docs.values()))
+    sortie: "5"
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -60,6 +160,53 @@ cartes:
     reponses: ['3']
     verif: "docs = {1: 'riz eau riz', 2: 'eau sel', 3: 'riz sel', 4: 'eau riz sel'}\nprint(len({i for i, text in docs.items() if 'sel' in text.split()}))"
     explication: { fr: '`sel` est présent dans les documents $2$, $3$ et $4$.', en: '`sel` occurs in documents $2$, $3$, and $4$.' }
+  - id: c5a
+    type: idee
+    fr: Un ensemble ne garantit pas un affichage trié. `sorted` produit une liste ordonnée ; la
+      dichotomie peut ensuite y rechercher une position d’insertion.
+    en: A set does not guarantee sorted display. `sorted` produces an ordered list; binary search can
+      then find an insertion position in it.
+  - id: c5b
+    type: exemple
+    titre:
+      fr: Trier, chercher, confirmer
+      en: Sort, search, confirm
+    etapes:
+      - fr: Les identifiants `{12, 7, 10}` deviennent `[7, 10, 12]` avec `sorted`.
+        en: IDs `{12, 7, 10}` become `[7, 10, 12]` with `sorted`.
+      - fr: Pour onze, `bisect_left` renvoie deux ; la valeur à cette position est douze.
+        en: For eleven, `bisect_left` returns two; the value at that position is twelve.
+      - fr: "Onze est absent : vérifie la limite de l’indice, puis l’égalité, avant de conclure."
+        en: "Eleven is absent: check the index bound, then equality, before concluding."
+    verif: |-
+      from bisect import bisect_left
+      a=sorted({12,7,10}); i=bisect_left(a,11)
+      assert a==[7,10,12] and i==2
+      print(i<len(a) and a[i]==11)
+    sortie: "False"
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Indice
+          en: Index
+        - fr: Valeur triée
+          en: Sorted value
+      cellules:
+        - - "0"
+          - "7"
+        - - "1"
+          - "10"
+        - - "2"
+          - "12"
+      legende:
+        fr: La position d’insertion d’onze contient douze ; elle n’est pas une preuve de présence.
+        en: Eleven’s insertion position holds twelve; it is not proof of membership.
+  - id: c5c
+    type: piege
+    fr: Le tri ordonne les résultats ; il ne change pas quels documents satisfont la requête. Une
+      position d’insertion peut désigner la fin de liste.
+    en: Sorting orders results; it does not change which documents match the query. An insertion
+      position may designate the end of the list.
   - id: c6
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -88,6 +235,61 @@ cartes:
     reponses: ['3']
     verif: 'print(sorted({4, 1, 3})[1])'
     explication: { fr: 'Le tri produit `[1, 3, 4]` ; il rend l’ordre d’affichage explicite.', en: 'Sorting produces `[1, 3, 4]`; it makes display order explicit.' }
+  - id: c8a
+    type: idee
+    fr: Le **BFS** explore les liens par distance croissante, avec une file « premier entré, premier
+      sorti ». Marque un document dès sa découverte pour éviter les visites répétées.
+    en: "**BFS** explores links in increasing distance order using a first-in, first-out queue. Mark a
+      document when discovered to avoid repeated visits."
+  - id: c8b
+    type: exemple
+    titre:
+      fr: Filtrer par texte et proximité
+      en: Filtering by text and proximity
+    etapes:
+      - fr: Les liens sont 7 → 8, 8 → 9 et 9 → 7 ; depuis sept, les distances sont zéro, un et deux.
+        en: Links are 7 → 8, 8 → 9, and 9 → 7; from seven, distances are zero, one, and two.
+      - fr: À distance au plus un, on garde sept et huit ; pin apparaît dans sept et neuf.
+        en: Within distance one, keep seven and eight; pin appears in seven and nine.
+      - fr: L’intersection conserve seulement sept ; la marque sur sept empêche le cycle de relancer le
+          parcours.
+        en: Intersection keeps only seven; marking seven prevents the cycle from restarting the traversal.
+    verif: |-
+      from collections import deque
+      g={7:[8],8:[9],9:[7]}; d={7:0}; q=deque([7])
+      while q:
+          u=q.popleft()
+          for v in g[u]:
+              if v not in d: d[v]=d[u]+1; q.append(v)
+      assert d=={7:0,8:1,9:2}
+      print(sorted({7,9}&{v for v in d if d[v]<=1}))
+    sortie: "[7]"
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Filtre
+          en: Filter
+        - fr: Documents conservés
+          en: Documents kept
+      cellules:
+        - - fr: Mot pin
+            en: Word pin
+          - 7, 9
+        - - fr: Distance au plus un
+            en: Distance at most one
+          - 7, 8
+        - - fr: Les deux critères
+            en: Both criteria
+          - "7"
+      legende:
+        fr: Le filtre textuel et le filtre de distance sont calculés séparément.
+        en: Text and distance filters are computed separately.
+  - id: c8c
+    type: piege
+    fr: "Un document proche ne contient pas forcément le mot demandé : la distance et le contenu sont
+      deux conditions indépendantes à vérifier."
+    en: "A nearby document does not necessarily contain the requested word: distance and content are
+      separate conditions to check."
   - id: c9
     type: saisie
     note: { kind: exercise, poids: 1 }

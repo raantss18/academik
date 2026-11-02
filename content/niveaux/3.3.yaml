@@ -1,6 +1,6 @@
 id: '3.3'
 module: 3
-duree_min: 14
+duree_min: 20
 titre: { fr: 'Dichotomie', en: 'Binary search' }
 ia: { fr: 'Kintana retrouve un identifiant dans une liste triée sans tout parcourir.', en: 'Kintana finds an ID in a sorted list without scanning every item.' }
 sources:
@@ -20,19 +20,76 @@ cartes:
     explication: { fr: 'La liste est triée et $11>8$ : tous les éléments de gauche sont trop petits.', en: 'The list is sorted and $11>8$: all items on the left are too small.' }
   - id: c2
     type: idee
-    fr: 'La **dichotomie** cherche une valeur dans une liste **triée** : on regarde le milieu, puis on garde seulement la moitié où la valeur peut être. Chaque comparaison divise la zone par deux.'
-    en: '**Binary search** looks for a value in a **sorted** list: look at the middle, then keep only the half where the value can be. Each comparison halves the zone.'
+    fr: La **dichotomie** réduit une recherche en comparant la cible au milieu d’une liste triée.
+      L’ordre permet d’éliminer une partie des valeurs sans les lire.
+    en: "**Binary search** narrows a search by comparing the target with the middle of a sorted list.
+      Ordering allows some values to be discarded unread."
+  - id: c2b
+    type: exemple
+    titre:
+      fr: Pourquoi faut-il trier ?
+      en: Why must the list be sorted?
+    etapes:
+      - fr: Cherchons douze dans `[3, 6, 9, 12, 15]` ; la valeur centrale est neuf.
+        en: Find twelve in `[3, 6, 9, 12, 15]`; the middle value is nine.
+      - fr: "Tout ce qui précède neuf est inférieur à douze : on garde seulement la partie droite."
+        en: "Everything before nine is less than twelve: keep only the right part."
+      - fr: Il reste `[12, 15]`, au lieu des cinq candidats initiaux.
+        en: Only `[12, 15]` remains, instead of the original five candidates.
+    verif: |-
+      a=[3,6,9,12,15]
+      assert all(v<12 for v in a[:3])
+      print(a[3:])
+    sortie: "[12, 15]"
     figure:
-      kind: schema
-      lignes:
-        - titre: { fr: 'Chercher $17$ dans `[2, 5, 8, 11, 14, 17, 20, 23]`', en: 'Find $17$ in `[2, 5, 8, 11, 14, 17, 20, 23]`' }
-          noeuds: [{ fr: 'milieu $14<17$ : à droite', en: 'middle $14<17$: go right' }, { fr: 'milieu $20\geq17$ : à gauche', en: 'middle $20\geq17$: go left' }, { fr: 'milieu $17\geq17$ : à gauche', en: 'middle $17\geq17$: go left' }, { fr: 'position $5$ : trouvé', en: 'position $5$: found', ton: ok }]
-      legende: { fr: '$8$ éléments, $3$ comparaisons : $\log_2 8=3$.', en: '$8$ elements, $3$ comparisons: $\log_2 8=3$.' }
+      kind: tableau
+      entetes:
+        - fr: Écartés
+          en: Discarded
+        - fr: Candidats restants
+          en: Remaining candidates
+      cellules:
+        - - 3, 6, 9
+          - 12, 15
+      legende:
+        fr: L’ordre croissant justifie l’élimination.
+        en: Ascending order justifies discarding items.
+  - id: c2c
+    type: piege
+    fr: "Dans `[12, 3, 9, 6, 15]`, douze est à gauche de neuf : la même élimination perdrait la cible."
+    en: "In `[12, 3, 9, 6, 15]`, twelve is left of nine: the same elimination would lose the target."
+  - id: c2d
+    type: idee
+    fr: Les bornes sont des indices, pas des valeurs. La fenêtre $[lo,hi)$ commence à l’indice $lo$
+      inclus et s’arrête avant l’indice $hi$.
+    en: Bounds are indices, not values. Window $[lo,hi)$ starts at included index $lo$ and stops before
+      index $hi$.
+  - id: c2e
+    type: exemple
+    titre:
+      fr: Lire une fenêtre
+      en: Reading a window
+    etapes:
+      - fr: Dans `[3, 6, 9, 12, 15]`, la fenêtre $[1,4)$ contient les indices un, deux et trois.
+        en: In `[3, 6, 9, 12, 15]`, window $[1,4)$ contains indices one, two, and three.
+      - fr: Les valeurs candidates sont six, neuf et douze ; quinze est exclu.
+        en: Candidate values are six, nine, and twelve; fifteen is excluded.
+      - fr: Le milieu est `(1 + 4) // 2`, donc l’indice deux, dont la valeur est neuf.
+        en: The midpoint is `(1 + 4) // 2`, so index two, whose value is nine.
+    verif: |-
+      a=[3,6,9,12,15]
+      assert a[1:4]==[6,9,12]
+      print(a[(1+4)//2])
+    sortie: "9"
   - id: c2a
     type: idee
-    fr: 'En code, la zone est la fenêtre $[lo,hi)$ : $lo$ inclus, $hi$ exclu. Si `a[mid] < x`, on pose `lo = mid + 1`, sinon `hi = mid`. À la fin, `lo` est la première place possible de `x` : il reste à vérifier qu’il y est.'
-    en: 'In code, the zone is the window $[lo,hi)$: $lo$ included, $hi$ excluded. If `a[mid] < x`, set `lo = mid + 1`, otherwise `hi = mid`. At the end, `lo` is the first possible place of `x`: you still check it is there.'
-    exemple: { fr: 'Dans la recherche ci-dessus, la fenêtre passe de $[0,8)$ à $[5,8)$, puis $[5,6)$, puis $[5,5)$ : `lo = 5` et `a[5] == 17`.', en: 'In the search above, the window goes from $[0,8)$ to $[5,8)$, then $[5,6)$, then $[5,5)$: `lo = 5` and `a[5] == 17`.' }
+    fr: Pour chercher la première place possible de `x`, calcule `mid = (lo + hi) // 2`. Si `a[mid] <
+      x`, avance `lo` à `mid + 1` ; sinon, recule `hi` à `mid`.
+    en: To find the first possible position for `x`, compute `mid = (lo + hi) // 2`. If `a[mid] < x`,
+      move `lo` to `mid + 1`; otherwise, move `hi` to `mid`.
+    exemple:
+      fr: Avec `[3, 6, 9, 12, 15]` et la cible douze, $[0,5)$ devient $[3,5)$.
+      en: With `[3, 6, 9, 12, 15]` and target twelve, $[0,5)$ becomes $[3,5)$.
   - id: c3
     type: exemple
     lang: python
@@ -52,6 +109,58 @@ cartes:
     reponses: ['5']
     verif: 'print((2 + 9) // 2)'
     explication: { fr: 'La division entière donne $11\mathbin{//}2=5$.', en: 'Integer division gives $11\mathbin{//}2=5$.' }
+  - id: c4a
+    type: idee
+    fr: La **position d’insertion** est une place où ajouter la cible en gardant l’ordre. `bisect_left`
+      choisit la place avant toutes les valeurs égales.
+    en: An **insertion position** is a place where the target can be added while preserving order.
+      `bisect_left` chooses the position before all equal values.
+  - id: c4b
+    type: exemple
+    titre:
+      fr: Une cible absente a aussi une position
+      en: An absent target also has a position
+    etapes:
+      - fr: Dans `[2, 9, 9, 16]`, cherchons la position d’insertion de onze.
+        en: In `[2, 9, 9, 16]`, find the insertion position of eleven.
+      - fr: Les trois premières valeurs sont trop petites ; seize est la première valeur supérieure ou
+          égale.
+        en: The first three values are too small; sixteen is the first value greater than or equal to the
+          target.
+      - fr: La position vaut trois ; pour neuf, elle vaut un, avant les deux occurrences.
+        en: The position is three; for nine, it is one, before both occurrences.
+    verif: |-
+      from bisect import bisect_left
+      a=[2,9,9,16]
+      print([bisect_left(a,x) for x in (11,9)])
+    sortie: "[3, 1]"
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Cible
+          en: Target
+        - fr: Position
+          en: Position
+        - fr: Présente ?
+          en: Present?
+      cellules:
+        - - "11"
+          - "3"
+          - fr: non
+            en: no
+        - - "9"
+          - "1"
+          - fr: oui
+            en: yes
+      legende:
+        fr: La position seule ne prouve pas la présence.
+        en: Position alone does not prove membership.
+  - id: c4c
+    type: piege
+    fr: "Une égalité ne termine pas la recherche de première occurrence : garde la borne droite au
+      milieu pour explorer les égalités précédentes."
+    en: "Equality does not end a search for the first occurrence: keep the upper bound at the midpoint
+      to explore earlier equal values."
   - id: c5
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -68,6 +177,27 @@ cartes:
     reponses: ['0']
     verif: "from bisect import bisect_left\nprint(bisect_left([3, 3, 3, 9], 3))"
     explication: { fr: 'Une égalité déplace la borne droite : on obtient la première occurrence.', en: 'An equality moves the upper bound left: this finds the first occurrence.' }
+  - id: c6a
+    type: exemple
+    titre:
+      fr: Vérifier la présence sans sortir de la liste
+      en: Checking membership safely
+    etapes:
+      - fr: Avec `[2, 9, 9, 16]`, chercher vingt donne la position quatre, après le dernier élément.
+        en: With `[2, 9, 9, 16]`, searching for twenty gives position four, past the last item.
+      - fr: Vérifie d’abord `i < len(a)` ; seulement ensuite, compare `a[i]` à la cible.
+        en: First check `i < len(a)`; only then compare `a[i]` with the target.
+      - fr: "Python évalue `and` de gauche à droite et s’arrête si le premier test est faux : aucune lecture
+          hors limites."
+        en: "Python evaluates `and` left to right and stops if the first test is false: no out-of-bounds
+          read."
+    verif: |-
+      from bisect import bisect_left
+      a=[2,9,9,16]; x=20
+      i=bisect_left(a,x)
+      assert i==4
+      print(i<len(a) and a[i]==x)
+    sortie: "False"
   - id: c7
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -92,6 +222,35 @@ cartes:
     reponses: ['3']
     verif: "from bisect import bisect_left\nprint(bisect_left([2, 4, 6], 9))"
     explication: { fr: 'La position est la longueur de la liste : on insérerait à la fin, sans pouvoir lire `a[3]` avant insertion.', en: 'The position equals the list length: insertion would be at the end, but `a[3]` cannot be read before insertion.' }
+  - id: c9a
+    type: exemple
+    titre:
+      fr: Suivre les comparaisons
+      en: Tracing comparisons
+    etapes:
+      - fr: Cherchons onze dans `[2, 9, 9, 16]` avec la fenêtre initiale $[0,4)$.
+        en: Find eleven in `[2, 9, 9, 16]` with initial window $[0,4)$.
+      - fr: "L’indice deux contient neuf : la fenêtre devient $[3,4)$ ; l’indice trois contient seize : elle
+          devient $[3,3)$."
+        en: "Index two contains nine: the window becomes $[3,4)$; index three contains sixteen: it becomes
+          $[3,3)$."
+      - fr: "Les bornes sont égales : on s’arrête après deux comparaisons, avec la position trois."
+        en: "The bounds are equal: stop after two comparisons, with position three."
+    verif: |-
+      a=[2,9,9,16]; lo,hi,count=0,4,0
+      while lo<hi:
+          mid=(lo+hi)//2; count+=1
+          if a[mid]<11: lo=mid+1
+          else: hi=mid
+      assert lo==3
+      print(count)
+    sortie: "2"
+  - id: c9b
+    type: piege
+    fr: La borne logarithmique décrit la croissance du nombre de comparaisons ; elle ne promet pas
+      exactement le logarithme pour chaque cible.
+    en: The logarithmic bound describes growth in comparison count; it does not promise exactly the
+      logarithm for every target.
   - id: c10
     type: saisie
     defi: true

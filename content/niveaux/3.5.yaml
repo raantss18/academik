@@ -1,6 +1,6 @@
 id: '3.5'
 module: 3
-duree_min: 15
+duree_min: 20
 titre: { fr: 'Graphes : parcours en largeur', en: 'Graphs: breadth-first search' }
 ia: { fr: 'Kintana explore les liens entre documents par distance croissante.', en: 'Kintana explores links between documents in increasing distance order.' }
 sources:
@@ -19,24 +19,129 @@ cartes:
     verif: "from collections import deque\ng = {'A': ['B', 'C'], 'B': ['D'], 'C': [], 'D': []}\nd = {'A': 0}; q = deque(['A'])\nwhile q:\n    u = q.popleft()\n    for v in g[u]:\n        if v not in d:\n            d[v] = d[u]+1; q.append(v)\nprint(d['D'])"
     sortie: '2'
     explication: { fr: 'Le chemin A → B → D utilise deux liens ; aucun lien direct A → D n’existe.', en: 'Path A → B → D uses two links; there is no direct A → D link.' }
-  - id: c2
+  - id: c1a
     type: idee
-    fr: 'Un **graphe** relie des **sommets** (pages, documents…) par des **arêtes** (liens). Le **parcours en largeur** (BFS) visite les sommets par distance croissante : d’abord les voisins, puis les voisins des voisins.'
-    en: 'A **graph** connects **vertices** (pages, documents…) with **edges** (links). **Breadth-first search** (BFS) visits vertices by increasing distance: neighbours first, then neighbours of neighbours.'
+    fr: Un **graphe** représente des objets, appelés sommets, reliés par des liens, appelés arêtes. Un
+      lien **orienté** ne se suit que dans le sens de sa flèche.
+    en: A **graph** represents objects, called vertices, connected by links, called edges. A
+      **directed** link can only be followed in its arrow’s direction.
+  - id: c1b
+    type: exemple
+    titre:
+      fr: Lire des liens orientés
+      en: Reading directed links
+    etapes:
+      - fr: Les sommets sont P, Q, R et S ; les liens sont P → Q et Q → R.
+        en: Vertices are P, Q, R, and S; links are P → Q and Q → R.
+      - fr: Depuis P, on atteint R en deux liens ; aucun lien ne permet de revenir de R vers P.
+        en: From P, R is reached in two links; no link allows a return from R to P.
+      - fr: "S est isolé : aucun lien n’y mène et aucun lien n’en part."
+        en: "S is isolated: no link enters or leaves it."
+    verif: |-
+      g={"P":["Q"],"Q":["R"],"R":[],"S":[]}
+      assert g["P"]==["Q"] and g["Q"]==["R"]
+      assert not g["R"] and not g["S"]
+      print(sum(map(len,g.values())))
+    sortie: "2"
     figure:
       kind: tableau
-      entetes: [{ fr: 'Distance depuis Accueil', en: 'Distance from Home' }, { fr: 'Sommets', en: 'Vertices' }]
+      entetes:
+        - fr: Sommet
+          en: Vertex
+        - fr: Voisins accessibles directement
+          en: Direct outgoing neighbours
       cellules:
-        - ['$0$', { fr: 'Accueil', en: 'Home' }]
-        - ['$1$', { fr: 'Cours, Quiz', en: 'Course, Quiz' }]
-        - ['$2$', { fr: 'Exercice', en: 'Exercise' }]
-        - ['$3$', { fr: 'Corrigé', en: 'Solution', ton: ok }]
-      legende: { fr: 'Liens : Accueil → Cours, Accueil → Quiz, Cours → Exercice, Quiz → Exercice, Exercice → Corrigé.', en: 'Links: Home → Course, Home → Quiz, Course → Exercise, Quiz → Exercise, Exercise → Solution.' }
+        - - P
+          - Q
+        - - Q
+          - R
+        - - R
+          - fr: aucun
+            en: none
+        - - S
+          - fr: aucun
+            en: none
+      legende:
+        fr: Une liste de voisins décrit les liens qui partent de chaque sommet.
+        en: A neighbour list describes links leaving each vertex.
+  - id: c1c
+    type: piege
+    fr: "P → Q n’autorise pas Q → P : un chemin doit respecter chaque flèche. Un sommet isolé existe
+      même sans lien."
+    en: "P → Q does not allow Q → P: a path must respect every arrow. An isolated vertex exists even
+      without links."
+  - id: c2
+    type: idee
+    fr: La **distance** est ici le plus petit nombre de liens d’un chemin depuis le départ. Le
+      **parcours en largeur**, abrégé BFS, découvre les sommets par distance croissante.
+    en: Here, **distance** is the smallest number of links along a path from the start. **Breadth-first
+      search**, abbreviated BFS, discovers vertices in increasing distance order.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Distance depuis Accueil
+          en: Distance from Home
+        - fr: Sommets
+          en: Vertices
+      cellules:
+        - - $0$
+          - fr: Accueil
+            en: Home
+        - - $1$
+          - fr: Cours, Quiz
+            en: Course, Quiz
+        - - $2$
+          - fr: Exercice
+            en: Exercise
+        - - $3$
+          - fr: Corrigé
+            en: Solution
+            ton: ok
+      legende:
+        fr: "Liens : Accueil → Cours, Accueil → Quiz, Cours → Exercice, Quiz → Exercice, Exercice →
+          Corrigé."
+        en: "Links: Home → Course, Home → Quiz, Course → Exercise, Quiz → Exercise, Exercise → Solution."
   - id: c2a
     type: idee
-    fr: 'BFS range les sommets à visiter dans une **file** : premier entré, premier sorti. Il **marque** chaque sommet dès qu’il l’ajoute, pour ne jamais l’ajouter deux fois. Coût : $O(V+E)$ pour $V$ sommets et $E$ arêtes.'
-    en: 'BFS keeps the vertices to visit in a **queue**: first in, first out. It **marks** each vertex as soon as it adds it, so it is never added twice. Cost: $O(V+E)$ for $V$ vertices and $E$ edges.'
-    exemple: { fr: 'Ci-dessus, Exercice est atteint par Cours puis par Quiz : marqué dès la première fois, il n’entre qu’une fois dans la file.', en: 'Above, Exercise is reached through Course and then through Quiz: marked the first time, it enters the queue only once.' }
+    fr: "Une **file** traite le premier élément arrivé avant les suivants : c’est l’ordre FIFO, «
+      premier entré, premier sorti ». En Python, `deque` ajoute à droite avec `append` et retire à
+      gauche avec `popleft`."
+    en: "A **queue** processes the first item to arrive before later items: this is FIFO, “first in,
+      first out”. Python’s `deque` appends on the right with `append` and removes on the left with
+      `popleft`."
+    exemple:
+      fr: Une file contenant P puis Q sort P d’abord ; ajouter R laisse Q avant R.
+      en: A queue holding P then Q removes P first; adding R leaves Q before R.
+  - id: c2b
+    type: exemple
+    titre:
+      fr: Faire avancer une file
+      en: Advancing a queue
+    etapes:
+      - fr: La file contient `[P, Q, R]` ; P attend depuis le plus longtemps.
+        en: The queue holds `[P, Q, R]`; P has been waiting longest.
+      - fr: "Retire P à gauche, puis ajoute S à droite : la file devient `[Q, R, S]`."
+        en: "Remove P on the left, then add S on the right: the queue becomes `[Q, R, S]`."
+      - fr: Q sera traité avant R et S ; retirer à droite casserait cet ordre.
+        en: Q will be processed before R and S; removing on the right would break this order.
+    verif: |-
+      from collections import deque
+      q=deque("PQR"); assert q.popleft()=="P"
+      q.append("S")
+      print(" ".join(q))
+    sortie: Q R S
+  - id: c2c
+    type: idee
+    fr: "**Marquer** un sommet signifie mémoriser qu’il est découvert. BFS le marque dès son ajout à la
+      file ; plusieurs liens vers ce sommet ne créent pas plusieurs ajouts."
+    en: "**Marking** a vertex means remembering it has been discovered. BFS marks it when enqueuing it;
+      several links to that vertex do not cause multiple enqueues."
+  - id: c2d
+    type: piege
+    fr: Marquer seulement en sortant de la file permet des ajouts répétés avant cette sortie. Marque dès
+      la découverte, y compris le sommet de départ.
+    en: Marking only when dequeuing allows repeated enqueues before removal. Mark at discovery,
+      including the starting vertex.
   - id: c3
     type: exemple
     lang: python
@@ -70,6 +175,28 @@ cartes:
     verif: "from collections import deque\ng = {'A': ['B', 'C'], 'B': ['D'], 'C': ['D'], 'D': []}\nq = deque(['A']); seen = {'A'}; order = []\nwhile q:\n    u = q.popleft(); order.append(u)\n    for v in g[u]:\n        if v not in seen:\n            seen.add(v); q.append(v)\nprint(' '.join(order))"
     sortie: 'A B C D'
     explication: { fr: 'B et C étaient dans la file avant D ; les sommets de distance $1$ passent avant ceux de distance $2$.', en: 'B and C entered the queue before D; vertices at distance $1$ precede those at distance $2$.' }
+  - id: c5a
+    type: exemple
+    titre:
+      fr: Un cycle sans boucle infinie
+      en: A cycle without an infinite loop
+    etapes:
+      - fr: Les liens P → Q et Q → P forment un cycle ; marque P au départ.
+        en: Links P → Q and Q → P form a cycle; mark P at the start.
+      - fr: Depuis P, découvre Q à distance un et marque-le avant de le mettre dans la file.
+        en: From P, discover Q at distance one and mark it before putting it in the queue.
+      - fr: "Depuis Q, P est déjà marqué : aucun nouvel ajout ; la file se vide après deux sorties."
+        en: "From Q, P is already marked: no new enqueue; the queue empties after two removals."
+    verif: |-
+      from collections import deque
+      g={"P":["Q"],"Q":["P"]}; d={"P":0}; q=deque(["P"]); count=0
+      while q:
+          u=q.popleft(); count+=1
+          for v in g[u]:
+              if v not in d: d[v]=d[u]+1; q.append(v)
+      assert d=={"P":0,"Q":1}
+      print(count)
+    sortie: "2"
   - id: c6
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -78,6 +205,18 @@ cartes:
     reponses: ['3']
     verif: "from collections import deque\ng = {'A': ['B'], 'B': ['C'], 'C': ['A']}\nq = deque(['A']); seen = {'A'}\nwhile q:\n    for v in g[q.popleft()]:\n        if v not in seen:\n            seen.add(v); q.append(v)\nprint(len(seen))"
     explication: { fr: 'Le marquage empêche de réinsérer A ; chaque sommet entre une seule fois.', en: 'Marking prevents A from being enqueued again; each vertex enters once.' }
+  - id: c6a
+    type: idee
+    fr: Un sommet est **inaccessible** si aucun chemin ne le relie au départ dans le bon sens. BFS ne
+      lui attribue aucune distance ; ce n’est pas une distance zéro.
+    en: A vertex is **unreachable** if no correctly directed path connects the start to it. BFS assigns
+      it no distance; this is not distance zero.
+  - id: c6b
+    type: piege
+    fr: Avec P → Q et S isolé, seule la distance de P vaut zéro au départ ; donner zéro à S le
+      confondrait avec P.
+    en: With P → Q and isolated S, only P has distance zero at the start; assigning zero to S would
+      confuse it with P.
   - id: c7
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -86,10 +225,72 @@ cartes:
     reponses: ['1']
     verif: "from collections import deque\ng = {'A': ['B'], 'B': ['C'], 'C': [], 'D': []}\nseen = {'A'}; q = deque(['A'])\nwhile q:\n    for v in g[q.popleft()]:\n        if v not in seen:\n            seen.add(v); q.append(v)\nprint(len(set(g)-seen))"
     explication: { fr: 'D n’a aucun chemin depuis A ; il ne reçoit pas de distance dans ce parcours.', en: 'D has no path from A; it receives no distance in this traversal.' }
+  - id: c7a
+    type: idee
+    fr: Avec des listes de voisins, chaque sommet découvert sort une fois de la file ; ses liens
+      sortants sont examinés une fois. Le coût est $O(V+E)$, pour $V$ sommets et $E$ arêtes.
+    en: With neighbour lists, each discovered vertex leaves the queue once; its outgoing links are
+      examined once. The cost is $O(V+E)$, for $V$ vertices and $E$ edges.
+  - id: c7b
+    type: exemple
+    titre:
+      fr: Compter sommets et liens séparément
+      en: Counting vertices and links separately
+    etapes:
+      - fr: Dans le cycle P → Q → P, il y a deux sommets et deux liens orientés.
+        en: In cycle P → Q → P, there are two vertices and two directed links.
+      - fr: Le parcours sort deux sommets de la file et examine deux liens, dont le retour vers P déjà
+          marqué.
+        en: The traversal removes two vertices from the queue and examines two links, including the return
+          to already marked P.
+      - fr: La borne additionne ces deux tailles ; elle ne signifie pas un nombre exact d’instructions
+          Python.
+        en: The bound adds these two sizes; it does not mean an exact count of Python instructions.
+    verif: |-
+      g={"P":["Q"],"Q":["P"]}
+      print(len(g)+sum(map(len,g.values())))
+    sortie: "4"
   - id: c8
     type: piege
     fr: 'BFS minimise le nombre de liens, pas un coût variable : une arête coûteuse peut être plus chère que plusieurs arêtes bon marché.'
     en: 'BFS minimizes the number of links, not a varying cost: one expensive edge may cost more than several cheap edges.'
+  - id: c8a
+    type: exemple
+    titre:
+      fr: Nombre de liens et coût ne coïncident pas
+      en: Link count and cost can differ
+    etapes:
+      - fr: Un lien P → R coûte huit ; P → Q et Q → R coûtent chacun trois.
+        en: Link P → R costs eight; P → Q and Q → R each cost three.
+      - fr: "BFS préfère le lien direct : un seul lien, mais un coût de huit."
+        en: "BFS prefers the direct link: only one link, but a cost of eight."
+      - fr: "Le détour coûte six avec deux liens : minimiser les liens ne minimise donc pas toujours le
+          coût."
+        en: "The detour costs six with two links: minimizing links therefore does not always minimize cost."
+    verif: |-
+      paths=[(1,8),(2,3+3)]
+      assert min(p[1] for p in paths)==6
+      print(min(paths,key=lambda p:p[0])[1])
+    sortie: "8"
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Chemin
+          en: Path
+        - fr: Liens
+          en: Links
+        - fr: Coût
+          en: Cost
+      cellules:
+        - - P → R
+          - "1"
+          - "8"
+        - - P → Q → R
+          - "2"
+          - "6"
+      legende:
+        fr: BFS optimise la colonne des liens, pas celle des coûts variables.
+        en: BFS optimizes the link column, not the varying-cost column.
   - id: c9
     type: qcm
     note: { kind: exercise, poids: 1 }

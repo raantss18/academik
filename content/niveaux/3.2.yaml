@@ -1,6 +1,6 @@
 id: '3.2'
 module: 3
-duree_min: 13
+duree_min: 20
 titre: { fr: 'Trier', en: 'Sorting' }
 ia:
   {
@@ -49,17 +49,50 @@ cartes:
         - ['Mamy $1$', { fr: 'Lova $3$', en: 'Lova $3$', ton: ok }]
         - ['Nirina $3$', { fr: 'Nirina $3$', en: 'Nirina $3$', ton: ok }]
       legende: { fr: 'Lova et Nirina ont le même score : Lova était avant, elle reste avant.', en: 'Lova and Nirina have the same score: Lova was first, she stays first.' }
+  - id: c2b
+    type: exemple
+    titre:
+      fr: Une clé commune, deux documents
+      en: One shared key, two documents
+    etapes:
+      - fr: Les documents sont `(P, 6), (Q, 2), (R, 6)` ; le nombre est la clé de tri.
+        en: Documents are `(P, 6), (Q, 2), (R, 6)`; the number is the sorting key.
+      - fr: Le tri croissant place Q en premier, car sa clé vaut deux.
+        en: Ascending sorting puts Q first because its key is two.
+      - fr: "Un tri stable conserve P avant R : le résultat est Q, P, R."
+        en: "A stable sort keeps P before R: the result is Q, P, R."
+    verif: |-
+      items=[('P',6),('Q',2),('R',6)]
+      print(' '.join(x[0] for x in sorted(items,key=lambda x:x[1])))
+    sortie: Q P R
+  - id: c2c
+    type: piege
+    fr: "Deux documents ayant le même score restent deux documents : trier ne retire ni les égalités ni
+      les doublons."
+    en: "Two documents with equal scores remain two documents: sorting removes neither ties nor
+      duplicates."
   - id: c2a
     type: idee
-    fr: 'Deux méthodes classiques. L’**insertion** glisse chaque élément à sa place dans le début déjà trié. La **fusion** coupe en deux, trie chaque moitié, puis fusionne.'
-    en: 'Two classic methods. **Insertion** slides each element into place in the already sorted start. **Merge sort** splits in two, sorts each half, then merges.'
+    fr: Le **tri par insertion** agrandit un début de liste déjà trié. Pour placer la valeur suivante,
+      il décale les valeurs plus grandes vers la droite.
+    en: "**Insertion sort** grows an already sorted prefix. To place the next value, it shifts larger
+      values to the right."
     figure:
       kind: tableau
-      entetes: [{ fr: 'Méthode', en: 'Method' }, { fr: 'Pire cas', en: 'Worst case' }, { fr: 'Pour $n=1000$ (ordre de grandeur)', en: 'For $n=1000$ (order of magnitude)' }]
+      entetes:
+        - fr: Début trié
+          en: Sorted prefix
+        - fr: Valeur suivante
+          en: Next value
+        - fr: Après insertion
+          en: After insertion
       cellules:
-        - [{ fr: 'Insertion', en: 'Insertion' }, '$O(n^2)$', { fr: 'environ $10^6$ comparaisons', en: 'about $10^6$ comparisons', ton: bad }]
-        - [{ fr: 'Fusion', en: 'Merge' }, '$O(n\log n)$', { fr: 'environ $10^4$ comparaisons', en: 'about $10^4$ comparisons', ton: ok }]
-      legende: { fr: 'On suppose qu’une comparaison coûte toujours le même temps.', en: 'We assume a comparison always takes the same time.' }
+        - - "[1, 6]"
+          - "4"
+          - "[1, 4, 6]"
+      legende:
+        fr: Le début trié gagne un élément à chaque insertion.
+        en: The sorted prefix gains one item at each insertion.
   - id: c3
     type: exemple
     lang: python
@@ -119,6 +152,12 @@ cartes:
         fr: '$4$, $6$ et $8$ se décalent ; $1$ reste en place.',
         en: '$4$, $6$, and $8$ shift; $1$ stays in place.'
       }
+  - id: c5a
+    type: piege
+    fr: Dans `[1, 6]`, insérer quatre demande de déplacer six avant d’écrire quatre ; écraser six ferait
+      perdre un élément.
+    en: In `[1, 6]`, inserting four requires moving six before writing four; overwriting six would lose
+      an item.
   - id: c6
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -140,6 +179,60 @@ cartes:
         en: 'B has the smallest score; A remains before C because their scores are
           equal.'
       }
+  - id: c6a
+    type: idee
+    fr: "**Fusionner** deux listes triées signifie produire une seule liste triée contenant tous leurs
+      éléments. Compare leurs premiers éléments restants, puis prends le plus petit."
+    en: "**Merging** two sorted lists means producing one sorted list containing all their items.
+      Compare their first remaining items, then take the smaller one."
+  - id: c6b
+    type: exemple
+    titre:
+      fr: Fusionner sans retrier
+      en: Merging without sorting again
+    etapes:
+      - fr: Les listes `[0, 6]` et `[3, 7]` sont déjà triées ; compare zéro et trois, puis prends zéro.
+        en: Lists `[0, 6]` and `[3, 7]` are already sorted; compare zero and three, then take zero.
+      - fr: "Compare six et trois : prends trois ; compare six et sept : prends six."
+        en: "Compare six and three: take three; compare six and seven: take six."
+      - fr: La première liste est épuisée ; ajoute le sept restant pour obtenir `[0, 3, 6, 7]`.
+        en: The first list is exhausted; append the remaining seven to obtain `[0, 3, 6, 7]`.
+    verif: |-
+      a,b=[0,6],[3,7]
+      i=j=0
+      out=[]
+      while i<len(a) and j<len(b):
+          if a[i]<=b[j]: out.append(a[i]); i+=1
+          else: out.append(b[j]); j+=1
+      out.extend(a[i:]);out.extend(b[j:])
+      print(out)
+    sortie: "[0, 3, 6, 7]"
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Choix
+          en: Choice
+        - fr: Reste à gauche
+          en: Left remaining
+        - fr: Reste à droite
+          en: Right remaining
+      cellules:
+        - - "0"
+          - "[6]"
+          - "[3, 7]"
+        - - "3"
+          - "[6]"
+          - "[7]"
+        - - "6"
+          - "[]"
+          - "[7]"
+      legende:
+        fr: Quand une liste est vide, copie le reste de l’autre.
+        en: When one list is empty, copy the rest of the other.
+  - id: c6c
+    type: piege
+    fr: "Concaténer `[0, 6]` et `[3, 7]` donne `[0, 6, 3, 7]` : ce n’est pas une fusion triée."
+    en: "Concatenating `[0, 6]` and `[3, 7]` gives `[0, 6, 3, 7]`: this is not a sorted merge."
   - id: c7
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -174,12 +267,64 @@ cartes:
         fr: 'Prends chaque fois la plus petite tête : `[1, 2, 4, 5, 8, 9]`.',
         en: 'Take the smaller head each time: `[1, 2, 4, 5, 8, 9]`.'
       }
+  - id: c7a
+    type: idee
+    fr: Le **tri fusion** sépare la liste en moitiés jusqu’aux listes d’un élément, puis fusionne les
+      résultats. Une liste d’un élément est déjà triée.
+    en: "**Merge sort** splits the list into halves down to single-item lists, then merges the results.
+      A single-item list is already sorted."
+  - id: c7b
+    type: exemple
+    titre:
+      fr: Des petites listes vers la liste entière
+      en: From small lists to the whole list
+    etapes:
+      - fr: Sépare `[6, 0, 7, 3]` en `[6, 0]` et `[7, 3]`, puis en quatre listes d’un élément.
+        en: Split `[6, 0, 7, 3]` into `[6, 0]` and `[7, 3]`, then into four single-item lists.
+      - fr: Les premières fusions donnent `[0, 6]` et `[3, 7]` ; la dernière donne `[0, 3, 6, 7]`.
+        en: The first merges give `[0, 6]` and `[3, 7]`; the last gives `[0, 3, 6, 7]`.
+      - fr: Chaque étage traite tous les éléments ; le nombre d’étages croît comme le logarithme de la
+          taille.
+        en: Each level processes all items; the number of levels grows like the logarithm of the size.
+    verif: print(sorted([6,0,7,3]))
+    sortie: "[0, 3, 6, 7]"
+  - id: c7c
+    type: idee
+    fr: Le **pire cas** est l’entrée la plus coûteuse pour une taille donnée. À comparaison de coût
+      constant, l’insertion est en $O(n^2)$ au pire ; le tri fusion est en $O(n\log n)$.
+    en: The **worst case** is the most costly input of a given size. With constant-cost comparisons,
+      insertion sort is worst-case $O(n^2)$; merge sort is $O(n\log n)$.
+  - id: c7d
+    type: piege
+    fr: "La stabilité ne mesure pas la vitesse : elle décrit seulement l’ordre conservé entre clés
+      égales."
+    en: "Stability does not measure speed: it only describes the preserved order among equal keys."
   - id: c8
     type: piege
     fr: '`a.sort()` modifie `a` et renvoie `None` ; `sorted(a)` renvoie une nouvelle
       liste triée, sans modifier `a`.'
     en: '`a.sort()` modifies `a` and returns `None`; `sorted(a)` returns a new
       sorted list without modifying `a`.'
+  - id: c8a
+    type: exemple
+    titre:
+      fr: Nouvelle liste ou modification sur place
+      en: New list or in-place change
+    etapes:
+      - fr: Pars de `a = [8, 2, 5]` ; `b = sorted(a)` crée `[2, 5, 8]` dans une autre liste.
+        en: Start with `a = [8, 2, 5]`; `b = sorted(a)` creates `[2, 5, 8]` in another list.
+      - fr: La liste `a` conserve `[8, 2, 5]` ; en revanche, `a.sort()` transforme directement `a`.
+        en: List `a` keeps `[8, 2, 5]`; in contrast, `a.sort()` changes `a` directly.
+      - fr: Le résultat renvoyé par `a.sort()` est `None`, pas la liste triée.
+        en: The return value of `a.sort()` is `None`, not the sorted list.
+    verif: |-
+      a=[8,2,5]
+      b=sorted(a)
+      assert a==[8,2,5] and b==[2,5,8]
+      r=a.sort()
+      assert a==b
+      print(r)
+    sortie: None
   - id: c9
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -196,6 +341,28 @@ cartes:
         fr: 'Seule la nouvelle liste `b` est triée ; `a` reste intacte.',
         en: 'Only the new list `b` is sorted; `a` remains unchanged.'
       }
+  - id: c9a
+    type: exemple
+    titre:
+      fr: Compter les décalages successifs
+      en: Counting successive shifts
+    etapes:
+      - fr: Dans `[4, 2, 0]`, insérer deux devant quatre demande un décalage.
+        en: In `[4, 2, 0]`, inserting two before four requires one shift.
+      - fr: Le début est maintenant `[2, 4]` ; insérer zéro demande deux décalages.
+        en: The prefix is now `[2, 4]`; inserting zero requires two shifts.
+      - fr: "Au total, on a déplacé trois éléments : on additionne les décalages de chaque insertion."
+        en: "In total, three items were shifted: add the shifts from each insertion."
+    verif: |-
+      a=[4,2,0]
+      shifts=0
+      for i in range(1,len(a)):
+          x,j=a[i],i-1
+          while j>=0 and a[j]>x:
+              a[j+1]=a[j]; shifts+=1; j-=1
+          a[j+1]=x
+      print(shifts)
+    sortie: "3"
   - id: c10
     type: saisie
     defi: true

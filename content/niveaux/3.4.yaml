@@ -1,11 +1,18 @@
 id: '3.4'
 module: 3
-duree_min: 13
+duree_min: 20
 titre: { fr: 'Hachage', en: 'Hashing' }
 ia: { fr: 'Kintana associe chaque mot aux identifiants de ses documents.', en: 'Kintana maps each word to its document IDs.' }
 sources:
-  - { titre: 'Pat Morin — Open Data Structures, Hash Tables', url: 'https://opendatastructures.org/ods-python/5_Hash_Tables.html', licence: 'CC BY 2.5 CA ; exercices originaux' }
-  - { titre: 'Python — Data model, object.__hash__', url: 'https://docs.python.org/3/reference/datamodel.html#object.__hash__', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
+  - titre: Pat Morin — Open Data Structures, Hash Tables
+    url: https://opendatastructures.org/ods-python/5_Hash_Tables.html
+    licence: CC BY 2.5 CA ; exercices originaux
+  - titre: Python — Data model, object.__hash__
+    url: https://docs.python.org/3/reference/datamodel.html#object.__hash__
+    licence: PSF-2.0 ; exemples de la documentation également sous 0BSD
+  - titre: Python — Data structures, sets and dictionaries
+    url: https://docs.python.org/3/tutorial/datastructures.html
+    licence: PSF-2.0 ; exemples également sous 0BSD ; exemples pédagogiques originaux
 cartes:
   - id: c1
     type: tentative
@@ -19,6 +26,51 @@ cartes:
     verif: 'print((7 % 5, 12 % 5))'
     sortie: '(2, 2)'
     explication: { fr: 'Les restes sont égaux : c’est une collision, pas une égalité de clés.', en: 'The remainders match: this is a collision, not equality of keys.' }
+  - id: c1a
+    type: idee
+    fr: "Une **clé** sert à retrouver une valeur : un mot peut être la clé, ses documents la valeur. Un
+      **seau** est un emplacement de rangement dans notre table jouet."
+    en: "A **key** retrieves a value: a word can be the key and its documents the value. A **bucket** is
+      a storage location in our toy table."
+  - id: c1b
+    type: idee
+    fr: Le **modulo** est le reste d’une division entière. Ici, $h(k)=k\bmod m$ se lit « le seau de la
+      clé $k$ est son reste modulo $m$ ».
+    en: "**Modulo** is the remainder of integer division. Here, $h(k)=k\\bmod m$ means “the bucket for
+      key $k$ is its remainder modulo $m$”."
+  - id: c1c
+    type: exemple
+    titre:
+      fr: Transformer une clé en numéro de seau
+      en: Turning a key into a bucket number
+    etapes:
+      - fr: Utilisons six seaux, numérotés de zéro à cinq, et la clé vingt.
+        en: Use six buckets, numbered zero through five, and key twenty.
+      - fr: "La division donne $20=3\\times6+2$ : le reste vaut deux, donc on choisit le seau deux."
+        en: "Division gives $20=3\\times6+2$: the remainder is two, so choose bucket two."
+      - fr: La clé vingt-six donne aussi deux ; ce numéro ne suffit donc pas à identifier la clé.
+        en: Key twenty-six also gives two; this number therefore does not uniquely identify the key.
+    verif: print([k%6 for k in (20,26)])
+    sortie: "[2, 2]"
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Clé
+          en: Key
+        - fr: Division
+          en: Division
+        - fr: Seau
+          en: Bucket
+      cellules:
+        - - "20"
+          - $3\times6+2$
+          - "2"
+        - - "26"
+          - $4\times6+2$
+          - "2"
+      legende:
+        fr: Le reste choisit le seau ; la clé complète distingue les entrées.
+        en: The remainder chooses the bucket; the full key distinguishes entries.
   - id: c2
     type: idee
     fr: 'Le **hachage** transforme une clé en un numéro de **seau** où la ranger. Deux clés différentes peuvent tomber dans le même seau : c’est une **collision**, on garde alors les deux.'
@@ -31,11 +83,22 @@ cartes:
         - ['$1$, $2$, $4$', { fr: 'vides', en: 'empty' }]
         - ['$3$', { fr: '$3$, $8$, $13$ : collisions', en: '$3$, $8$, $13$: collisions', ton: bad }]
       legende: { fr: 'Pour retrouver $13$, on va au seau $3$ puis on compare les clés une à une.', en: 'To find $13$, go to bucket $3$, then compare the keys one by one.' }
+  - id: c2b
+    type: piege
+    fr: "Vingt et vingt-six ont le même seau dans ce modèle, mais restent deux clés distinctes :
+      conserve leurs deux valeurs."
+    en: "Twenty and twenty-six share a bucket in this model but remain distinct keys: keep both values."
   - id: c2a
     type: idee
-    fr: 'Si les clés se répartissent bien, chaque seau reste petit : une recherche coûte $O(1)$ **en moyenne**. Si toutes tombent dans le même seau, elle coûte $O(n)$ : c’est le **pire cas**.'
-    en: 'If keys spread out well, each bucket stays small: a lookup costs $O(1)$ **on average**. If they all land in the same bucket, it costs $O(n)$: that is the **worst case**.'
-    exemple: { fr: 'Avec $h(k)=k\bmod5$, les clés $5, 10, 15, 20$ vont toutes au seau $0$ : chercher $20$ demande $4$ comparaisons.', en: 'With $h(k)=k\bmod5$, keys $5, 10, 15, 20$ all go to bucket $0$: finding $20$ takes $4$ comparisons.' }
+    fr: Une recherche a un coût moyen constant, $O(1)$, si le hachage répartit bien les clés et si le
+      nombre de clés par seau reste borné. Hacher et comparer doivent aussi coûter un temps constant.
+    en: A lookup has constant expected cost, $O(1)$, if hashing distributes keys well and the number of
+      keys per bucket stays bounded. Hashing and comparison must also take constant time.
+    exemple:
+      fr: "Avec $h(k)=k\\bmod5$, les clés $5, 10, 15, 20$ vont toutes au seau $0$ : chercher $20$ demande
+        $4$ comparaisons."
+      en: "With $h(k)=k\\bmod5$, keys $5, 10, 15, 20$ all go to bucket $0$: finding $20$ takes $4$
+        comparisons."
   - id: c3
     type: exemple
     lang: python
@@ -46,6 +109,23 @@ cartes:
         fr: 'Le seau $2$ contient maintenant les deux paires.'
         en: 'Bucket $2$ now contains both pairs.'
       - { code: "print(next(value for key, value in table[12 % 5] if key == 12))", fr: 'La comparaison de clés retrouve B sans confondre $7$ et $12$.', en: 'Comparing keys retrieves B without confusing $7$ and $12$.' }
+  - id: c3a
+    type: exemple
+    titre:
+      fr: Chercher une clé absente dans un seau occupé
+      en: Looking for an absent key in an occupied bucket
+    etapes:
+      - fr: Le seau deux contient les paires `(20, A)` et `(26, B)` dans cet ordre.
+        en: Bucket two contains pairs `(20, A)` and `(26, B)` in that order.
+      - fr: La clé trente-deux vise aussi le seau deux ; compare-la à vingt, puis à vingt-six.
+        en: Key thirty-two also targets bucket two; compare it with twenty, then twenty-six.
+      - fr: "Les deux comparaisons échouent : la clé est absente, même si le seau existe."
+        en: "Both comparisons fail: the key is absent even though the bucket exists."
+    verif: |-
+      bucket=[(20,"A"),(26,"B")]
+      assert 32%6==2
+      print(next((v for k,v in bucket if k==32),None))
+    sortie: None
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -62,6 +142,54 @@ cartes:
     reponses: ['3']
     verif: "table = [[] for _ in range(5)]\nfor k in [1, 6, 11, 3]: table[k % 5].append(k)\nprint(len(table[1]))"
     explication: { fr: '$1$, $6$ et $11$ ont le même reste ; la clé $3$ est dans un autre seau.', en: '$1$, $6$, and $11$ share a remainder; key $3$ is in another bucket.' }
+  - id: c5a
+    type: idee
+    fr: Un **ensemble** conserve chaque valeur une seule fois. Pour un mot, stocker un ensemble
+      d’identifiants compte les documents distincts, pas les répétitions du mot.
+    en: A **set** keeps each value only once. For a word, storing a set of IDs counts distinct
+      documents, not repeated occurrences of the word.
+  - id: c5b
+    type: exemple
+    titre:
+      fr: Associer un mot à ses documents
+      en: Mapping a word to its documents
+    etapes:
+      - fr: "Les documents sont `8: bleu bleu` et `9: bleu vert`."
+        en: "Documents are `8: bleu bleu` and `9: bleu vert`."
+      - fr: "Pour bleu, ajoute huit, encore huit, puis neuf dans un ensemble : il contient seulement huit et
+          neuf."
+        en: "For bleu, add eight, eight again, then nine to a set: it contains only eight and nine."
+      - fr: Le dictionnaire associe bleu à cet ensemble ; trois occurrences donnent deux documents
+          distincts.
+        en: The dictionary maps bleu to this set; three occurrences give two distinct documents.
+    verif: |-
+      docs={8:"bleu bleu",9:"bleu vert"}; index={}
+      for doc,text in docs.items():
+          for word in text.split(): index.setdefault(word,set()).add(doc)
+      assert index["bleu"]=={8,9}
+      print(len(index["bleu"]))
+    sortie: "2"
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Mot
+          en: Word
+        - fr: Documents
+          en: Documents
+      cellules:
+        - - bleu
+          - 8, 9
+        - - vert
+          - "9"
+      legende:
+        fr: Le dictionnaire garde le mot ; chaque ensemble déduplique ses identifiants.
+        en: The dictionary keeps the word; each set deduplicates its IDs.
+  - id: c5c
+    type: piege
+    fr: Ajouter huit deux fois dans un ensemble ne crée pas deux documents ; conserver une liste de
+      chaque occurrence répondrait à une autre question.
+    en: Adding eight twice to a set does not create two documents; keeping a list of every occurrence
+      would answer a different question.
   - id: c6
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -70,6 +198,16 @@ cartes:
     reponses: ['2']
     verif: "index = {'chat': {2, 5}}\nindex['chat'].add(2)\nprint(len(index['chat']))"
     explication: { fr: 'Un ensemble ne stocke chaque identifiant qu’une fois ; répéter un mot ne crée pas un nouveau document.', en: 'A set stores each ID only once; repeating a word does not create a new document.' }
+  - id: c6a
+    type: idee
+    fr: Python peut changer le hachage d’une même chaîne entre deux processus. Un hachage interne
+      facilite le rangement ; il ne remplace pas un identifiant durable.
+    en: Python may change the hash of the same string between processes. An internal hash helps storage;
+      it does not replace a persistent identifier.
+    exemple:
+      fr: On peut attribuer explicitement l’identifiant vingt au mot bleu, puis sauvegarder cette
+        association.
+      en: We can explicitly assign ID twenty to the word bleu, then save that mapping.
   - id: c7
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -84,6 +222,35 @@ cartes:
     type: piege
     fr: 'Une collision n’autorise pas à écraser une autre clé : compare les clés ; un hachage de table n’est pas non plus un chiffrement.'
     en: 'A collision does not permit overwriting another key: compare keys; a table hash is not encryption either.'
+  - id: c8a
+    type: idee
+    fr: Le **pire cas** survient si toutes les clés visent le même seau. Une recherche séquentielle peut
+      alors comparer toutes les clés, soit un coût $O(n)$ pour $n$ clés.
+    en: The **worst case** occurs when all keys target one bucket. A sequential lookup may then compare
+      every key, costing $O(n)$ for $n$ keys.
+  - id: c8b
+    type: exemple
+    titre:
+      fr: Un seau qui devient une liste
+      en: A bucket that becomes a list
+    etapes:
+      - fr: Avec six seaux, les clés `[2, 8, 14]` vont toutes au seau deux.
+        en: With six buckets, keys `[2, 8, 14]` all go to bucket two.
+      - fr: "Chercher quatorze dans cet ordre demande trois comparaisons : avec deux, huit, puis quatorze."
+        en: "Finding fourteen in this order takes three comparisons: against two, eight, then fourteen."
+      - fr: Un seul calcul de seau ne garantit donc pas une seule comparaison de clés.
+        en: One bucket calculation therefore does not guarantee just one key comparison.
+    verif: |-
+      bucket=[2,8,14]
+      assert all(k%6==2 for k in bucket)
+      print(next(i+1 for i,k in enumerate(bucket) if k==14))
+    sortie: "3"
+  - id: c8c
+    type: piege
+    fr: "Un nombre fixe de seaux ne suffit pas quand les données grandissent : les listes peuvent
+      s’allonger même avec une répartition équilibrée."
+    en: "A fixed number of buckets is not enough as data grows: lists may grow longer even with an even
+      distribution."
   - id: c9
     type: saisie
     note: { kind: exercise, poids: 1 }

@@ -1,6 +1,6 @@
 id: '3.1'
 module: 3
-duree_min: 12
+duree_min: 20
 titre: { fr: 'Complexité', en: 'Complexity' }
 ia: { fr: 'Kintana estime comment le coût de recherche grandit avec ses documents.', en: 'Kintana estimates how search cost grows with its documents.' }
 sources:
@@ -20,20 +20,88 @@ cartes:
     explication: { fr: 'Pour chaque document, tu fais dix comparaisons : $10\times10=100$.', en: 'For each document, you make ten comparisons: $10\times10=100$.' }
   - id: c2
     type: idee
-    fr: 'La **complexité** compte combien d’opérations fait un programme quand la taille $n$ des données grandit. Chaque opération choisie (lire, comparer…) coûte une unité.'
-    en: '**Complexity** counts how many operations a program does as the size $n$ of the data grows. Each chosen operation (read, compare…) costs one unit.'
+    fr: La **complexité** compte combien d’opérations fait un programme quand la taille $n$ des données
+      grandit. Chaque opération choisie (lire, comparer…) coûte une unité.
+    en: "**Complexity** counts how many operations a program does as the size $n$ of the data grows.
+      Each chosen operation (read, compare…) costs one unit."
+  - id: c2b
+    type: exemple
+    titre:
+      fr: Un parcours, puis deux parcours
+      en: One scan, then two scans
+    etapes:
+      - fr: Pour six documents, une boucle qui lit chaque document fait six lectures.
+        en: For six documents, a loop reading every document makes six reads.
+      - fr: "Une seconde boucle identique ajoute six lectures : le total vaut douze."
+        en: "An identical second loop adds six reads: the total is twelve."
+      - fr: "Le coût est linéaire : doubler le nombre de documents double les lectures."
+        en: "The cost is linear: doubling the number of documents doubles the reads."
+    verif: print(sum(1 for _ in range(6)) + sum(1 for _ in range(6)))
+    sortie: "12"
     figure:
       kind: tableau
-      entetes: [{ fr: 'Parcourir : $n$', en: 'Scan: $n$' }, { fr: 'Couper en deux : $\log_2 n$', en: 'Halve: $\log_2 n$' }, { fr: 'Toutes les paires : $n^2$', en: 'All pairs: $n^2$' }]
+      entetes:
+        - fr: Documents
+          en: Documents
+        - fr: Une boucle
+          en: One loop
+        - fr: Deux boucles
+          en: Two loops
       cellules:
-        - ['$16$', { fr: '$4$', en: '$4$', ton: ok }, '$256$']
-        - ['$1024$', { fr: '$10$', en: '$10$', ton: ok }, { fr: '$1\,048\,576$', en: '$1\,048\,576$', ton: bad }]
-      legende: { fr: 'Linéaire, logarithmique, quadratique : quand $n$ est multiplié par $64$, le coût quadratique est multiplié par $4096$.', en: 'Linear, logarithmic, quadratic: when $n$ is multiplied by $64$, the quadratic cost is multiplied by $4096$.' }
+        - - "6"
+          - "6"
+          - "12"
+        - - "12"
+          - "12"
+          - "24"
+      legende:
+        fr: Des parcours successifs additionnent leurs coûts.
+        en: Consecutive scans add their costs.
+  - id: c2c
+    type: idee
+    fr: Une borne de croissance majore le coût pour les grandes entrées. Le **grand O** exprime cette
+      borne, sans donner un nombre exact d’opérations.
+    en: A growth bound limits cost for large inputs. **Big O** expresses this bound without giving an
+      exact operation count.
+  - id: c2d
+    type: piege
+    fr: "Douze lectures ne signifient pas douze secondes : le modèle compte les lectures, pas le temps
+      réel."
+    en: "Twelve reads do not mean twelve seconds: the model counts reads, not elapsed time."
   - id: c2a
     type: idee
-    fr: '$T(n)=O(f(n))$ se lit « $T$ est un **grand O** de $f$ ». Cela veut dire : à partir d’un certain $n_0$, $T(n)\leq C\,f(n)$ pour une constante $C>0$. On ne garde que la croissance.'
-    en: '$T(n)=O(f(n))$ is read “$T$ is **big O** of $f$”. It means: from some $n_0$ on, $T(n)\leq C\,f(n)$ for a constant $C>0$. Only the growth is kept.'
-    exemple: { fr: '$T(n)=2n+10$. Pour $n\geq10$, $2n+10\leq3n$ : avec $C=3$ et $n_0=10$, $T(n)=O(n)$.', en: '$T(n)=2n+10$. For $n\geq10$, $2n+10\leq3n$: with $C=3$ and $n_0=10$, $T(n)=O(n)$.' }
+    fr: "Notons $T(n)$ le coût pour $n$ données et $f(n)$ une croissance de référence. $T(n)=O(f(n))$
+      signifie : au-delà d’un seuil $n_0$, $T(n)\\leq C f(n)$, avec une constante positive $C$."
+    en: "Let $T(n)$ be the cost for $n$ items and $f(n)$ a reference growth. $T(n)=O(f(n))$ means:
+      beyond a threshold $n_0$, $T(n)\\leq C f(n)$ for a positive constant $C$."
+    exemple:
+      fr: "$T(n)=2n+10$. Pour $n\\geq10$, $2n+10\\leq3n$ : avec $C=3$ et $n_0=10$, $T(n)=O(n)$."
+      en: "$T(n)=2n+10$. For $n\\geq10$, $2n+10\\leq3n$: with $C=3$ and $n_0=10$, $T(n)=O(n)$."
+  - id: c2e
+    type: exemple
+    titre:
+      fr: Construire une borne linéaire
+      en: Building a linear bound
+    etapes:
+      - fr: "Prenons le coût $T(n)=4n+12$ : quatre opérations par document et douze opérations fixes."
+        en: "Take cost $T(n)=4n+12$: four operations per document and twelve fixed operations."
+      - fr: Dès que $n\geq6$, les douze opérations fixes ne dépassent pas $2n$.
+        en: Once $n\geq6$, the twelve fixed operations do not exceed $2n$.
+      - fr: "Ainsi $T(n)\\leq6n$ : une constante $C=6$ et un seuil $n_0=6$ suffisent."
+        en: "Thus $T(n)\\leq6n$: constant $C=6$ and threshold $n_0=6$ suffice."
+    verif: |-
+      assert all(4*n+12 <= 6*n for n in range(6,1001))
+      print(4*6+12)
+    sortie: "36"
+  - id: c2f
+    type: idee
+    fr: Le **logarithme en base deux**, noté $\log_2 n$, est l’exposant donnant $n$ comme puissance de
+      deux. Pour une puissance de deux, il compte les divisions par deux jusqu’à un.
+    en: The **base-two logarithm**, written $\log_2 n$, is the exponent giving $n$ as a power of two.
+      For a power of two, it counts halvings down to one.
+    exemple:
+      fr: "$2^4=16$ : quatre divisions font passer $16$ à $1$."
+      en: "$2^4=16$: four halvings take $16$ to $1$."
   - id: c3
     type: exemple
     lang: python
@@ -60,6 +128,45 @@ cartes:
     reponses: ['6']
     verif: "n, k = 64, 0\nwhile n > 1:\n    n //= 2\n    k += 1\nprint(k)"
     explication: { fr: '$64,32,16,8,4,2,1$ : six transitions, donc $\log_2 64=6$.', en: '$64,32,16,8,4,2,1$: six transitions, so $\log_2 64=6$.' }
+  - id: c5a
+    type: idee
+    fr: Deux boucles **imbriquées** exécutent la boucle intérieure pour chaque tour extérieur. Avec $n$
+      tours chacune, le coût est quadratique, c’est-à-dire proportionnel à $n^2$.
+    en: Two **nested** loops run the inner loop for every outer iteration. With $n$ iterations each, the
+      cost is quadratic, meaning proportional to $n^2$.
+  - id: c5b
+    type: exemple
+    titre:
+      fr: Compter des paires
+      en: Counting pairs
+    etapes:
+      - fr: Avec trois documents, chaque document est comparé aux trois documents, lui-même inclus.
+        en: With three documents, each is compared with all three documents, including itself.
+      - fr: Cela donne $3\times3=9$ comparaisons ; avec six documents, $6\times6=36$.
+        en: This gives $3\times3=9$ comparisons; with six documents, $6\times6=36$.
+      - fr: Doubler la taille multiplie ici le coût par quatre.
+        en: Doubling the size multiplies this cost by four.
+    verif: print(sum(1 for i in range(6) for j in range(6)))
+    sortie: "36"
+    figure:
+      kind: tableau
+      entetes:
+        - $n$
+        - $n^2$
+      cellules:
+        - - "3"
+          - "9"
+        - - "6"
+          - "36"
+      legende:
+        fr: Chaque paire ordonnée compte, y compris un document avec lui-même.
+        en: Every ordered pair counts, including a document with itself.
+  - id: c5c
+    type: piege
+    fr: Deux parcours successifs de six documents font douze lectures ; deux boucles imbriquées de six
+      tours font trente-six opérations.
+    en: Two consecutive scans of six documents make twelve reads; two nested loops of six iterations
+      make thirty-six operations.
   - id: c6
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -90,6 +197,31 @@ cartes:
     reponses: ['24']
     verif: 'print(sum(1 for _ in range(12)) + sum(1 for _ in range(12)))'
     explication: { fr: 'Des boucles successives additionnent leurs coûts : $12+12$, pas $12^2$.', en: 'Consecutive loops add their costs: $12+12$, not $12^2$.' }
+  - id: c9a
+    type: idee
+    fr: Un coût $n\log_2 n$ combine un parcours de $n$ éléments et un nombre logarithmique d’étapes. On
+      multiplie ces facteurs avant de comparer les méthodes.
+    en: A cost of $n\log_2 n$ combines a scan of $n$ items with a logarithmic number of steps. Multiply
+      these factors before comparing methods.
+  - id: c9b
+    type: exemple
+    titre:
+      fr: Comparer deux modèles
+      en: Comparing two models
+    etapes:
+      - fr: Pour seize documents, quatre étapes suffisent dans le modèle de divisions exactes.
+        en: For sixteen documents, four steps suffice in the exact-halving model.
+      - fr: Le coût $n\log_2 n$ vaut $16\times4=64$ ; le coût quadratique vaut $256$.
+        en: Cost $n\log_2 n$ is $16\times4=64$; quadratic cost is $256$.
+      - fr: La différence vaut $192$ opérations, uniquement pour ces coûts exacts supposés.
+        en: The difference is $192$ operations, only for these assumed exact costs.
+    verif: print(16**2 - 16*4)
+    sortie: "192"
+  - id: c9c
+    type: piege
+    fr: "Une borne $O(n\\log n)$ ne donne pas un coût exact : on ne soustrait pas deux grands O comme
+      des compteurs."
+    en: "An $O(n\\log n)$ bound is not an exact cost: do not subtract two big O bounds like counters."
   - id: c10
     type: saisie
     defi: true
