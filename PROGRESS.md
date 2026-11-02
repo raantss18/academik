@@ -80,6 +80,6 @@
 ### Fin des modules 3–5, module 9, revue pédagogique (2026-11-02)
 
 - **Fait** : 3.6–3.8, 4.6–4.7, 5.6–5.8 ; module 9 « Apprentissage automatique » (9.1–9.6 + boss) avec quartier « Laboratoire » ; revue des trois
-  regards (`docs/REVUE-PEDAGOGIQUE.md`) ; carte des liens générée ; durées honnêtes ; indice de repli ; garde-fous E25–E29 ; version 0.3.16.
+  regards (`docs/REVUE-PEDAGOGIQUE.md`) ; carte des liens générée ; durées honnêtes ; indice de repli ; garde-fous E25–E29 ; version 0.3.17.
 - **Vérifié** : 618 tests, solutions des cartes de code exécutées avec le vrai Python ; repli d'indice au navigateur.
 - **Non vérifié** : aucun vrai élève n'a joué ; durées estimées, pas mesurées ; 288 indices à écrire (T-016) et 16 niveaux à réorganiser (T-017).
