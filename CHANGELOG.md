@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.12] — 2026-11-02
+
+### Message fr
+Les liens « Pour aller plus loin » sont maintenant un simple texte cliquable : plus d'adresse qui déborde de l'écran.
+
+### Message en
+“Further reading” links are now plain clickable text: no more long addresses overflowing the screen.
+
 ## [0.3.11] — 2026-11-02
 
 ### Message fr
