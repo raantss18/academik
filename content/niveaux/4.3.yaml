@@ -1,6 +1,6 @@
 id: '4.3'
 module: 4
-duree_min: 13
+duree_min: 17
 titre: { fr: 'Matrices', en: 'Matrices' }
 ia: { fr: 'Kintana range les textes en lignes et calcule plusieurs scores en une opération matricielle.', en: 'Kintana stores texts as rows and computes several scores in one matrix operation.' }
 sources:
@@ -29,11 +29,29 @@ cartes:
         - [{ fr: 'texte 1', en: 'text 1' }, '$1$', '$2$']
         - [{ fr: 'texte 2', en: 'text 2' }, '$3$', '$1$']
       legende: { fr: 'C’est la matrice $A=\begin{pmatrix}1&2\\3&1\end{pmatrix}$, de taille $2\times2$.', en: 'This is the matrix $A=\begin{pmatrix}1&2\\3&1\end{pmatrix}$, of size $2\times2$.' }
+  - id: d_lire
+    type: exemple
+    titre: { fr: 'Lire une matrice', en: 'Reading a matrix' }
+    etapes:
+      - { fr: 'Soit $M=\begin{pmatrix}4&0&1\\2&5&3\end{pmatrix}$ : elle a $2$ lignes et $3$ colonnes, donc la taille $2\times3$.', en: 'Let $M=\begin{pmatrix}4&0&1\\2&5&3\end{pmatrix}$: it has $2$ rows and $3$ columns, so its size is $2\times3$.' }
+      - { fr: 'La deuxième ligne est $(2,5,3)$ ; la troisième colonne est $(1,3)$.', en: 'The second row is $(2,5,3)$; the third column is $(1,3)$.' }
+      - { fr: 'Le coefficient de la ligne $2$, colonne $1$ vaut $2$. On donne toujours la ligne en premier.', en: 'The entry in row $2$, column $1$ is $2$. The row always comes first.' }
   - id: c2a
     type: idee
     fr: '$Ax$ transforme un vecteur $x$ à $n$ coordonnées en un vecteur à $m$ coordonnées. Chaque coordonnée de $Ax$ est le produit scalaire d’une **ligne** de $A$ avec $x$.'
     en: '$Ax$ turns a vector $x$ with $n$ coordinates into a vector with $m$ coordinates. Each coordinate of $Ax$ is the dot product of a **row** of $A$ with $x$.'
     exemple: { fr: 'Requête $x=(2,1)$ : $Ax=(1\times2+2\times1,\ 3\times2+1\times1)=(4,7)$. Le texte 2 répond mieux.', en: 'Query $x=(2,1)$: $Ax=(1\times2+2\times1,\ 3\times2+1\times1)=(4,7)$. Text 2 matches better.' }
+  - id: d_ax
+    type: idee
+    fr: 'Pour calculer $Ax$, on prend chaque ligne de $A$ l’une après l’autre et on la multiplie, coordonnée par coordonnée, par $x$ avant d’additionner.'
+    en: 'To compute $Ax$, take each row of $A$ in turn, multiply it coordinate by coordinate with $x$, then add.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Ligne de $A$', en: 'Row of $A$' }, { fr: 'Avec $x=(2,1)$', en: 'With $x=(2,1)$' }, { fr: 'Score', en: 'Score' }]
+      cellules:
+        - ['$(1,2)$', '$1\times2+2\times1$', { fr: '$4$', en: '$4$', ton: ok }]
+        - ['$(3,1)$', '$3\times2+1\times1$', { fr: '$7$', en: '$7$', ton: ok }]
+      legende: { fr: 'Pour $A=\begin{pmatrix}1&2\\3&1\end{pmatrix}$ : $Ax=(4,7)$, un score par ligne.', en: 'For $A=\begin{pmatrix}1&2\\3&1\end{pmatrix}$: $Ax=(4,7)$, one score per row.' }
   - id: c3
     type: exemple
     lang: python
@@ -60,6 +78,11 @@ cartes:
     reponses: ['1']
     verif: 'print(sum(a*b for a,b in zip((2,1),(0,1))))'
     explication: { fr: '$A(0,1)=(1,3)$ : le second vecteur des axes devient la seconde colonne.', en: '$A(0,1)=(1,3)$: the second axis vector becomes the second column.' }
+  - id: d_transp
+    type: idee
+    fr: 'La **transposée** $A^T$ se lit « $A$ transposée » : la première ligne de $A$ devient la première colonne de $A^T$, et ainsi de suite.'
+    en: 'The **transpose** $A^T$ is read “$A$ transpose”: the first row of $A$ becomes the first column of $A^T$, and so on.'
+    exemple: { fr: 'Si $M=\begin{pmatrix}1&2&3\\4&5&6\end{pmatrix}$, de taille $2\times3$, alors $M^T=\begin{pmatrix}1&4\\2&5\\3&6\end{pmatrix}$, de taille $3\times2$.', en: 'If $M=\begin{pmatrix}1&2&3\\4&5&6\end{pmatrix}$, of size $2\times3$, then $M^T=\begin{pmatrix}1&4\\2&5\\3&6\end{pmatrix}$, of size $3\times2$.' }
   - id: c6
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -72,6 +95,11 @@ cartes:
     type: piege
     fr: 'Dans $ABx$, on applique $B$ avant $A$ ; en général, échanger les matrices change le résultat.'
     en: 'In $ABx$, apply $B$ before $A$; in general, swapping the matrices changes the result.'
+  - id: d_prod
+    type: idee
+    fr: 'Le produit $AB$ applique d’abord $B$, puis $A$ : $(AB)x=A(Bx)$. Il faut donc que le nombre de colonnes de $A$ soit égal au nombre de lignes de $B$.'
+    en: 'The product $AB$ applies $B$ first, then $A$: $(AB)x=A(Bx)$. So the number of columns of $A$ must equal the number of rows of $B$.'
+    exemple: { fr: 'Avec $A=\begin{pmatrix}1&1\\0&1\end{pmatrix}$, $B=\operatorname{diag}(2,3)$ et $x=(1,1)$ : $Bx=(2,3)$, puis $A(2,3)=(5,3)$.', en: 'With $A=\begin{pmatrix}1&1\\0&1\end{pmatrix}$, $B=\operatorname{diag}(2,3)$ and $x=(1,1)$: $Bx=(2,3)$, then $A(2,3)=(5,3)$.' }
   - id: c8
     type: saisie
     note: { kind: exercise, poids: 1 }

@@ -1,6 +1,6 @@
 id: '4.5'
 module: 4
-duree_min: 15
+duree_min: 17
 titre: { fr: 'Valeurs propres et SVD', en: 'Eigenvalues and SVD' }
 ia: { fr: 'Kintana découvre comment réduire les dimensions de ses vecteurs, au prix d’une perte d’information.', en: 'Kintana discovers how to reduce vector dimensions at the cost of losing information.' }
 sources:
@@ -41,6 +41,13 @@ cartes:
       - { code: 'from fractions import Fraction; print(Fraction(Av[0], v[0]))', fr: 'Les deux coordonnées sont multipliées par $4$ : la valeur propre associée vaut $4$.', en: 'Both coordinates are multiplied by $4$: the corresponding eigenvalue is $4$.' }
     verif: 'from fractions import Fraction; A=[[3,1],[1,3]]; v=[1,1]; Av=[sum(a*b for a,b in zip(row,v)) for row in A]; k=Fraction(Av[0],v[0]); assert Av==[k*x for x in v]; print(k)'
     sortie: '4'
+  - id: d_verif
+    type: exemple
+    titre: { fr: 'Tester une direction propre', en: 'Testing an eigen-direction' }
+    etapes:
+      - { fr: 'Soit $B=\begin{pmatrix}2&1\\0&3\end{pmatrix}$. Pour $v=(1,0)$ : $Bv=(2,0)=2v$, donc $\lambda=2$.', en: 'Let $B=\begin{pmatrix}2&1\\0&3\end{pmatrix}$. For $v=(1,0)$: $Bv=(2,0)=2v$, so $\lambda=2$.' }
+      - { fr: 'Pour $v=(1,1)$ : $Bv=(3,3)=3v$, donc $\lambda=3$ : une autre direction propre.', en: 'For $v=(1,1)$: $Bv=(3,3)=3v$, so $\lambda=3$: another eigen-direction.' }
+      - { fr: 'Pour $v=(0,1)$ : $Bv=(1,3)$ n’est pas un multiple de $v$ : ce n’est pas une direction propre.', en: 'For $v=(0,1)$: $Bv=(1,3)$ is not a multiple of $v$: it is not an eigen-direction.' }
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -49,6 +56,16 @@ cartes:
     reponses: ['2']
     verif: 'from fractions import Fraction; A=[[3,1],[1,3]]; v=[1,-1]; w=[sum(a*b for a,b in zip(row,v)) for row in A]; k=Fraction(w[0],v[0]); assert w==[k*x for x in v]; print(k)'
     explication: { fr: '$Av=(2,-2)=2v$ ; il faut vérifier les deux coordonnées, pas une seule.', en: '$Av=(2,-2)=2v$; check both coordinates, not just one.' }
+  - id: d_svd
+    type: idee
+    fr: 'La **SVD** (décomposition en valeurs singulières) découpe une transformation en trois gestes simples : réorienter l’espace, étirer chaque axe, réorienter de nouveau.'
+    en: 'The **SVD** (singular value decomposition) cuts a transformation into three simple moves: reorient the space, stretch each axis, reorient again.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: '$A=U\Sigma V^T$', en: '$A=U\Sigma V^T$' }
+          noeuds: [{ fr: '$V^T$ : réorienter', en: '$V^T$: reorient' }, { fr: '$\Sigma$ : étirer chaque axe', en: '$\Sigma$: stretch each axis', ton: ok }, { fr: '$U$ : réorienter', en: '$U$: reorient' }]
+      legende: { fr: 'Les étirements de $\Sigma$ sont les valeurs singulières, rangées de la plus grande à la plus petite.', en: 'The stretches in $\Sigma$ are the singular values, sorted from largest to smallest.' }
   - id: c5
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -69,6 +86,11 @@ cartes:
     type: piege
     fr: 'Valeurs propres et singulières ne sont pas interchangeables : les singulières sont non négatives, et une SVD existe même pour une matrice rectangulaire ; une valeur propre concerne une matrice carrée.'
     en: 'Eigenvalues and singular values are not interchangeable: singular values are nonnegative, and SVD exists even for a rectangular matrix; an eigenvalue concerns a square matrix.'
+  - id: d_ata
+    type: idee
+    fr: 'Pour trouver les valeurs singulières de $A$, on calcule $A^TA$, on cherche ses valeurs propres, puis on prend leurs racines carrées.'
+    en: 'To find the singular values of $A$, compute $A^TA$, find its eigenvalues, then take their square roots.'
+    exemple: { fr: 'Pour $A=\operatorname{diag}(3,-2)$ : $A^TA=\operatorname{diag}(9,4)$, de valeurs propres $9$ et $4$. Les valeurs singulières sont donc $3$ et $2$, jamais négatives.', en: 'For $A=\operatorname{diag}(3,-2)$: $A^TA=\operatorname{diag}(9,4)$, with eigenvalues $9$ and $4$. The singular values are therefore $3$ and $2$, never negative.' }
   - id: c8
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -77,6 +99,18 @@ cartes:
     reponses: ['2']
     verif: 'from math import isqrt; A=[[0,4],[2,0]]; cols=list(zip(*A)); G=[[sum(x*y for x,y in zip(u,v)) for v in cols] for u in cols]; assert G==[[4,0],[0,16]]; print(isqrt(min(G[0][0],G[1][1])))'
     explication: { fr: 'On prend les racines positives : $2$ et $4$, rangées généralement $4$ puis $2$.', en: 'Take the nonnegative square roots: $2$ and $4$, usually ordered as $4$ then $2$.' }
+  - id: d_trunc
+    type: idee
+    fr: 'Garder seulement les plus grandes valeurs singulières compresse la matrice. Le carré d’une valeur singulière mesure sa part de l’information gardée.'
+    en: 'Keeping only the largest singular values compresses the matrix. The square of a singular value measures its share of the information kept.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Valeur $\sigma$', en: 'Value $\sigma$' }, '$\sigma^2$', { fr: 'Part du total', en: 'Share of total' }]
+      cellules:
+        - ['$10$', '$100$', { fr: '$\approx91{,}5\,\%$', en: '$\approx91.5\,\%$', ton: ok }]
+        - ['$3$', '$9$', '$\approx8{,}2\,\%$']
+        - ['$0{,}5$', '$0{,}25$', { fr: '$\approx0{,}2\,\%$', en: '$\approx0.2\,\%$', ton: bad }]
+      legende: { fr: 'Total $=109{,}25$ : garder seulement $\sigma=10$ conserve plus de $91\,\%$ de l’information.', en: 'Total $=109.25$: keeping only $\sigma=10$ preserves over $91\,\%$ of the information.' }
   - id: c9
     type: saisie
     note: { kind: exercise, poids: 1 }

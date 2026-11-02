@@ -1,6 +1,6 @@
 id: '4.boss'
 module: 4
-duree_min: 15
+duree_min: 18
 titre: { fr: 'Le moteur de similarité', en: 'The similarity engine' }
 ia: { fr: 'Kintana sait mesurer la ressemblance de deux textes (vecteurs de comptage et cosinus).', en: 'Kintana can measure how similar two texts are using count vectors and cosine similarity.' }
 sources:
@@ -29,6 +29,26 @@ cartes:
         - titre: { fr: 'Le moteur, étape par étape', en: 'The engine, step by step' }
           noeuds: [{ fr: 'textes et requête', en: 'texts and query' }, { fr: 'vecteurs de comptages (4.1)', en: 'count vectors (4.1)' }, { fr: 'normes non nulles ? (4.2)', en: 'nonzero norms? (4.2)' }, { fr: 'cosinus', en: 'cosine' }, { fr: 'classement', en: 'ranking', ton: ok }]
       legende: { fr: 'Tu vérifieras aussi les transformations (4.3–4.5) et ce que coûte une compression.', en: 'You will also check the transformations (4.3–4.5) and what a compression costs.' }
+  - id: d_pipe
+    type: idee
+    fr: 'Le moteur suit un chemin fixe : compter les mots, comparer par le cosinus, traiter tous les textes d’un coup, puis seulement compresser.'
+    en: 'The engine follows a fixed path: count the words, compare with the cosine, process all texts at once, and only then compress.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Étape', en: 'Step' }, { fr: 'Outil', en: 'Tool' }, { fr: 'Niveau', en: 'Level' }]
+      cellules:
+        - [{ fr: 'compter les mots', en: 'count words' }, { fr: 'vecteur', en: 'vector' }, '4.1']
+        - [{ fr: 'comparer deux textes', en: 'compare two texts' }, { fr: 'cosinus', en: 'cosine' }, '4.2']
+        - [{ fr: 'tous les textes à la fois', en: 'all texts at once' }, { fr: 'matrice', en: 'matrix' }, '4.3']
+        - [{ fr: 'compresser', en: 'compress' }, { fr: 'SVD tronquée', en: 'truncated SVD' }, { fr: '4.5', en: '4.5', ton: ok }]
+      legende: { fr: 'Chaque étape réutilise la précédente ; on ne compresse qu’après avoir de bons scores.', en: 'Each step reuses the previous one; compress only once you have good scores.' }
+  - id: d_classer
+    type: exemple
+    titre: { fr: 'Classer trois textes', en: 'Ranking three texts' }
+    etapes:
+      - { fr: 'La requête est $q=(1,2)$. Les textes sont $d_1=(2,1)$, $d_2=(2,4)$ et $d_3=(-1,1)$.', en: 'The query is $q=(1,2)$. The texts are $d_1=(2,1)$, $d_2=(2,4)$ and $d_3=(-1,1)$.' }
+      - { fr: 'Pour $d_1$ : produit $4$, normes $\sqrt5$ et $\sqrt5$, donc cosinus $4/5=0{,}8$. Pour $d_2$ : produit $10$, normes $\sqrt5$ et $\sqrt{20}$, donc cosinus $10/10=1$.', en: 'For $d_1$: dot product $4$, norms $\sqrt5$ and $\sqrt5$, so cosine $4/5=0.8$. For $d_2$: dot product $10$, norms $\sqrt5$ and $\sqrt{20}$, so cosine $10/10=1$.' }
+      - { fr: 'Pour $d_3$ : produit $1$, normes $\sqrt5$ et $\sqrt2$, donc cosinus $\approx0{,}32$. Classement : $d_2$, puis $d_1$, puis $d_3$.', en: 'For $d_3$: dot product $1$, norms $\sqrt5$ and $\sqrt2$, so cosine $\approx0.32$. Ranking: $d_2$, then $d_1$, then $d_3$.' }
   - id: c3
     type: exemple
     lang: python
@@ -63,6 +83,16 @@ cartes:
     reponses: ['2']
     verif: 'from fractions import Fraction; x=Fraction(5-3); y=3-x; assert x+y==3 and 2*x+y==5; print(x)'
     explication: { fr: 'La seconde équation moins la première donne $x=2$ ; puis $y=1$.', en: 'Subtracting the first equation from the second gives $x=2$; then $y=1$.' }
+  - id: d_longueur
+    type: idee
+    fr: 'Pourquoi le cosinus plutôt que le produit scalaire seul ? Un texte long a de grands comptages, donc un grand produit scalaire, même s’il parle d’autre chose.'
+    en: 'Why the cosine rather than the dot product alone? A long text has large counts, hence a large dot product, even if it is about something else.'
+    exemple: { fr: 'Avec $q=(1,1)$ : $d=(1,2)$ donne le produit $3$, et $2d=(2,4)$ donne $6$. Mais les deux cosinus valent $3/\sqrt{10}\approx0{,}95$ : même direction.', en: 'With $q=(1,1)$: $d=(1,2)$ gives dot product $3$, and $2d=(2,4)$ gives $6$. But both cosines equal $3/\sqrt{10}\approx0.95$: same direction.' }
+  - id: d_zero
+    type: idee
+    fr: 'Avant toute division, vérifie que les deux normes sont non nulles. Si l’une est nulle, le cosinus n’existe pas : le code renvoie `None` au lieu de planter.'
+    en: 'Before any division, check that both norms are non-zero. If one is zero, the cosine does not exist: the code returns `None` instead of crashing.'
+    exemple: { fr: 'Un texte « soleil » vaut $(0,0)$ dans le vocabulaire (chat, lune) : sa norme est $0$, donc son score est `None`.', en: 'A text “soleil” is $(0,0)$ in the vocabulary (chat, lune): its norm is $0$, so its score is `None`.' }
   - id: c7
     type: piege
     fr: 'Un texte sans mot du vocabulaire donne le vecteur nul : marque son cosinus comme indéfini ; même un score élevé entre textes non nuls mesure les comptages, sans garantir le même sens.'

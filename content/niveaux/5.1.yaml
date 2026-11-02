@@ -1,6 +1,6 @@
 id: '5.1'
 module: 5
-duree_min: 12
+duree_min: 17
 titre: { fr: 'Limites', en: 'Limits' }
 ia: { fr: 'Kintana distingue une valeur approchée de la limite de ses calculs.', en: 'Kintana distinguishes an approximate value from the limit of its computations.' }
 sources:
@@ -28,11 +28,31 @@ cartes:
         - ['$10$', '$4{,}9$', '$0{,}1$']
         - ['$100$', '$4{,}99$', { fr: '$0{,}01$', en: '$0{,}01$', ton: ok }]
       legende: { fr: 'Avec $\varepsilon=0{,}05$ : l’écart $\frac1n$ est sous $\varepsilon$ pour tout $n\geq21$. Donc $v_n\to5$, sans jamais valoir $5$.', en: 'With $\varepsilon=0{,}05$: the gap $\frac1n$ is below $\varepsilon$ for every $n\geq21$. So $v_n\to5$, without ever equalling $5$.' }
+  - id: d_eps
+    type: exemple
+    titre: { fr: 'Chercher le rang à partir duquel on est assez près', en: 'Finding the rank from which we are close enough' }
+    etapes:
+      - { fr: 'Soit $u_n=5-\frac2n$. On veut qu’elle soit à moins de $\varepsilon=0{,}1$ de sa limite $5$.', en: 'Let $u_n=5-\frac2n$. We want it within $\varepsilon=0.1$ of its limit $5$.' }
+      - { fr: 'L’écart est $|u_n-5|=\frac2n$. On veut $\frac2n<0{,}1$, donc $n>20$.', en: 'The gap is $|u_n-5|=\frac2n$. We want $\frac2n<0.1$, so $n>20$.' }
+      - { fr: 'À partir du rang $21$, tous les termes sont à moins de $0{,}1$ de $5$. Pour un $\varepsilon$ plus petit, le rang sera plus grand.', en: 'From rank $21$ on, all terms are within $0.1$ of $5$. For a smaller $\varepsilon$, the rank will be larger.' }
   - id: c2a
     type: idee
     fr: 'Pour une fonction, $\lim_{x\to a}f(x)=\ell$ décrit les valeurs de $f$ quand $x$ s’approche de $a$, sans jamais valoir $a$. La valeur $f(a)$ elle-même peut être différente, ou ne pas exister.'
     en: 'For a function, $\lim_{x\to a}f(x)=\ell$ describes the values of $f$ as $x$ gets close to $a$, without ever being $a$. The value $f(a)$ itself may differ, or not exist.'
     exemple: { fr: '$f(x)=x$ pour $x\ne2$, et $f(2)=5$. Près de $2$, $f(x)$ est proche de $2$ : la limite vaut $2$, mais $f(2)=5$.', en: '$f(x)=x$ for $x\ne2$, and $f(2)=5$. Near $2$, $f(x)$ is close to $2$: the limit is $2$, but $f(2)=5$.' }
+  - id: d_cotes
+    type: idee
+    fr: 'Pour estimer une limite, on s’approche de $a$ des deux côtés : par la gauche ($x<a$) et par la droite ($x>a$). Les deux côtés doivent mener au même nombre.'
+    en: 'To estimate a limit, approach $a$ from both sides: from the left ($x<a$) and from the right ($x>a$). Both sides must lead to the same number.'
+    figure:
+      kind: tableau
+      entetes: ['$x$', '$g(x)=\dfrac{x^2-1}{x-1}$', { fr: 'Écart à $2$', en: 'Gap to $2$' }]
+      cellules:
+        - ['$0{,}9$', '$1{,}9$', '$0{,}1$']
+        - ['$0{,}99$', '$1{,}99$', { fr: '$0{,}01$', en: '$0.01$', ton: ok }]
+        - ['$1{,}01$', '$2{,}01$', { fr: '$0{,}01$', en: '$0.01$', ton: ok }]
+        - ['$1{,}1$', '$2{,}1$', '$0{,}1$']
+      legende: { fr: 'Pour $x\ne1$, $g(x)=x+1$ : des deux côtés de $1$, l’écart à $2$ se réduit.', en: 'For $x\ne1$, $g(x)=x+1$: on both sides of $1$, the gap to $2$ shrinks.' }
   - id: c3
     type: exemple
     titre: { fr: 'Un trou que le calcul contourne', en: 'Computing around a hole' }
@@ -86,6 +106,11 @@ cartes:
     type: piege
     fr: 'Quelques valeurs proches ne prouvent pas une limite : le raisonnement doit contrôler tous les termes assez loin, ou tous les points assez proches.'
     en: 'A few nearby values do not prove a limit: the argument must control every sufficiently late term or every sufficiently nearby point.'
+  - id: d_cont
+    type: idee
+    fr: 'Une fonction est **continue** en $a$ si trois choses coïncident : $f(a)$ existe, la limite en $a$ existe, et la limite est égale à $f(a)$.'
+    en: 'A function is **continuous** at $a$ if three things agree: $f(a)$ exists, the limit at $a$ exists, and the limit equals $f(a)$.'
+    exemple: { fr: 'Pour $h(x)=\frac{x^2-4}{x-2}=x+2$ hors de $2$, la limite en $2$ vaut $4$. Si on pose $h(2)=4$, $h$ est continue ; si $h(2)=0$, elle ne l’est pas.', en: 'For $h(x)=\frac{x^2-4}{x-2}=x+2$ away from $2$, the limit at $2$ is $4$. If we set $h(2)=4$, $h$ is continuous; if $h(2)=0$, it is not.' }
   - id: c9
     type: qcm
     note: { kind: exercise, poids: 1 }

@@ -1,6 +1,6 @@
 id: '4.2'
 module: 4
-duree_min: 14
+duree_min: 17
 titre: { fr: 'Produit scalaire et norme', en: 'Dot product and norm' }
 ia: { fr: 'Kintana compare les directions des vecteurs de textes grâce au cosinus.', en: 'Kintana compares text vector directions using cosine similarity.' }
 sources:
@@ -24,11 +24,30 @@ cartes:
     fr: 'Le **produit scalaire** $u\cdot v$ multiplie les coordonnées deux à deux puis additionne. Plus il est grand, plus les vecteurs vont dans le même sens, mais il grandit aussi avec leurs longueurs.'
     en: 'The **dot product** $u\cdot v$ multiplies coordinates pairwise and then adds. The larger it is, the more the vectors point the same way, but it also grows with their lengths.'
     exemple: { fr: '$(1,2)\cdot(3,1)=1\times3+2\times1=5$.', en: '$(1,2)\cdot(3,1)=1\times3+2\times1=5$.' }
+  - id: d_scal
+    type: exemple
+    titre: { fr: 'Un produit scalaire, pas à pas', en: 'A dot product, step by step' }
+    etapes:
+      - { fr: 'Prenons $u=(2,3)$ et $v=(1,4)$. On multiplie les premières coordonnées : $2\times1=2$.', en: 'Take $u=(2,3)$ and $v=(1,4)$. Multiply the first coordinates: $2\times1=2$.' }
+      - { fr: 'Puis les secondes : $3\times4=12$.', en: 'Then the second ones: $3\times4=12$.' }
+      - { fr: 'On additionne : $u\cdot v=2+12=14$. Le résultat est un nombre, pas un vecteur.', en: 'Add them: $u\cdot v=2+12=14$. The result is a number, not a vector.' }
   - id: c2a
     type: idee
     fr: 'La **norme** $\|u\|$ se lit « norme de $u$ » : c’est la longueur de la flèche, $\|u\|=\sqrt{u\cdot u}$. C’est le théorème de Pythagore.'
     en: 'The **norm** $\|u\|$ is read “norm of $u$”: it is the length of the arrow, $\|u\|=\sqrt{u\cdot u}$. It is Pythagoras’ theorem.'
     exemple: { fr: '$\|(5,12)\|=\sqrt{25+144}=\sqrt{169}=13$.', en: '$\|(5,12)\|=\sqrt{25+144}=\sqrt{169}=13$.' }
+  - id: d_normes
+    type: idee
+    fr: 'Pour trouver la norme, on calcule d’abord $u\cdot u$, la somme des carrés des coordonnées, puis on prend la racine carrée.'
+    en: 'To find the norm, first compute $u\cdot u$, the sum of the squares of the coordinates, then take the square root.'
+    figure:
+      kind: tableau
+      entetes: ['$u$', '$u\cdot u$', '$\|u\|$']
+      cellules:
+        - ['$(5,12)$', '$25+144=169$', { fr: '$13$', en: '$13$', ton: ok }]
+        - ['$(1,1)$', '$1+1=2$', '$\sqrt2\approx1{,}41$']
+        - ['$(0,-7)$', '$0+49=49$', '$7$']
+      legende: { fr: 'Un signe moins ne change pas la norme : $(-7)^2=49$.', en: 'A minus sign does not change the norm: $(-7)^2=49$.' }
   - id: c2b
     type: idee
     fr: 'Le **cosinus** $\cos(u,v)=\frac{u\cdot v}{\|u\|\,\|v\|}$ divise par les longueurs : il ne compare que les **directions**. Il est défini pour deux vecteurs non nuls.'
@@ -41,6 +60,11 @@ cartes:
         - ['$(1,0)$, $(0,2)$', '$0$', { fr: 'perpendiculaires', en: 'perpendicular' }]
         - ['$(1,0)$, $(-3,0)$', '$-1$', { fr: 'opposées', en: 'opposite', ton: bad }]
       legende: { fr: '$(5,0)$ est $5$ fois plus long que $(1,0)$, mais le cosinus vaut quand même $1$.', en: '$(5,0)$ is $5$ times longer than $(1,0)$, yet the cosine is still $1$.' }
+  - id: d_angle
+    type: idee
+    fr: 'Le cosinus de deux vecteurs est le cosinus de l’angle entre leurs flèches. Il vaut $1$ pour le même sens, $0$ pour un angle droit, $-1$ pour des sens opposés.'
+    en: 'The cosine of two vectors is the cosine of the angle between their arrows. It is $1$ for the same direction, $0$ for a right angle, $-1$ for opposite directions.'
+    exemple: { fr: 'Pour $(1,1)$ et $(1,0)$ : produit $1$, normes $\sqrt2$ et $1$, donc cosinus $\frac1{\sqrt2}\approx0{,}71$, soit un angle de $45^\circ$.', en: 'For $(1,1)$ and $(1,0)$: dot product $1$, norms $\sqrt2$ and $1$, so cosine $\frac1{\sqrt2}\approx0.71$, an angle of $45^\circ$.' }
   - id: c3
     type: exemple
     lang: python

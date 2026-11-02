@@ -1,6 +1,6 @@
 id: '5.2'
 module: 5
-duree_min: 13
+duree_min: 17
 titre: { fr: 'Dérivées', en: 'Derivatives' }
 ia: { fr: 'Kintana mesure comment son erreur varie quand un paramètre change.', en: 'Kintana measures how its error varies when a parameter changes.' }
 sources:
@@ -31,11 +31,31 @@ cartes:
         - ['$0{,}01$', '$2{,}01$']
         - [{ fr: '$h\to0$', en: '$h\to0$' }, { fr: '$f''(1)=2$', en: '$f''(1)=2$', ton: ok }]
       legende: { fr: 'Les pentes se rapprochent de $2$ : c’est la pente de la tangente en $1$.', en: 'The slopes approach $2$: that is the slope of the tangent at $1$.' }
+  - id: d_pente3
+    type: exemple
+    titre: { fr: 'Pentes qui se resserrent', en: 'Slopes closing in' }
+    etapes:
+      - { fr: 'Pour $f(x)=x^2$ en $a=3$, la pente entre $3$ et $3+h$ est $\frac{(3+h)^2-9}{h}=6+h$ (pour $h\ne0$).', en: 'For $f(x)=x^2$ at $a=3$, the slope between $3$ and $3+h$ is $\frac{(3+h)^2-9}{h}=6+h$ (for $h\ne0$).' }
+      - { fr: 'Avec $h=1$ on trouve $7$ ; avec $h=0{,}1$, $6{,}1$ ; avec $h=0{,}01$, $6{,}01$.', en: 'With $h=1$ we get $7$; with $h=0.1$, $6.1$; with $h=0.01$, $6.01$.' }
+      - { fr: 'Quand $h$ tend vers $0$, la pente tend vers $6$ : on a $f'' (3)=6$.', en: 'As $h$ tends to $0$, the slope tends to $6$: we have $f'' (3)=6$.' }
   - id: c2a
     type: idee
     fr: 'Près de $a$, la courbe ressemble à sa tangente : $f(a+h)\approx f(a)+h\,f''(a)$ pour un petit $h$. Règles utiles : $(x^2)''=2x$, une constante a pour dérivée $0$, une somme se dérive terme à terme.'
     en: 'Near $a$, the curve looks like its tangent: $f(a+h)\approx f(a)+h\,f''(a)$ for a small $h$. Useful rules: $(x^2)''=2x$, a constant has derivative $0$, a sum is differentiated term by term.'
     exemple: { fr: 'Pour $f(x)=x^2$ en $3$ : $f''(3)=6$, donc $f(3{,}1)\approx9+0{,}1\times6=9{,}6$. Valeur exacte : $9{,}61$.', en: 'For $f(x)=x^2$ at $3$: $f''(3)=6$, so $f(3{,}1)\approx9+0{,}1\times6=9{,}6$. Exact value: $9{,}61$.' }
+  - id: d_regles
+    type: idee
+    fr: 'On retient quelques dérivées de base : une constante a une dérivée nulle, $(ax)'' = a$, $(x^2)''=2x$ et $(x^3)''=3x^2$. Les sommes se dérivent terme à terme.'
+    en: 'Remember a few basic derivatives: a constant has derivative zero, $(ax)''=a$, $(x^2)''=2x$ and $(x^3)''=3x^2$. Sums are differentiated term by term.'
+    figure:
+      kind: tableau
+      entetes: ['$f(x)$', '$f''(x)$', '$f''(2)$']
+      cellules:
+        - ['$x^2$', '$2x$', '$4$']
+        - ['$3x$', '$3$', '$3$']
+        - ['$5$', '$0$', '$0$']
+        - ['$x^3$', '$3x^2$', { fr: '$12$', en: '$12$', ton: ok }]
+      legende: { fr: 'La dérivée donne une fonction de pentes ; on la lit en un point pour avoir un nombre.', en: 'The derivative gives a slope function; read it at a point to get a number.' }
   - id: c3
     type: exemple
     titre: { fr: 'Dériver une erreur quadratique', en: 'Differentiating a squared error' }
@@ -66,6 +86,11 @@ cartes:
       E = lambda w: (w-3)**2
       print((E(w+h)-E(w-h))/(2*h))
     explication: { fr: '$E''(4)=2(4-3)=2$ ; près de $4$, augmenter le paramètre augmente son erreur.', en: '$E''(4)=2(4-3)=2$; near $4$, increasing the parameter increases its error.' }
+  - id: d_tang
+    type: idee
+    fr: 'La **tangente** en $a$ est la droite $y=f(a)+f''(a)(x-a)$. Près de $a$, on lit sur elle une valeur approchée de $f(x)$.'
+    en: 'The **tangent** at $a$ is the line $y=f(a)+f''(a)(x-a)$. Near $a$, we read an approximate value of $f(x)$ on it.'
+    exemple: { fr: 'Pour $f(x)=x^2$ en $a=1$ : $y=1+2(x-1)$. En $x=1{,}1$, la tangente donne $1{,}2$ ; la vraie valeur est $1{,}21$ : l’écart est petit.', en: 'For $f(x)=x^2$ at $a=1$: $y=1+2(x-1)$. At $x=1.1$, the tangent gives $1.2$; the true value is $1.21$: the gap is small.' }
   - id: c6
     type: saisie
     note: { kind: exercise, poids: 1 }

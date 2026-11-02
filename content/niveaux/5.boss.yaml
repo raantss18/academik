@@ -1,6 +1,6 @@
 id: '5.boss'
 module: 5
-duree_min: 15
+duree_min: 18
 titre: { fr: 'La pente la plus raide', en: 'The steepest slope' }
 ia: { fr: 'Kintana sait apprendre ses propres paramètres par descente de gradient.', en: 'Kintana can learn its own parameters through gradient descent.' }
 sources:
@@ -32,6 +32,24 @@ cartes:
         - ['$4$', { fr: '$4$ : le minimum', en: '$4$: the minimum', ton: ok }]
         - ['$5$', '$5$']
       legende: { fr: 'La meilleure perte vaut $4$, pas $0$ : une seule valeur ne peut pas égaler à la fois $2$ et $6$.', en: 'The best loss is $4$, not $0$: a single value cannot equal both $2$ and $6$.' }
+  - id: d_bilan
+    type: idee
+    fr: 'Le module tient en une chaîne. La limite donne un sens à « de plus en plus près » et la dérivée mesure la pente. La convexité garantit le minimum ; la descente le cherche.'
+    en: 'The module fits in one chain. The limit gives meaning to “closer and closer” and the derivative measures the slope. Convexity guarantees the minimum; descent searches for it.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Notion', en: 'Concept' }, { fr: 'Rôle', en: 'Role' }, { fr: 'Niveau', en: 'Level' }]
+      cellules:
+        - [{ fr: 'limite', en: 'limit' }, { fr: 'valeur approchée', en: 'approached value' }, '5.1']
+        - [{ fr: 'dérivée, gradient', en: 'derivative, gradient' }, { fr: 'pente de l’erreur', en: 'slope of the error' }, '5.2–5.3']
+        - [{ fr: 'convexité', en: 'convexity' }, { fr: 'minimum global sûr', en: 'safe global minimum' }, '5.4']
+        - [{ fr: 'descente', en: 'descent' }, { fr: 'mise à jour du réglage', en: 'setting update' }, { fr: '5.5', en: '5.5', ton: ok }]
+      legende: { fr: 'Chaque case réutilise la précédente.', en: 'Each row reuses the previous one.' }
+  - id: d_moy
+    type: idee
+    fr: 'Pour une seule valeur à prédire, les moindres carrés choisissent la **moyenne** des observations : c’est elle qui rend la moyenne des carrés des erreurs minimale.'
+    en: 'For a single value to predict, least squares picks the **mean** of the observations: it makes the average of squared errors smallest.'
+    exemple: { fr: 'Observations $2$ et $6$ : moyenne $4$, perte $4$. Observations $1$ et $5$ : moyenne $3$ et $J(w)=(w-3)^2+4$.', en: 'Observations $2$ and $6$: mean $4$, loss $4$. Observations $1$ and $5$: mean $3$ and $J(w)=(w-3)^2+4$.' }
   - id: c3
     type: exemple
     titre: { fr: 'Un autre départ pour voir la méthode', en: 'Another starting point to see the method' }
@@ -40,6 +58,13 @@ cartes:
       - { code: 'w, eta = 8, 0.25', fr: 'Sur cette perte, essaie le départ $w=8$ avec $\eta=1/4$.', en: 'For this loss, try starting at $w=8$ with $\eta=1/4$.' }
       - { code: 'g = sum(2*(w-y) for y in [2,6])/2', fr: 'La moyenne des dérivées vaut $J''(w)=2w-8$, donc $8$ ici.', en: 'The mean of the derivatives is $J''(w)=2w-8$, hence $8$ here.' }
       - { code: 'w -= eta*g', fr: 'Le réglage devient $6$ ; la perte passe de $20$ à $8$.', en: 'The setting becomes $6$; the loss falls from $20$ to $8$.' }
+  - id: d_autre
+    type: exemple
+    titre: { fr: 'Un deuxième jeu de données, du début à la fin', en: 'A second data set, start to finish' }
+    etapes:
+      - { fr: 'Observations $1$ et $5$ : $J(w)=\frac{(w-1)^2+(w-5)^2}{2}=(w-3)^2+4$, donc $J''(w)=2w-6$.', en: 'Observations $1$ and $5$: $J(w)=\frac{(w-1)^2+(w-5)^2}{2}=(w-3)^2+4$, so $J''(w)=2w-6$.' }
+      - { fr: 'Départ $w_0=0$, $\eta=\frac14$ : $J''(0)=-6$, donc $w_1=0-\frac14\times(-6)=1{,}5$.', en: 'Start $w_0=0$, $\eta=\frac14$: $J''(0)=-6$, so $w_1=0-\frac14\times(-6)=1.5$.' }
+      - { fr: 'La perte passe de $J(0)=13$ à $J(1{,}5)=6{,}25$ : la descente progresse vers $3$.', en: 'The loss goes from $J(0)=13$ to $J(1.5)=6.25$: the descent moves toward $3$.' }
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -68,6 +93,11 @@ cartes:
     reponses: ['8']
     verif: 'print(sum((2-y)**2 for y in [2,6])//2)'
     explication: { fr: 'La perte vaut $(0+16)/2=8<20$ ; atteindre une observation ne rend pas toute la perte nulle.', en: 'The loss is $(0+16)/2=8<20$; matching one observation does not make the entire loss zero.' }
+  - id: d_liste
+    type: idee
+    fr: 'Avant de lancer une descente, vérifie trois choses. La perte est convexe, sinon un minimum local peut piéger. Le pas est petit. Une limite d’itérations existe.'
+    en: 'Before running a descent, check three things. The loss is convex, otherwise a local minimum may trap you. The step is small. An iteration cap exists.'
+    exemple: { fr: 'Ici $J''''(w)=2>0$ et $\eta=\frac14<1$ : la descente de $w_0=0$ converge vers $4$ sans osciller.', en: 'Here $J''''(w)=2>0$ and $\eta=\frac14<1$: the descent from $w_0=0$ converges to $4$ without oscillating.' }
   - id: c7
     type: saisie
     note: { kind: exercise, poids: 1 }
