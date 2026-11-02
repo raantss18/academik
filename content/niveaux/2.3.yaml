@@ -1,0 +1,211 @@
+# Niveau 2.3 — Python 3 : répéter. Original academik ; notions vérifiées dans le tutoriel officiel Python (instructions for, range, while, break).
+id: '2.3'
+module: 2
+duree_min: 18
+titre: { fr: 'Répéter', en: 'Repeating' }
+ia: { fr: 'Kintana sait refaire la même chose plusieurs fois sans copier ses lignes.', en: 'Kintana can do the same thing several times without copying her lines.' }
+sources:
+  - { titre: 'Python — Tutoriel, instructions for et range()', url: 'https://docs.python.org/3/tutorial/controlflow.html#for-statements', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — Tutoriel, break et continue', url: 'https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements-and-else-clauses-on-loops', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — Référence, instruction while', url: 'https://docs.python.org/3/reference/compound_stmts.html#the-while-statement', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      total = 0
+      for i in range(3):
+          total = total + i
+      print(total)
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      total = 0
+      for i in range(3):
+          total = total + i
+      print(total)
+      ```
+    choix:
+      - { fr: '`3`', en: '`3`', juste: true }
+      - { fr: '`6`', en: '`6`' }
+      - { fr: '`2`', en: '`2`' }
+    verif: |-
+      total = 0
+      for i in range(3):
+          total = total + i
+      print(total)
+    sortie: '3'
+    explication: { fr: '`i` vaut 0, puis 1, puis 2 : $0+1+2=3$.', en: '`i` is 0, then 1, then 2: $0+1+2=3$.' }
+  - id: c2
+    type: idee
+    fr: 'Une **boucle `for`** répète un bloc pour chaque valeur d’une suite. `range(4)` fabrique les nombres `0, 1, 2, 3` : on part de 0 et on **s’arrête avant** 4.'
+    en: 'A **`for` loop** repeats a block for each value of a sequence. `range(4)` makes the numbers `0, 1, 2, 3`: it starts at 0 and **stops before** 4.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Appel', en: 'Call' }, { fr: 'Valeurs de `i`', en: 'Values of `i`' }, { fr: 'Nombre de tours', en: 'Number of turns' }]
+      cellules:
+        - ['`range(4)`', '`0, 1, 2, 3`', '$4$']
+        - ['`range(1, 4)`', '`1, 2, 3`', '$3$']
+        - ['`range(0, 10, 5)`', '`0, 5`', { fr: '$2$', en: '$2$', ton: ok }]
+      legende: { fr: '`range(début, fin, pas)` : la fin n’est jamais atteinte, le pas vaut 1 par défaut.', en: '`range(start, stop, step)`: the stop is never reached, the step is 1 by default.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Additionner les nombres de 1 à 4', en: 'Adding the numbers from 1 to 4' }
+    lang: python
+    etapes:
+      - { code: 'total = 0', fr: 'On part d’un total de zéro : c’est l’**accumulateur**.', en: 'We start from a total of zero: this is the **accumulator**.' }
+      - { code: 'for i in range(1, 5):', fr: '`i` prend les valeurs 1, 2, 3, 4 : la boucle tourne quatre fois.', en: '`i` takes the values 1, 2, 3, 4: the loop turns four times.' }
+      - { code: '    total = total + i', fr: 'À chaque tour, on ajoute `i` au total : 1, puis 3, puis 6, puis 10.', en: 'At each turn, we add `i` to the total: 1, then 3, then 6, then 10.' }
+      - { code: 'print(total)', fr: 'Ce `print` est hors de la boucle (pas d’indentation) : il affiche `10` une seule fois.', en: 'This `print` is outside the loop (no indentation): it displays `10` only once.' }
+    verif: |-
+      total = 0
+      for i in range(1, 5):
+          total = total + i
+      print(total)
+    sortie: '10'
+  - id: d_acc
+    type: idee
+    fr: 'Le schéma **accumulateur** revient partout : une variable de départ, une boucle qui la met à jour, un résultat à la fin. Le départ vaut `0` pour une somme, `1` pour un produit.'
+    en: 'The **accumulator** pattern appears everywhere: a starting variable, a loop that updates it, a result at the end. The start is `0` for a sum, `1` for a product.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Somme de `range(1, 4)`', en: 'Sum of `range(1, 4)`' }
+          noeuds: [{ fr: '`total = 0`', en: '`total = 0`' }, { fr: '$+1$ → $1$', en: '$+1$ → $1$' }, { fr: '$+2$ → $3$', en: '$+2$ → $3$' }, { fr: '$+3$ → $6$', en: '$+3$ → $6$', ton: ok }]
+        - titre: { fr: 'Produit de `range(1, 4)`', en: 'Product of `range(1, 4)`' }
+          noeuds: [{ fr: '`p = 1`', en: '`p = 1`' }, { fr: '$\times1$ → $1$', en: '$\times1$ → $1$' }, { fr: '$\times2$ → $2$', en: '$\times2$ → $2$' }, { fr: '$\times3$ → $6$', en: '$\times3$ → $6$', ton: ok }]
+      legende: { fr: 'Départ à `1` pour un produit : partir de `0` donnerait toujours `0`.', en: 'Start at `1` for a product: starting at `0` would always give `0`.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. La variable `n` est déjà écrite. **Affiche la somme des entiers de 1 à `n`** (inclus). Ne change pas la ligne `n = …` : le jeu essaie plusieurs valeurs.'
+    en: 'Your turn. The variable `n` is already written. **Display the sum of the integers from 1 to `n`** (inclusive). Do not change the `n = …` line: the game tries several values.'
+    depart: |
+      n = 4
+
+      # écris ta boucle ici
+    tests: |
+      for n, attendu in [(4, "10"), (1, "1"), (10, "55"), (0, "0")]:
+          assert _essai(n=n) == attendu
+    solutionCode: |
+      n = 4
+      total = 0
+      for i in range(1, n + 1):
+          total = total + i
+      print(total)
+    indice: { fr: 'Pour inclure `n`, la fin de `range` doit valoir `n + 1`. Pense à initialiser un total avant la boucle.', en: 'To include `n`, the end of `range` must be `n + 1`. Remember to initialise a total before the loop.' }
+    explication: { fr: '`range(1, n + 1)` parcourt 1, 2, …, `n` ; l’accumulateur additionne chaque valeur.', en: '`range(1, n + 1)` goes through 1, 2, …, `n`; the accumulator adds each value.' }
+  - id: d_p_range
+    type: piege
+    fr: '`range(5)` s’arrête à **4**, pas à 5. Pour aller jusqu’à `n` inclus, écris `range(1, n + 1)`. Cette erreur « d’un cran » est la plus fréquente.'
+    en: '`range(5)` stops at **4**, not 5. To reach `n` inclusive, write `range(1, n + 1)`. This “off by one” error is the most common.'
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Combien de fois la boucle `for i in range(2, 7):` s’exécute-t-elle ?'
+    en: 'How many times does the loop `for i in range(2, 7):` run?'
+    reponses: ['5']
+    verif: 'print(len(range(2, 7)))'
+    indice: { fr: 'Les valeurs sont 2, 3, 4, 5, 6 : 7 n’est pas atteint.', en: 'The values are 2, 3, 4, 5, 6: 7 is not reached.' }
+    explication: { fr: '$7-2=5$ tours : `i` vaut 2, 3, 4, 5 puis 6.', en: '$7-2=5$ turns: `i` is 2, 3, 4, 5 then 6.' }
+  - id: d_while
+    type: idee
+    fr: 'Une **boucle `while`** (« tant que ») répète un bloc **tant qu’une condition reste vraie**. On l’emploie quand on ne sait pas à l’avance combien de tours il faudra.'
+    en: 'A **`while` loop** repeats a block **as long as a condition stays true**. Use it when you do not know in advance how many turns it will take.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Le cycle d’un `while`', en: 'The cycle of a `while`' }
+          noeuds: [{ fr: 'tester la condition', en: 'test the condition' }, { fr: 'vraie : exécuter le bloc', en: 'true: run the block', ton: ok }, { fr: 'revenir au test', en: 'go back to the test' }, { fr: 'fausse : sortir', en: 'false: exit', ton: bad }]
+      legende: { fr: 'Le bloc doit changer quelque chose qui finira par rendre la condition fausse.', en: 'The block must change something that will eventually make the condition false.' }
+  - id: d_while_ex
+    type: exemple
+    titre: { fr: 'Descendre jusqu’à passer sous zéro', en: 'Going down until below zero' }
+    lang: python
+    etapes:
+      - { code: 'n = 10', fr: 'On part de 10.', en: 'We start from 10.' }
+      - { code: 'while n > 0:', fr: 'Tant que `n` est strictement positif, on boucle.', en: 'As long as `n` is strictly positive, we loop.' }
+      - { code: '    n = n - 4', fr: 'À chaque tour, `n` prend les valeurs 6, puis 2, puis −2.', en: 'At each turn, `n` takes the values 6, then 2, then −2.' }
+      - { code: 'print(n)', fr: 'Quand `n` vaut −2, la condition est fausse : on sort et on affiche `-2`.', en: 'When `n` is −2, the condition is false: we exit and display `-2`.' }
+    verif: |-
+      n = 10
+      while n > 0:
+          n = n - 4
+      print(n)
+    sortie: '-2'
+  - id: d_p_inf
+    type: piege
+    fr: 'Si le bloc ne change jamais ce que teste la condition, la boucle **ne s’arrête jamais**. Dans ce jeu, un programme trop long est arrêté après quelques secondes.'
+    en: 'If the block never changes what the condition tests, the loop **never stops**. In this game, a program that runs too long is stopped after a few seconds.'
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'La variable `n` est écrite. **Affiche combien de multiples de 3 il y a entre 1 et `n`** (inclus). Un multiple se repère avec `i % 3 == 0`.'
+    en: 'The variable `n` is written. **Display how many multiples of 3 there are between 1 and `n`** (inclusive). A multiple is spotted with `i % 3 == 0`.'
+    depart: |
+      n = 10
+
+      # compte les multiples de 3 ici
+    tests: |
+      for n, attendu in [(10, "3"), (2, "0"), (3, "1"), (30, "10")]:
+          assert _essai(n=n) == attendu
+    solutionCode: |
+      n = 10
+      compte = 0
+      for i in range(1, n + 1):
+          if i % 3 == 0:
+              compte = compte + 1
+      print(compte)
+    indice: { fr: 'Un `if` à l’intérieur de la boucle ; l’accumulateur ne s’incrémente que si la condition est vraie.', en: 'An `if` inside the loop; the accumulator only increases if the condition is true.' }
+    explication: { fr: 'Le `if` filtre les valeurs : seules celles divisibles par 3 augmentent le compteur.', en: 'The `if` filters the values: only those divisible by 3 increase the counter.' }
+  - id: d_choix
+    type: idee
+    fr: 'Quelle boucle choisir ? Si tu connais le **nombre de tours** ou la liste à parcourir, prends `for`. Si le nombre de tours dépend d’une **condition**, prends `while`.'
+    en: 'Which loop to pick? If you know the **number of turns** or the list to go through, use `for`. If the number of turns depends on a **condition**, use `while`.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Situation', en: 'Situation' }, { fr: 'Boucle', en: 'Loop' }]
+      cellules:
+        - [{ fr: 'afficher les nombres de 1 à 10', en: 'display numbers from 1 to 10' }, '`for`']
+        - [{ fr: 'parcourir tous les mots d’une liste', en: 'go through every word of a list' }, '`for`']
+        - [{ fr: 'doubler un nombre jusqu’à dépasser 1000', en: 'double a number until it exceeds 1000' }, { fr: '`while`', en: '`while`', ton: ok }]
+      legende: { fr: 'En cas de doute, `for` est plus sûr : il se termine toujours.', en: 'When in doubt, `for` is safer: it always ends.' }
+  - id: d_break
+    type: idee
+    fr: '`break` **sort tout de suite** de la boucle ; `continue` saute le reste du tour et passe au suivant. On s’en sert pour s’arrêter dès qu’on a trouvé ce qu’on cherchait.'
+    en: '`break` **leaves the loop immediately**; `continue` skips the rest of the turn and goes to the next one. Use them to stop as soon as you have found what you were looking for.'
+    exemple: { fr: 'On cherche le premier multiple de 7 : `for i in range(1, 50): if i % 7 == 0: print(i); break` affiche `7` puis s’arrête, sans tester les 42 autres valeurs.', en: 'We look for the first multiple of 7: `for i in range(1, 50): if i % 7 == 0: print(i); break` displays `7` then stops, without testing the other 42 values.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. La variable `n` est écrite. **Affiche la plus petite puissance de 2 strictement plus grande que `n`** (1, 2, 4, 8, 16…). Utilise une boucle `while`.'
+    en: 'Challenge. The variable `n` is written. **Display the smallest power of 2 strictly greater than `n`** (1, 2, 4, 8, 16…). Use a `while` loop.'
+    depart: |
+      n = 5
+
+      # écris ta boucle while ici
+    tests: |
+      for n, attendu in [(5, "8"), (8, "16"), (0, "1"), (100, "128")]:
+          assert _essai(n=n) == attendu
+    solutionCode: |
+      n = 5
+      p = 1
+      while p <= n:
+          p = p * 2
+      print(p)
+    indice: { fr: 'Pars de `p = 1` et double `p` tant qu’il n’est pas encore plus grand que `n`.', en: 'Start from `p = 1` and double `p` as long as it is not yet greater than `n`.' }
+    explication: { fr: 'La boucle double `p` tant que `p <= n` ; elle s’arrête au premier `p` strictement plus grand.', en: 'The loop doubles `p` as long as `p <= n`; it stops at the first `p` strictly greater.' }
+  - id: c8
+    type: retenir
+    fr: '`for` quand on connaît les tours (`range` s’arrête avant la fin), `while` quand une condition décide ; un accumulateur part de `0` (somme) ou `1` (produit) ; `break` sort.'
+    en: '`for` when the turns are known (`range` stops before the end), `while` when a condition decides; an accumulator starts at `0` (sum) or `1` (product); `break` leaves.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — Tutoriel, les boucles](https://docs.python.org/3/tutorial/controlflow.html#for-statements) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — Tutorial, loops](https://docs.python.org/3/tutorial/controlflow.html#for-statements); this optional reading needs a connection.

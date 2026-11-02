@@ -1,0 +1,252 @@
+# Niveau 2.boss — Le chatbot à règles (mission : une entrée mal validée). Original academik ; notions vérifiées dans le tutoriel officiel Python (chaînes, dictionnaires, fonctions).
+id: '2.boss'
+module: 2
+duree_min: 19
+titre: { fr: 'Le chatbot à règles', en: 'The rule-based chatbot' }
+ia: { fr: 'Kintana répond à des messages simples grâce à un dictionnaire de règles, et refuse les entrées mal formées.', en: 'Kintana answers simple messages with a dictionary of rules, and rejects malformed input.' }
+sources:
+  - { titre: 'Python — Tutoriel, méthodes de chaînes', url: 'https://docs.python.org/3/library/stdtypes.html#string-methods', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — Tutoriel, dictionnaires', url: 'https://docs.python.org/3/tutorial/datastructures.html#dictionaries', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'OWASP — Input Validation Cheat Sheet', url: 'https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html', licence: 'CC BY-SA 4.0' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      regles = {"merci": "de rien"}
+      print(regles.get("salut", "?"))
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      regles = {"merci": "de rien"}
+      print(regles.get("salut", "?"))
+      ```
+    choix:
+      - { fr: '`de rien`', en: '`de rien`' }
+      - { fr: '`?`', en: '`?`', juste: true }
+      - { fr: '`KeyError`', en: '`KeyError`' }
+    verif: |-
+      regles = {"merci": "de rien"}
+      print(regles.get("salut", "?"))
+    sortie: '?'
+    explication: { fr: '`"salut"` n’est pas une clé : `get` renvoie la valeur par défaut `"?"`, sans erreur.', en: '`"salut"` is not a key: `get` returns the default value `"?"`, with no error.' }
+  - id: c2
+    type: idee
+    fr: 'Un **chatbot à règles** répond sans rien « comprendre » : il normalise le message, cherche une règle qui correspond, puis renvoie la réponse prévue. Sinon, il renvoie un message par défaut.'
+    en: 'A **rule-based chatbot** answers without “understanding” anything: it normalises the message, looks for a matching rule, then returns the planned answer. Otherwise, it returns a default message.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Le trajet d’un message', en: 'A message’s journey' }
+          noeuds: [{ fr: 'message reçu', en: 'message received' }, { fr: 'nettoyer : minuscules, espaces', en: 'clean: lowercase, spaces' }, { fr: 'chercher dans les règles', en: 'look in the rules' }, { fr: 'réponse (ou défaut)', en: 'answer (or default)', ton: ok }]
+      legende: { fr: 'Chaque étape sera une petite fonction, réutilisant les niveaux 2.1 à 2.5.', en: 'Each step will be a small function, reusing levels 2.1 to 2.5.' }
+  - id: d_norm
+    type: idee
+    fr: 'Les utilisateurs écrivent `Bonjour`, `BONJOUR` ou ` bonjour `. Pour que la même règle s’applique, on **normalise** : `.strip()` retire les espaces autour, `.lower()` passe en minuscules.'
+    en: 'Users write `Bonjour`, `BONJOUR` or ` bonjour `. For the same rule to apply, we **normalise**: `.strip()` removes the surrounding spaces, `.lower()` converts to lowercase.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Message reçu', en: 'Message received' }, { fr: 'Après `.strip().lower()`', en: 'After `.strip().lower()`' }]
+      cellules:
+        - ['`"Bonjour"`', '`"bonjour"`']
+        - ['`"  MERCI "`', '`"merci"`']
+        - ['`"AiDe"`', { fr: '`"aide"`', en: '`"aide"`', ton: ok }]
+      legende: { fr: 'Après normalisation, une seule règle `"bonjour"` suffit pour toutes les écritures.', en: 'After normalising, a single `"bonjour"` rule is enough for every spelling.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un premier chatbot', en: 'A first chatbot' }
+    lang: python
+    etapes:
+      - { code: 'REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}', fr: 'Le dictionnaire des règles : clé = message attendu, valeur = réponse.', en: 'The rules dictionary: key = expected message, value = answer.' }
+      - { code: 'def reponse(message):', fr: 'La fonction reçoit le message brut.', en: 'The function receives the raw message.' }
+      - { code: '    m = message.strip().lower()', fr: 'On normalise : espaces retirés, minuscules.', en: 'We normalise: spaces removed, lowercase.' }
+      - { code: '    return REGLES.get(m, "?")', fr: 'On cherche `m` dans les règles ; sinon on renvoie `"?"`.', en: 'We look for `m` in the rules; otherwise we return `"?"`.' }
+      - { code: 'print(reponse("  BONJOUR "))', fr: 'Même avec des majuscules et des espaces, la règle `"bonjour"` s’applique : on affiche `Salut !`.', en: 'Even with capitals and spaces, the `"bonjour"` rule applies: we display `Salut !`.' }
+    verif: |-
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}
+      def reponse(message):
+          m = message.strip().lower()
+          return REGLES.get(m, "?")
+      print(reponse("  BONJOUR "))
+    sortie: 'Salut !'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le dictionnaire `REGLES` est écrit. **Écris `reponse(message)`** : elle normalise le message et renvoie la réponse de la règle, ou `"Je n’ai pas compris."` si aucune règle ne correspond.'
+    en: 'The `REGLES` dictionary is written. **Write `reponse(message)`**: it normalises the message and returns the rule’s answer, or `"Je n’ai pas compris."` if no rule matches.'
+    depart: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir.", "aide": "Dis-moi ce que tu cherches."}
+
+      # écris ta fonction reponse ici
+    tests: |
+      assert reponse("Bonjour") == "Salut !"
+      assert reponse("  MERCI ") == "Avec plaisir."
+      assert reponse("aide") == "Dis-moi ce que tu cherches."
+      assert reponse("xyz") == "Je n’ai pas compris."
+    solutionCode: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir.", "aide": "Dis-moi ce que tu cherches."}
+
+      def reponse(message):
+          m = message.strip().lower()
+          return REGLES.get(m, "Je n’ai pas compris.")
+    indice: { fr: 'Normalise avec `.strip().lower()`, puis `REGLES.get(…, défaut)` fait la recherche et le message par défaut en une ligne.', en: 'Normalise with `.strip().lower()`, then `REGLES.get(…, default)` does the lookup and the default message in one line.' }
+    explication: { fr: 'Normaliser, chercher, valeur par défaut : les trois étapes du schéma, en trois lignes.', en: 'Normalise, look up, default value: the three steps of the diagram, in three lines.' }
+  - id: d_mots
+    type: idee
+    fr: 'Un message est rarement un seul mot : « dis bonjour svp ». On le découpe avec `.split()` en une **liste de mots**, puis on regarde si l’un d’eux est une clé des règles.'
+    en: 'A message is rarely a single word: “say hello please”. We cut it with `.split()` into a **list of words**, then check whether one of them is a key of the rules.'
+    exemple: { fr: '`"dis bonjour svp".split()` donne `["dis", "bonjour", "svp"]` ; le mot `"bonjour"` est une clé, donc la règle s’applique.', en: '`"dis bonjour svp".split()` gives `["dis", "bonjour", "svp"]`; the word `"bonjour"` is a key, so the rule applies.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `reponse_mots(message)`** : elle normalise, découpe en mots, et renvoie la réponse du **premier** mot qui est une clé de `REGLES` ; sinon `"?"`.'
+    en: '**Write `reponse_mots(message)`**: it normalises, splits into words, and returns the answer of the **first** word that is a key of `REGLES`; otherwise `"?"`.'
+    depart: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}
+
+      # écris ta fonction reponse_mots ici
+    tests: |
+      assert reponse_mots("dis bonjour svp") == "Salut !"
+      assert reponse_mots("MERCI beaucoup") == "Avec plaisir."
+      assert reponse_mots("bonjour merci") == "Salut !"
+      assert reponse_mots("rien du tout") == "?"
+    solutionCode: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}
+
+      def reponse_mots(message):
+          for mot in message.strip().lower().split():
+              if mot in REGLES:
+                  return REGLES[mot]
+          return "?"
+    indice: { fr: 'Une boucle sur les mots ; dès qu’un mot est dans `REGLES`, `return` sa réponse. Le `return "?"` vient après la boucle.', en: 'A loop over the words; as soon as a word is in `REGLES`, `return` its answer. The `return "?"` comes after the loop.' }
+    explication: { fr: 'Le `return` dans la boucle sort dès la première règle trouvée ; sinon on arrive à `"?"`.', en: 'The `return` inside the loop leaves at the first rule found; otherwise we reach `"?"`.' }
+  - id: d_valid
+    type: idee
+    fr: 'Mission cyber : **ne jamais faire confiance à une entrée**. Avant toute règle, le chatbot vérifie le message : vide ou trop long (plus de 200 caractères), il le **refuse**.'
+    en: 'Cyber mission: **never trust an input**. Before any rule, the chatbot checks the message: empty or too long (over 200 characters), it **rejects** it.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Message', en: 'Message' }, { fr: 'Décision', en: 'Decision' }]
+      cellules:
+        - ['`""` ou `"   "`', { fr: 'refusé : vide', en: 'rejected: empty', ton: bad }]
+        - [{ fr: '300 caractères', en: '300 characters' }, { fr: 'refusé : trop long', en: 'rejected: too long', ton: bad }]
+        - ['`"bonjour"`', { fr: 'accepté : on cherche une règle', en: 'accepted: look for a rule', ton: ok }]
+      legende: { fr: 'On valide **avant** de traiter : une entrée mal contrôlée est la source de nombreuses failles (OWASP).', en: 'Validate **before** processing: poorly checked input is the source of many flaws (OWASP).' }
+  - id: d_valid_ex
+    type: exemple
+    titre: { fr: 'Valider avant de répondre', en: 'Validating before answering' }
+    lang: python
+    etapes:
+      - { code: 'def valide(message):', fr: 'Une petite fonction qui répond par un booléen.', en: 'A small function that answers with a boolean.' }
+      - { code: '    m = message.strip()', fr: 'On retire les espaces : `"   "` devient `""`.', en: 'We remove spaces: `"   "` becomes `""`.' }
+      - { code: '    return 0 < len(m) <= 200', fr: 'Valide si la longueur est entre 1 et 200. La comparaison enchaînée se lit comme en maths.', en: 'Valid if the length is between 1 and 200. The chained comparison reads as in maths.' }
+      - { code: 'print(valide("   "), valide("bonjour"))', fr: 'On affiche `False True` : le message vide est refusé, `bonjour` est accepté.', en: 'We display `False True`: the empty message is rejected, `bonjour` is accepted.' }
+    verif: |-
+      def valide(message):
+          m = message.strip()
+          return 0 < len(m) <= 200
+      print(valide("   "), valide("bonjour"))
+    sortie: 'False True'
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `reponse_sure(message)`** : si le message est vide (après `.strip()`) ou dépasse 200 caractères, renvoie `"Message invalide."` ; sinon renvoie `REGLES.get(…, "?")` après normalisation.'
+    en: '**Write `reponse_sure(message)`**: if the message is empty (after `.strip()`) or exceeds 200 characters, return `"Message invalide."`; otherwise return `REGLES.get(…, "?")` after normalising.'
+    depart: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}
+
+      # écris ta fonction reponse_sure ici
+    tests: |
+      assert reponse_sure("   ") == "Message invalide."
+      assert reponse_sure("") == "Message invalide."
+      assert reponse_sure("a" * 201) == "Message invalide."
+      assert reponse_sure("Bonjour") == "Salut !"
+      assert reponse_sure("zzz") == "?"
+    solutionCode: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}
+
+      def reponse_sure(message):
+          m = message.strip()
+          if len(m) == 0 or len(m) > 200:
+              return "Message invalide."
+          return REGLES.get(m.lower(), "?")
+    indice: { fr: 'Valide d’abord (`if`, `return` anticipé), ensuite seulement cherche la règle.', en: 'Validate first (`if`, early `return`), only then look up the rule.' }
+    explication: { fr: 'Le `return` anticipé protège la suite : une entrée refusée ne touche jamais le dictionnaire.', en: 'The early `return` protects what follows: a rejected input never touches the dictionary.' }
+  - id: d_p_norm
+    type: piege
+    fr: 'Comparer sans normaliser est un piège : `"Bonjour"` n’est pas égal à `"bonjour"` en Python. Normalise **toujours** avant de chercher une règle, sinon le chatbot rate des messages valides.'
+    en: 'Comparing without normalising is a trap: `"Bonjour"` is not equal to `"bonjour"` in Python. **Always** normalise before looking up a rule, otherwise the chatbot misses valid messages.'
+  - id: c7
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `repondre_tout(messages)`** : elle reçoit une liste de messages et renvoie la liste des réponses de la fonction `reponse` déjà écrite pour toi.'
+    en: '**Write `repondre_tout(messages)`**: it receives a list of messages and returns the list of answers from the `reponse` function already written for you.'
+    depart: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}
+
+      def reponse(message):
+          return REGLES.get(message.strip().lower(), "?")
+
+      # écris ta fonction repondre_tout ici
+    tests: |
+      assert repondre_tout(["bonjour", "zzz"]) == ["Salut !", "?"]
+      assert repondre_tout([]) == []
+      assert repondre_tout(["MERCI"]) == ["Avec plaisir."]
+    solutionCode: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}
+
+      def reponse(message):
+          return REGLES.get(message.strip().lower(), "?")
+
+      def repondre_tout(messages):
+          resultat = []
+          for m in messages:
+              resultat.append(reponse(m))
+          return resultat
+    indice: { fr: 'Une liste vide au départ, une boucle sur `messages`, `append` de chaque réponse, puis `return`.', en: 'An empty list at the start, a loop over `messages`, `append` each answer, then `return`.' }
+    explication: { fr: 'Une fonction qui en réutilise une autre : c’est tout l’intérêt de bien découper (niveau 2.4).', en: 'A function reusing another: this is the whole point of good decomposition (level 2.4).' }
+  - id: c8
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi final. **Écris `inconnus(messages)`** : renvoie combien de messages de la liste n’ont **aucune** règle (après normalisation). `REGLES` et `reponse` sont déjà écrits.'
+    en: 'Final challenge. **Write `inconnus(messages)`**: return how many messages in the list have **no** rule (after normalising). `REGLES` and `reponse` are already written.'
+    depart: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}
+
+      def reponse(message):
+          return REGLES.get(message.strip().lower(), "?")
+
+      # écris ta fonction inconnus ici
+    tests: |
+      assert inconnus(["bonjour", "zzz", "merci", "???"]) == 2
+      assert inconnus([]) == 0
+      assert inconnus(["BONJOUR "]) == 0
+      assert inconnus(["a", "b"]) == 2
+    solutionCode: |
+      REGLES = {"bonjour": "Salut !", "merci": "Avec plaisir."}
+
+      def reponse(message):
+          return REGLES.get(message.strip().lower(), "?")
+
+      def inconnus(messages):
+          compte = 0
+          for m in messages:
+              if reponse(m) == "?":
+                  compte = compte + 1
+          return compte
+    indice: { fr: 'Un compteur et une boucle ; un message est inconnu quand `reponse(m)` vaut `"?"`.', en: 'A counter and a loop; a message is unknown when `reponse(m)` is `"?"`.' }
+    explication: { fr: 'On réutilise `reponse` comme détecteur : sa valeur par défaut signale l’absence de règle.', en: 'We reuse `reponse` as a detector: its default value signals the absence of a rule.' }
+  - id: c9
+    type: retenir
+    fr: 'Un chatbot à règles : normaliser (`strip`, `lower`), valider l’entrée, chercher dans un dictionnaire avec `.get(cle, défaut)`. Il ne comprend rien : il applique des règles.'
+    en: 'A rule-based chatbot: normalise (`strip`, `lower`), validate the input, look up in a dictionary with `.get(key, default)`. It understands nothing: it applies rules.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [OWASP — Validation des entrées](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [OWASP — Input validation](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html); this optional reading needs a connection.
