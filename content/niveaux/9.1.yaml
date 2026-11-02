@@ -1,0 +1,188 @@
+# Niveau 9.1 — Apprentissage automatique 1 : ajuster une droite. Original academik ; notions vérifiées dans Stanford CS229 (régression linéaire, moindres carrés, descente de gradient) et MIT 6.036.
+id: '9.1'
+module: 9
+duree_min: 18
+titre: { fr: 'Ajuster une droite', en: 'Fitting a line' }
+ia: { fr: 'Kintana apprend ses premiers réglages : la droite qui passe au plus près d’un nuage de points.', en: 'Kintana learns her first settings: the line that passes closest to a cloud of points.' }
+sources:
+  - { titre: 'Stanford CS229 — Machine Learning (notes : régression linéaire)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
+  - { titre: 'MIT 6.036 — Introduction to Machine Learning', url: 'https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/about', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un modèle prédit `1, 2, 3` alors que les vraies valeurs sont `1, 2, 5`. Quelle est la **moyenne des erreurs au carré** ?'
+    en: 'A model predicts `1, 2, 3` while the true values are `1, 2, 5`. What is the **mean of the squared errors**?'
+    choix:
+      - { fr: '$\frac43$', en: '$\frac43$', juste: true }
+      - { fr: '$4$', en: '$4$' }
+      - { fr: '$\frac23$', en: '$\frac23$' }
+    verif: 'print(round(((1 - 1) ** 2 + (2 - 2) ** 2 + (3 - 5) ** 2) / 3, 4))'
+    sortie: '1.3333'
+    explication: { fr: 'Les erreurs sont $0$, $0$ et $-2$ ; leurs carrés $0$, $0$ et $4$ ; la moyenne est $4/3$.', en: 'The errors are $0$, $0$ and $-2$; their squares $0$, $0$ and $4$; the mean is $4/3$.' }
+  - id: c2
+    type: idee
+    fr: 'Apprendre, c’est **régler** un modèle pour qu’il se trompe peu sur des exemples. Pour une droite $\hat y=wx+b$, les réglages sont $w$ (la pente) et $b$ (l’ordonnée à l’origine). On mesure l’écart avec l’**erreur quadratique moyenne**.'
+    en: 'Learning means **tuning** a model so it makes few mistakes on examples. For a line $\hat y=wx+b$, the settings are $w$ (the slope) and $b$ (the intercept). We measure the gap with the **mean squared error**.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'La boucle d’apprentissage', en: 'The learning loop' }
+          noeuds: [{ fr: 'prédire $wx+b$', en: 'predict $wx+b$' }, { fr: 'mesurer l’erreur', en: 'measure the error' }, { fr: 'calculer la pente de l’erreur', en: 'compute the slope of the error' }, { fr: 'ajuster $w$ et $b$', en: 'adjust $w$ and $b$', ton: ok }]
+      legende: { fr: 'C’est la descente de gradient du niveau 5.5, appliquée à un vrai problème.', en: 'This is the gradient descent of level 5.5, applied to a real problem.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Mesurer l’erreur d’une droite', en: 'Measuring the error of a line' }
+    lang: python
+    etapes:
+      - { code: 'xs = [0, 1, 2, 3]\nys = [1, 3, 5, 7]', fr: 'Quatre exemples : l’entrée `x` et la valeur vraie `y`.', en: 'Four examples: the input `x` and the true value `y`.' }
+      - { code: 'def eqm(w, b):\n    return sum((w * x + b - y) ** 2 for x, y in zip(xs, ys)) / len(xs)', fr: 'L’erreur quadratique moyenne d’une droite : on moyenne les carrés des écarts.', en: 'The mean squared error of a line: we average the squares of the gaps.' }
+      - { code: 'print(eqm(0, 0), eqm(2, 1))', fr: 'La droite plate $y=0$ se trompe beaucoup (`21.0`) ; la droite $y=2x+1$ ne se trompe pas du tout (`0.0`).', en: 'The flat line $y=0$ is very wrong (`21.0`); the line $y=2x+1$ is not wrong at all (`0.0`).' }
+    verif: |-
+      xs = [0, 1, 2, 3]
+      ys = [1, 3, 5, 7]
+      def eqm(w, b):
+          return sum((w * x + b - y) ** 2 for x, y in zip(xs, ys)) / len(xs)
+      print(eqm(0, 0), eqm(2, 1))
+    sortie: '21.0 0.0'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `eqm(w, b, xs, ys)`** : l’erreur quadratique moyenne de la droite $wx+b$ sur les listes `xs` et `ys`.'
+    en: 'Your turn. **Write `eqm(w, b, xs, ys)`**: the mean squared error of the line $wx+b$ on the lists `xs` and `ys`.'
+    depart: |
+      # écris ta fonction eqm ici
+    tests: |
+      assert eqm(2, 1, [0, 1, 2, 3], [1, 3, 5, 7]) == 0
+      assert eqm(0, 0, [0, 1, 2, 3], [1, 3, 5, 7]) == 21
+      assert eqm(1, 0, [1, 2, 3], [1, 2, 5]) == 4 / 3
+    solutionCode: |
+      def eqm(w, b, xs, ys):
+          return sum((w * x + b - y) ** 2 for x, y in zip(xs, ys)) / len(xs)
+    indice: { fr: 'Pour chaque couple `(x, y)`, calcule `(w * x + b - y) ** 2`, additionne, puis divise par le nombre d’exemples.', en: 'For each pair `(x, y)`, compute `(w * x + b - y) ** 2`, add up, then divide by the number of examples.' }
+    explication: { fr: 'Une erreur de 0 signifie que la droite passe exactement par tous les points.', en: 'An error of 0 means the line passes exactly through all the points.' }
+  - id: d_grad
+    type: idee
+    fr: 'Les pentes de l’erreur par rapport à $w$ et $b$ viennent de la règle de chaîne (niveau 5.7) : $\partial_w=\frac2n\sum(wx+b-y)\,x$ et $\partial_b=\frac2n\sum(wx+b-y)$. On les range dans le gradient (niveau 5.3).'
+    en: 'The slopes of the error with respect to $w$ and $b$ come from the chain rule (level 5.7): $\partial_w=\frac2n\sum(wx+b-y)\,x$ and $\partial_b=\frac2n\sum(wx+b-y)$. We store them in the gradient (level 5.3).'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Réglage', en: 'Setting' }, { fr: 'Pente de l’erreur', en: 'Slope of the error' }, { fr: 'Pas de descente', en: 'Descent step' }]
+      cellules:
+        - ['$w$', '$\frac2n\sum(wx+b-y)\,x$', '$w\leftarrow w-\eta\,\partial_w$']
+        - ['$b$', '$\frac2n\sum(wx+b-y)$', '$b\leftarrow b-\eta\,\partial_b$']
+      legende: { fr: 'On met à jour **les deux réglages à la fois**, avec les pentes calculées au même point.', en: 'We update **both settings at once**, with the slopes computed at the same point.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `pas(w, b, xs, ys, eta)`** : un pas de descente. Elle renvoie le couple `(nouveau_w, nouveau_b)` calculé avec les deux pentes ci-dessus.'
+    en: '**Write `pas(w, b, xs, ys, eta)`**: one descent step. It returns the pair `(new_w, new_b)` computed with the two slopes above.'
+    depart: |
+      # écris ta fonction pas ici
+    tests: |
+      nw, nb = pas(0, 0, [0, 1, 2, 3], [1, 3, 5, 7], 0.05)
+      assert abs(nw - 0.85) < 1e-9
+      assert abs(nb - 0.4) < 1e-9
+      assert pas(2, 1, [0, 1, 2, 3], [1, 3, 5, 7], 0.1) == (2, 1)
+    solutionCode: |
+      def pas(w, b, xs, ys, eta):
+          n = len(xs)
+          gw = 2 / n * sum((w * x + b - y) * x for x, y in zip(xs, ys))
+          gb = 2 / n * sum((w * x + b - y) for x, y in zip(xs, ys))
+          return (w - eta * gw, b - eta * gb)
+    indice: { fr: 'Calcule les deux pentes `gw` et `gb` **avant** de modifier `w` et `b`, puis renvoie `(w - eta * gw, b - eta * gb)`.', en: 'Compute both slopes `gw` and `gb` **before** changing `w` and `b`, then return `(w - eta * gw, b - eta * gb)`.' }
+    explication: { fr: 'Au bon réglage $(2,1)$ les deux pentes sont nulles : le pas ne bouge plus.', en: 'At the right setting $(2,1)$ both slopes are zero: the step no longer moves.' }
+  - id: d_boucle
+    type: exemple
+    titre: { fr: 'Entraîner pendant 2000 pas', en: 'Training for 2000 steps' }
+    lang: python
+    etapes:
+      - { code: 'xs = [0, 1, 2, 3]\nys = [1, 3, 5, 7]\nw, b = 0, 0', fr: 'Mêmes données, et on part d’une droite plate : $w=0$, $b=0$.', en: 'Same data, and we start from a flat line: $w=0$, $b=0$.' }
+      - { code: 'for _ in range(2000):\n    n = len(xs)\n    gw = 2 / n * sum((w * x + b - y) * x for x, y in zip(xs, ys))\n    gb = 2 / n * sum((w * x + b - y) for x, y in zip(xs, ys))\n    w, b = w - 0.05 * gw, b - 0.05 * gb', fr: 'On répète le pas de descente avec $\eta=0{,}05$.', en: 'We repeat the descent step with $\eta=0.05$.' }
+      - { code: 'print(round(w, 2), round(b, 2))', fr: 'On affiche `2.0 1.0` : Kintana a **retrouvé** la droite cachée dans les données, par simple descente.', en: 'We display `2.0 1.0`: Kintana has **recovered** the line hidden in the data, by simple descent.' }
+    verif: |-
+      xs = [0, 1, 2, 3]
+      ys = [1, 3, 5, 7]
+      w, b = 0, 0
+      for _ in range(2000):
+          n = len(xs)
+          gw = 2 / n * sum((w * x + b - y) * x for x, y in zip(xs, ys))
+          gb = 2 / n * sum((w * x + b - y) for x, y in zip(xs, ys))
+          w, b = w - 0.05 * gw, b - 0.05 * gb
+      print(round(w, 2), round(b, 2))
+    sortie: '2.0 1.0'
+  - id: d_formule
+    type: idee
+    fr: 'Pour la droite, il existe aussi une **formule directe** : $w=\dfrac{\operatorname{cov}(x,y)}{\operatorname{var}(x)}$ et $b=\bar y-w\bar x$, où $\bar x,\bar y$ sont les moyennes. Elle donne la réponse sans boucle, mais ne s’étend pas aux grands modèles.'
+    en: 'For the line there is also a **direct formula**: $w=\dfrac{\operatorname{cov}(x,y)}{\operatorname{var}(x)}$ and $b=\bar y-w\bar x$, where $\bar x,\bar y$ are the means. It gives the answer without a loop, but does not extend to large models.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Données `x = 0,1,2,3`, `y = 1,3,5,7`', en: 'Data `x = 0,1,2,3`, `y = 1,3,5,7`' }, { fr: 'Valeur', en: 'Value' }]
+      cellules:
+        - ['$\bar x,\ \bar y$', '$1{,}5,\ 4$']
+        - ['$\operatorname{cov}(x,y)$', '$2{,}5$']
+        - ['$\operatorname{var}(x)$', '$1{,}25$']
+        - ['$w=2{,}5/1{,}25,\ b=4-2\times1{,}5$', { fr: '$w=2,\ b=1$', en: '$w=2,\ b=1$', ton: ok }]
+      legende: { fr: 'On retrouve exactement le résultat de la descente de gradient.', en: 'We find exactly the result of gradient descent.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `droite(xs, ys)`** : renvoie `(w, b)` avec la formule directe (covariance sur variance, puis $b=\bar y-w\bar x$).'
+    en: '**Write `droite(xs, ys)`**: return `(w, b)` with the direct formula (covariance over variance, then $b=\bar y-w\bar x$).'
+    depart: |
+      # écris ta fonction droite ici
+    tests: |
+      w, b = droite([0, 1, 2, 3], [1, 3, 5, 7])
+      assert abs(w - 2) < 1e-9 and abs(b - 1) < 1e-9
+      w, b = droite([1, 2, 3], [2, 4, 6])
+      assert abs(w - 2) < 1e-9 and abs(b) < 1e-9
+      w, b = droite([0, 2], [5, 5])
+      assert abs(w) < 1e-9 and abs(b - 5) < 1e-9
+    solutionCode: |
+      def droite(xs, ys):
+          n = len(xs)
+          mx = sum(xs) / n
+          my = sum(ys) / n
+          cov = sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / n
+          var = sum((x - mx) ** 2 for x in xs) / n
+          w = cov / var
+          return (w, my - w * mx)
+    indice: { fr: 'Calcule les moyennes `mx`, `my`, puis la covariance et la variance (même division par `n`), puis `w` et `b`.', en: 'Compute the means `mx`, `my`, then the covariance and the variance (same division by `n`), then `w` and `b`.' }
+    explication: { fr: 'Si tous les `x` sont égaux, la variance est nulle et la formule échoue : il faut au moins deux valeurs de `x` différentes.', en: 'If all the `x` are equal, the variance is zero and the formula fails: you need at least two different `x` values.' }
+  - id: d_p_cause
+    type: piege
+    fr: 'Une droite bien ajustée décrit une **relation** dans les données, pas une **cause**. Et hors de la zone des exemples (**extrapolation**), rien ne garantit que la droite reste vraie.'
+    en: 'A well-fitted line describes a **relationship** in the data, not a **cause**. And outside the range of the examples (**extrapolation**), nothing guarantees that the line stays true.'
+  - id: d_lien
+    type: idee
+    fr: 'Tout ce que fera Kintana ensuite suit ce schéma : un **modèle** à réglages, une **erreur** à mesurer, un **gradient** pour ajuster. Seuls changent le modèle (une droite ici) et l’erreur. Et on **teste** sur des données non vues (niveau 8.5).'
+    en: 'Everything Kintana will do next follows this pattern: a **model** with settings, an **error** to measure, a **gradient** to adjust. Only the model (a line here) and the error change. And we **test** on unseen data (level 8.5).'
+    exemple: { fr: 'Ici, deux réglages $(w,b)$. Un réseau de neurones aura des millions de réglages, mais la boucle sera la même : prédire, mesurer, descendre.', en: 'Here, two settings $(w,b)$. A neural network will have millions of settings, but the loop will be the same: predict, measure, descend.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `r2(w, b, xs, ys)`** : le coefficient de détermination $R^2=1-\dfrac{\sum(y-\hat y)^2}{\sum(y-\bar y)^2}$. Il vaut 1 si la droite est parfaite, 0 si elle ne fait pas mieux que la moyenne.'
+    en: 'Challenge. **Write `r2(w, b, xs, ys)`**: the coefficient of determination $R^2=1-\dfrac{\sum(y-\hat y)^2}{\sum(y-\bar y)^2}$. It is 1 if the line is perfect, 0 if it does no better than the mean.'
+    depart: |
+      # écris ta fonction r2 ici
+    tests: |
+      assert abs(r2(2, 1, [0, 1, 2, 3], [1, 3, 5, 7]) - 1) < 1e-12
+      assert abs(r2(0, 4, [0, 1, 2, 3], [1, 3, 5, 7])) < 1e-12
+      assert r2(0, 0, [0, 1, 2, 3], [1, 3, 5, 7]) < 0
+    solutionCode: |
+      def r2(w, b, xs, ys):
+          my = sum(ys) / len(ys)
+          residu = sum((y - (w * x + b)) ** 2 for x, y in zip(xs, ys))
+          total = sum((y - my) ** 2 for y in ys)
+          return 1 - residu / total
+    indice: { fr: 'Deux sommes : les écarts à la droite, et les écarts à la moyenne `my`. Renvoie `1 - residu / total`.', en: 'Two sums: the gaps to the line, and the gaps to the mean `my`. Return `1 - residu / total`.' }
+    explication: { fr: 'Un $R^2$ négatif signifie que la droite est pire que de répondre toujours la moyenne : la référence naïve du niveau 8.5.', en: 'A negative $R^2$ means the line is worse than always answering the mean: the naive baseline from level 8.5.' }
+  - id: c8
+    type: retenir
+    fr: 'Modèle à réglages → erreur quadratique moyenne → gradient → pas de descente. Pour une droite : descente ou formule directe (cov/var). Un bon ajustement n’est ni une cause ni une garantie hors des données.'
+    en: 'Model with settings → mean squared error → gradient → descent step. For a line: descent or direct formula (cov/var). A good fit is neither a cause nor a guarantee outside the data.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Stanford CS229](https://cs229.stanford.edu/) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Stanford CS229](https://cs229.stanford.edu/); this optional reading needs a connection.

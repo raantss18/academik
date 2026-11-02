@@ -1,0 +1,202 @@
+# Niveau 9.3 — Apprentissage automatique 3 : classer. Original academik ; notions vérifiées dans Stanford CS229 (régression logistique) et MIT 6.036 (classification, perte logistique).
+id: '9.3'
+module: 9
+duree_min: 18
+titre: { fr: 'Classer', en: 'Classifying' }
+ia: { fr: 'Kintana apprend à répondre par une catégorie, avec une probabilité, grâce à la régression logistique.', en: 'Kintana learns to answer with a category, with a probability, thanks to logistic regression.' }
+sources:
+  - { titre: 'Stanford CS229 — Machine Learning (régression logistique)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
+  - { titre: 'MIT 6.036 — Introduction to Machine Learning', url: 'https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/about', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un modèle donne la probabilité $0{,}5$ à une demande d’être une salutation. Que veut dire $0{,}5$ ?'
+    en: 'A model gives the probability $0.5$ that a request is a greeting. What does $0.5$ mean?'
+    choix:
+      - { fr: 'Il hésite : autant de chances pour que contre', en: 'It hesitates: equal chances for and against', juste: true }
+      - { fr: 'Il est sûr que c’est une salutation', en: 'It is sure it is a greeting' }
+      - { fr: 'Il est sûr que ce n’en est pas une', en: 'It is sure it is not one' }
+    explication: { fr: 'Une probabilité de $0{,}5$ est le point d’indécision : la décision bascule de part et d’autre.', en: 'A probability of $0.5$ is the point of indecision: the decision tips on either side.' }
+  - id: c2
+    type: idee
+    fr: 'Pour **classer** (oui ou non), on ne peut pas prédire un nombre libre comme une droite. On calcule un score $z=wx+b$, puis la **sigmoïde** $\sigma(z)=\dfrac{1}{1+e^{-z}}$ le transforme en **probabilité** entre $0$ et $1$.'
+    en: 'To **classify** (yes or no), we cannot predict a free number like a line does. We compute a score $z=wx+b$, then the **sigmoid** $\sigma(z)=\dfrac{1}{1+e^{-z}}$ turns it into a **probability** between $0$ and $1$.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Score $z$', en: 'Score $z$' }, { fr: '$\sigma(z)$', en: '$\sigma(z)$' }, { fr: 'Lecture', en: 'Reading' }]
+      cellules:
+        - ['$-4$', '$0{,}018$', { fr: 'presque sûr que non', en: 'almost sure it is no', ton: bad }]
+        - ['$0$', '$0{,}5$', { fr: 'indécis', en: 'undecided' }]
+        - ['$1$', '$0{,}731$', { fr: 'plutôt oui', en: 'rather yes' }]
+        - ['$4$', '$0{,}982$', { fr: 'presque sûr que oui', en: 'almost sure it is yes', ton: ok }]
+      legende: { fr: 'La sigmoïde écrase tout score entre $0$ et $1$ ; un score nul donne $0{,}5$.', en: 'The sigmoid squashes any score between $0$ and $1$; a zero score gives $0.5$.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'De la droite à la probabilité', en: 'From the line to the probability' }
+    lang: python
+    etapes:
+      - { code: 'import math\nsigmoide = lambda z: 1 / (1 + math.exp(-z))', fr: 'La sigmoïde, en une ligne.', en: 'The sigmoid, in one line.' }
+      - { code: 'w, b = 2, -6', fr: 'Un modèle : score $z=2x-6$. Le score est nul quand $x=3$.', en: 'A model: score $z=2x-6$. The score is zero when $x=3$.' }
+      - { code: 'print([round(sigmoide(w * x + b), 3) for x in (1, 3, 5)])', fr: 'En $x=1$, $z=-4$ : `0.018`. En $x=3$, $z=0$ : `0.5`. En $x=5$, $z=4$ : `0.982`.', en: 'At $x=1$, $z=-4$: `0.018`. At $x=3$, $z=0$: `0.5`. At $x=5$, $z=4$: `0.982`.' }
+    verif: |-
+      import math
+      sigmoide = lambda z: 1 / (1 + math.exp(-z))
+      w, b = 2, -6
+      print([round(sigmoide(w * x + b), 3) for x in (1, 3, 5)])
+    sortie: '[0.018, 0.5, 0.982]'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `sigmoide(z)`** et **`predire(w, b, x)`** : la seconde renvoie `1` si la probabilité $\sigma(wx+b)$ est au moins $0{,}5$, sinon `0`.'
+    en: 'Your turn. **Write `sigmoide(z)`** and **`predire(w, b, x)`**: the second returns `1` if the probability $\sigma(wx+b)$ is at least $0.5$, otherwise `0`.'
+    depart: |
+      # écris tes fonctions sigmoide et predire ici
+    tests: |
+      assert sigmoide(0) == 0.5
+      assert abs(sigmoide(4) - 0.982) < 1e-3
+      assert predire(2, -6, 5) == 1
+      assert predire(2, -6, 1) == 0
+      assert predire(2, -6, 3) == 1
+    solutionCode: |
+      import math
+
+      def sigmoide(z):
+          return 1 / (1 + math.exp(-z))
+
+      def predire(w, b, x):
+          return 1 if sigmoide(w * x + b) >= 0.5 else 0
+    indice: { fr: 'Importe `math` pour `math.exp`. Ne calcule la probabilité qu’une fois dans `predire`, puis compare à `0.5`.', en: 'Import `math` for `math.exp`. Compute the probability only once in `predire`, then compare with `0.5`.' }
+    explication: { fr: 'Au point d’indécision (`predire(2, -6, 3)`), la règle « au moins 0,5 » tranche en faveur du oui.', en: 'At the point of indecision (`predire(2, -6, 3)`), the “at least 0.5” rule decides in favour of yes.' }
+  - id: d_perte
+    type: idee
+    fr: 'Pour apprendre, il faut une erreur. On utilise la **perte logistique** : si la vraie réponse est $1$, la perte est $-\ln p$ ; si c’est $0$, elle est $-\ln(1-p)$. Elle est **petite** quand le modèle est confiant et juste, **énorme** quand il est confiant et faux.'
+    en: 'To learn, we need an error. We use the **log loss**: if the true answer is $1$, the loss is $-\ln p$; if it is $0$, it is $-\ln(1-p)$. It is **small** when the model is confident and right, **huge** when it is confident and wrong.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Vraie réponse $1$, probabilité $p$', en: 'True answer $1$, probability $p$' }, { fr: 'Perte $-\ln p$', en: 'Loss $-\ln p$' }]
+      cellules:
+        - ['$0{,}9$', { fr: '$0{,}105$ (juste, confiant)', en: '$0.105$ (right, confident)', ton: ok }]
+        - ['$0{,}5$', '$0{,}693$']
+        - ['$0{,}1$', { fr: '$2{,}303$ (faux, confiant)', en: '$2.303$ (wrong, confident)', ton: bad }]
+      legende: { fr: 'On retrouve le logarithme du niveau 5.6 : une probabilité proche de 0 donne une perte qui explose.', en: 'We find the logarithm of level 5.6: a probability near 0 gives a loss that explodes.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `perte(p, y)`** : la perte logistique d’une probabilité `p` (strictement entre 0 et 1) pour la vraie réponse `y` (0 ou 1).'
+    en: '**Write `perte(p, y)`**: the log loss of a probability `p` (strictly between 0 and 1) for the true answer `y` (0 or 1).'
+    depart: |
+      # écris ta fonction perte ici
+    tests: |
+      assert abs(perte(0.9, 1) - 0.10536) < 1e-4
+      assert abs(perte(0.5, 1) - 0.693147) < 1e-5
+      assert abs(perte(0.1, 1) - 2.302585) < 1e-5
+      assert abs(perte(0.1, 0) - 0.10536) < 1e-4
+    solutionCode: |
+      import math
+
+      def perte(p, y):
+          return -math.log(p) if y == 1 else -math.log(1 - p)
+    indice: { fr: 'Un `if` sur `y` : le logarithme de `p` si `y` vaut 1, de `1 - p` sinon, avec un signe moins.', en: 'An `if` on `y`: the logarithm of `p` if `y` is 1, of `1 - p` otherwise, with a minus sign.' }
+    explication: { fr: 'Se tromper avec confiance coûte cher : `perte(0.1, 1)` vaut plus de 2, `perte(0.9, 1)` à peine 0,1.', en: 'Being wrong with confidence is costly: `perte(0.1, 1)` is over 2, `perte(0.9, 1)` barely 0.1.' }
+  - id: d_grad
+    type: idee
+    fr: 'Résultat remarquable : le gradient de la perte logistique moyenne a la **même forme** que pour la droite. Avec $p=\sigma(wx+b)$ : $\partial_w=\text{moyenne}\big((p-y)\,x\big)$ et $\partial_b=\text{moyenne}(p-y)$.'
+    en: 'A remarkable result: the gradient of the mean log loss has the **same form** as for the line. With $p=\sigma(wx+b)$: $\partial_w=\text{mean}\big((p-y)\,x\big)$ and $\partial_b=\text{mean}(p-y)$.'
+    exemple: { fr: 'Si le modèle donne $p=0{,}9$ pour une vraie réponse $0$, l’écart $p-y=0{,}9$ pousse fort pour baisser le score : l’erreur confiante est corrigée en priorité.', en: 'If the model gives $p=0.9$ for a true answer $0$, the gap $p-y=0.9$ pushes hard to lower the score: the confident error is corrected first.' }
+  - id: d_boucle
+    type: exemple
+    titre: { fr: 'Entraîner un classifieur', en: 'Training a classifier' }
+    lang: python
+    etapes:
+      - { code: 'import math\nxs = [1, 2, 3, 4, 5, 6]\nys = [0, 0, 0, 1, 1, 1]\nw, b = 0.0, 0.0', fr: 'Six exemples : les petits `x` sont de classe 0, les grands de classe 1.', en: 'Six examples: small `x` are class 0, large ones class 1.' }
+      - { code: 'for _ in range(2000):\n    ps = [1 / (1 + math.exp(-(w * x + b))) for x in xs]\n    gw = sum((p - y) * x for p, y, x in zip(ps, ys, xs)) / len(xs)\n    gb = sum(p - y for p, y in zip(ps, ys)) / len(xs)\n    w, b = w - 0.5 * gw, b - 0.5 * gb', fr: 'On calcule les probabilités, les deux pentes, puis un pas de descente avec $\eta=0{,}5$.', en: 'We compute the probabilities, the two slopes, then a descent step with $\eta=0.5$.' }
+      - { code: 'print(round(w, 1), round(b, 1))', fr: 'On affiche `4.2 -14.4` : la frontière $z=0$ tombe en $x\approx14{,}39/4{,}16\approx3{,}46$, entre les deux classes.', en: 'We display `4.2 -14.4`: the boundary $z=0$ falls at $x\approx14.39/4.16\approx3.46$, between the two classes.' }
+    verif: |-
+      import math
+      xs = [1, 2, 3, 4, 5, 6]
+      ys = [0, 0, 0, 1, 1, 1]
+      w, b = 0.0, 0.0
+      for _ in range(2000):
+          ps = [1 / (1 + math.exp(-(w * x + b))) for x in xs]
+          gw = sum((p - y) * x for p, y, x in zip(ps, ys, xs)) / len(xs)
+          gb = sum(p - y for p, y in zip(ps, ys)) / len(xs)
+          w, b = w - 0.5 * gw, b - 0.5 * gb
+      print(round(w, 1), round(b, 1))
+    sortie: '4.2 -14.4'
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `entrainer(xs, ys, eta, pas)`** : la descente de gradient de la perte logistique, en partant de `w = b = 0`, avec `pas` itérations. Renvoie `(w, b)`.'
+    en: '**Write `entrainer(xs, ys, eta, pas)`**: gradient descent on the log loss, starting from `w = b = 0`, with `pas` iterations. Return `(w, b)`.'
+    depart: |
+      import math
+
+      # écris ta fonction entrainer ici
+    tests: |
+      xs = [1, 2, 3, 4, 5, 6]
+      ys = [0, 0, 0, 1, 1, 1]
+      w, b = entrainer(xs, ys, 0.5, 2000)
+      assert abs(w - 4.155) < 0.01 and abs(b + 14.388) < 0.05
+      sigm = lambda z: 1 / (1 + math.exp(-z))
+      assert [1 if sigm(w * x + b) >= 0.5 else 0 for x in xs] == ys
+      w0, b0 = entrainer(xs, ys, 0.5, 0)
+      assert (w0, b0) == (0, 0)
+    solutionCode: |
+      import math
+
+      def entrainer(xs, ys, eta, pas):
+          w, b = 0.0, 0.0
+          n = len(xs)
+          for _ in range(pas):
+              ps = [1 / (1 + math.exp(-(w * x + b))) for x in xs]
+              gw = sum((p - y) * x for p, y, x in zip(ps, ys, xs)) / n
+              gb = sum(p - y for p, y in zip(ps, ys)) / n
+              w, b = w - eta * gw, b - eta * gb
+          return (w, b)
+    indice: { fr: 'Reprends la boucle de l’exemple, en remplaçant `0.5` par `eta` et `2000` par `pas`. Renvoie le couple à la fin.', en: 'Reuse the loop from the example, replacing `0.5` with `eta` and `2000` with `pas`. Return the pair at the end.' }
+    explication: { fr: 'Avec 0 itération, aucun pas n’est fait : on renvoie les réglages de départ `(0, 0)`.', en: 'With 0 iterations, no step is taken: we return the starting settings `(0, 0)`.' }
+  - id: d_front
+    type: idee
+    fr: 'Le modèle décide avec une **frontière** : le $x$ où la probabilité vaut $0{,}5$, c’est-à-dire où le score $z=wx+b$ s’annule : $x=-b/w$. À gauche, la classe 0 ; à droite, la classe 1 (si $w>0$).'
+    en: 'The model decides with a **boundary**: the $x$ where the probability is $0.5$, that is, where the score $z=wx+b$ vanishes: $x=-b/w$. On the left, class 0; on the right, class 1 (if $w>0$).'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Modèle', en: 'Model' }, { fr: 'Frontière $-b/w$', en: 'Boundary $-b/w$' }]
+      cellules:
+        - ['$w=2,\ b=-6$', '$3$']
+        - ['$w=4{,}16,\ b=-14{,}39$', { fr: '$\approx3{,}46$ (appris)', en: '$\approx3.46$ (learned)', ton: ok }]
+        - ['$w=1,\ b=0$', '$0$']
+      legende: { fr: 'En dimension 1, la frontière est un seul point ; avec plusieurs variables, ce sera une droite ou un plan.', en: 'In dimension 1, the boundary is a single point; with several variables, it will be a line or a plane.' }
+  - id: d_p_sepa
+    type: piege
+    fr: 'Quand les classes sont **parfaitement séparées**, la descente pousse $w$ toujours plus haut, sans jamais s’arrêter. Le modèle devient trop sûr de lui. On le freine par la **régularisation** (niveau 9.5).'
+    en: 'When classes are **perfectly separated**, descent keeps pushing $w$ higher, never stopping. The model becomes overconfident. We restrain it with **regularisation** (level 9.5).'
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `frontiere(w, b)`** : le `x` où la probabilité vaut 0,5. Renvoie `None` si `w` vaut 0 (aucune frontière).'
+    en: 'Challenge. **Write `frontiere(w, b)`**: the `x` where the probability is 0.5. Return `None` if `w` is 0 (no boundary).'
+    depart: |
+      # écris ta fonction frontiere ici
+    tests: |
+      assert frontiere(2, -6) == 3
+      assert frontiere(1, 0) == 0
+      assert abs(frontiere(4.155, -14.388) - 3.463) < 1e-3
+      assert frontiere(0, 5) is None
+    solutionCode: |
+      def frontiere(w, b):
+          if w == 0:
+              return None
+          return -b / w
+    indice: { fr: 'Résous $wx+b=0$. Traite le cas `w == 0` à part, avant la division.', en: 'Solve $wx+b=0$. Handle the case `w == 0` separately, before the division.' }
+    explication: { fr: 'Diviser par zéro serait une erreur : c’est exactement la précaution du niveau 2.5 (tester avant d’agir).', en: 'Dividing by zero would be an error: it is exactly the precaution from level 2.5 (test before acting).' }
+  - id: c8
+    type: retenir
+    fr: 'Classer = score $wx+b$ → sigmoïde → probabilité. La perte logistique punit les erreurs confiantes ; son gradient est $\text{moyenne}((p-y)x)$. La frontière est où $p=0{,}5$ : $x=-b/w$.'
+    en: 'Classifying = score $wx+b$ → sigmoid → probability. The log loss punishes confident errors; its gradient is $\text{mean}((p-y)x)$. The boundary is where $p=0.5$: $x=-b/w$.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Stanford CS229 — Régression logistique](https://cs229.stanford.edu/) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Stanford CS229 — Logistic regression](https://cs229.stanford.edu/); this optional reading needs a connection.

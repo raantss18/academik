@@ -1,0 +1,260 @@
+# Niveau 9.6 — Apprentissage automatique 6 : arbres de décision. Original academik ; notions vérifiées dans la documentation scikit-learn (Decision Trees) et Stanford CS229.
+id: '9.6'
+module: 9
+duree_min: 18
+titre: { fr: 'Arbres de décision', en: 'Decision trees' }
+ia: { fr: 'Kintana décide en posant une suite de questions simples, et apprend elle-même quelles questions poser.', en: 'Kintana decides by asking a series of simple questions, and learns for herself which questions to ask.' }
+sources:
+  - { titre: 'scikit-learn — Decision Trees', url: 'https://scikit-learn.org/stable/modules/tree.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+  - { titre: 'Stanford CS229 — Machine Learning (arbres de décision)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Trois groupes de messages (1 = spam, 0 = normal) : A = `1,1,1,1` ; B = `1,1,0,0` ; C = `1,0,0,0`. Lequel est le **plus pur** (le plus homogène) ?'
+    en: 'Three groups of messages (1 = spam, 0 = normal): A = `1,1,1,1`; B = `1,1,0,0`; C = `1,0,0,0`. Which one is the **purest** (most homogeneous)?'
+    choix:
+      - { fr: 'A', en: 'A', juste: true }
+      - { fr: 'B', en: 'B' }
+      - { fr: 'C', en: 'C' }
+    explication: { fr: 'A ne contient qu’une seule classe : il est parfaitement pur. B est le plus mélangé.', en: 'A contains only one class: it is perfectly pure. B is the most mixed.' }
+  - id: c2
+    type: idee
+    fr: 'Un **arbre de décision** pose une suite de questions oui/non. Chaque **nœud** pose une question sur une variable ; chaque **feuille** donne la réponse. On suit le chemin d’un exemple jusqu’à sa feuille.'
+    en: 'A **decision tree** asks a series of yes/no questions. Each **node** asks a question about a variable; each **leaf** gives the answer. We follow an example’s path down to its leaf.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Arbre d’une question', en: 'One-question tree' }
+          noeuds: [{ fr: '$x\leq3{,}5$ ?', en: '$x\leq3.5$?' }, { fr: 'oui → classe $0$', en: 'yes → class $0$', ton: ok }, { fr: 'non → classe $1$', en: 'no → class $1$', ton: bad }]
+      legende: { fr: 'Un arbre est un programme fait de `if` imbriqués : on le lit comme une suite de règles.', en: 'A tree is a program made of nested `if`: we read it as a series of rules.' }
+  - id: d_gini
+    type: idee
+    fr: 'Pour apprendre quelle question poser, on mesure le mélange d’un groupe avec l’**impureté de Gini** : $G=1-p_0^2-p_1^2$ ($p_0,p_1$ : parts des deux classes). Elle vaut $0$ pour un groupe pur, et au plus $0{,}5$.'
+    en: 'To learn which question to ask, we measure how mixed a group is with the **Gini impurity**: $G=1-p_0^2-p_1^2$ ($p_0,p_1$: shares of the two classes). It is $0$ for a pure group, and at most $0.5$.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Groupe', en: 'Group' }, { fr: 'Calcul', en: 'Computation' }, { fr: 'Gini', en: 'Gini' }]
+      cellules:
+        - ['`1,1,1,1`', '$1-1^2-0^2$', { fr: '$0$', en: '$0$', ton: ok }]
+        - ['`1,1,1,0`', '$1-\frac9{16}-\frac1{16}$', '$0{,}375$']
+        - ['`1,1,0,0`', '$1-\frac14-\frac14$', { fr: '$0{,}5$', en: '$0.5$', ton: bad }]
+      legende: { fr: 'Plus le groupe est mélangé, plus $G$ est grand.', en: 'The more mixed the group, the larger $G$.' }
+  - id: c3
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `gini(etiquettes)`** pour une liste de 0 et de 1 : $1-p_0^2-p_1^2$. Sur une liste vide, renvoie `0`.'
+    en: 'Your turn. **Write `gini(etiquettes)`** for a list of 0s and 1s: $1-p_0^2-p_1^2$. On an empty list, return `0`.'
+    depart: |
+      # écris ta fonction gini ici
+    tests: |
+      assert gini([1, 1, 1, 1]) == 0
+      assert abs(gini([1, 1, 1, 0]) - 0.375) < 1e-12
+      assert gini([1, 1, 0, 0]) == 0.5
+      assert gini([]) == 0
+      assert gini([0, 0, 0]) == 0
+    solutionCode: |
+      def gini(etiquettes):
+          if not etiquettes:
+              return 0
+          p1 = sum(etiquettes) / len(etiquettes)
+          p0 = 1 - p1
+          return 1 - p0 ** 2 - p1 ** 2
+    indice: { fr: 'La part de 1 est `sum(etiquettes) / len(etiquettes)` ; la part de 0 est son complément.', en: 'The share of 1s is `sum(etiquettes) / len(etiquettes)`; the share of 0s is its complement.' }
+    explication: { fr: 'Le cas vide évite une division par zéro, comme toujours : on teste avant de diviser.', en: 'The empty case avoids a division by zero, as always: we test before dividing.' }
+  - id: d_coupure
+    type: idee
+    fr: 'Une **coupure** « $x\leq s$ ? » sépare le groupe en deux. Sa qualité est la moyenne des Gini des deux côtés, **pondérée par leurs tailles**. On essaie tous les seuils possibles (les milieux entre valeurs voisines) et on garde le plus bas.'
+    en: 'A **split** “$x\leq s$?” cuts the group in two. Its quality is the mean of the two sides’ Gini values, **weighted by their sizes**. We try every possible threshold (midpoints between neighbouring values) and keep the lowest.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Seuil $s$ (données $x=1..6$)', en: 'Threshold $s$ (data $x=1..6$)' }, { fr: 'Gini pondéré', en: 'Weighted Gini' }]
+      cellules:
+        - ['$1{,}5$', '$0{,}40$']
+        - ['$2{,}5$', '$0{,}25$']
+        - ['$3{,}5$', { fr: '$0$ (parfait)', en: '$0$ (perfect)', ton: ok }]
+        - ['$4{,}5$', '$0{,}25$']
+      legende: { fr: 'Classes `0,0,0,1,1,1` : couper en 3,5 sépare exactement les deux classes.', en: 'Classes `0,0,0,1,1,1`: cutting at 3.5 separates the two classes exactly.' }
+  - id: c4
+    type: exemple
+    titre: { fr: 'Évaluer une coupure', en: 'Evaluating a split' }
+    lang: python
+    etapes:
+      - { code: 'def gini(e):\n    if not e:\n        return 0\n    p = sum(e) / len(e)\n    return 1 - p * p - (1 - p) ** 2', fr: 'L’impureté de Gini d’une liste de 0 et de 1.', en: 'The Gini impurity of a list of 0s and 1s.' }
+      - { code: 'xs = [1, 2, 3, 4, 5, 6]\nys = [0, 0, 0, 1, 1, 1]\ns = 2.5', fr: 'Les données du niveau 9.3, et la coupure candidate $x\leq2{,}5$.', en: 'The data from level 9.3, and the candidate split $x\leq2.5$.' }
+      - { code: 'gauche = [y for x, y in zip(xs, ys) if x <= s]\ndroite = [y for x, y in zip(xs, ys) if x > s]', fr: 'Les étiquettes à gauche (`0, 0`) et à droite (`0, 1, 1, 1`).', en: 'The labels on the left (`0, 0`) and on the right (`0, 1, 1, 1`).' }
+      - { code: 'score = (len(gauche) * gini(gauche) + len(droite) * gini(droite)) / len(ys)\nprint(round(score, 3))', fr: 'Gauche : Gini 0 ; droite : 0,375 sur 4 exemples. Score pondéré : $4\times0{,}375/6=0{,}25$.', en: 'Left: Gini 0; right: 0.375 over 4 examples. Weighted score: $4\times0.375/6=0.25$.' }
+    verif: |-
+      def gini(e):
+          if not e:
+              return 0
+          p = sum(e) / len(e)
+          return 1 - p * p - (1 - p) ** 2
+      xs = [1, 2, 3, 4, 5, 6]
+      ys = [0, 0, 0, 1, 1, 1]
+      s = 2.5
+      gauche = [y for x, y in zip(xs, ys) if x <= s]
+      droite = [y for x, y in zip(xs, ys) if x > s]
+      score = (len(gauche) * gini(gauche) + len(droite) * gini(droite)) / len(ys)
+      print(round(score, 3))
+    sortie: '0.25'
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `meilleure_coupure(xs, ys)`** : renvoie le seuil (milieu de deux valeurs voisines distinctes) qui minimise le Gini pondéré. En cas d’égalité, le plus petit seuil. `gini` est déjà écrite.'
+    en: '**Write `meilleure_coupure(xs, ys)`**: return the threshold (midpoint of two distinct neighbouring values) that minimises the weighted Gini. On a tie, the smallest threshold. `gini` is already written.'
+    depart: |
+      def gini(e):
+          if not e:
+              return 0
+          p = sum(e) / len(e)
+          return 1 - p * p - (1 - p) ** 2
+
+      # écris ta fonction meilleure_coupure ici
+    tests: |
+      assert meilleure_coupure([1, 2, 3, 4, 5, 6], [0, 0, 0, 1, 1, 1]) == 3.5
+      assert meilleure_coupure([1, 2, 3, 4], [1, 1, 0, 0]) == 2.5
+      assert meilleure_coupure([6, 1, 5, 2, 4, 3], [1, 0, 1, 0, 1, 0]) == 3.5
+      assert meilleure_coupure([1, 2], [0, 1]) == 1.5
+    solutionCode: |
+      def gini(e):
+          if not e:
+              return 0
+          p = sum(e) / len(e)
+          return 1 - p * p - (1 - p) ** 2
+
+      def meilleure_coupure(xs, ys):
+          valeurs = sorted(set(xs))
+          meilleur = None
+          meilleur_score = None
+          for a, b in zip(valeurs, valeurs[1:]):
+              s = (a + b) / 2
+              gauche = [y for x, y in zip(xs, ys) if x <= s]
+              droite = [y for x, y in zip(xs, ys) if x > s]
+              score = (len(gauche) * gini(gauche) + len(droite) * gini(droite)) / len(ys)
+              if meilleur_score is None or score < meilleur_score - 1e-12:
+                  meilleur = s
+                  meilleur_score = score
+          return meilleur
+    indice: { fr: 'Trie les valeurs distinctes, parcours chaque paire voisine, calcule le seuil milieu et son score ; ne remplace le meilleur que si le score est strictement meilleur.', en: 'Sort the distinct values, go through each neighbouring pair, compute the midpoint threshold and its score; only replace the best if the score is strictly better.' }
+    explication: { fr: 'Le test 3 donne des `x` mélangés : le tri est indispensable pour trouver les paires voisines.', en: 'Test 3 gives shuffled `x`: sorting is essential to find neighbouring pairs.' }
+  - id: d_arbre
+    type: idee
+    fr: 'Pour un arbre complet, on **recommence récursivement** (niveau 3.6) : si le groupe est pur, c’est une feuille ; sinon on cherche la meilleure coupure et on construit un arbre à gauche et un à droite. On représente un arbre par un tuple.'
+    en: 'For a full tree, we **start again recursively** (level 3.6): if the group is pure, it is a leaf; otherwise we look for the best split and build one tree on the left and one on the right. A tree is represented by a tuple.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Élément', en: 'Element' }, { fr: 'Représentation', en: 'Representation' }]
+      cellules:
+        - [{ fr: 'feuille de classe 1', en: 'leaf of class 1' }, '`("feuille", 1)`']
+        - [{ fr: 'nœud « $x\leq3{,}5$ ? »', en: 'node “$x\leq3.5$?”' }, '`("coupe", 3.5, gauche, droite)`']
+      legende: { fr: 'Les sous-arbres `gauche` et `droite` sont eux-mêmes des feuilles ou des nœuds.', en: 'The subtrees `gauche` and `droite` are themselves leaves or nodes.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `predire_arbre(arbre, x)`** : suis l’arbre jusqu’à une feuille. Pour un nœud `("coupe", s, gauche, droite)`, va à gauche si `x <= s`, sinon à droite. Renvoie la classe de la feuille.'
+    en: '**Write `predire_arbre(arbre, x)`**: follow the tree down to a leaf. For a node `("coupe", s, gauche, droite)`, go left if `x <= s`, otherwise right. Return the leaf’s class.'
+    depart: |
+      # écris ta fonction predire_arbre ici
+    tests: |
+      assert predire_arbre(("feuille", 1), 99) == 1
+      a = ("coupe", 3.5, ("feuille", 0), ("feuille", 1))
+      assert predire_arbre(a, 2) == 0
+      assert predire_arbre(a, 3.5) == 0
+      assert predire_arbre(a, 4) == 1
+      b = ("coupe", 3.5, ("coupe", 1.5, ("feuille", 1), ("feuille", 0)), ("feuille", 1))
+      assert [predire_arbre(b, x) for x in (1, 2, 5)] == [1, 0, 1]
+    solutionCode: |
+      def predire_arbre(arbre, x):
+          if arbre[0] == "feuille":
+              return arbre[1]
+          _, s, gauche, droite = arbre
+          return predire_arbre(gauche if x <= s else droite, x)
+    indice: { fr: 'Cas de base : une feuille renvoie sa classe. Sinon, un appel récursif sur le bon sous-arbre.', en: 'Base case: a leaf returns its class. Otherwise, a recursive call on the right subtree.' }
+    explication: { fr: 'C’est la récursivité du niveau 3.6 : le cas de base est la feuille, l’appel se fait sur un sous-arbre plus petit.', en: 'This is the recursion of level 3.6: the base case is the leaf, the call is made on a smaller subtree.' }
+  - id: d_p_profond
+    type: piege
+    fr: 'Un arbre laissé **sans limite** finit par faire une feuille par exemple : erreur d’entraînement nulle, mais apprentissage par cœur (niveau 9.2, variance forte). On borne la **profondeur** et la taille minimale des feuilles.'
+    en: 'A tree left **without limit** ends up with one leaf per example: zero training error, but memorisation (level 9.2, high variance). We bound the **depth** and the minimum leaf size.'
+  - id: d_foret
+    type: idee
+    fr: 'Un seul arbre est instable : un petit changement des données peut le transformer. Une **forêt** moyenne beaucoup d’arbres appris sur des échantillons différents : la variance baisse. Le **boosting** enchaîne des arbres où chacun corrige les erreurs du précédent.'
+    en: 'A single tree is unstable: a small change in the data can transform it. A **forest** averages many trees learned on different samples: variance drops. **Boosting** chains trees where each corrects the errors of the previous one.'
+    exemple: { fr: 'Dans la pratique, les forêts d’arbres et le boosting figurent parmi les meilleures méthodes sur des tableaux de données. On les utilise via des bibliothèques ; on sait maintenant ce qu’elles font à l’intérieur.', en: 'In practice, forests and boosting are among the best methods on tabular data. We use them through libraries; we now know what they do inside.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `construire(xs, ys, profondeur)`** : l’arbre appris. Si `profondeur` vaut 0 ou si `ys` est pur, renvoie `("feuille", classe_majoritaire)` (classe 1 si **strictement** plus de 1 que de 0, sinon 0). Sinon coupe au meilleur seuil. `gini` et `meilleure_coupure` sont déjà écrites.'
+    en: 'Challenge. **Write `construire(xs, ys, profondeur)`**: the learned tree. If `profondeur` is 0 or `ys` is pure, return `("feuille", majority_class)` (class 1 if **strictly** more 1s than 0s, otherwise 0). Otherwise split at the best threshold. `gini` and `meilleure_coupure` are already written.'
+    depart: |
+      def gini(e):
+          if not e:
+              return 0
+          p = sum(e) / len(e)
+          return 1 - p * p - (1 - p) ** 2
+
+      def meilleure_coupure(xs, ys):
+          valeurs = sorted(set(xs))
+          meilleur = None
+          meilleur_score = None
+          for a, b in zip(valeurs, valeurs[1:]):
+              s = (a + b) / 2
+              gauche = [y for x, y in zip(xs, ys) if x <= s]
+              droite = [y for x, y in zip(xs, ys) if x > s]
+              score = (len(gauche) * gini(gauche) + len(droite) * gini(droite)) / len(ys)
+              if meilleur_score is None or score < meilleur_score - 1e-12:
+                  meilleur = s
+                  meilleur_score = score
+          return meilleur
+
+      # écris ta fonction construire ici
+    tests: |
+      assert construire([1, 2, 3, 4, 5, 6], [0, 0, 0, 1, 1, 1], 2) == ("coupe", 3.5, ("feuille", 0), ("feuille", 1))
+      assert construire([1, 2, 3], [1, 1, 1], 3) == ("feuille", 1)
+      assert construire([1, 2, 3, 4], [0, 1, 1, 1], 0) == ("feuille", 1)
+      assert construire([1, 2, 3, 4], [0, 0, 1, 1], 0) == ("feuille", 0)
+      assert construire([1, 2, 3, 4], [1, 1, 0, 0], 1) == ("coupe", 2.5, ("feuille", 1), ("feuille", 0))
+    solutionCode: |
+      def gini(e):
+          if not e:
+              return 0
+          p = sum(e) / len(e)
+          return 1 - p * p - (1 - p) ** 2
+
+      def meilleure_coupure(xs, ys):
+          valeurs = sorted(set(xs))
+          meilleur = None
+          meilleur_score = None
+          for a, b in zip(valeurs, valeurs[1:]):
+              s = (a + b) / 2
+              gauche = [y for x, y in zip(xs, ys) if x <= s]
+              droite = [y for x, y in zip(xs, ys) if x > s]
+              score = (len(gauche) * gini(gauche) + len(droite) * gini(droite)) / len(ys)
+              if meilleur_score is None or score < meilleur_score - 1e-12:
+                  meilleur = s
+                  meilleur_score = score
+          return meilleur
+
+      def construire(xs, ys, profondeur):
+          majoritaire = 1 if sum(ys) * 2 > len(ys) else 0
+          if profondeur == 0 or gini(ys) == 0:
+              return ("feuille", majoritaire)
+          s = meilleure_coupure(xs, ys)
+          if s is None:
+              return ("feuille", majoritaire)
+          gx = [x for x in xs if x <= s]
+          gy = [y for x, y in zip(xs, ys) if x <= s]
+          dx = [x for x in xs if x > s]
+          dy = [y for x, y in zip(xs, ys) if x > s]
+          return ("coupe", s, construire(gx, gy, profondeur - 1), construire(dx, dy, profondeur - 1))
+    indice: { fr: 'Cas de base : profondeur 0 ou groupe pur. Sinon, sépare `xs` et `ys` selon `x <= s`, puis deux appels récursifs avec `profondeur - 1`.', en: 'Base case: depth 0 or pure group. Otherwise, split `xs` and `ys` according to `x <= s`, then two recursive calls with `profondeur - 1`.' }
+    explication: { fr: 'Le paramètre `profondeur` limite l’arbre : à 0, on s’arrête même si le groupe est mélangé (tests 3 et 4).', en: 'The `profondeur` parameter limits the tree: at 0, we stop even if the group is mixed (tests 3 and 4).' }
+  - id: c8
+    type: retenir
+    fr: 'Arbre = suite de questions ; feuille = réponse. Gini mesure le mélange ; on garde la coupure au Gini pondéré le plus bas ; on construit récursivement ; on borne la profondeur ; forêts et boosting assemblent des arbres.'
+    en: 'Tree = series of questions; leaf = answer. Gini measures mixing; keep the split with the lowest weighted Gini; build recursively; bound the depth; forests and boosting assemble trees.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [scikit-learn — Arbres de décision](https://scikit-learn.org/stable/modules/tree.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [scikit-learn — Decision trees](https://scikit-learn.org/stable/modules/tree.html); this optional reading needs a connection.
