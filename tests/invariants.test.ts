@@ -194,4 +194,11 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(cityUi).toContain('pointerdown'); expect(cityUi).toContain('zoomTo'); expect(cityUi).toContain('touch-action: pan-x pan-y');
     expect(map).toContain('class="btn review"'); expect(map).toContain('badge'); expect(map).not.toMatch(/\.dock \{[^}]*display: grid/);
   });
+  it('E22 : un lien « pour aller plus loin » est un texte cliquable, jamais une adresse brute qui déborde', async () => {
+    const { md } = await import('../src/lib/md');
+    const h = md('Lis [Levin — Proofs](https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html) ensuite.');
+    expect(h).toContain('<a href="https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html" target="_blank" rel="noopener noreferrer">Levin — Proofs</a>');
+    expect(md('[x](javascript:alert(1))')).not.toContain('<a');
+    expect(read('src/app.css')).toMatch(/\.callout \{ overflow-wrap: anywhere/);
+  });
 });
