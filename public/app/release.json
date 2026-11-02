@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 13,
-  "version": "0.3.10",
+  "build": 14,
+  "version": "0.3.11",
   "notes": {
-   "fr": "La ville n'est plus gênée : le message d'info disparaît seul, les deux gros boutons deviennent une pastille de révision et un bouton « Continuer » compact, et tu peux zoomer la carte (pincement, double toucher, boutons ＋ −).",
-   "en": "The city is no longer obstructed: the info message disappears on its own, the two big buttons become a review badge and a compact “Continue” button, and you can zoom the map (pinch, double tap, ＋ − buttons)."
+   "fr": "Les repères de niveaux ne se chevauchent plus : chacun est bien visible et cliquable, même dans les quartiers serrés.",
+   "en": "Level markers no longer overlap: each one is clearly visible and tappable, even in crowded districts."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.10/academik-0.3.10.apk",
-    "sha256": "b3622f7b47c44adb0e9bca28bef8fe4e4e56b1496b1f177b70b5c81477d04d81",
-    "bytes": 10196740
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.11/academik-0.3.11.apk",
+    "sha256": "138f281eedc0b5b99619b5d79df29c376059034fc94482d89d18a58ebb4fbb04",
+    "bytes": 10197028
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.10/academik-0.3.10-x86_64.AppImage",
-    "sha256": "b933177c59ec7f35df0b28e996c5541c1f1ba99833ac7bb05b600cf66b0e9163",
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.11/academik-0.3.11-x86_64.AppImage",
+    "sha256": "6260a043a5807f92f2ac2edeafc83cce5717417e4a2470f258d167c7b2ffa232",
     "bytes": 114711032
    }
   }
  },
  "history": [
+  {
+   "build": 13,
+   "version": "0.3.10",
+   "notes": {
+    "fr": "La ville n'est plus gênée : le message d'info disparaît seul, les deux gros boutons deviennent une pastille de révision et un bouton « Continuer » compact, et tu peux zoomer la carte (pincement, double toucher, boutons ＋ −).",
+    "en": "The city is no longer obstructed: the info message disappears on its own, the two big buttons become a review badge and a compact “Continue” button, and you can zoom the map (pinch, double tap, ＋ − buttons)."
+   }
+  },
   {
    "build": 12,
    "version": "0.3.9",
