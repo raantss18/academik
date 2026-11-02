@@ -44,7 +44,7 @@
     <span class="chip" title="{progress.xp} {ui('xp')}" aria-label="{progress.xp} {ui('xp')}">⭐ {progress.xp}{view === 'list' ? ` ${ui('xp')}` : ''}</span>
     <button class="chip view" onclick={toggle} aria-pressed={view === 'list'} aria-label={view === 'city' ? (fr ? 'Vue liste' : 'List view') : (fr ? 'Vue ville' : 'City view')}>{view === 'city' ? '☰' : (fr ? '🏙 Ville' : '🏙 City')}</button>
   </header>
-  <UpdateBanner />
+  <UpdateBanner compact={view === 'city'} />
   {#if view === 'list'}
     {#if due > 0}<button class="btn review" onclick={onreview}>🔁 {ui('review_title')} · {due} {ui('review_n')}</button>{/if}
     {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}{where > 0 ? ` (${ui('card')} ${where + 1}/${content.levels[current].cartes.length})` : ''}</button>{/if}

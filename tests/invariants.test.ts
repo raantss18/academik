@@ -207,4 +207,10 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(about).toContain('https://wa.me/261334383882'); expect(about).toContain('mailto:antsa.raniriamanjaka@univ-antananarivo.mg'); expect(about).toContain('github.com/raantss18/academik/releases/latest');
     expect(read('scripts/publish-release.sh')).toContain('release-notes.mjs'); expect(read('scripts/release-notes.mjs')).toContain('CHANGELOG.md');
   });
+  it('E24 : sur la carte, la fiche de mise à jour est compacte et lisible (fond sombre, texte clair, hauteur bornée)', () => {
+    const ban = read('src/ui/UpdateBanner.svelte'), map = read('src/ui/Map.svelte');
+    expect(map).toContain("<UpdateBanner compact={view === 'city'} />");
+    expect(ban).toMatch(/\.b\.compact \{[^}]*background: rgb\(10 14 36[^}]*color: #f2f4ff[^}]*max-height: 38vh/);
+    expect(ban).toMatch(/\.b\.compact details \{ display: none/);
+  });
 });

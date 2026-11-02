@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.15] — 2026-11-02
+
+### Message fr
+Les messages de mise à jour sont de nouveau lisibles sur la carte : une petite fiche claire, qui ne cache plus la ville ni les boutons.
+
+### Message en
+Update messages are readable again on the map: a small, clear card that no longer hides the city or the buttons.
+
 ## [0.3.14] — 2026-11-02
 
 ### Message fr
