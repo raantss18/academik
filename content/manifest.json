@@ -517,6 +517,1496 @@
       "verifie": "2026-11-01",
       "mode": "lien",
       "note": "ajouté automatiquement depuis les sources déclarées par Codex ; vérifier la licence avant tout embarquement"
+    },
+    {
+      "id": "deeplearningbook-org-contents-mlp-html",
+      "titre": "Goodfellow, Bengio, Courville — Deep Learning, chap. 6 (réseaux profonds)",
+      "etablissement": "cité dans les niveaux 11.1, 11.2, 11.3, 11.4, 11.boss",
+      "url": "https://www.deeplearningbook.org/contents/mlp.html",
+      "licence": "Lecture en ligne ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "karpathy-ai-zero-to-hero-html",
+      "titre": "A. Karpathy — Neural Networks: Zero to Hero",
+      "etablissement": "cité dans les niveaux 11.1, 11.2, 11.3, 11.4, 11.boss, 12.1, 12.2, 12.3, 12.4, 12.5, 12.boss",
+      "url": "https://karpathy.ai/zero-to-hero.html",
+      "licence": "Cours en ligne ; contenu cité, code non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "deeplearningbook-org-contents-optimization-html",
+      "titre": "Goodfellow, Bengio, Courville — Deep Learning, chap. 8 (optimisation)",
+      "etablissement": "cité dans les niveaux 11.5",
+      "url": "https://www.deeplearningbook.org/contents/optimization.html",
+      "licence": "Lecture en ligne ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-1412-6980",
+      "titre": "Kingma, Ba — Adam: A Method for Stochastic Optimization",
+      "etablissement": "cité dans les niveaux 11.5",
+      "url": "https://arxiv.org/abs/1412.6980",
+      "licence": "Article en accès libre ; formules citées",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-1508-07909",
+      "titre": "Sennrich, Haddow, Birch — Neural Machine Translation of Rare Words with Subword Units (BPE)",
+      "etablissement": "cité dans les niveaux 12.1",
+      "url": "https://arxiv.org/abs/1508.07909",
+      "licence": "Article en accès libre ; idée citée, code non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-1706-03762",
+      "titre": "Vaswani et al. — Attention Is All You Need (section 3.4, plongements et softmax)",
+      "etablissement": "cité dans les niveaux 12.2, 12.3, 12.4, 12.boss",
+      "url": "https://arxiv.org/abs/1706.03762",
+      "licence": "Article en accès libre ; idées citées",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-1904-09751",
+      "titre": "Holtzman et al. — The Curious Case of Neural Text Degeneration (top-p)",
+      "etablissement": "cité dans les niveaux 12.5",
+      "url": "https://arxiv.org/abs/1904.09751",
+      "licence": "Article en accès libre ; idées citées",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "huggingface-co-learn-llm-course",
+      "titre": "Hugging Face — LLM Course",
+      "etablissement": "cité dans les niveaux 13.1, 13.2, 13.4, 13.boss, 14.1, 20.1",
+      "url": "https://huggingface.co/learn/llm-course",
+      "licence": "Cours en ligne ; contenu cité, texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-2203-15556",
+      "titre": "Hoffmann et al. — Training Compute-Optimal Large Language Models (Chinchilla)",
+      "etablissement": "cité dans les niveaux 13.1",
+      "url": "https://arxiv.org/abs/2203.15556",
+      "licence": "Article en accès libre ; règle citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-2001-08361",
+      "titre": "Kaplan et al. — Scaling Laws for Neural Language Models",
+      "etablissement": "cité dans les niveaux 13.1",
+      "url": "https://arxiv.org/abs/2001.08361",
+      "licence": "Article en accès libre ; formule citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "github-com-ggml-org-llama-cpp",
+      "titre": "llama.cpp — dépôt officiel (quantification, mémoire, formats GGUF)",
+      "etablissement": "cité dans les niveaux 13.2, 13.3, 13.5, 13.boss",
+      "url": "https://github.com/ggml-org/llama.cpp",
+      "licence": "MIT ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-2208-07339",
+      "titre": "Dettmers et al. — LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale",
+      "etablissement": "cité dans les niveaux 13.3",
+      "url": "https://arxiv.org/abs/2208.07339",
+      "licence": "Article en accès libre ; idée citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "huggingface-co-docs-transformers-chat-templating",
+      "titre": "Hugging Face — Chat Templates (documentation Transformers)",
+      "etablissement": "cité dans les niveaux 13.4",
+      "url": "https://huggingface.co/docs/transformers/chat_templating",
+      "licence": "Apache-2.0 ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "opensource-org-ai",
+      "titre": "Open Source Initiative — Open Source AI Definition",
+      "etablissement": "cité dans les niveaux 13.5",
+      "url": "https://opensource.org/ai",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-2005-11401",
+      "titre": "Lewis et al. — Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+      "etablissement": "cité dans les niveaux 14.1, 14.5, 14.boss",
+      "url": "https://arxiv.org/abs/2005.11401",
+      "licence": "Article en accès libre ; idée citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "doi-org-10-1561-1500000019",
+      "titre": "Robertson, Zaragoza — The Probabilistic Relevance Framework: BM25 and Beyond",
+      "etablissement": "cité dans les niveaux 14.2",
+      "url": "https://doi.org/10.1561/1500000019",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "nlp-stanford-edu-ir-book",
+      "titre": "Manning, Raghavan, Schütze — Introduction to Information Retrieval (chap. 6)",
+      "etablissement": "cité dans les niveaux 14.2, 14.boss",
+      "url": "https://nlp.stanford.edu/IR-book/",
+      "licence": "Lecture en ligne ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026 ; lien injoignable depuis la machine de vérification, à recontrôler"
+    },
+    {
+      "id": "arxiv-org-abs-2004-04906",
+      "titre": "Karpukhin et al. — Dense Passage Retrieval for Open-Domain Question Answering",
+      "etablissement": "cité dans les niveaux 14.3",
+      "url": "https://arxiv.org/abs/2004.04906",
+      "licence": "Article en accès libre ; idée citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-1908-10084",
+      "titre": "Reimers, Gurevych — Sentence-BERT",
+      "etablissement": "cité dans les niveaux 14.3",
+      "url": "https://arxiv.org/abs/1908.10084",
+      "licence": "Article en accès libre ; idée citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "dl-acm-org-doi-10-1145-1571941-1572114",
+      "titre": "Cormack, Clarke, Buettcher — Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods (SIGIR 2009)",
+      "etablissement": "cité dans les niveaux 14.4",
+      "url": "https://dl.acm.org/doi/10.1145/1571941.1572114",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-1901-04085",
+      "titre": "Nogueira, Cho — Passage Re-ranking with BERT",
+      "etablissement": "cité dans les niveaux 14.4",
+      "url": "https://arxiv.org/abs/1901.04085",
+      "licence": "Article en accès libre ; idée citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "genai-owasp-org-llm-top-10",
+      "titre": "OWASP — Top 10 for LLM Applications (LLM09 : surconfiance)",
+      "etablissement": "cité dans les niveaux 14.5, 15.2, 15.boss, 19.4, 19.boss",
+      "url": "https://genai.owasp.org/llm-top-10/",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "modelcontextprotocol-io-specification",
+      "titre": "Model Context Protocol — Specification (transports : stdio)",
+      "etablissement": "cité dans les niveaux 15.1, 15.2, 15.3, 15.5, 15.boss, 19.boss",
+      "url": "https://modelcontextprotocol.io/specification",
+      "licence": "Spécification en ligne ; idées citées",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-json-html",
+      "titre": "Python — documentation de json et subprocess",
+      "etablissement": "cité dans les niveaux 15.1",
+      "url": "https://docs.python.org/3/library/json.html",
+      "licence": "PSF ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "huggingface-co-learn-agents-course",
+      "titre": "Hugging Face — Agents Course",
+      "etablissement": "cité dans les niveaux 15.3, 15.4, 15.boss",
+      "url": "https://huggingface.co/learn/agents-course",
+      "licence": "Cours en ligne ; contenu cité, texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "jsonrpc-org-specification",
+      "titre": "JSON-RPC 2.0 Specification",
+      "etablissement": "cité dans les niveaux 15.5",
+      "url": "https://www.jsonrpc.org/specification",
+      "licence": "Spécification en ligne ; idées citées",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "ocw-mit-edu-courses-18-03-differential-equations-spring-2010",
+      "titre": "MIT OpenCourseWare — 18.03 Differential Equations (méthodes numériques)",
+      "etablissement": "cité dans les niveaux 16.1",
+      "url": "https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/",
+      "licence": "Lien seulement (CC BY-NC-SA) ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "link-springer-com-book-10-1007-978-1-4419-9039-4",
+      "titre": "Shreve — Stochastic Calculus for Finance II (lien)",
+      "etablissement": "cité dans les niveaux 16.1, 16.5",
+      "url": "https://link.springer.com/book/10.1007/978-1-4419-9039-4",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "math-dartmouth-edu-prob-prob-prob-pdf",
+      "titre": "Grinstead, Snell — Introduction to Probability (chap. 12, marches aléatoires)",
+      "etablissement": "cité dans les niveaux 16.2, 16.3",
+      "url": "https://math.dartmouth.edu/~prob/prob/prob.pdf",
+      "licence": "Licence GFDL ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "link-springer-com-book-10-1007-978-0-387-21617-1",
+      "titre": "Glasserman — Monte Carlo Methods in Financial Engineering (lien)",
+      "etablissement": "cité dans les niveaux 16.boss",
+      "url": "https://link.springer.com/book/10.1007/978-0-387-21617-1",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "jstor-org-stable-2975974",
+      "titre": "Markowitz — Portfolio Selection (Journal of Finance, 1952)",
+      "etablissement": "cité dans les niveaux 17.2",
+      "url": "https://www.jstor.org/stable/2975974",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "doi-org-10-1111-j-1540-6261-1992-tb04398-x",
+      "titre": "Fama, French — The Cross-Section of Expected Stock Returns (1992)",
+      "etablissement": "cité dans les niveaux 17.3",
+      "url": "https://doi.org/10.1111/j.1540-6261.1992.tb04398.x",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "jstor-org-stable-1831029",
+      "titre": "Black, Scholes — The Pricing of Options and Corporate Liabilities (1973)",
+      "etablissement": "cité dans les niveaux 17.4",
+      "url": "https://www.jstor.org/stable/1831029",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "wiki-python-org-moin-timecomplexity",
+      "titre": "Python — documentation : Time complexity",
+      "etablissement": "cité dans les niveaux 18.1, 18.boss",
+      "url": "https://wiki.python.org/moin/TimeComplexity",
+      "licence": "PSF ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "mitpress-mit-edu-9780262046305-introduction-to-algorithms",
+      "titre": "Cormen, Leiserson, Rivest, Stein — Introduction to Algorithms (lien)",
+      "etablissement": "cité dans les niveaux 18.1",
+      "url": "https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "people-freebsd-org-lstewart-articles-cpumemory-pdf",
+      "titre": "Drepper — What Every Programmer Should Know About Memory",
+      "etablissement": "cité dans les niveaux 18.2",
+      "url": "https://people.freebsd.org/~lstewart/articles/cpumemory.pdf",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "gameprogrammingpatterns-com-data-locality-html",
+      "titre": "Nystrom — Game Programming Patterns : Data Locality",
+      "etablissement": "cité dans les niveaux 18.2",
+      "url": "https://gameprogrammingpatterns.com/data-locality.html",
+      "licence": "Lecture en ligne ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-functools-html-functools-lru-cache",
+      "titre": "Python — documentation : functools.lru_cache",
+      "etablissement": "cité dans les niveaux 18.3",
+      "url": "https://docs.python.org/3/library/functools.html#functools.lru_cache",
+      "licence": "PSF ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "web-archive-org-web-20150320220341-http-www-cs-bell-labs-com-cm-cs-pea",
+      "titre": "Bentley — Programming Pearls (page archivée, lien)",
+      "etablissement": "cité dans les niveaux 18.3, 18.boss",
+      "url": "https://web.archive.org/web/20150320220341/http://www.cs.bell-labs.com/cm/cs/pearls/",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-profile-html",
+      "titre": "Python — documentation : The Python Profilers",
+      "etablissement": "cité dans les niveaux 18.4",
+      "url": "https://docs.python.org/3/library/profile.html",
+      "licence": "PSF ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "dl-acm-org-doi-10-1145-1465482-1465560",
+      "titre": "Amdahl — Validity of the single processor approach to achieving large scale computing capabilities (1967)",
+      "etablissement": "cité dans les niveaux 18.4",
+      "url": "https://dl.acm.org/doi/10.1145/1465482.1465560",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "numpy-org-doc-stable-user-whatisnumpy-html",
+      "titre": "NumPy — documentation : What is NumPy ?",
+      "etablissement": "cité dans les niveaux 18.5",
+      "url": "https://numpy.org/doc/stable/user/whatisnumpy.html",
+      "licence": "BSD-3-Clause ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "isocpp-github-io-cppcoreguidelines-cppcoreguidelines",
+      "titre": "C++ Core Guidelines",
+      "etablissement": "cité dans les niveaux 18.5",
+      "url": "https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines",
+      "licence": "MIT ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "en-cppreference-com-w",
+      "titre": "cppreference.com — C++ reference",
+      "etablissement": "cité dans les niveaux 18.5",
+      "url": "https://en.cppreference.com/w/",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "cloudflare-com-learning-ssl-what-happens-in-a-tls-handshake",
+      "titre": "Cloudflare Learning Center — What happens in a TLS handshake ?",
+      "etablissement": "cité dans les niveaux 19.1",
+      "url": "https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "rfc-editor-org-rfc-rfc8446",
+      "titre": "RFC 8446 — The Transport Layer Security (TLS) Protocol Version 1.3",
+      "etablissement": "cité dans les niveaux 19.1",
+      "url": "https://www.rfc-editor.org/rfc/rfc8446",
+      "licence": "Licence IETF Trust ; spécification citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-ipaddress-html",
+      "titre": "Python — documentation : ipaddress",
+      "etablissement": "cité dans les niveaux 19.1",
+      "url": "https://docs.python.org/3/library/ipaddress.html",
+      "licence": "PSF ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "csrc-nist-gov-pubs-fips-203-final",
+      "titre": "NIST — FIPS 203 : Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)",
+      "etablissement": "cité dans les niveaux 19.2",
+      "url": "https://csrc.nist.gov/pubs/fips/203/final",
+      "licence": "Domaine public (publication fédérale américaine) ; norme citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "cacr-uwaterloo-ca-hac",
+      "titre": "Menezes, van Oorschot, Vanstone — Handbook of Applied Cryptography",
+      "etablissement": "cité dans les niveaux 19.2",
+      "url": "https://cacr.uwaterloo.ca/hac/",
+      "licence": "Lecture en ligne ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-hashlib-html",
+      "titre": "Python — documentation : hashlib, hmac, secrets",
+      "etablissement": "cité dans les niveaux 19.2",
+      "url": "https://docs.python.org/3/library/hashlib.html",
+      "licence": "PSF ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "owasp-org-www-project-top-ten",
+      "titre": "OWASP — Top 10 Web Application Security Risks",
+      "etablissement": "cité dans les niveaux 19.3",
+      "url": "https://owasp.org/www-project-top-ten/",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-html-html-html-escape",
+      "titre": "Python — documentation : html.escape",
+      "etablissement": "cité dans les niveaux 19.3",
+      "url": "https://docs.python.org/3/library/html.html#html.escape",
+      "licence": "PSF ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "cheatsheetseries-owasp-org",
+      "titre": "OWASP Cheat Sheet Series — Injection Prevention",
+      "etablissement": "cité dans les niveaux 19.3",
+      "url": "https://cheatsheetseries.owasp.org/",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "simonwillison-net-2025-jun-16-the-lethal-trifecta",
+      "titre": "Willison — The lethal trifecta for AI agents (2025)",
+      "etablissement": "cité dans les niveaux 19.4",
+      "url": "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "genai-owasp-org-llmrisk-llm01-prompt-injection",
+      "titre": "OWASP — LLM01 : Prompt Injection",
+      "etablissement": "cité dans les niveaux 19.5",
+      "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-2302-12173",
+      "titre": "Greshake et al. — Not what you’ve signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection",
+      "etablissement": "cité dans les niveaux 19.5",
+      "url": "https://arxiv.org/abs/2302.12173",
+      "licence": "Article en accès libre ; idée citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "developers-google-com-machine-learning-crash-course-classification",
+      "titre": "Google — Machine Learning Crash Course : classification (précision, rappel)",
+      "etablissement": "cité dans les niveaux 20.1",
+      "url": "https://developers.google.com/machine-learning/crash-course/classification",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "doi-org-10-1080-01621459-1927-10502953",
+      "titre": "Wilson, E. B. — Probable inference, the law of succession, and statistical inference (1927)",
+      "etablissement": "cité dans les niveaux 20.2",
+      "url": "https://doi.org/10.1080/01621459.1927.10502953",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "doi-org-10-1162-089976698300017197",
+      "titre": "Dietterich — Approximate Statistical Tests for Comparing Supervised Classification Learning Algorithms (1998)",
+      "etablissement": "cité dans les niveaux 20.2",
+      "url": "https://doi.org/10.1162/089976698300017197",
+      "licence": "Lien seulement ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "sre-google-sre-book-monitoring-distributed-systems",
+      "titre": "Google SRE Book — Monitoring Distributed Systems",
+      "etablissement": "cité dans les niveaux 20.3",
+      "url": "https://sre.google/sre-book/monitoring-distributed-systems/",
+      "licence": "CC BY-NC-ND (lecture en ligne) ; lien seulement",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "opentelemetry-io-docs-concepts-observability-primer",
+      "titre": "OpenTelemetry — Observability primer",
+      "etablissement": "cité dans les niveaux 20.3",
+      "url": "https://opentelemetry.io/docs/concepts/observability-primer/",
+      "licence": "Apache-2.0 ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-2003-12206",
+      "titre": "Pineau et al. — Improving Reproducibility in Machine Learning Research (NeurIPS 2019)",
+      "etablissement": "cité dans les niveaux 20.4",
+      "url": "https://arxiv.org/abs/2003.12206",
+      "licence": "Article en accès libre ; liste de contrôle citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "pip-pypa-io-en-stable-reference-requirements-file-format",
+      "titre": "Python Packaging User Guide — Requirements files",
+      "etablissement": "cité dans les niveaux 20.4",
+      "url": "https://pip.pypa.io/en/stable/reference/requirements-file-format/",
+      "licence": "MIT ; documentation citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-1810-03993",
+      "titre": "Mitchell et al. — Model Cards for Model Reporting (2019)",
+      "etablissement": "cité dans les niveaux 20.5, 20.boss",
+      "url": "https://arxiv.org/abs/1810.03993",
+      "licence": "Article en accès libre ; idée citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "nist-gov-itl-ai-risk-management-framework",
+      "titre": "NIST — AI Risk Management Framework (AI RMF 1.0)",
+      "etablissement": "cité dans les niveaux 20.5, 20.boss",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework",
+      "licence": "Domaine public (publication fédérale américaine) ; cadre cité",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "sre-google-sre-book-release-engineering",
+      "titre": "Google SRE Book — Release Engineering",
+      "etablissement": "cité dans les niveaux 20.5",
+      "url": "https://sre.google/sre-book/release-engineering/",
+      "licence": "CC BY-NC-ND (lecture en ligne) ; lien seulement",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "itl-nist-gov-div898-handbook-prc-section4-prc473-htm",
+      "titre": "NIST/SEMATECH e-Handbook — Bonferroni’s method",
+      "etablissement": "cité dans les niveaux 21.boss",
+      "url": "https://www.itl.nist.gov/div898/handbook/prc/section4/prc473.htm",
+      "licence": "Domaine public (publication fédérale américaine) ; méthode citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "lean-lang-org-theorem-proving-in-lean4",
+      "titre": "Avigad, de Moura, Kong, Ullrich — Theorem Proving in Lean 4",
+      "etablissement": "cité dans les niveaux 22.1, 22.2, 22.3, 22.boss",
+      "url": "https://lean-lang.org/theorem_proving_in_lean4/",
+      "licence": "Apache-2.0 ; notions citées, exemples réécrits",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "leanprover-community-github-io-mathematics-in-lean",
+      "titre": "Avigad, Massot — Mathematics in Lean",
+      "etablissement": "cité dans les niveaux 22.1, 22.2",
+      "url": "https://leanprover-community.github.io/mathematics_in_lean/",
+      "licence": "Apache-2.0 ; notions citées",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "lean-lang-org-doc-reference-latest",
+      "titre": "Lean 4 — manuel de référence",
+      "etablissement": "cité dans les niveaux 22.1, 22.2, 22.3",
+      "url": "https://lean-lang.org/doc/reference/latest/",
+      "licence": "Apache-2.0 ; documentation officielle citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "lean-lang-org-functional-programming-in-lean",
+      "titre": "Christiansen — Functional Programming in Lean",
+      "etablissement": "cité dans les niveaux 22.3",
+      "url": "https://lean-lang.org/functional_programming_in_lean/",
+      "licence": "Référence en lien seulement ; aucun extrait repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "deeplearningbook-org-contents-numerical-html",
+      "titre": "Goodfellow, Bengio, Courville — Deep Learning, chapitre 4 « Numerical Computation » (référence uniquement)",
+      "etablissement": "cité dans les niveaux 22.4",
+      "url": "https://www.deeplearningbook.org/contents/numerical.html",
+      "licence": "Copyright MIT Press ; lecture libre en ligne ; lien seulement, aucun extrait repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "people-math-harvard-edu-ctm-home-text-others-shannon-entropy-entropy-p",
+      "titre": "Shannon — A Mathematical Theory of Communication (1948)",
+      "etablissement": "cité dans les niveaux 22.5, 22.boss",
+      "url": "https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf",
+      "licence": "Article historique ; notion citée, aucun extrait repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "inference-org-uk-itila-book-html",
+      "titre": "MacKay — Information Theory, Inference, and Learning Algorithms (référence uniquement)",
+      "etablissement": "cité dans les niveaux 22.5",
+      "url": "https://www.inference.org.uk/itila/book.html",
+      "licence": "Copyright Cambridge University Press ; lecture libre en ligne ; lien seulement",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-2401-04088",
+      "titre": "Jiang et al. — Mixtral of Experts (arXiv 2401.04088)",
+      "etablissement": "cité dans les niveaux 22.6",
+      "url": "https://arxiv.org/abs/2401.04088",
+      "licence": "Article en accès libre ; chiffres cités (8 experts, 2 actifs, 47 G / 13 G)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-1701-06538",
+      "titre": "Shazeer et al. — Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer (arXiv 1701.06538)",
+      "etablissement": "cité dans les niveaux 22.6",
+      "url": "https://arxiv.org/abs/1701.06538",
+      "licence": "Article en accès libre ; idée citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-2101-03961",
+      "titre": "Fedus, Zoph, Shazeer — Switch Transformers (arXiv 2101.03961)",
+      "etablissement": "cité dans les niveaux 22.6",
+      "url": "https://arxiv.org/abs/2101.03961",
+      "licence": "Article en accès libre ; difficultés citées",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "arxiv-org-abs-2010-11929",
+      "titre": "Dosovitskiy et al. — An Image is Worth 16x16 Words (arXiv 2010.11929)",
+      "etablissement": "cité dans les niveaux 22.6",
+      "url": "https://arxiv.org/abs/2010.11929",
+      "licence": "Article en accès libre ; idée citée",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "discrete-openmathbooks-org-dmoi3-sec-intro-statements-html",
+      "titre": "Oscar Levin — Mathematical Statements",
+      "etablissement": "cité dans les niveaux 0.1, 0.boss",
+      "url": "https://discrete.openmathbooks.org/dmoi3/sec_intro-statements.html",
+      "licence": "CC BY-SA 4.0",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "discrete-openmathbooks-org-dmoi3-sec-logic-proofs-html",
+      "titre": "Oscar Levin — Proofs",
+      "etablissement": "cité dans les niveaux 0.2",
+      "url": "https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html",
+      "licence": "CC BY-SA 4.0",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "discrete-openmathbooks-org-dmoi3-sec-seq-induction-html",
+      "titre": "Oscar Levin — Induction",
+      "etablissement": "cité dans les niveaux 0.3, 0.boss",
+      "url": "https://discrete.openmathbooks.org/dmoi3/sec_seq-induction.html",
+      "licence": "CC BY-SA 4.0",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "courses-csail-mit-edu-6-042-spring18-mcs-pdf",
+      "titre": "MIT — Mathematics for Computer Science, counting",
+      "etablissement": "cité dans les niveaux 0.4",
+      "url": "https://courses.csail.mit.edu/6.042/spring18/mcs.pdf",
+      "licence": "CC BY-SA 3.0 ; référence, rédaction originale",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "ocw-mit-edu-courses-18-200-principles-of-discrete-applied-mathematics-",
+      "titre": "MIT OCW — 18.200, Lecture 1: Pigeonhole Principle (2024)",
+      "etablissement": "cité dans les niveaux 0.4, 0.boss",
+      "url": "https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/resources/mit18_200_s24_lec01_pdf/",
+      "licence": "CC BY-NC-SA 4.0 ; vérification en ligne, aucun extrait repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "gnu-org-software-coreutils-manual-html-node-index-html",
+      "titre": "GNU Coreutils — pwd, ls",
+      "etablissement": "cité dans les niveaux 1.1, 1.2, 1.4, 1.boss",
+      "url": "https://www.gnu.org/software/coreutils/manual/html_node/index.html",
+      "licence": "GNU FDL 1.3 (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "gnu-org-software-bash-manual-bash-html-index-cd",
+      "titre": "GNU Bash Reference Manual — cd",
+      "etablissement": "cité dans les niveaux 1.1",
+      "url": "https://www.gnu.org/software/bash/manual/bash.html#index-cd",
+      "licence": "GNU FDL 1.3 (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "gnu-org-software-bash-manual-bash-html-redirections",
+      "titre": "GNU Bash Reference Manual — Redirections",
+      "etablissement": "cité dans les niveaux 1.2",
+      "url": "https://www.gnu.org/software/bash/manual/bash.html#Redirections",
+      "licence": "GNU FDL 1.3 (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "gnu-org-software-coreutils-manual-html-node-chmod-invocation-html",
+      "titre": "GNU Coreutils — chmod (modes de fichier)",
+      "etablissement": "cité dans les niveaux 1.3",
+      "url": "https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html",
+      "licence": "GNU FDL 1.3 (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "gnu-org-software-coreutils-manual-html-node-what-information-is-listed",
+      "titre": "GNU Coreutils — ls -l",
+      "etablissement": "cité dans les niveaux 1.3",
+      "url": "https://www.gnu.org/software/coreutils/manual/html_node/What-information-is-listed.html",
+      "licence": "GNU FDL 1.3 (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "gnu-org-software-grep-manual-grep-html",
+      "titre": "GNU grep manual",
+      "etablissement": "cité dans les niveaux 1.4, 1.boss",
+      "url": "https://www.gnu.org/software/grep/manual/grep.html",
+      "licence": "GNU FDL 1.3 (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "gnu-org-software-bash-manual-bash-html-pipelines",
+      "titre": "GNU Bash Reference Manual — Pipelines",
+      "etablissement": "cité dans les niveaux 1.4",
+      "url": "https://www.gnu.org/software/bash/manual/bash.html#Pipelines",
+      "licence": "GNU FDL 1.3 (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "git-scm-com-book-fr-v2-les-bases-de-git-d-marrer-un-d-p-t-git",
+      "titre": "Pro Git, 2e éd. — chap. 2, Les bases de Git (S. Chacon, B. Straub)",
+      "etablissement": "cité dans les niveaux 1.5",
+      "url": "https://git-scm.com/book/fr/v2/Les-bases-de-Git-Démarrer-un-dépôt-Git",
+      "licence": "CC BY-NC-SA 3.0 (source citée, texte non repris)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "git-scm-com-docs-gitignore",
+      "titre": "Documentation officielle de Git — gitignore",
+      "etablissement": "cité dans les niveaux 1.5",
+      "url": "https://git-scm.com/docs/gitignore",
+      "licence": "GPL-2.0 (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-datastructures-html-list-comprehensions",
+      "titre": "Python — tranches de listes et compréhensions",
+      "etablissement": "cité dans les niveaux 10.1",
+      "url": "https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "otexts-com-fpp3-stationarity-html",
+      "titre": "Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (stationnarité et différenciation)",
+      "etablissement": "cité dans les niveaux 10.2",
+      "url": "https://otexts.com/fpp3/stationarity.html",
+      "licence": "Lien seulement (licence non vérifiée) ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-statistics-html",
+      "titre": "Python — module statistics",
+      "etablissement": "cité dans les niveaux 8.3, 10.2",
+      "url": "https://docs.python.org/3/library/statistics.html",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "otexts-com-fpp3-acf-html",
+      "titre": "Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (autocorrélation)",
+      "etablissement": "cité dans les niveaux 10.3",
+      "url": "https://otexts.com/fpp3/acf.html",
+      "licence": "Lien seulement (licence non vérifiée) ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-math-html",
+      "titre": "Python — module math",
+      "etablissement": "cité dans les niveaux 10.3",
+      "url": "https://docs.python.org/3/library/math.html",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "otexts-com-fpp3-ar-html",
+      "titre": "Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (modèles autorégressifs)",
+      "etablissement": "cité dans les niveaux 10.4",
+      "url": "https://otexts.com/fpp3/AR.html",
+      "licence": "Lien seulement (licence non vérifiée) ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "msci-com-documents-10199-5915b101-4206-4ba0-aee2-3449d5c7e95a",
+      "titre": "J.P. Morgan / Reuters — RiskMetrics Technical Document (1996), moyenne mobile exponentielle",
+      "etablissement": "cité dans les niveaux 10.5",
+      "url": "https://www.msci.com/documents/10199/5915b101-4206-4ba0-aee2-3449d5c7e95a",
+      "licence": "Lien seulement ; formule citée, texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "scikit-learn-org-stable-modules-cross-validation-html-time-series-spli",
+      "titre": "scikit-learn — TimeSeriesSplit (validation de séries temporelles)",
+      "etablissement": "cité dans les niveaux 10.boss",
+      "url": "https://scikit-learn.org/stable/modules/cross_validation.html#time-series-split",
+      "licence": "BSD-3-Clause (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "scikit-learn-org-stable-common-pitfalls-html",
+      "titre": "scikit-learn — Common pitfalls and recommended practices",
+      "etablissement": "cité dans les niveaux 8.5, 8.boss, 9.boss, 10.boss",
+      "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+      "licence": "BSD-3-Clause (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "otexts-com-fpp3-accuracy-html",
+      "titre": "Hyndman et Athanasopoulos — Forecasting: Principles and Practice (évaluation des prévisions)",
+      "etablissement": "cité dans les niveaux 10.boss",
+      "url": "https://otexts.com/fpp3/accuracy.html",
+      "licence": "Lien seulement (licence non vérifiée) ; texte non repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-reference-lexical-analysis-html-identifiers",
+      "titre": "Python — Identifiants et mots réservés",
+      "etablissement": "cité dans les niveaux 2.1",
+      "url": "https://docs.python.org/3/reference/lexical_analysis.html#identifiers",
+      "licence": "PSF",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-introduction-html",
+      "titre": "Python — Introduction, nombres et chaînes",
+      "etablissement": "cité dans les niveaux 2.1, 2.2",
+      "url": "https://docs.python.org/3/tutorial/introduction.html",
+      "licence": "PSF",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-inputoutput-html",
+      "titre": "Python Tutorial — Input and Output",
+      "etablissement": "cité dans les niveaux 2.1",
+      "url": "https://docs.python.org/3/tutorial/inputoutput.html",
+      "licence": "PSF",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-controlflow-html-if-statements",
+      "titre": "Python — Tutoriel, instructions if",
+      "etablissement": "cité dans les niveaux 2.2",
+      "url": "https://docs.python.org/3/tutorial/controlflow.html#if-statements",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-reference-expressions-html-comparisons",
+      "titre": "Python — Référence, comparaisons",
+      "etablissement": "cité dans les niveaux 2.2",
+      "url": "https://docs.python.org/3/reference/expressions.html#comparisons",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-controlflow-html-for-statements",
+      "titre": "Python — Tutoriel, instructions for et range()",
+      "etablissement": "cité dans les niveaux 2.3",
+      "url": "https://docs.python.org/3/tutorial/controlflow.html#for-statements",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-controlflow-html-break-and-continue-stateme",
+      "titre": "Python — Tutoriel, break et continue",
+      "etablissement": "cité dans les niveaux 2.3",
+      "url": "https://docs.python.org/3/tutorial/controlflow.html#break-and-continue-statements-and-else-clauses-on-loops",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-reference-compound-stmts-html-the-while-statement",
+      "titre": "Python — Référence, instruction while",
+      "etablissement": "cité dans les niveaux 2.3",
+      "url": "https://docs.python.org/3/reference/compound_stmts.html#the-while-statement",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-controlflow-html-defining-functions",
+      "titre": "Python — Tutoriel, définir des fonctions",
+      "etablissement": "cité dans les niveaux 2.4, 3.6",
+      "url": "https://docs.python.org/3/tutorial/controlflow.html#defining-functions",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-classes-html-python-scopes-and-namespaces",
+      "titre": "Python — Tutoriel, portées et espaces de noms",
+      "etablissement": "cité dans les niveaux 2.4",
+      "url": "https://docs.python.org/3/tutorial/classes.html#python-scopes-and-namespaces",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-introduction-html-lists",
+      "titre": "Python — Tutoriel, les listes",
+      "etablissement": "cité dans les niveaux 2.5",
+      "url": "https://docs.python.org/3/tutorial/introduction.html#lists",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-datastructures-html-dictionaries",
+      "titre": "Python — Tutoriel, les dictionnaires",
+      "etablissement": "cité dans les niveaux 2.5, 2.boss, 3.8",
+      "url": "https://docs.python.org/3/tutorial/datastructures.html#dictionaries",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-stdtypes-html-string-methods",
+      "titre": "Python — Tutoriel, méthodes de chaînes",
+      "etablissement": "cité dans les niveaux 2.boss, 8.2",
+      "url": "https://docs.python.org/3/library/stdtypes.html#string-methods",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "cheatsheetseries-owasp-org-cheatsheets-input-validation-cheat-sheet-ht",
+      "titre": "OWASP — Input Validation Cheat Sheet",
+      "etablissement": "cité dans les niveaux 2.boss",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html",
+      "licence": "CC BY-SA 4.0",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-sys-html-sys-getrecursionlimit",
+      "titre": "Python — sys.getrecursionlimit",
+      "etablissement": "cité dans les niveaux 3.6",
+      "url": "https://docs.python.org/3/library/sys.html#sys.getrecursionlimit",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-functools-html-functools-cache",
+      "titre": "Python — functools.cache",
+      "etablissement": "cité dans les niveaux 3.6",
+      "url": "https://docs.python.org/3/library/functools.html#functools.cache",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-datastructures-html-using-lists-as-stacks",
+      "titre": "Python — Tutoriel, utiliser les listes comme des piles",
+      "etablissement": "cité dans les niveaux 3.7",
+      "url": "https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-datastructures-html-more-on-lists",
+      "titre": "Python — Tutoriel, listes",
+      "etablissement": "cité dans les niveaux 3.7",
+      "url": "https://docs.python.org/3/tutorial/datastructures.html#more-on-lists",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-heapq-html",
+      "titre": "Python — module heapq",
+      "etablissement": "cité dans les niveaux 3.8",
+      "url": "https://docs.python.org/3/library/heapq.html",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "nlp-stanford-edu-ir-book-html-htmledition-a-first-take-at-building-an-",
+      "titre": "Manning, Raghavan, Schütze — Introduction to Information Retrieval, Inverted index",
+      "etablissement": "cité dans les niveaux 3.boss",
+      "url": "https://nlp.stanford.edu/IR-book/html/htmledition/a-first-take-at-building-an-inverted-index-1.html",
+      "licence": "© Cambridge University Press ; consultation et lien uniquement ; exemples originaux non repris du livre",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "3blue1brown-com-topics-linear-algebra",
+      "titre": "3Blue1Brown — Essence of linear algebra (linear transformations)",
+      "etablissement": "cité dans les niveaux 4.6",
+      "url": "https://www.3blue1brown.com/topics/linear-algebra",
+      "licence": "CC BY-NC-SA 4.0 (source citée, texte non repris)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-fractions-html",
+      "titre": "Python — module fractions",
+      "etablissement": "cité dans les niveaux 4.7",
+      "url": "https://docs.python.org/3/library/fractions.html",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "ocw-mit-edu-courses-18-01-single-variable-calculus-fall-2006",
+      "titre": "MIT 18.01 — Single Variable Calculus (exponentielle et logarithme)",
+      "etablissement": "cité dans les niveaux 5.6, 5.7, 5.8",
+      "url": "https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/",
+      "licence": "CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-math-html-power-and-logarithmic-functions",
+      "titre": "Python — module math (exp, log)",
+      "etablissement": "cité dans les niveaux 5.6",
+      "url": "https://docs.python.org/3/library/math.html#power-and-logarithmic-functions",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "ocw-mit-edu-courses-18-02-multivariable-calculus-fall-2007",
+      "titre": "MIT 18.02 — Multivariable Calculus",
+      "etablissement": "cité dans les niveaux 5.7",
+      "url": "https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/",
+      "licence": "CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "ocw-mit-edu-courses-18-05-introduction-to-probability-and-statistics-s",
+      "titre": "Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)",
+      "etablissement": "cité dans les niveaux 6.1, 6.2, 6.3, 6.4",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf",
+      "licence": "CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "en-d2l-ai-chapter-appendix-mathematics-for-deep-learning-information-t",
+      "titre": "Zhang, Lipton, Li et Smola — Dive into Deep Learning, Information Theory",
+      "etablissement": "cité dans les niveaux 6.5, 6.boss",
+      "url": "https://en.d2l.ai/chapter_appendix-mathematics-for-deep-learning/information-theory.html",
+      "licence": "CC BY-SA 4.0 pour le texte ; aucun code source repris ; exercices originaux",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "d2l-ai-chapter-recurrent-neural-networks-language-model-html",
+      "titre": "Zhang, Lipton, Li et Smola — Dive into Deep Learning, Language Models",
+      "etablissement": "cité dans les niveaux 6.boss",
+      "url": "https://d2l.ai/chapter_recurrent-neural-networks/language-model.html",
+      "licence": "CC BY-SA 4.0 pour le texte ; aucun code source repris ; corpus et exercices originaux",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "ocw-mit-edu-courses-18-650-statistics-for-applications-fall-2016-pages",
+      "titre": "MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)",
+      "etablissement": "cité dans les niveaux 7.1, 7.2, 7.3, 7.4, 7.5, 7.boss",
+      "url": "https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/",
+      "licence": "CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "itl-nist-gov-div898-handbook-eda-section3-eda352-htm",
+      "titre": "NIST — Confidence Limits for the Mean",
+      "etablissement": "cité dans les niveaux 7.2, 7.boss",
+      "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm",
+      "licence": "Conditions NIST : information publique réutilisable sauf mention de copyright ; référence en lien, aucun extrait repris",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "amstat-org-asa-files-pdfs-p-valuestatement-pdf",
+      "titre": "American Statistical Association — Statement on Statistical Significance and P-Values (2016)",
+      "etablissement": "cité dans les niveaux 7.3, 7.boss",
+      "url": "https://www.amstat.org/asa/files/pdfs/P-ValueStatement.pdf",
+      "licence": "Aucune licence libre indiquée ; lien seulement, aucun extrait reproduit",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-scipy-org-doc-scipy-reference-generated-scipy-stats-bootstrap-htm",
+      "titre": "SciPy — scipy.stats.bootstrap, documentation actuelle",
+      "etablissement": "cité dans les niveaux 7.4, 7.boss",
+      "url": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html",
+      "licence": "BSD-3-Clause ; référence uniquement, sans dépendance SciPy",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-csv-html",
+      "titre": "Python — module csv",
+      "etablissement": "cité dans les niveaux 8.1",
+      "url": "https://docs.python.org/3/library/csv.html",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-io-html-io-stringio",
+      "titre": "Python — io.StringIO",
+      "etablissement": "cité dans les niveaux 8.1",
+      "url": "https://docs.python.org/3/library/io.html#io.StringIO",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "scikit-learn-org-stable-modules-impute-html",
+      "titre": "scikit-learn — Imputation of missing values",
+      "etablissement": "cité dans les niveaux 8.2",
+      "url": "https://scikit-learn.org/stable/modules/impute.html",
+      "licence": "BSD-3-Clause (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-collections-html-collections-counter",
+      "titre": "Python — collections.Counter",
+      "etablissement": "cité dans les niveaux 8.4",
+      "url": "https://docs.python.org/3/library/collections.html#collections.Counter",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "matplotlib-org-stable-gallery-statistics-hist-html",
+      "titre": "Matplotlib — Histograms",
+      "etablissement": "cité dans les niveaux 8.4",
+      "url": "https://matplotlib.org/stable/gallery/statistics/hist.html",
+      "licence": "Matplotlib License (PSF-compatible, source citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "scikit-learn-org-stable-modules-cross-validation-html",
+      "titre": "scikit-learn — Cross-validation: evaluating estimator performance",
+      "etablissement": "cité dans les niveaux 8.5, 9.5",
+      "url": "https://scikit-learn.org/stable/modules/cross_validation.html",
+      "licence": "BSD-3-Clause (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-random-html",
+      "titre": "Python — module random",
+      "etablissement": "cité dans les niveaux 8.5",
+      "url": "https://docs.python.org/3/library/random.html",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-library-stdtypes-html-set-types-set-frozenset",
+      "titre": "Python — opérations sur les ensembles",
+      "etablissement": "cité dans les niveaux 8.boss",
+      "url": "https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "openlearninglibrary-mit-edu-courses-course-v1-mitx-6-036-1t2019-about",
+      "titre": "MIT 6.036 — Introduction to Machine Learning",
+      "etablissement": "cité dans les niveaux 9.1, 9.3",
+      "url": "https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/about",
+      "licence": "CC BY-NC-SA 4.0 ; éléments tiers exclus",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "scikit-learn-org-stable-auto-examples-model-selection-plot-underfittin",
+      "titre": "scikit-learn — Underfitting vs. Overfitting",
+      "etablissement": "cité dans les niveaux 9.2",
+      "url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_underfitting_overfitting.html",
+      "licence": "BSD-3-Clause (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "scikit-learn-org-stable-modules-model-evaluation-html",
+      "titre": "scikit-learn — Metrics and scoring",
+      "etablissement": "cité dans les niveaux 9.4",
+      "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+      "licence": "BSD-3-Clause (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "scikit-learn-org-stable-modules-tree-html",
+      "titre": "scikit-learn — Decision Trees",
+      "etablissement": "cité dans les niveaux 9.6",
+      "url": "https://scikit-learn.org/stable/modules/tree.html",
+      "licence": "BSD-3-Clause (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "csrc-nist-gov-pubs-fips-180-4-upd1-final",
+      "titre": "NIST — FIPS 180-4, Secure Hash Standard (SHA-256)",
+      "etablissement": "cité dans les niveaux 9.boss",
+      "url": "https://csrc.nist.gov/pubs/fips/180-4/upd1/final",
+      "licence": "Domaine public (publication du gouvernement des États-Unis)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens ; ajouté lors de la vérification du 2 nov. 2026"
+    },
+    {
+      "id": "docs-python-org-3-reference-compound-stmts-html",
+      "titre": "Python — documentation : définition de fonction (valeurs par défaut)",
+      "etablissement": "cité dans les niveaux 23.2",
+      "url": "https://docs.python.org/3/reference/compound_stmts.html",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens"
+    },
+    {
+      "id": "docs-python-org-3-tutorial-floatingpoint-html",
+      "titre": "Python — tutoriel : arithmétique à virgule flottante",
+      "etablissement": "cité dans les niveaux 23.2",
+      "url": "https://docs.python.org/3/tutorial/floatingpoint.html",
+      "licence": "PSF License (documentation officielle, citée)",
+      "verifie": "2026-11-02",
+      "mode": "lien",
+      "note": "aucun texte ni code de cette source n'est embarqué : seulement des notions citées et des liens"
     }
   ]
 }

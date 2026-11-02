@@ -212,6 +212,15 @@ const THEMES = [
     kinds: { hall: 3, tower: 2, house: 1, shop: 1 }, count: 24, align: .9,
     props: { lamp: 8, person: 4, car: 2, crate: 2 },
     lm: ['hall', 'tower', 'clock', 'dome', 'crystal', 'pavilion'], boss: 'lighthouse' },
+  { place: 'Le Bureau des Enquêtes', blurb: 'Loupes, tableaux de liège et lampes de bureau : on y cherche l’erreur avant qu’elle ne coûte cher.', path: 0, smooth: true,
+    top: '#4a3a30', cliff: '#5a4636', lip: '#7a8a46', road: '#2e2420', roadHi: '#ffcf80', dash: true, night: '#1a1410',
+    patches: ['#5a4636', '#4a3a30', '#7a8a46'],
+    walls: ['#eadccb', '#d6c1a8', '#bfa584', '#f4eadc', '#97806a'], roofs: ['#6b3f2a', '#573220', '#82503a'],
+    roofW: { flat: 2, hip: 2, gable: 2 }, win: ['#ffe9a8', '#ffd36b', '#ffcf80'], leaf: ['#3f7a48', '#52965a', '#6aae6a'],
+    trees: { round: 1, conifer: 1, bush: 1 }, nTrees: 10,
+    kinds: { hall: 2, tower: 1, house: 2, shop: 2 }, count: 24, align: .9,
+    props: { lamp: 8, person: 4, car: 2, crate: 2 },
+    lm: ['pavilion', 'clock', 'tower', 'hall', 'dome', 'house'], boss: 'lighthouse' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

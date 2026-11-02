@@ -150,3 +150,8 @@
 
 - **Fait** : enseigne de quartier placée sans chevaucher les épingles (garde-fou E42, qui échoue avec l'ancien placement) ; chaque niveau a un monument nommé, affiché sur la fiche et l'écran de fin ; module 22 « Recherche » (7 niveaux, preuves Lean 4.35 compilées, exercices d'ordre à solution unique) ; coloration Lean ; thème de quartier et ambiance du module 22.
 - **Non vérifié** : rendu sur le téléphone d'Antsa (vérifié ici sur un écran de 375 px) ; appareils réels, lecteur d'écran, vrais élèves, relecture par Codex.
+
+### Enquêtes, manifeste des sources, jalon 0.4.0 (2026-11-02, 0.3.29)
+
+- **Fait** : module 23 « Enquêtes » (23.1 trouver l'erreur dans une preuve, 23.2 trouver le bogue ; sorties Python exécutées) ; manifeste de 196 sources avec garde-fou E44 ; critères de la 0.4.0 écrits dans `docs/TODO.md` § 5.
+- **Non vérifié** : appareils réels, lecteur d'écran, vrais élèves, relecture par Codex. Les niveaux d'enquête restants (statistiques trompeuses, backtest, défense d'agent) ne sont pas écrits.

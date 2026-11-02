@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.29] — 2026-11-02
+
+### Message fr
+Nouveau module bonus « Enquêtes » : tu apprends à chasser l'erreur. Dans le premier niveau, tu repères la ligne fausse d'une preuve ; dans le second, tu cherches un bogue Python en reproduisant, réduisant et testant. Toutes les sources du cours sont maintenant listées avec leur licence.
+
+### Message en
+New bonus module “Investigations”: you learn to hunt for errors. In the first level you spot the false line in a proof; in the second you track down a Python bug by reproducing, reducing and testing. All the course's sources are now listed with their licence.
+
 ## [0.3.28] — 2026-11-02
 
 ### Message fr
