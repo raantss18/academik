@@ -1,0 +1,211 @@
+# Niveau 10.boss — Prévoir sans tricher (mission : détecter une fuite temporelle). Original academik ; notions vérifiées dans la documentation scikit-learn (TimeSeriesSplit, Common pitfalls) et Hyndman et Athanasopoulos (lien, texte non repris).
+id: '10.boss'
+module: 10
+duree_min: 19
+titre: { fr: 'Prévoir sans tricher', en: 'Forecasting without cheating' }
+ia: { fr: 'Kintana évalue ses prévisions comme dans la vraie vie : au fil du temps, sans jamais regarder le futur.', en: 'Kintana evaluates her forecasts as in real life: as time goes by, never looking at the future.' }
+sources:
+  - { titre: 'scikit-learn — TimeSeriesSplit (validation de séries temporelles)', url: 'https://scikit-learn.org/stable/modules/cross_validation.html#time-series-split', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+  - { titre: 'scikit-learn — Common pitfalls and recommended practices', url: 'https://scikit-learn.org/stable/common_pitfalls.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+  - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice (évaluation des prévisions)', url: 'https://otexts.com/fpp3/accuracy.html', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana prévoit la valeur du **jour 6**. Quelles données a-t-elle le droit d’utiliser ?'
+    en: 'Kintana forecasts the value of **day 6**. Which data may she use?'
+    choix:
+      - { fr: 'Celles des jours 1 à 5 seulement', en: 'Those of days 1 to 5 only', juste: true }
+      - { fr: 'Celles des jours 1 à 10', en: 'Those of days 1 to 10' }
+      - { fr: 'Toutes celles qu’elle a, le jour 6 compris', en: 'All she has, day 6 included' }
+    indice: { fr: 'Un jour donné, que connaît-on vraiment de l’avenir ?', en: 'On a given day, what do we really know about the future?' }
+    explication: { fr: 'Le jour où l’on prévoit, seul le passé est connu. Utiliser plus tard est une fuite.', en: 'On the day we forecast, only the past is known. Using later data is a leak.' }
+  - id: c2
+    type: idee
+    fr: 'La **validation « walk-forward »** imite le temps réel. On part d’un début d’historique. On prévoit le point suivant avec **ce qui précède seulement**, on compare à la vraie valeur, puis on avance d’un pas.'
+    en: '**Walk-forward validation** imitates real time. Start from the beginning of the history. Forecast the next point using **only what precedes**, compare with the true value, then move one step.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Tour', en: 'Round' }, { fr: 'Passé utilisé', en: 'Past used' }, { fr: 'Valeur à prévoir', en: 'Value to forecast' }]
+      cellules:
+        - ['$1$', '$x_0,x_1,x_2$', '$x_3$']
+        - ['$2$', '$x_0,\dots,x_3$', '$x_4$']
+        - ['$3$', '$x_0,\dots,x_4$', { fr: '$x_5$', en: '$x_5$', ton: ok }]
+      legende: { fr: 'La fenêtre d’apprentissage s’agrandit : on **ne regarde jamais** à droite de la valeur à prévoir.', en: 'The learning window grows: we **never look** to the right of the value to forecast.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un tour de walk-forward', en: 'One walk-forward round' }
+    lang: python
+    etapes:
+      - { code: 'serie = [1, 2, 3, 4, 5, 6]\ndebut = 3', fr: 'Six valeurs ; on commence à prévoir à partir de l’indice 3.', en: 'Six values; we start forecasting from index 3.' }
+      - { code: 'modele = lambda passe: passe[-1]', fr: 'Un modèle naïf : « la prochaine valeur sera égale à la dernière ».', en: 'A naive model: “the next value will equal the last”.' }
+      - { code: 'erreurs = [abs(modele(serie[:t]) - serie[t]) for t in range(debut, len(serie))]', fr: 'Pour chaque `t`, le modèle ne voit que `serie[:t]` (le passé), puis on compare à `serie[t]`.', en: 'For each `t`, the model only sees `serie[:t]` (the past), then we compare with `serie[t]`.' }
+      - { code: 'print(erreurs)', fr: 'On affiche `[1, 1, 1]` : le modèle naïf se trompe de 1 à chaque tour sur une tendance.', en: 'We display `[1, 1, 1]`: the naive model is off by 1 at each round on a trend.' }
+    verif: |-
+      serie = [1, 2, 3, 4, 5, 6]
+      debut = 3
+      modele = lambda passe: passe[-1]
+      erreurs = [abs(modele(serie[:t]) - serie[t]) for t in range(debut, len(serie))]
+      print(erreurs)
+    sortie: '[1, 1, 1]'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `walk_forward(serie, debut, modele)`** : la liste des erreurs absolues `|modele(serie[:t]) - serie[t]|` pour `t` de `debut` à la fin.'
+    en: 'Your turn. **Write `walk_forward(serie, debut, modele)`**: the list of absolute errors `|modele(serie[:t]) - serie[t]|` for `t` from `debut` to the end.'
+    depart: |
+      # écris ta fonction walk_forward ici
+    tests: |
+      s = [1, 2, 3, 4, 5, 6]
+      assert walk_forward(s, 3, lambda p: p[-1]) == [1, 1, 1]
+      assert walk_forward(s, 3, lambda p: sum(p) / len(p)) == [2.0, 2.5, 3.0]
+      assert walk_forward(s, 6, lambda p: 0) == []
+    solutionCode: |
+      def walk_forward(serie, debut, modele):
+          return [abs(modele(serie[:t]) - serie[t]) for t in range(debut, len(serie))]
+    indice: { fr: 'Pour chaque `t`, donne `serie[:t]` au modèle (jamais `serie[t:]`), puis compare à `serie[t]`.', en: 'For each `t`, give `serie[:t]` to the model (never `serie[t:]`), then compare with `serie[t]`.' }
+    explication: { fr: 'La moyenne du passé se trompe de plus en plus sur une tendance : `[2.0, 2.5, 3.0]`.', en: 'The mean of the past is more and more wrong on a trend: `[2.0, 2.5, 3.0]`.' }
+  - id: d_fuite
+    type: idee
+    fr: 'Mission : repérer la **fuite**. Estimer $\varphi$ (niveau 10.4) sur **toute** la série puis « prévoir » le passé est une triche : $\varphi$ a déjà vu les valeurs qu’il prétend prédire. En walk-forward, $\varphi$ est **réestimé** à chaque tour, sur le passé seul.'
+    en: 'Mission: spot the **leak**. Estimating $\varphi$ (level 10.4) on the **whole** series then “forecasting” the past is cheating: $\varphi$ has already seen the values it claims to predict. In walk-forward, $\varphi$ is **re-estimated** at each round, on the past only.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Procédure', en: 'Procedure' }, { fr: '$\varphi$ estimé sur…', en: '$\varphi$ estimated on…' }, { fr: 'Verdict', en: 'Verdict' }]
+      cellules:
+        - [{ fr: 'sur toute la série', en: 'on the whole series' }, { fr: 'passé et futur', en: 'past and future' }, { fr: 'fuite : erreur trop belle', en: 'leak: error too good', ton: bad }]
+        - [{ fr: 'walk-forward', en: 'walk-forward' }, { fr: 'le passé seulement', en: 'the past only' }, { fr: 'honnête', en: 'honest', ton: ok }]
+      legende: { fr: 'Même modèle, même série : seule la procédure change le score.', en: 'Same model, same series: only the procedure changes the score.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `modele_ar1(passe)`** : prévoit la prochaine valeur comme `phi * passe[-1]`, avec `phi` estimé sur `passe` seulement. Si `passe` a moins de 2 valeurs ou si le dénominateur est nul, renvoie `passe[-1]`.'
+    en: '**Write `modele_ar1(passe)`**: forecasts the next value as `phi * passe[-1]`, with `phi` estimated on `passe` only. If `passe` has fewer than 2 values or the denominator is zero, return `passe[-1]`.'
+    depart: |
+      # écris ta fonction modele_ar1 ici
+    tests: |
+      assert modele_ar1([5]) == 5
+      assert modele_ar1([0, 0, 0]) == 0
+      assert abs(modele_ar1([1, 2, 3]) - 1.6 * 3) < 1e-12
+      assert abs(modele_ar1([4, 2, 1, 0.5]) - 0.25) < 1e-12
+    solutionCode: |
+      def modele_ar1(passe):
+          if len(passe) < 2:
+              return passe[-1]
+          den = sum(passe[t - 1] ** 2 for t in range(1, len(passe)))
+          if den == 0:
+              return passe[-1]
+          phi = sum(passe[t] * passe[t - 1] for t in range(1, len(passe))) / den
+          return phi * passe[-1]
+    indice: { fr: 'Reprends `phi_ar1` du niveau 10.4 sur `passe`, avec deux cas particuliers traités avant.', en: 'Reuse `phi_ar1` from level 10.4 on `passe`, with two special cases handled first.' }
+    explication: { fr: 'Le modèle ne reçoit que `passe` : il ne peut pas tricher, même par erreur.', en: 'The model only receives `passe`: it cannot cheat, even by mistake.' }
+  - id: d_p_melange
+    type: piege
+    fr: 'Trois tricheries courantes : **mélanger** la série avant de couper, **centrer** avec la moyenne de toute la série, **choisir** un réglage en regardant le futur. Chacune fait paraître la prévision meilleure qu’elle ne le sera vraiment.'
+    en: 'Three common cheats: **shuffling** the series before splitting, **centring** with the mean of the whole series, **choosing** a setting by looking at the future. Each makes the forecast look better than it will really be.'
+  - id: d_pourquoi
+    type: idee
+    fr: 'Pourquoi pas la validation croisée classique (niveau 9.5) ? Elle prend des blocs au hasard, donc du **futur** servirait à apprendre. Pour une série, la bonne découpe est **chronologique**, comme `TimeSeriesSplit` de scikit-learn.'
+    en: 'Why not classic cross-validation (level 9.5)? It takes random blocks, so **future** data would be used to learn. For a series, the right split is **chronological**, like scikit-learn’s `TimeSeriesSplit`.'
+    exemple: { fr: 'Avec trois découpes chronologiques, l’entraînement est toujours **avant** la validation : blocs `1 | 2`, puis `1 2 | 3`, puis `1 2 3 | 4`.', en: 'With three chronological splits, training is always **before** validation: blocks `1 | 2`, then `1 2 | 3`, then `1 2 3 | 4`.' }
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Kintana centre une série avec la moyenne de **toutes** ses valeurs, puis évalue en walk-forward. Y a-t-il une fuite ?'
+    en: 'Kintana centres a series with the mean of **all** its values, then evaluates in walk-forward. Is there a leak?'
+    choix:
+      - { fr: 'Oui : la moyenne contient de l’information sur le futur', en: 'Yes: the mean contains information about the future', juste: true }
+      - { fr: 'Non : centrer ne change rien', en: 'No: centring changes nothing' }
+      - { fr: 'Non : tant que le modèle est AR(1)', en: 'No: as long as the model is AR(1)' }
+    indice: { fr: 'La moyenne de toute la série a-t-elle été calculée avec des valeurs que le modèle n’aurait pas encore vues ?', en: 'Was the mean of the whole series computed with values the model would not yet have seen?' }
+    explication: { fr: 'C’est la fuite du niveau 8.boss : toute statistique doit être recalculée sur le passé seul à chaque tour.', en: 'It is the leak from level 8.boss: every statistic must be recomputed on the past only at each round.' }
+  - id: d_comparer
+    type: idee
+    fr: 'Comparer un modèle à la **référence naïve** (niveau 8.5) sur les mêmes tours de walk-forward dit s’il apporte quelque chose. Une erreur moyenne plus basse, **mesurée honnêtement**, justifie le modèle.'
+    en: 'Comparing a model with the **naive baseline** (level 8.5) over the same walk-forward rounds tells whether it brings anything. A lower mean error, **honestly measured**, justifies the model.'
+    exemple: { fr: 'Sur `1, 2, 3, 4, 5, 6` avec début 3 : la dernière valeur se trompe de $1$ en moyenne ; l’AR(1) non centré se trompe d’environ $0{,}73$ car il capte la montée.', en: 'On `1, 2, 3, 4, 5, 6` with start 3: the last value is off by $1$ on average; the uncentred AR(1) is off by about $0.73$ because it captures the rise.' }
+  - id: c7
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `erreur_moyenne(erreurs)`** : la moyenne d’une liste d’erreurs, ou `None` si la liste est vide.'
+    en: '**Write `erreur_moyenne(erreurs)`**: the mean of a list of errors, or `None` if the list is empty.'
+    depart: |
+      # écris ta fonction erreur_moyenne ici
+    tests: |
+      assert erreur_moyenne([1, 1, 1]) == 1
+      assert erreur_moyenne([2.0, 2.5, 3.0]) == 2.5
+      assert erreur_moyenne([]) is None
+    solutionCode: |
+      def erreur_moyenne(erreurs):
+          if not erreurs:
+              return None
+          return sum(erreurs) / len(erreurs)
+    indice: { fr: 'Teste d’abord la liste vide pour ne pas diviser par zéro.', en: 'Test the empty list first so as not to divide by zero.' }
+    explication: { fr: 'Renvoyer `None` plutôt que `0` évite de faire passer « aucun test » pour « aucune erreur ».', en: 'Returning `None` rather than `0` avoids passing off “no test” as “no error”.' }
+  - id: d_rapport
+    type: idee
+    fr: 'Un rapport honnête annonce le **début** du walk-forward et le **nombre de tours**. Il donne l’erreur de la référence naïve, celle du modèle et leur **marge** (niveau 9.4). Peu de tours, peu de certitude.'
+    en: 'An honest report states the walk-forward **start** and the **number of rounds**. It gives the error of the naive baseline, that of the model and their **margin** (level 9.4). Few rounds, little certainty.'
+    exemple: { fr: 'Trois tours seulement, comme ici, ne prouvent rien : sur de vraies données, on en fait des centaines et on regarde aussi la stabilité d’un tour à l’autre.', en: 'Only three rounds, as here, prove nothing: on real data, we run hundreds and also look at stability from round to round.' }
+  - id: c8
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi final. **Écris `comparer(serie, debut)`** : un dictionnaire `{"dernier": e1, "moyenne": e2, "ar1": e3}` des erreurs moyennes walk-forward de trois modèles : la dernière valeur, la moyenne du passé, et `modele_ar1`. `walk_forward`, `erreur_moyenne` et `modele_ar1` sont fournies.'
+    en: 'Final challenge. **Write `comparer(serie, debut)`**: a dictionary `{"dernier": e1, "moyenne": e2, "ar1": e3}` of the mean walk-forward errors of three models: the last value, the mean of the past, and `modele_ar1`. `walk_forward`, `erreur_moyenne` and `modele_ar1` are provided.'
+    depart: |
+      def walk_forward(serie, debut, modele):
+          return [abs(modele(serie[:t]) - serie[t]) for t in range(debut, len(serie))]
+
+      def erreur_moyenne(erreurs):
+          if not erreurs:
+              return None
+          return sum(erreurs) / len(erreurs)
+
+      def modele_ar1(passe):
+          if len(passe) < 2:
+              return passe[-1]
+          den = sum(passe[t - 1] ** 2 for t in range(1, len(passe)))
+          if den == 0:
+              return passe[-1]
+          phi = sum(passe[t] * passe[t - 1] for t in range(1, len(passe))) / den
+          return phi * passe[-1]
+
+      # écris ta fonction comparer ici
+    tests: |
+      r = comparer([1, 2, 3, 4, 5, 6], 3)
+      assert r["dernier"] == 1
+      assert r["moyenne"] == 2.5 - 0 or abs(r["moyenne"] - (2 + 2.5 + 3) / 3) < 1e-12
+      assert abs(r["ar1"] - 0.7269841269841271) < 1e-9
+      assert comparer([1, 2, 3], 3) == {"dernier": None, "moyenne": None, "ar1": None}
+    solutionCode: |
+      def walk_forward(serie, debut, modele):
+          return [abs(modele(serie[:t]) - serie[t]) for t in range(debut, len(serie))]
+
+      def erreur_moyenne(erreurs):
+          if not erreurs:
+              return None
+          return sum(erreurs) / len(erreurs)
+
+      def modele_ar1(passe):
+          if len(passe) < 2:
+              return passe[-1]
+          den = sum(passe[t - 1] ** 2 for t in range(1, len(passe)))
+          if den == 0:
+              return passe[-1]
+          phi = sum(passe[t] * passe[t - 1] for t in range(1, len(passe))) / den
+          return phi * passe[-1]
+
+      def comparer(serie, debut):
+          modeles = {"dernier": lambda p: p[-1], "moyenne": lambda p: sum(p) / len(p), "ar1": modele_ar1}
+          return {nom: erreur_moyenne(walk_forward(serie, debut, m)) for nom, m in modeles.items()}
+    indice: { fr: 'Un dictionnaire de trois modèles ; pour chacun, `erreur_moyenne(walk_forward(...))`.', en: 'A dictionary of three models; for each one, `erreur_moyenne(walk_forward(...))`.' }
+    explication: { fr: 'Sur une tendance, l’AR(1) non centré bat la dernière valeur, mais pas sur une série qui oscille : à toi de comparer sur les bonnes données.', en: 'On a trend, the uncentred AR(1) beats the last value, but not on an oscillating series: it is for you to compare on the right data.' }
+  - id: c9
+    type: retenir
+    fr: 'Walk-forward : prévoir le point suivant avec le passé seul, comparer, avancer. Réestimer tout (moyenne, $\varphi$, réglages) à chaque tour. Ne jamais mélanger, ne jamais regarder le futur. Battre la référence naïve, avec une marge.'
+    en: 'Walk-forward: forecast the next point with the past only, compare, move on. Re-estimate everything (mean, $\varphi$, settings) at each round. Never shuffle, never look at the future. Beat the naive baseline, with a margin.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [scikit-learn — TimeSeriesSplit](https://scikit-learn.org/stable/modules/cross_validation.html#time-series-split) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [scikit-learn — TimeSeriesSplit](https://scikit-learn.org/stable/modules/cross_validation.html#time-series-split); this optional reading needs a connection.'

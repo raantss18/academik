@@ -1,0 +1,214 @@
+# Niveau 10.2 — Séries temporelles 2 : stationnarité. Original academik ; notions vérifiées dans Hyndman et Athanasopoulos, Forecasting: Principles and Practice (lien, texte non repris) et la documentation officielle Python.
+id: '10.2'
+module: 10
+duree_min: 19
+titre: { fr: 'Stationnarité', en: 'Stationarity' }
+ia: { fr: 'Kintana reconnaît une série dont le comportement reste stable, et sait différencier une série qui dérive.', en: 'Kintana recognises a series whose behaviour stays stable, and knows how to difference a series that drifts.' }
+sources:
+  - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (stationnarité et différenciation)', url: 'https://otexts.com/fpp3/stationarity.html', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
+  - { titre: 'Python — module statistics', url: 'https://docs.python.org/3/library/statistics.html', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Une série monte régulièrement : `1, 2, 3, 4, 5, 6, 7, 8`. Sa moyenne est-elle la même au début et à la fin ?'
+    en: 'A series rises steadily: `1, 2, 3, 4, 5, 6, 7, 8`. Is its mean the same at the start and at the end?'
+    choix:
+      - { fr: 'Non : elle est plus grande à la fin', en: 'No: it is larger at the end', juste: true }
+      - { fr: 'Oui : c’est toujours la même série', en: 'Yes: it is always the same series' }
+      - { fr: 'On ne peut pas le savoir', en: 'We cannot know' }
+    indice: { fr: 'Compare la moyenne des quatre premières valeurs à celle des quatre dernières.', en: 'Compare the mean of the first four values with that of the last four.' }
+    explication: { fr: 'Les quatre premières ont pour moyenne $2{,}5$, les quatre dernières $6{,}5$ : la moyenne dérive.', en: 'The first four have mean $2.5$, the last four $6.5$: the mean drifts.' }
+  - id: c2
+    type: idee
+    fr: 'Une série est **stationnaire** si son comportement reste stable : moyenne, dispersion et mémoire ne changent pas avec le temps. Elle oscille autour d’un niveau fixe, sans dériver.'
+    en: 'A series is **stationary** if its behaviour stays stable: mean, spread and memory do not change over time. It oscillates around a fixed level, without drifting.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Série', en: 'Series' }, { fr: 'Moyenne début / fin', en: 'Mean start / end' }, { fr: 'Stationnaire ?', en: 'Stationary?' }]
+      cellules:
+        - ['`1,-1,2,-2,1,-1,2,-2`', '$0$ / $0$', { fr: 'oui (oscille autour de 0)', en: 'yes (oscillates around 0)', ton: ok }]
+        - ['`1,2,3,4,5,6,7,8`', '$2{,}5$ / $6{,}5$', { fr: 'non (tendance)', en: 'no (trend)', ton: bad }]
+      legende: { fr: 'On compare la moyenne de la première moitié à celle de la seconde.', en: 'We compare the mean of the first half with that of the second.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Comparer les deux moitiés', en: 'Comparing the two halves' }
+    lang: python
+    etapes:
+      - { code: 'serie = [1, 2, 3, 4, 5, 6, 7, 8]\nh = len(serie) // 2', fr: 'Une série qui monte ; `h` marque le milieu.', en: 'A rising series; `h` marks the middle.' }
+      - { code: 'm1 = sum(serie[:h]) / h\nm2 = sum(serie[h:]) / (len(serie) - h)', fr: 'Moyenne de la première moitié, puis de la seconde.', en: 'Mean of the first half, then of the second.' }
+      - { code: 'print(m1, m2)', fr: 'On affiche `2.5 6.5` : les deux moitiés n’ont pas la même moyenne, la série n’est pas stationnaire.', en: 'We display `2.5 6.5`: the two halves do not have the same mean, the series is not stationary.' }
+    verif: |-
+      serie = [1, 2, 3, 4, 5, 6, 7, 8]
+      h = len(serie) // 2
+      m1 = sum(serie[:h]) / h
+      m2 = sum(serie[h:]) / (len(serie) - h)
+      print(m1, m2)
+    sortie: '2.5 6.5'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `moyennes_moities(serie)`** : le couple `(m1, m2)` des moyennes de la première moitié (`len // 2` premières valeurs) et du reste.'
+    en: 'Your turn. **Write `moyennes_moities(serie)`**: the pair `(m1, m2)` of the means of the first half (the first `len // 2` values) and of the rest.'
+    depart: |
+      # écris ta fonction moyennes_moities ici
+    tests: |
+      assert moyennes_moities([1, 2, 3, 4, 5, 6, 7, 8]) == (2.5, 6.5)
+      assert moyennes_moities([1, -1, 2, -2, 1, -1, 2, -2]) == (0.0, 0.0)
+      assert moyennes_moities([3, 3, 9, 9]) == (3.0, 9.0)
+    solutionCode: |
+      def moyennes_moities(serie):
+          h = len(serie) // 2
+          return (sum(serie[:h]) / h, sum(serie[h:]) / (len(serie) - h))
+    indice: { fr: 'Coupe la liste en `serie[:h]` et `serie[h:]`, puis moyenne chaque tranche.', en: 'Cut the list into `serie[:h]` and `serie[h:]`, then average each slice.' }
+    explication: { fr: 'Ce test grossier compare seulement la moyenne ; des tests formels existent (ADF, KPSS), cités en fin de niveau.', en: 'This crude test only compares the mean; formal tests exist (ADF, KPSS), cited at the end of the level.' }
+  - id: d_marche
+    type: idee
+    fr: 'La **marche aléatoire** ajoute à chaque pas un petit choc : $x_t=x_{t-1}+\varepsilon_t$. Elle n’a pas de niveau fixe : elle dérive et s’éloigne. C’est le modèle de base des prix.'
+    en: 'The **random walk** adds a small shock at each step: $x_t=x_{t-1}+\varepsilon_t$. It has no fixed level: it drifts and moves away. It is the basic model of prices.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Pas', en: 'Step' }, { fr: 'Choc $\varepsilon_t$', en: 'Shock $\varepsilon_t$' }, { fr: 'Position $x_t$', en: 'Position $x_t$' }]
+      cellules:
+        - ['$1$', '$+1$', '$1$']
+        - ['$2$', '$-1$', '$0$']
+        - ['$3$', '$+1$', '$1$']
+        - ['$4$', '$+1$', '$2$']
+        - ['$5$', '$+1$', { fr: '$3$', en: '$3$', ton: ok }]
+      legende: { fr: 'La position est la somme cumulée des chocs.', en: 'The position is the cumulative sum of the shocks.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `marche(chocs)`** : la liste des positions d’une marche partant de 0, c’est-à-dire les sommes cumulées des chocs.'
+    en: '**Write `marche(chocs)`**: the list of positions of a walk starting at 0, that is, the cumulative sums of the shocks.'
+    depart: |
+      # écris ta fonction marche ici
+    tests: |
+      assert marche([1, -1, 1, 1, 1]) == [1, 0, 1, 2, 3]
+      assert marche([2, 2, 2]) == [2, 4, 6]
+      assert marche([]) == []
+      assert marche([-3, 3]) == [-3, 0]
+    solutionCode: |
+      def marche(chocs):
+          positions = []
+          total = 0
+          for c in chocs:
+              total = total + c
+              positions.append(total)
+          return positions
+    indice: { fr: 'Un accumulateur (niveau 2.3) : ajoute chaque choc, puis range la position.', en: 'An accumulator (level 2.3): add each shock, then store the position.' }
+    explication: { fr: 'On retrouve le schéma accumulateur, avec une liste qui garde chaque étape.', en: 'We find the accumulator pattern, with a list keeping each step.' }
+  - id: d_diff
+    type: idee
+    fr: 'Remède : la **différenciation**. Les différences d’une marche aléatoire (niveau 10.1) redonnent exactement les chocs, qui eux sont stables. On étudie alors les différences, pas la série.'
+    en: 'Remedy: **differencing**. The differences of a random walk (level 10.1) give back exactly the shocks, which are stable. We then study the differences, not the series.'
+    exemple: { fr: 'Positions `1, 0, 1, 2, 3` : les différences sont `-1, 1, 1, 1`, soit les chocs de 2 à 5. Pour un prix, on étudie le rendement plutôt que le prix.', en: 'Positions `1, 0, 1, 2, 3`: the differences are `-1, 1, 1, 1`, i.e. the shocks from 2 to 5. For a price, we study the return rather than the price.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `est_stable(serie, tol)`** : renvoie `True` si l’écart entre les deux moyennes des moitiés est au plus `tol` fois l’écart-type de la série. `moyennes_moities` est déjà écrite.'
+    en: '**Write `est_stable(serie, tol)`**: return `True` if the gap between the two half means is at most `tol` times the standard deviation of the series. `moyennes_moities` is already written.'
+    depart: |
+      import math
+
+      def moyennes_moities(serie):
+          h = len(serie) // 2
+          return (sum(serie[:h]) / h, sum(serie[h:]) / (len(serie) - h))
+
+      # écris ta fonction est_stable ici
+    tests: |
+      assert est_stable([1, -1, 2, -2, 1, -1, 2, -2], 0.5) is True
+      assert est_stable([1, 2, 3, 4, 5, 6, 7, 8], 0.5) is False
+      assert est_stable([5, 5, 5, 5], 0.5) is True
+      assert est_stable([2, 4, 6, 8, 10, 12, 14, 16], 0.5) is False
+    solutionCode: |
+      import math
+
+      def moyennes_moities(serie):
+          h = len(serie) // 2
+          return (sum(serie[:h]) / h, sum(serie[h:]) / (len(serie) - h))
+
+      def est_stable(serie, tol):
+          m1, m2 = moyennes_moities(serie)
+          m = sum(serie) / len(serie)
+          sd = math.sqrt(sum((v - m) ** 2 for v in serie) / len(serie))
+          return abs(m1 - m2) <= tol * sd
+    indice: { fr: 'Calcule l’écart-type de toute la série (niveau 8.3), puis compare `abs(m1 - m2)` à `tol * sd`.', en: 'Compute the standard deviation of the whole series (level 8.3), then compare `abs(m1 - m2)` with `tol * sd`.' }
+    explication: { fr: 'Une série constante a un écart-type nul et deux moyennes égales : `0 <= 0` est vrai, elle est stable.', en: 'A constant series has a zero standard deviation and two equal means: `0 <= 0` is true, it is stable.' }
+  - id: d_p_visu
+    type: piege
+    fr: 'Une série qui **paraît** stable sur un petit échantillon peut dériver sur un long. Notre test des moitiés est un **réflexe**, pas une preuve : les tests formels (ADF, KPSS) existent pour cela.'
+    en: 'A series that **looks** stable on a small sample can drift over a long one. Our halves test is a **reflex**, not a proof: formal tests (ADF, KPSS) exist for that.'
+  - id: d_disp
+    type: idee
+    fr: 'La moyenne peut être stable alors que la **dispersion** change : calme, puis agitée. Une série peut donc être stable en moyenne sans l’être en variance. Tu étudieras cette agitation au niveau 10.5.'
+    en: 'The mean can be stable while the **spread** changes: calm, then agitated. A series can thus be stable in mean without being stable in variance. You will study this agitation in level 10.5.'
+    exemple: { fr: 'Rendements `0.01, -0.01, 0.01, -0.01, 0.08, -0.07, 0.09, -0.08` : moyenne proche de 0 partout, mais la dispersion devient huit fois plus grande à la fin.', en: 'Returns `0.01, -0.01, 0.01, -0.01, 0.08, -0.07, 0.09, -0.08`: mean close to 0 everywhere, but the spread becomes eight times larger at the end.' }
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Les positions d’une marche sont `0, 3, 5, 5, 9`. Combien vaut le **dernier choc** ?'
+    en: 'The positions of a walk are `0, 3, 5, 5, 9`. What is the **last shock**?'
+    reponses: ['4']
+    verif: 'print(9 - 5)'
+    indice: { fr: 'Le choc est la différence entre les deux dernières positions.', en: 'The shock is the difference between the last two positions.' }
+    explication: { fr: '$9-5=4$ : différencier redonne les chocs.', en: '$9-5=4$: differencing gives back the shocks.' }
+  - id: d_lien
+    type: idee
+    fr: 'Pourquoi tant tenir à la stationnarité ? Les outils des niveaux suivants (autocorrélation, modèle AR) supposent une série stable. Sur une série qui dérive, ils donnent des résultats trompeurs.'
+    en: 'Why care so much about stationarity? The tools of the next levels (autocorrelation, AR model) assume a stable series. On a drifting series, they give misleading results.'
+    exemple: { fr: 'Deux marches aléatoires indépendantes ont souvent l’air corrélées, simplement parce que toutes deux dérivent : c’est la fausse corrélation.', en: 'Two independent random walks often look correlated, simply because both drift: this is spurious correlation.' }
+  - id: c8
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `rendre_stable(serie, tol, nmax)`** : tant que la série n’est pas stable (`est_stable`) et que l’on a différencié moins de `nmax` fois, remplace-la par ses différences. Renvoie `(serie, nb_differenciations)`. `est_stable` et `differences` sont fournies.'
+    en: 'Challenge. **Write `rendre_stable(serie, tol, nmax)`**: while the series is not stable (`est_stable`) and has been differenced fewer than `nmax` times, replace it with its differences. Return `(series, number_of_differencings)`. `est_stable` and `differences` are provided.'
+    depart: |
+      import math
+
+      def differences(serie):
+          return [b - a for a, b in zip(serie, serie[1:])]
+
+      def est_stable(serie, tol):
+          h = len(serie) // 2
+          m1, m2 = sum(serie[:h]) / h, sum(serie[h:]) / (len(serie) - h)
+          m = sum(serie) / len(serie)
+          sd = math.sqrt(sum((v - m) ** 2 for v in serie) / len(serie))
+          return abs(m1 - m2) <= tol * sd
+
+      # écris ta fonction rendre_stable ici
+    tests: |
+      assert rendre_stable([2, 4, 6, 8, 10, 12, 14, 16], 0.5, 3) == ([2, 2, 2, 2, 2, 2, 2], 1)
+      assert rendre_stable([1, -1, 2, -2, 1, -1, 2, -2], 0.5, 3) == ([1, -1, 2, -2, 1, -1, 2, -2], 0)
+      s, n = rendre_stable([1, 2, 3, 4, 5, 6, 7, 8], 0.5, 0)
+      assert n == 0 and s == [1, 2, 3, 4, 5, 6, 7, 8]
+    solutionCode: |
+      import math
+
+      def differences(serie):
+          return [b - a for a, b in zip(serie, serie[1:])]
+
+      def est_stable(serie, tol):
+          h = len(serie) // 2
+          m1, m2 = sum(serie[:h]) / h, sum(serie[h:]) / (len(serie) - h)
+          m = sum(serie) / len(serie)
+          sd = math.sqrt(sum((v - m) ** 2 for v in serie) / len(serie))
+          return abs(m1 - m2) <= tol * sd
+
+      def rendre_stable(serie, tol, nmax):
+          n = 0
+          while n < nmax and not est_stable(serie, tol):
+              serie = differences(serie)
+              n = n + 1
+          return (serie, n)
+    indice: { fr: 'Une boucle `while` avec deux conditions (`n < nmax` et série instable) ; compte les différenciations.', en: 'A `while` loop with two conditions (`n < nmax` and unstable series); count the differencings.' }
+    explication: { fr: 'On limite `nmax` pour ne pas différencier sans fin : trop différencier introduit du bruit inutile.', en: 'We limit `nmax` so as not to difference endlessly: differencing too much adds useless noise.' }
+  - id: c9
+    type: retenir
+    fr: 'Stationnaire = moyenne, dispersion et mémoire stables. Une marche aléatoire dérive ; ses différences sont les chocs, stables. On compare les deux moitiés, puis on différencie ; ce n’est pas une preuve.'
+    en: 'Stationary = stable mean, spread and memory. A random walk drifts; its differences are the shocks, which are stable. We compare the two halves, then difference; it is not a proof.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [Forecasting: Principles and Practice — Stationnarité](https://otexts.com/fpp3/stationarity.html) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [Forecasting: Principles and Practice — Stationarity](https://otexts.com/fpp3/stationarity.html); this optional reading needs a connection.'

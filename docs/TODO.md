@@ -39,6 +39,7 @@
 | E28 | 2 nov. (revue pédagogique) | La même ligne « Kintana sait… » recopiée dans 13 niveaux | texte de module collé dans chaque niveau | une ligne par niveau | `invariants.test` | contenu |
 | E29 | 2 nov. (revue pédagogique) | 6 à 10 cartes d'explication d'affilée avant tout exercice (16 niveaux) | les cartes de profondeur (E17) ont été ajoutées avant les exercices | garde-fou avec liste d'attente ; tâche T-017 | `invariants.test` | contenu |
 | E30 | 2 nov. (revue pédagogique) | 288 cartes notées sans indice | `indice` facultatif | 288 indices écrits (T-016) ; garde-fou : toute carte notée a un indice, jamais la réponse | `invariants.test` | contenu |
+| E31 | 2 nov. (trouvée par Claude) | Le premier chargement (JS + CSS) pesait 373 Ko gzip pour un budget de 150 Ko | tout le contenu des cours était embarqué dans le paquet principal et grossissait à chaque niveau ; aucun contrôle de budget | contenu embarqué chargé à part ; `check-offline` échoue au-delà de 150 Ko ; mesure : 73 Ko | `invariants.test`, `check-offline` | technique |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | générateur porté dans `src/lib/city/` (fonction pure, chargée à la demande, 15,6 Ko gzip) ; un quartier par module, un bâtiment par niveau, allumé selon les étoiles ; fiche du niveau (Jouer/Rejouer) ; liste en choix mémorisé ; retour Android ferme la fiche ; vérifié à 375 px | `city.test` (épingles, états, échappement, déterminisme, temps), `invariants` E9 | 0.3.6 |
 
 ## 1. Application et site

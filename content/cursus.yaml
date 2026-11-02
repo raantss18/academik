@@ -100,3 +100,12 @@ modules:
       - { id: "9.5", titre: { fr: "Régularisation et validation croisée" } }
       - { id: "9.6", titre: { fr: "Arbres de décision" } }
       - { id: "9.boss", boss: true, titre: { fr: "Classer une demande" } }
+  - id: 10
+    titre: { fr: "Séries temporelles", en: "Time series" }
+    niveaux:
+      - { id: "10.1", titre: { fr: "Lire une série" } }
+      - { id: "10.2", titre: { fr: "Stationnarité" } }
+      - { id: "10.3", titre: { fr: "Autocorrélation" } }
+      - { id: "10.4", titre: { fr: "Prévoir : le modèle AR(1)" } }
+      - { id: "10.5", titre: { fr: "Volatilité" } }
+      - { id: "10.boss", boss: true, titre: { fr: "Prévoir sans tricher" } }

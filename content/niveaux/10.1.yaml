@@ -1,0 +1,176 @@
+# Niveau 10.1 — Séries temporelles 1 : lire une série. Original academik ; notions vérifiées dans Hyndman et Athanasopoulos, Forecasting: Principles and Practice (lien, texte non repris) et la documentation officielle Python.
+id: '10.1'
+module: 10
+duree_min: 19
+titre: { fr: 'Lire une série', en: 'Reading a series' }
+ia: { fr: 'Kintana lisse une série de valeurs dans le temps et la transforme pour la rendre plus facile à étudier.', en: 'Kintana smooths a series of values over time and transforms it to make it easier to study.' }
+sources:
+  - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (chap. 2-3)', url: 'https://otexts.com/fpp3/', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
+  - { titre: 'Python — tranches de listes et compréhensions', url: 'https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Une série vaut `2, 4, 6, 8`. On calcule la moyenne de chaque groupe de **2 valeurs voisines**. Combien de moyennes obtient-on ?'
+    en: 'A series is `2, 4, 6, 8`. We compute the mean of each group of **2 neighbouring values**. How many means do we get?'
+    choix:
+      - { fr: '3', en: '3', juste: true }
+      - { fr: '4', en: '4' }
+      - { fr: '2', en: '2' }
+    indice: { fr: 'Compte les paires de voisins : la première est (2, 4).', en: 'Count the neighbouring pairs: the first is (2, 4).' }
+    explication: { fr: 'Les paires sont (2,4), (4,6), (6,8) : trois moyennes, un de moins que la série.', en: 'The pairs are (2,4), (4,6), (6,8): three means, one fewer than the series.' }
+  - id: c2
+    type: idee
+    fr: 'Une **série temporelle** est une suite de valeurs **ordonnées dans le temps** : prix par jour, température par heure. L’ordre est une information. On y cherche une **tendance**, une **saisonnalité** et du **bruit**.'
+    en: 'A **time series** is a sequence of values **ordered in time**: price per day, temperature per hour. The order is information. We look for a **trend**, a **seasonality** and **noise**.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Composante', en: 'Component' }, { fr: 'Ce que c’est', en: 'What it is' }, { fr: 'Exemple', en: 'Example' }]
+      cellules:
+        - [{ fr: 'tendance', en: 'trend' }, { fr: 'montée ou baisse lente', en: 'slow rise or fall' }, { fr: 'ventes qui croissent chaque année', en: 'sales growing every year' }]
+        - [{ fr: 'saisonnalité', en: 'seasonality' }, { fr: 'cycle qui se répète', en: 'repeating cycle' }, { fr: 'pic chaque week-end', en: 'a peak every weekend' }]
+        - [{ fr: 'bruit', en: 'noise' }, { fr: 'écarts imprévisibles', en: 'unpredictable gaps' }, { fr: 'petites variations au hasard', en: 'small random variations' }]
+      legende: { fr: 'Une série réelle mélange souvent les trois.', en: 'A real series often mixes all three.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Lisser avec une moyenne mobile', en: 'Smoothing with a moving average' }
+    lang: python
+    etapes:
+      - { code: 'serie = [10, 12, 11, 13, 15, 14]', fr: 'Six valeurs successives, avec un peu de bruit.', en: 'Six successive values, with a little noise.' }
+      - { code: 'k = 3', fr: 'On moyenne des **fenêtres** de 3 valeurs voisines.', en: 'We average **windows** of 3 neighbouring values.' }
+      - { code: 'lisse = [sum(serie[i:i + k]) / k for i in range(len(serie) - k + 1)]', fr: '`serie[i:i + k]` prend la fenêtre qui commence en `i`. On la moyenne, pour chaque position possible.', en: '`serie[i:i + k]` takes the window starting at `i`. We average it, for each possible position.' }
+      - { code: 'print(lisse)', fr: 'On affiche `[11.0, 12.0, 13.0, 14.0]` : le bruit est atténué, la tendance à la hausse apparaît.', en: 'We display `[11.0, 12.0, 13.0, 14.0]`: the noise is softened, the upward trend appears.' }
+    verif: |-
+      serie = [10, 12, 11, 13, 15, 14]
+      k = 3
+      lisse = [sum(serie[i:i + k]) / k for i in range(len(serie) - k + 1)]
+      print(lisse)
+    sortie: '[11.0, 12.0, 13.0, 14.0]'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `moyenne_mobile(serie, k)`** : la liste des moyennes de toutes les fenêtres de `k` valeurs consécutives.'
+    en: 'Your turn. **Write `moyenne_mobile(serie, k)`**: the list of the means of all windows of `k` consecutive values.'
+    depart: |
+      # écris ta fonction moyenne_mobile ici
+    tests: |
+      assert moyenne_mobile([10, 12, 11, 13, 15, 14], 3) == [11.0, 12.0, 13.0, 14.0]
+      assert moyenne_mobile([2, 4, 6, 8], 2) == [3.0, 5.0, 7.0]
+      assert moyenne_mobile([5], 1) == [5.0]
+      assert moyenne_mobile([1, 2], 3) == []
+    solutionCode: |
+      def moyenne_mobile(serie, k):
+          return [sum(serie[i:i + k]) / k for i in range(len(serie) - k + 1)]
+    indice: { fr: 'Pour chaque début `i` possible (de 0 à `len(serie) - k`), moyenne la tranche `serie[i:i + k]`.', en: 'For each possible start `i` (from 0 to `len(serie) - k`), average the slice `serie[i:i + k]`.' }
+    explication: { fr: 'Si `k` dépasse la longueur, `range` est vide : on renvoie une liste vide, sans erreur.', en: 'If `k` exceeds the length, `range` is empty: we return an empty list, without error.' }
+  - id: d_k
+    type: idee
+    fr: 'La taille de fenêtre $k$ est un compromis. Petite : la courbe suit encore le bruit. Grande : la courbe est très lisse mais **en retard** sur les vrais changements. Une moyenne mobile ne **prévoit** rien : elle décrit le passé.'
+    en: 'The window size $k$ is a compromise. Small: the curve still follows the noise. Large: the curve is very smooth but **lags behind** real changes. A moving average does not **forecast** anything: it describes the past.'
+    figure:
+      kind: tableau
+      entetes: ['$k$', { fr: 'Effet', en: 'Effect' }, { fr: 'Risque', en: 'Risk' }]
+      cellules:
+        - ['$k=1$', { fr: 'aucun lissage', en: 'no smoothing' }, { fr: 'bruit intact', en: 'noise untouched', ton: bad }]
+        - ['$k=3$', { fr: 'lissage léger', en: 'light smoothing' }, { fr: 'peu de retard', en: 'little lag', ton: ok }]
+        - ['$k=n$', { fr: 'une seule valeur : la moyenne', en: 'a single value: the mean' }, { fr: 'tendance perdue', en: 'trend lost', ton: bad }]
+      legende: { fr: 'Comme le $k$ des voisins (niveau 9.2) : trop petit ou trop grand ne convient pas.', en: 'Like the $k$ of neighbours (level 9.2): too small or too large does not suit.' }
+  - id: d_diff
+    type: idee
+    fr: 'La **différence** $x_t-x_{t-1}$ mesure le changement d’un pas à l’autre. Elle retire une tendance régulière : une série qui monte de 2 à chaque pas devient une série constante égale à 2.'
+    en: 'The **difference** $x_t-x_{t-1}$ measures the change from one step to the next. It removes a steady trend: a series rising by 2 at each step becomes a constant series equal to 2.'
+    exemple: { fr: 'Série `3, 5, 7, 9` : les différences sont `2, 2, 2`. La tendance a disparu ; il reste un niveau constant.', en: 'Series `3, 5, 7, 9`: the differences are `2, 2, 2`. The trend has disappeared; a constant level remains.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `differences(serie)`** : la liste des $x_t-x_{t-1}$ pour $t$ de 1 à la fin.'
+    en: '**Write `differences(serie)`**: the list of $x_t-x_{t-1}$ for $t$ from 1 to the end.'
+    depart: |
+      # écris ta fonction differences ici
+    tests: |
+      assert differences([3, 5, 7, 9]) == [2, 2, 2]
+      assert differences([10, 7, 7, 12]) == [-3, 0, 5]
+      assert differences([4]) == []
+      assert differences([]) == []
+    solutionCode: |
+      def differences(serie):
+          return [b - a for a, b in zip(serie, serie[1:])]
+    indice: { fr: '`zip(serie, serie[1:])` donne chaque couple (précédent, suivant).', en: '`zip(serie, serie[1:])` gives each (previous, next) pair.' }
+    explication: { fr: 'Une série de $n$ valeurs donne $n-1$ différences : on perd la première valeur.', en: 'A series of $n$ values gives $n-1$ differences: we lose the first value.' }
+  - id: d_rend
+    type: idee
+    fr: 'Pour des prix, on préfère le **rendement** $r_t=\dfrac{x_t-x_{t-1}}{x_{t-1}}$ : le changement **en proportion**. Passer de $100$ à $102$ et de $1000$ à $1020$ donne le même rendement, $2\,\%$.'
+    en: 'For prices, we prefer the **return** $r_t=\dfrac{x_t-x_{t-1}}{x_{t-1}}$: the change **in proportion**. Going from $100$ to $102$ and from $1000$ to $1020$ gives the same return, $2\,\%$.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Prix', en: 'Price' }, { fr: 'Différence', en: 'Difference' }, { fr: 'Rendement', en: 'Return' }]
+      cellules:
+        - ['`100 → 102`', '$2$', '$0{,}02$']
+        - ['`1000 → 1020`', '$20$', { fr: '$0{,}02$ (même rendement)', en: '$0.02$ (same return)', ton: ok }]
+        - ['`102 → 99`', '$-3$', '$-0{,}029$']
+      legende: { fr: 'La différence dépend de l’échelle des prix ; le rendement non.', en: 'The difference depends on the price scale; the return does not.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `rendements(prix)`** : la liste des rendements $(x_t-x_{t-1})/x_{t-1}$. Les prix sont strictement positifs.'
+    en: '**Write `rendements(prix)`**: the list of returns $(x_t-x_{t-1})/x_{t-1}$. Prices are strictly positive.'
+    depart: |
+      # écris ta fonction rendements ici
+    tests: |
+      r = rendements([100, 102, 99])
+      assert abs(r[0] - 0.02) < 1e-12 and abs(r[1] - (-3 / 102)) < 1e-12
+      assert rendements([5, 5]) == [0.0]
+      assert rendements([100]) == []
+      assert abs(rendements([1000, 1020])[0] - 0.02) < 1e-12
+    solutionCode: |
+      def rendements(prix):
+          return [(b - a) / a for a, b in zip(prix, prix[1:])]
+    indice: { fr: 'Même schéma que `differences`, avec une division par le prix précédent.', en: 'Same pattern as `differences`, with a division by the previous price.' }
+    explication: { fr: 'Un prix nul rendrait la division impossible : c’est pourquoi on suppose des prix strictement positifs.', en: 'A zero price would make the division impossible: that is why we assume strictly positive prices.' }
+  - id: d_p_ordre
+    type: piege
+    fr: '**Ne mélange jamais** une série temporelle avant de la découper (niveau 8.5). Mettre des valeurs du futur dans l’entraînement est une fuite : on prédit le passé avec l’avenir.'
+    en: '**Never shuffle** a time series before splitting it (level 8.5). Putting future values in training is a leak: we predict the past with the future.'
+  - id: c7
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le prix passe de `80` à `88`. Quel est le rendement, en nombre décimal ?'
+    en: 'The price goes from `80` to `88`. What is the return, as a decimal number?'
+    reponses: ['0.1', '0,1']
+    verif: 'print((88 - 80) / 80)'
+    indice: { fr: 'Calcule la différence, puis divise par le prix de départ.', en: 'Compute the difference, then divide by the starting price.' }
+    explication: { fr: '$(88-80)/80=0{,}1$, soit $10\,\%$.', en: '$(88-80)/80=0.1$, i.e. $10\,\%$.' }
+  - id: d_lien
+    type: idee
+    fr: 'Ces trois outils (moyenne mobile, différence, rendement) préparent la suite. Tu verras au niveau 10.2 comment savoir si une série est stable, puis au niveau 10.4 comment la **prévoir** à court terme.'
+    en: 'These three tools (moving average, difference, return) prepare what follows. You will see in level 10.2 how to tell whether a series is stable, then in level 10.4 how to **forecast** it in the short term.'
+    exemple: { fr: 'Un analyste commence presque toujours par tracer la série, la lisser, puis regarder les différences ou les rendements.', en: 'An analyst almost always starts by plotting the series, smoothing it, then looking at differences or returns.' }
+  - id: c8
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `moyenne_par_phase(serie, periode)`** : pour un cycle de longueur `periode`, la liste des moyennes des valeurs situées à la même position du cycle. Phase 0 : indices `0, periode, 2*periode…` ; phase 1 : `1, periode+1…`.'
+    en: 'Challenge. **Write `moyenne_par_phase(serie, periode)`**: for a cycle of length `periode`, the list of the means of the values at the same position of the cycle. Phase 0: indices `0, periode, 2*periode…`; phase 1: `1, periode+1…`.'
+    depart: |
+      # écris ta fonction moyenne_par_phase ici
+    tests: |
+      assert moyenne_par_phase([1, 5, 1, 5, 1, 5], 2) == [1.0, 5.0]
+      assert moyenne_par_phase([1, 2, 3, 3, 4, 5], 3) == [2.0, 3.0, 4.0]
+      assert moyenne_par_phase([7, 7, 7, 7], 4) == [7.0, 7.0, 7.0, 7.0]
+    solutionCode: |
+      def moyenne_par_phase(serie, periode):
+          resultat = []
+          for phase in range(periode):
+              valeurs = serie[phase::periode]
+              resultat.append(sum(valeurs) / len(valeurs))
+          return resultat
+    indice: { fr: '`serie[phase::periode]` prend une valeur sur `periode`, en partant de `phase`.', en: '`serie[phase::periode]` takes one value out of `periode`, starting at `phase`.' }
+    explication: { fr: 'On voit la saisonnalité en comparant les moyennes de chaque phase : `1.0` et `5.0` révèlent un cycle.', en: 'Seasonality shows by comparing the means of each phase: `1.0` and `5.0` reveal a cycle.' }
+  - id: c9
+    type: retenir
+    fr: 'Une série a une tendance, une saisonnalité et du bruit ; l’ordre compte. Moyenne mobile : lisser. Différence : retirer la tendance. Rendement : changement en proportion. Ne jamais mélanger.'
+    en: 'A series has a trend, a seasonality and noise; order matters. Moving average: smooth. Difference: remove the trend. Return: change in proportion. Never shuffle.'
+  - id: d_plus
+    type: plus
+    fr: 'Pour approfondir, consulte [Forecasting: Principles and Practice](https://otexts.com/fpp3/) ; cette lecture complémentaire demande une connexion.'
+    en: 'For further study, see [Forecasting: Principles and Practice](https://otexts.com/fpp3/); this optional reading needs a connection.'
