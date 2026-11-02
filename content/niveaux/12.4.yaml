@@ -1,0 +1,273 @@
+# Niveau 12.4 — Transformers 4 : positions et masque causal. Original academik ; notions vérifiées dans Vaswani et al. 2017 (arXiv 1706.03762) et la série « Zero to Hero » d’A. Karpathy (citée).
+id: '12.4'
+module: 12
+duree_min: 16
+titre:
+  fr: Masque et positions
+  en: Mask and positions
+ia:
+  fr: Kintana sait où se trouve chaque mot et s’interdit de lire la suite du texte.
+  en: Kintana knows where each word sits and forbids herself from reading what comes next.
+sources:
+- titre: Vaswani et al. — Attention Is All You Need (sections 3.2.3 et 3.5)
+  url: https://arxiv.org/abs/1706.03762
+  licence: Article en accès libre ; idées citées
+- titre: 'A. Karpathy — Let’s build GPT: from scratch'
+  url: https://karpathy.ai/zero-to-hero.html
+  licence: Cours en ligne ; contenu cité, code non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: On mélange au hasard l’ordre des mots de « le chat mange la souris ». L’attention du niveau 12.3, seule, verrait-elle une différence ?
+  en: We shuffle the word order of “the cat eats the mouse”. Would the attention of level 12.3, alone, see a difference?
+  choix:
+  - fr: 'Non : elle traite les tokens comme un sac, sans notion d’ordre'
+    en: 'No: it treats tokens as a bag, with no notion of order'
+    juste: true
+  - fr: 'Oui : elle lit toujours de gauche à droite'
+    en: 'Yes: it always reads left to right'
+  - fr: 'Oui : l’ordre est dans les clés'
+    en: 'Yes: the order is in the keys'
+  indice:
+    fr: L’attention compare des vecteurs deux à deux. Y a-t-il une position dans ces vecteurs ?
+    en: Attention compares vectors two by two. Is there a position in these vectors?
+  explication:
+    fr: Sans information de position, « le chat mange la souris » et « la souris mange le chat » seraient confondus. Il faut **ajouter la position**.
+    en: Without position information, “the cat eats the mouse” and “the mouse eats the cat” would be confused. We must **add the position**.
+- id: c2
+  type: idee
+  fr: 'Pour donner l’ordre au modèle, on ajoute à chaque plongement un **vecteur de position**. Dans la version d’origine, il est fait de sinus et de cosinus de différentes fréquences : $\sin(\text{pos}/10000^{2i/d})$ puis $\cos(\ldots)$.'
+  en: 'To give the model the order, we add a **position vector** to each embedding. In the original version, it is made of sines and cosines of different frequencies: $\sin(\text{pos}/10000^{2i/d})$ then $\cos(\ldots)$.'
+  exemple:
+    fr: 'Pour $d=4$ et pos $=0$ : $(\sin 0,\cos 0,\sin 0,\cos 0)=(0,1,0,1)$. Chaque position a une « signature » différente.'
+    en: 'For $d=4$ and pos $=0$: $(\sin 0,\cos 0,\sin 0,\cos 0)=(0,1,0,1)$. Each position has a different “signature”.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Position et sens
+        en: Position and meaning
+      noeuds:
+      - fr: plongement du token
+        en: token embedding
+      - fr: + vecteur de position
+        en: + position vector
+      - fr: entrée du transformer
+        en: transformer input
+        ton: ok
+    legende:
+      fr: 'On additionne : le sens et la place voyagent dans le même vecteur.'
+      en: 'We add: meaning and place travel in the same vector.'
+- id: d_sin
+  type: idee
+  fr: Pourquoi des sinus ? Chaque position obtient une signature unique, et la différence entre deux positions se lit facilement. Aucun paramètre à apprendre, et cela marche aussi pour des textes plus longs que ceux de l’entraînement.
+  en: Why sines? Each position gets a unique signature, and the difference between two positions is easy to read. No parameter to learn, and it works for texts longer than those seen in training.
+  exemple:
+    fr: 'Les modèles récents préfèrent souvent des positions apprises ou rotatives, mais l’idée reste la même : injecter l’ordre.'
+    en: 'Recent models often prefer learned or rotary positions, but the idea stays the same: inject the order.'
+- id: c2b
+  type: exemple
+  titre:
+    fr: Une position en Python
+    en: One position in Python
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      pos, d = 1, 2
+    fr: On prend la position `1` et des vecteurs de taille `2`.
+    en: We take position `1` and vectors of size `2`.
+  - code: |-
+      angle = pos / 10000 ** (0 / d)
+      v = [math.sin(angle), math.cos(angle)]
+    fr: Pour `i = 0`, l’angle vaut `1` radian.
+    en: For `i = 0`, the angle is `1` radian.
+  - code: print([round(x, 3) for x in v])
+    fr: On affiche `[0.841, 0.54]`.
+    en: We display `[0.841, 0.54]`.
+  verif: |-
+    import math
+    pos, d = 1, 2
+    angle = pos / 10000 ** (0 / d)
+    v = [math.sin(angle), math.cos(angle)]
+    print([round(x, 3) for x in v])
+  sortie: '[0.841, 0.54]'
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `position(pos, d)`** (d pair) : une liste de `d` nombres. Pour chaque `i` de `0` à `d // 2 - 1`, calcule `angle = pos / 10000 ** (2 * i / d)`, puis ajoute `sin(angle)` puis `cos(angle)`.'
+  en: 'Your turn. **Write `position(pos, d)`** (d even): a list of `d` numbers. For each `i` from `0` to `d // 2 - 1`, compute `angle = pos / 10000 ** (2 * i / d)`, then append `sin(angle)` then `cos(angle)`.'
+  depart: |
+    import math
+
+    # écris ta fonction position ici
+  tests: |-
+    assert position(0, 4) == [0.0, 1.0, 0.0, 1.0]
+    v = position(1, 4)
+    assert len(v) == 4 and abs(v[0] - 0.84147098) < 1e-6 and abs(v[1] - 0.54030231) < 1e-6
+    assert abs(v[2] - math.sin(0.01)) < 1e-9
+    assert position(5, 2) == [math.sin(5.0), math.cos(5.0)]
+  solutionCode: |
+    import math
+
+    def position(pos, d):
+        v = []
+        for i in range(d // 2):
+            angle = pos / (10000 ** (2 * i / d))
+            v.append(math.sin(angle))
+            v.append(math.cos(angle))
+        return v
+  indice:
+    fr: Boucle sur `i`, calcule l’angle avec la formule donnée, et `v.append(math.sin(angle))` puis `v.append(math.cos(angle))`.
+    en: Loop over `i`, compute the angle with the given formula, and `v.append(math.sin(angle))` then `v.append(math.cos(angle))`.
+  explication:
+    fr: 'Les premières paires oscillent vite, les suivantes lentement : comme les aiguilles d’une horloge, elles encodent la place.'
+    en: 'The first pairs oscillate fast, the next ones slowly: like the hands of a clock, they encode the place.'
+- id: c4
+  type: idee
+  fr: 'Un modèle qui **génère** du texte ne doit jamais voir le futur : en prédisant le mot $n$, il n’a droit qu’aux mots $1$ à $n-1$. Sinon il tricherait à l’entraînement en recopiant la réponse.'
+  en: 'A model that **generates** text must never see the future: when predicting word $n$, it may only use words $1$ to $n-1$. Otherwise it would cheat in training by copying the answer.'
+  exemple:
+    fr: Pour prédire le mot qui suit « le chat », le modèle ne doit pas regarder « dort » qui vient après.
+    en: To predict the word after “the cat”, the model must not look at “sleeps”, which comes after.
+- id: c5
+  type: idee
+  fr: Le **masque causal** impose cette règle. Avant le softmax, on remplace par $-\infty$ les scores où le token $j$ est **après** le token $i$ ($j>i$). Comme $e^{-\infty}=0$, ces positions pèsent zéro.
+  en: The **causal mask** enforces this rule. Before the softmax, we replace by $-\infty$ the scores where token $j$ comes **after** token $i$ ($j>i$). As $e^{-\infty}=0$, these positions weigh zero.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Token
+      en: Token
+    - fr: Tokens visibles
+      en: Visible tokens
+    cellules:
+    - - $i=0$
+      - fr: $0$ seulement
+        en: $0$ only
+        ton: ok
+    - - $i=1$
+      - fr: $0$ et $1$
+        en: $0$ and $1$
+        ton: ok
+    - - $i=2$
+      - fr: $0$, $1$ et $2$
+        en: $0$, $1$ and $2$
+        ton: ok
+    legende:
+      fr: 'Le masque est un triangle : chaque ligne voit son passé et elle-même.'
+      en: 'The mask is a triangle: each row sees its past and itself.'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `masquer(S)`** : `S` est une matrice carrée de scores (liste de listes). Renvoie une copie où `S[i][j]` est remplacé par `float("-inf")` quand `j > i`.'
+  en: '**Write `masquer(S)`**: `S` is a square matrix of scores (list of lists). Return a copy where `S[i][j]` is replaced by `float("-inf")` when `j > i`.'
+  depart: |
+    # écris ta fonction masquer ici
+  tests: |-
+    M = masquer([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+    assert M[0] == [1, float("-inf"), float("-inf")]
+    assert M[1] == [4, 5, float("-inf")]
+    assert M[2] == [7, 8, 9]
+    assert masquer([]) == []
+  solutionCode: |
+    def masquer(S):
+        n = len(S)
+        return [[S[i][j] if j <= i else float("-inf") for j in range(n)] for i in range(n)]
+  indice:
+    fr: 'Compréhension imbriquée : pour chaque ligne `i` et colonne `j`, garde `S[i][j]` si `j <= i`, sinon `float("-inf")`.'
+    en: 'Nested comprehension: for each row `i` and column `j`, keep `S[i][j]` if `j <= i`, otherwise `float("-inf")`.'
+  explication:
+    fr: Le dessus de la diagonale devient `-inf` ; la diagonale et le dessous sont inchangés.
+    en: The part above the diagonal becomes `-inf`; the diagonal and below are unchanged.
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Pour une phrase de 4 tokens, combien de scores restent **visibles** (non masqués) dans la matrice de 4 × 4 ?
+  en: For a sentence of 4 tokens, how many scores remain **visible** (unmasked) in the 4 × 4 matrix?
+  reponses:
+  - '10'
+  verif: print(sum(i + 1 for i in range(4)))
+  indice:
+    fr: La ligne 0 en garde 1, la ligne 1 en garde 2, et ainsi de suite.
+    en: Row 0 keeps 1, row 1 keeps 2, and so on.
+  explication:
+    fr: '$1+2+3+4=10$ : le triangle inférieur, diagonale comprise.'
+    en: '$1+2+3+4=10$: the lower triangle, diagonal included.'
+- id: c8
+  type: piege
+  fr: 'Masquer **après** le softmax est une erreur : les poids ne sommeraient plus à `1`, et le softmax aurait déjà « vu » le futur. Le masque se met sur les **scores**, avant le softmax.'
+  en: 'Masking **after** the softmax is a mistake: the weights would no longer sum to `1`, and the softmax would already have “seen” the future. The mask goes on the **scores**, before the softmax.'
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `poids_causaux(S)`** : applique `masquer` à `S`, puis `softmax` à chaque ligne. Renvoie la matrice des poids. `softmax` et `masquer` sont fournies.'
+  en: 'Challenge. **Write `poids_causaux(S)`**: apply `masquer` to `S`, then `softmax` to each row. Return the matrix of weights. `softmax` and `masquer` are provided.'
+  depart: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def masquer(S):
+        n = len(S)
+        return [[S[i][j] if j <= i else float("-inf") for j in range(n)] for i in range(n)]
+
+    # écris ta fonction poids_causaux ici
+  tests: |-
+    W = poids_causaux([[1, 5, 9], [1, 1, 9], [0, 0, 0]])
+    assert W[0] == [1.0, 0.0, 0.0]
+    assert abs(W[1][0] - 0.5) < 1e-12 and W[1][2] == 0.0
+    assert all(abs(sum(l) - 1) < 1e-12 for l in W)
+    assert all(abs(x - 1/3) < 1e-9 for x in W[2])
+  solutionCode: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def masquer(S):
+        n = len(S)
+        return [[S[i][j] if j <= i else float("-inf") for j in range(n)] for i in range(n)]
+
+    def poids_causaux(S):
+        return [softmax(ligne) for ligne in masquer(S)]
+  indice:
+    fr: 'Une seule ligne : `[softmax(ligne) for ligne in masquer(S)]`.'
+    en: 'A single line: `[softmax(ligne) for ligne in masquer(S)]`.'
+  explication:
+    fr: 'Remarque : la ligne 0 ne voit que lui-même, son poids vaut donc `1`. Le softmax gère les `-inf` car `math.exp(-inf)` vaut `0`.'
+    en: 'Note: row 0 sees only itself, so its weight is `1`. Softmax handles `-inf` because `math.exp(-inf)` is `0`.'
+- id: c10
+  type: idee
+  fr: 'Le masque rend l’entraînement très efficace : le modèle prédit **tous** les tokens suivants d’une phrase en une seule passe, chacun sans voir le futur. À l’usage, on génère un token à la fois et on le rajoute au contexte.'
+  en: 'The mask makes training very efficient: the model predicts **all** the next tokens of a sentence in one pass, each without seeing the future. In use, we generate one token at a time and add it to the context.'
+  exemple:
+    fr: Pour une phrase de 100 tokens, une seule passe fournit 100 exercices de prédiction à la fois.
+    en: For a sentence of 100 tokens, a single pass provides 100 prediction exercises at once.
+- id: c11
+  type: retenir
+  fr: 'L’attention ignore l’ordre : on ajoute un vecteur de position (sinus et cosinus). Le masque causal met $-\infty$ aux scores du futur, avant le softmax, pour qu’ils pèsent $0$.'
+  en: 'Attention ignores order: we add a position vector (sines and cosines). The causal mask puts $-\infty$ on future scores, before the softmax, so they weigh $0$.'
+- id: c12
+  type: plus
+  fr: Pour approfondir, consulte [Attention Is All You Need](https://arxiv.org/abs/1706.03762) ; cet article demande une connexion.
+  en: For further study, see [Attention Is All You Need](https://arxiv.org/abs/1706.03762); this paper needs a connection.

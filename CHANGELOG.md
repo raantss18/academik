@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.23] — 2026-11-02
+
+### Message fr
+Nouveau module « Transformers » : tu découpes du texte en tokens (BPE), tu écris le softmax, l'attention, le masque et le tirage avec température, puis tu assembles un mini-GPT qui génère du texte.
+
+### Message en
+New “Transformers” module: you split text into tokens (BPE), write the softmax, attention, mask and temperature sampling, then assemble a mini-GPT that generates text.
+
 ## [0.3.22] — 2026-11-02
 
 ### Message fr

@@ -1,0 +1,284 @@
+# Niveau 12.2 — Transformers 2 : softmax et plongements. Original academik ; notions vérifiées dans Vaswani et al. 2017 (arXiv 1706.03762) et la série « Zero to Hero » d’A. Karpathy (citée).
+id: '12.2'
+module: 12
+duree_min: 16
+titre:
+  fr: Softmax et plongements
+  en: Softmax and embeddings
+ia:
+  fr: Kintana transforme des scores en probabilités et des mots en vecteurs qu’elle sait comparer.
+  en: Kintana turns scores into probabilities and words into vectors she can compare.
+sources:
+- titre: 'A. Karpathy — Neural Networks: Zero to Hero'
+  url: https://karpathy.ai/zero-to-hero.html
+  licence: Cours en ligne ; contenu cité, code non repris
+- titre: Vaswani et al. — Attention Is All You Need (section 3.4, plongements et softmax)
+  url: https://arxiv.org/abs/1706.03762
+  licence: Article en accès libre ; idées citées
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Un réseau produit trois scores bruts : `2`, `1`, `0`. On veut les transformer en **probabilités** (positives, de somme `1`). Quelle idée marche ?'
+  en: 'A network outputs three raw scores: `2`, `1`, `0`. We want to turn them into **probabilities** (positive, summing to `1`). Which idea works?'
+  choix:
+  - fr: Prendre l’exponentielle de chaque score, puis diviser par la somme
+    en: Take the exponential of each score, then divide by the sum
+    juste: true
+  - fr: Diviser chaque score par le plus grand
+    en: Divide each score by the largest
+  - fr: Garder les scores tels quels
+    en: Keep the scores as they are
+  indice:
+    fr: Il faut des nombres positifs, et que la somme vaille `1`. Quelle fonction est toujours positive ?
+    en: We need positive numbers that sum to `1`. Which function is always positive?
+  explication:
+    fr: L’exponentielle est toujours positive ; diviser par la somme impose un total de `1`. C’est le **softmax**.
+    en: The exponential is always positive; dividing by the sum forces a total of `1`. This is the **softmax**.
+- id: c2
+  type: idee
+  fr: 'Le **softmax** transforme des scores $z_i$ en probabilités : $p_i=e^{z_i}/\sum_j e^{z_j}$. Le plus grand score reçoit la plus grande probabilité, mais les autres gardent une chance.'
+  en: 'The **softmax** turns scores $z_i$ into probabilities: $p_i=e^{z_i}/\sum_j e^{z_j}$. The largest score gets the largest probability, but the others keep a chance.'
+  exemple:
+    fr: 'Pour $z=(2,1,0)$ : $e^2\approx7{,}39$, $e^1\approx2{,}72$, $e^0=1$. La somme vaut $11{,}11$, donc $p\approx(0{,}665;\,0{,}245;\,0{,}090)$.'
+    en: 'For $z=(2,1,0)$: $e^2\approx7.39$, $e^1\approx2.72$, $e^0=1$. The sum is $11.11$, so $p\approx(0.665;\,0.245;\,0.090)$.'
+  figure:
+    kind: tableau
+    entetes:
+    - $z$
+    - $e^z$
+    - $p$
+    cellules:
+    - - $2$
+      - $7{,}39$
+      - fr: $0{,}665$
+        en: $0.665$
+        ton: ok
+    - - $1$
+      - $2{,}72$
+      - $0{,}245$
+    - - $0$
+      - $1$
+      - $0{,}090$
+    legende:
+      fr: Les trois probabilités somment à $1$.
+      en: The three probabilities sum to $1$.
+- id: c3
+  type: idee
+  fr: 'Piège numérique : $e^{1000}$ dépasse ce qu’un ordinateur sait écrire. Astuce : on **retire le plus grand score** avant l’exponentielle. Le résultat est le même, car le facteur retiré se simplifie en haut et en bas.'
+  en: 'Numerical trap: $e^{1000}$ exceeds what a computer can write. Trick: we **subtract the largest score** before the exponential. The result is the same, because the removed factor cancels top and bottom.'
+  exemple:
+    fr: 'Pour $z=(1000,999)$ : après retrait du maximum, on calcule $e^0=1$ et $e^{-1}\approx0{,}37$, sans débordement.'
+    en: 'For $z=(1000,999)$: after removing the maximum, we compute $e^0=1$ and $e^{-1}\approx0.37$, with no overflow.'
+- id: c3b
+  type: exemple
+  titre:
+    fr: Softmax pas à pas
+    en: Softmax step by step
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      z = [2, 1, 0]
+      e = [math.exp(v) for v in z]
+    fr: On prend l’exponentielle de chaque score.
+    en: We take the exponential of each score.
+  - code: |-
+      s = sum(e)
+      p = [v / s for v in e]
+    fr: On divise par la somme pour obtenir des probabilités.
+    en: We divide by the sum to get probabilities.
+  - code: print([round(v, 3) for v in p])
+    fr: On affiche `[0.665, 0.245, 0.09]`, de somme `1`.
+    en: We display `[0.665, 0.245, 0.09]`, summing to `1`.
+  verif: |-
+    import math
+    z = [2, 1, 0]
+    e = [math.exp(v) for v in z]
+    s = sum(e)
+    p = [v / s for v in e]
+    print([round(v, 3) for v in p])
+  sortie: '[0.665, 0.245, 0.09]'
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: À toi. **Écris `softmax(z)`** (liste de scores → liste de probabilités) en retirant d’abord `max(z)` pour rester stable. Utilise `math.exp`.
+  en: Your turn. **Write `softmax(z)`** (list of scores → list of probabilities) by first subtracting `max(z)` to stay stable. Use `math.exp`.
+  depart: |
+    import math
+
+    # écris ta fonction softmax ici
+  tests: |-
+    p = softmax([2, 1, 0])
+    assert abs(sum(p) - 1) < 1e-12 and abs(p[0] - 0.6652) < 1e-3
+    q = softmax([1000, 999])
+    assert abs(q[0] - 0.7311) < 1e-3
+    assert all(abs(a - 0.25) < 1e-12 for a in softmax([5, 5, 5, 5]))
+  solutionCode: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+  indice:
+    fr: Calcule `m = max(z)`, puis `e = [math.exp(v - m) for v in z]`, puis divise chaque terme par `sum(e)`.
+    en: Compute `m = max(z)`, then `e = [math.exp(v - m) for v in z]`, then divide each term by `sum(e)`.
+  explication:
+    fr: Sans le retrait du maximum, `softmax([1000, 999])` planterait avec un débordement.
+    en: Without subtracting the maximum, `softmax([1000, 999])` would crash with an overflow.
+- id: c5
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Que valent les probabilités du softmax pour deux scores égaux, `[3, 3]` ? Donne la première.
+  en: What are the softmax probabilities for two equal scores, `[3, 3]`? Give the first.
+  reponses:
+  - '0.5'
+  - 0,5
+  verif: |-
+    import math
+    z=[3,3]
+    e=[math.exp(v) for v in z]
+    print(round(e[0]/sum(e),1))
+  indice:
+    fr: Deux scores égaux reçoivent la même probabilité, et la somme vaut `1`.
+    en: Two equal scores get the same probability, and the sum is `1`.
+  explication:
+    fr: 'Par symétrie, chacun reçoit la moitié : `0.5`.'
+    en: 'By symmetry, each gets half: `0.5`.'
+- id: c6
+  type: idee
+  fr: Les mots aussi deviennent des nombres. Un **plongement** (embedding) associe à chaque token un petit vecteur, par exemple 3 nombres. Les vecteurs de mots proches par le sens se ressemblent. Ils sont **appris** avec le reste du réseau.
+  en: Words also become numbers. An **embedding** associates each token with a small vector, for example 3 numbers. Vectors of words close in meaning look alike. They are **learned** along with the rest of the network.
+  exemple:
+    fr: Avec `chat = [1, 0.9, 0]` et `chien = [0.9, 1, 0]`, ces deux animaux sont proches. `voiture = [0, 0, 1]` est loin.
+    en: With `cat = [1, 0.9, 0]` and `dog = [0.9, 1, 0]`, these two animals are close. `car = [0, 0, 1]` is far.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Du texte au vecteur
+        en: From text to vector
+      noeuds:
+      - fr: texte
+        en: text
+      - fr: tokens
+        en: tokens
+      - fr: numéros
+        en: numbers
+      - fr: vecteurs
+        en: vectors
+        ton: ok
+    legende:
+      fr: 'La table de plongements est une simple matrice : une ligne par token.'
+      en: 'The embedding table is a simple matrix: one row per token.'
+- id: c7
+  type: idee
+  fr: 'Pour mesurer la ressemblance de deux vecteurs, on utilise le **cosinus** : $\cos(u,v)=\dfrac{u\cdot v}{\|u\|\,\|v\|}$. Il vaut $1$ pour la même direction, $0$ pour des directions sans lien, $-1$ pour des directions opposées.'
+  en: 'To measure how alike two vectors are, we use the **cosine**: $\cos(u,v)=\dfrac{u\cdot v}{\|u\|\,\|v\|}$. It is $1$ for the same direction, $0$ for unrelated directions, $-1$ for opposite directions.'
+  exemple:
+    fr: 'Pour $u=(1,0)$ et $v=(1,1)$ : $u\cdot v=1$, $\|u\|=1$, $\|v\|=\sqrt2$, donc $\cos\approx0{,}707$ (angle de $45^\circ$).'
+    en: 'For $u=(1,0)$ and $v=(1,1)$: $u\cdot v=1$, $\|u\|=1$, $\|v\|=\sqrt2$, so $\cos\approx0.707$ ($45^\circ$ angle).'
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `cosinus(u, v)`** : le produit scalaire de `u` et `v` divisé par le produit de leurs normes (`math.sqrt`). On suppose qu’aucun des deux vecteurs n’est nul.'
+  en: '**Write `cosinus(u, v)`**: the dot product of `u` and `v` divided by the product of their norms (`math.sqrt`). Assume neither vector is zero.'
+  depart: |
+    import math
+
+    # écris ta fonction cosinus ici
+  tests: |-
+    assert abs(cosinus([1, 0], [1, 1]) - 0.7071) < 1e-3
+    assert abs(cosinus([2, 0], [5, 0]) - 1) < 1e-9
+    assert abs(cosinus([1, 0], [0, 3])) < 1e-9
+    assert abs(cosinus([1, 2], [-1, -2]) + 1) < 1e-9
+  solutionCode: |
+    import math
+
+    def cosinus(u, v):
+        num = sum(a * b for a, b in zip(u, v))
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        return num / (nu * nv)
+  indice:
+    fr: 'Trois sommes : `u·v`, puis `u·u` et `v·v` sous une racine carrée. Divise le premier par le produit des deux racines.'
+    en: 'Three sums: `u·v`, then `u·u` and `v·v` under a square root. Divide the first by the product of the two roots.'
+  explication:
+    fr: 'Le cosinus ignore la longueur des vecteurs : seule la direction compte.'
+    en: 'The cosine ignores the vectors’ length: only the direction matters.'
+- id: c9
+  type: piege
+  fr: 'Un plongement n’est pas un dictionnaire de sens écrit à la main. Avant l’entraînement, les vecteurs sont **aléatoires** : « chat » et « chien » ne se ressemblent pas du tout. La ressemblance apparaît quand le réseau apprend à prédire le texte.'
+  en: 'An embedding is not a hand-written dictionary of meanings. Before training, the vectors are **random**: “cat” and “dog” look nothing alike. The similarity appears as the network learns to predict text.'
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `plus_proche(requete, table)`** : parmi les mots de `table` (dictionnaire mot → vecteur), renvoie celui dont le cosinus avec `table[requete]` est le plus grand, en excluant `requete` lui-même. `cosinus` est fournie.'
+  en: 'Challenge. **Write `plus_proche(requete, table)`**: among the words of `table` (dictionary word → vector), return the one whose cosine with `table[requete]` is the largest, excluding `requete` itself. `cosinus` is provided.'
+  depart: |
+    import math
+
+    def cosinus(u, v):
+        num = sum(a * b for a, b in zip(u, v))
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        return num / (nu * nv)
+
+    # écris ta fonction plus_proche ici
+  tests: |-
+    t = {"chat": [1, 0.9, 0], "chien": [0.9, 1, 0], "voiture": [0, 0, 1]}
+    assert plus_proche("chat", t) == "chien"
+    assert plus_proche("voiture", t) in ("chat", "chien")
+    assert plus_proche("chien", t) == "chat"
+  solutionCode: |
+    import math
+
+    def cosinus(u, v):
+        num = sum(a * b for a, b in zip(u, v))
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        return num / (nu * nv)
+
+    def plus_proche(requete, table):
+        meilleur, m = None, -2.0
+        for mot, vec in table.items():
+            if mot == requete:
+                continue
+            c = cosinus(table[requete], vec)
+            if c > m:
+                meilleur, m = mot, c
+        return meilleur
+  indice:
+    fr: Parcours `table.items()`, saute `requete`, garde le mot de meilleur cosinus avec une variable `meilleur` mise à jour.
+    en: Walk through `table.items()`, skip `requete`, keep the word with the best cosine in a `meilleur` variable updated as you go.
+  explication:
+    fr: 'C’est exactement la recherche sémantique du module 14 : on compare des vecteurs, pas des mots.'
+    en: 'This is exactly the semantic search of module 14: we compare vectors, not words.'
+- id: c11
+  type: idee
+  fr: Le softmax et le cosinus reviendront dans le niveau 12.3. L’**attention** compare des vecteurs avec un produit scalaire, puis applique un softmax pour obtenir des poids.
+  en: Softmax and cosine will return in level 12.3. **Attention** compares vectors with a dot product, then applies a softmax to get weights.
+  exemple:
+    fr: Dans un modèle réel, la table de plongements a souvent 50 000 lignes (un token chacune) et plusieurs centaines de colonnes.
+    en: In a real model, the embedding table often has 50,000 rows (one token each) and several hundred columns.
+- id: c12
+  type: retenir
+  fr: 'Softmax : $p_i=e^{z_i}/\sum_j e^{z_j}$, en retirant d’abord le maximum. Plongement : un vecteur appris par token. Cosinus : $u\cdot v/(\|u\|\|v\|)$, la ressemblance de direction.'
+  en: 'Softmax: $p_i=e^{z_i}/\sum_j e^{z_j}$, subtracting the maximum first. Embedding: one learned vector per token. Cosine: $u\cdot v/(\|u\|\|v\|)$, the similarity of direction.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [Attention Is All You Need](https://arxiv.org/abs/1706.03762) ; cet article demande une connexion.
+  en: For further study, see [Attention Is All You Need](https://arxiv.org/abs/1706.03762); this paper needs a connection.
