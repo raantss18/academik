@@ -9,6 +9,7 @@ sources:
   - { titre: 'GNU grep manual', url: 'https://www.gnu.org/software/grep/manual/grep.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Un fichier caché commence par un point. Quelle option de `ls` dit « tous » ?', en: 'A hidden file starts with a dot. Which `ls` option says “all”?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Un fichier dont le nom commence par un point, comme `.cle`, n’apparaît pas avec un simple `ls`. Quelle option le montre ?'
@@ -122,6 +123,7 @@ cartes:
     fr: 'Cacher un fichier **ne le protège pas** : n’importe qui tape `ls -a`. Seuls les droits (`chmod`) et le fait de ne pas le publier protègent vraiment un secret.'
     en: 'Hiding a file **does not protect it**: anyone types `ls -a`. Only permissions (`chmod`) and not publishing it really protect a secret.'
   - id: c6
+    indice: { fr: 'Trier avant `uniq`, puis compter : lis chaque commande de gauche à droite.', en: 'Sort before `uniq`, then count: read each command from left to right.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Quelle commande **compte les visiteurs distincts** d’un fichier `acces.log` ?'

@@ -1,12 +1,13 @@
 id: '3.3'
 module: 3
-duree_min: 10
+duree_min: 11
 titre: { fr: 'Dichotomie', en: 'Binary search' }
 ia: { fr: 'Kintana retrouve un identifiant dans une liste triée sans tout parcourir.', en: 'Kintana finds an ID in a sorted list without scanning every item.' }
 sources:
   - { titre: 'Python — bisect', url: 'https://docs.python.org/3/library/bisect.html', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
 cartes:
   - id: c1
+    indice: { fr: 'La liste est triée : si la cible est plus grande que le milieu, que penser des valeurs à gauche ?', en: 'The list is sorted: if the target is greater than the middle, what about the values on the left?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Dans `[2, 5, 8, 11, 14]`, tu compares la cible $11$ à la valeur centrale $8$. Où peux-tu continuer ?'
@@ -81,6 +82,17 @@ cartes:
       assert a[1:4]==[6,9,12]
       print(a[(1+4)//2])
     sortie: "9"
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Environ combien de comparaisons au plus pour chercher dans une liste triée de 1000 éléments par dichotomie ?'
+    en: 'About how many comparisons at most to search a sorted list of 1000 elements by binary search?'
+    choix:
+      - { fr: '10', en: '10', juste: true }
+      - { fr: '500', en: '500' }
+      - { fr: '1000', en: '1000' }
+    explication: { fr: 'Chaque comparaison divise la liste par deux : $\log_2 1000\approx10$.', en: 'Each comparison halves the list: $\log_2 1000\approx10$.' }
+    indice: { fr: 'Combien de fois peut-on couper 1000 en deux jusqu’à 1 ?', en: 'How many times can you cut 1000 in half down to 1?' }
   - id: c2a
     type: idee
     fr: Pour chercher la première place possible de `x`, calcule `mid = (lo + hi) // 2`. Si `a[mid] <
@@ -102,6 +114,7 @@ cartes:
         en: 'The windows become $[0,2)$ then $[2,2)$; no list slice is copied.'
       - { code: 'print(lo)', fr: 'La position obtenue est $2$, comme avec `bisect_left(a, x)`.', en: 'The resulting position is $2$, as with `bisect_left(a, x)`.' }
   - id: c4
+    indice: { fr: 'Additionne `lo` et `hi`, puis fais une division entière par 2.', en: 'Add `lo` and `hi`, then do an integer division by 2.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour la fenêtre $[2,9)$, calcule `mid = (lo + hi) // 2`.'
@@ -162,6 +175,7 @@ cartes:
     en: "Equality does not end a search for the first occurrence: keep the upper bound at the midpoint
       to explore earlier equal values."
   - id: c5
+    indice: { fr: 'Cherche la première place où 6 peut s’insérer en gardant la liste triée.', en: 'Look for the first place where 6 can be inserted while keeping the list sorted.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Dans `[1, 4, 7, 10]`, quelle position renvoie `bisect_left` pour $6$ ?'
@@ -170,6 +184,7 @@ cartes:
     verif: "from bisect import bisect_left\nprint(bisect_left([1, 4, 7, 10], 6))"
     explication: { fr: '$6$ s’insère avant $7$, à l’indice $2$, même si $6$ est absent.', en: '$6$ belongs before $7$, at index $2$, even though $6$ is absent.' }
   - id: c6
+    indice: { fr: '`bisect_left` renvoie la place avant toutes les valeurs égales. Où commence le 3 ?', en: '`bisect_left` returns the place before all equal values. Where does the 3 start?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Dans `[3, 3, 3, 9]`, quelle position renvoie `bisect_left` pour $3$ ?'
@@ -199,6 +214,7 @@ cartes:
       print(i<len(a) and a[i]==x)
     sortie: "False"
   - id: c7
+    indice: { fr: 'Évite de lire `a[i]` hors de la liste : teste d’abord la limite, puis l’égalité.', en: 'Avoid reading `a[i]` outside the list: test the limit first, then equality.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Après `i = bisect_left(a, x)`, quelle condition teste la présence sans dépasser les limites, même si `a` est vide ?'
@@ -215,6 +231,7 @@ cartes:
     fr: 'Trouver une position coûte $O(\log n)$ comparaisons ; insérer dans une liste Python peut décaler $n$ éléments et coûte $O(n)$ au pire.'
     en: 'Finding a position costs $O(\log n)$ comparisons; insertion into a Python list may shift $n$ items and costs $O(n)$ in the worst case.'
   - id: c9
+    indice: { fr: 'Si 9 est plus grand que tous les éléments, où doit-il s’insérer ?', en: 'If 9 is greater than all elements, where must it be inserted?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Dans `[2, 4, 6]`, quelle position d’insertion renvoie `bisect_left` pour $9$ ?'

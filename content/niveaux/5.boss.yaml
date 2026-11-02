@@ -8,6 +8,7 @@ sources:
   - { titre: 'MIT OCW — 18.02SC, Partial Derivatives', url: 'https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/pages/2.-partial-derivatives/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
 cartes:
   - id: c1
+    indice: { fr: 'Remplace $w$ par $0$ dans chaque carré, puis fais la moyenne des deux résultats.', en: 'Replace $w$ with $0$ in each square, then average the two results.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana prédit une même valeur $w$ pour deux observations, $2$ et $6$. Avec la perte moyenne $J(w)=((w-2)^2+(w-6)^2)/2$, combien vaut $J(0)$ ?'
@@ -66,6 +67,7 @@ cartes:
       - { fr: 'Départ $w_0=0$, $\eta=\frac14$ : $J''(0)=-6$, donc $w_1=0-\frac14\times(-6)=1{,}5$.', en: 'Start $w_0=0$, $\eta=\frac14$: $J''(0)=-6$, so $w_1=0-\frac14\times(-6)=1.5$.' }
       - { fr: 'La perte passe de $J(0)=13$ à $J(1{,}5)=6{,}25$ : la descente progresse vers $3$.', en: 'The loss goes from $J(0)=13$ to $J(1.5)=6.25$: the descent moves toward $3$.' }
   - id: c4
+    indice: { fr: 'Dérive chaque carré, additionne, divise par 2, puis remplace $w$ par $0$.', en: 'Differentiate each square, add, divide by 2, then replace $w$ with $0$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'À toi : repars de $w_0=0$. Calcule $J''(0)$ pour $J(w)=((w-2)^2+(w-6)^2)/2$.'
@@ -78,6 +80,7 @@ cartes:
       print((J(h)-J(-h))/(2*h))
     explication: { fr: 'La dérivée vaut $(2(w-2)+2(w-6))/2=2w-8$, donc $-8$ en zéro.', en: 'The derivative is $(2(w-2)+2(w-6))/2=2w-8$, hence $-8$ at zero.' }
   - id: c5
+    indice: { fr: 'Applique $w_1=w_0-\eta J''(w_0)$ avec les valeurs données.', en: 'Apply $w_1=w_0-\eta J''(w_0)$ with the given values.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Avec $w_0=0$, $J''(0)=-8$ et $\eta=1/4$, calcule $w_1$.'
@@ -86,6 +89,7 @@ cartes:
     verif: 'from fractions import Fraction; print(0-Fraction(1,4)*(-8))'
     explication: { fr: '$w_1=0-(1/4)(-8)=2$ ; soustraire une dérivée négative augmente le paramètre.', en: '$w_1=0-(1/4)(-8)=2$; subtracting a negative derivative increases the parameter.' }
   - id: c6
+    indice: { fr: 'Remplace $w$ par $2$ dans les deux carrés, puis fais la moyenne.', en: 'Replace $w$ with $2$ in both squares, then average.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Calcule maintenant $J(w_1)$ avec $w_1=2$. Le premier pas a-t-il réduit la perte ? Donne sa nouvelle valeur.'
@@ -99,6 +103,7 @@ cartes:
     en: 'Before running a descent, check three things. The loss is convex, otherwise a local minimum may trap you. The step is small. An iteration cap exists.'
     exemple: { fr: 'Ici $J''''(w)=2>0$ et $\eta=\frac14<1$ : la descente de $w_0=0$ converge vers $4$ sans osciller.', en: 'Here $J''''(w)=2>0$ and $\eta=\frac14<1$: the descent from $w_0=0$ converges to $4$ without oscillating.' }
   - id: c7
+    indice: { fr: 'Dérive $J$ deux fois : $J''(w)=2w-8$, puis encore une fois.', en: 'Differentiate $J$ twice: $J''(w)=2w-8$, then once more.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $J(w)=w^2-8w+20$, calcule $J''''(w)$ afin de certifier la stricte convexité.'
@@ -111,6 +116,7 @@ cartes:
     fr: 'Passer de la moyenne à la somme double ici le gradient : conserver le même pas change la trajectoire, même si le minimiseur reste le même.'
     en: 'Switching from the mean to the sum doubles the gradient here: keeping the same step size changes the trajectory even though the minimizer stays the same.'
   - id: c9
+    indice: { fr: 'Remplace $w$ par sa limite dans $(w-4)^2+4$.', en: 'Replace $w$ with its limit in $(w-4)^2+4$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Avec $w_0=0$ et $\eta=1/4$, la suite vaut $w_k=4(1-2^{-k})$. Vers quelle valeur la PERTE $J(w_k)=(w_k-4)^2+4$ converge-t-elle ?'
@@ -138,6 +144,7 @@ cartes:
     indice: { fr: 'Recalcule le gradient après chaque mise à jour.', en: 'Recompute the gradient after every update.' }
     explication: { fr: 'On obtient $2$, puis $3$, puis $3{,}5$ ; la perte finale vaut $4{,}25$, encore au-dessus de $4$.', en: 'We obtain $2$, then $3$, then $3.5$; the final loss is $4.25$, still above $4$.' }
   - id: c11
+    indice: { fr: 'Dérive $F$ en $b$ en gardant $w$ constant, puis remplace $b$ par $1$.', en: 'Differentiate $F$ in $b$ keeping $w$ constant, then replace $b$ with $1$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Dernier transfert : pour deux paramètres, pose $F(w,b)=J(w)+b^2$. Au point $(0,1)$, calcule la composante en $b$ du gradient.'

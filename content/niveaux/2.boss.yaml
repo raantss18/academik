@@ -10,6 +10,7 @@ sources:
   - { titre: 'OWASP — Input Validation Cheat Sheet', url: 'https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html', licence: 'CC BY-SA 4.0' }
 cartes:
   - id: c1
+    indice: { fr: '`get` prend une clé et une valeur par défaut. La clé existe-t-elle dans le dictionnaire ?', en: '`get` takes a key and a default value. Does the key exist in the dictionary?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

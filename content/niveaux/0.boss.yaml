@@ -1,6 +1,6 @@
 id: '0.boss'
 module: 0
-duree_min: 13
+duree_min: 15
 titre: { fr: 'Le message secret', en: 'The secret message' }
 ia: { fr: 'Kintana sait chiffrer et déchiffrer un message (César, affine).', en: 'Kintana can encrypt and decrypt a message (Caesar and affine ciphers).' }
 sources:
@@ -17,6 +17,7 @@ sources:
   - { titre: 'Szabolcs Tengely — Classical ciphers, Université de Debrecen', url: 'https://shrek.unideb.hu/~tengely/crypto/section-2.html', licence: 'Licence non vérifiée : référence en lien seulement, aucun extrait repris' }
 cartes:
   - id: c1
+    indice: { fr: 'Le contraire de « chaque » est « au moins une… ne pas ». Lis chaque réponse avec cette règle.', en: 'The opposite of “each” is “at least one… not”. Read each answer with this rule.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana teste ses clés de chiffrement. Quelle est la négation de « chaque clé testée permet de retrouver le message » ?'
@@ -61,6 +62,17 @@ cartes:
     type: piege
     fr: La position de A est zéro, pas un. Décaler un numéro de position erroné donne une autre lettre.
     en: The position of A is zero, not one. Shifting an incorrect position gives a different letter.
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec A = 0, B = 1, C = 2, quelle est la position de la lettre D ?'
+    en: 'With A = 0, B = 1, C = 2, what is the position of the letter D?'
+    choix:
+      - { fr: '3', en: '3', juste: true }
+      - { fr: '4', en: '4' }
+      - { fr: '2', en: '2' }
+    explication: { fr: 'On compte à partir de zéro : A=0, B=1, C=2, D=3.', en: 'We count from zero: A=0, B=1, C=2, D=3.' }
+    indice: { fr: 'La position de A est zéro, pas un.', en: 'The position of A is zero, not one.' }
   - id: c2a
     type: idee
     fr: '**César** ajoute une clé $k$ à chaque position ; on déchiffre en soustrayant $k$. **Affine** calcule $y\equiv ax+b$ ; on déchiffre avec $x\equiv a^{-1}(y-b)$, possible seulement si $a$ et $26$ n’ont pas de diviseur commun autre que $1$.'
@@ -82,6 +94,17 @@ cartes:
       - { fr: 'Pour C, on part de $x=2$ ; César avec $k=4$ donne $y=6$, donc G.', en: 'For C, start with $x=2$; Caesar with $k=4$ gives $y=6$, hence G.' }
       - { fr: 'Avec la clé affine $a=5,b=7$, C donne $y=17$, donc R.', en: 'With affine key $a=5,b=7$, C gives $y=17$, hence R.' }
       - { fr: 'L’inverse de $5$ est $21$ : depuis R, $21(17-7)=210\equiv2\pmod{26}$ redonne C.', en: 'The inverse of $5$ is $21$: from R, $21(17-7)=210\equiv2\pmod{26}$ recovers C.' }
+  - id: v2
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour déchiffrer un message chiffré par César avec la clé 3, que fait-on ?'
+    en: 'To decrypt a message encrypted by Caesar with key 3, what do we do?'
+    choix:
+      - { fr: 'On recule chaque lettre de 3 positions', en: 'We move each letter back by 3 positions', juste: true }
+      - { fr: 'On avance chaque lettre de 3 positions', en: 'We move each letter forward by 3 positions' }
+      - { fr: 'On ne change rien', en: 'We change nothing' }
+    explication: { fr: 'Déchiffrer défait le chiffrement : on soustrait la clé, en bouclant sur l’alphabet.', en: 'Decrypting undoes the encryption: we subtract the key, wrapping around the alphabet.' }
+    indice: { fr: 'Déchiffrer fait l’opération inverse de chiffrer.', en: 'Decrypting does the inverse of encrypting.' }
   - id: d_affine_words
     type: idee
     fr: Le chiffrement affine multiplie la position, puis ajoute un décalage. Le déchiffrement soustrait ce décalage, puis multiplie par l’inverse modulaire.
@@ -105,6 +128,7 @@ cartes:
     fr: Multiplier avant de retirer le décalage change le calcul. Il faut défaire la dernière opération en premier.
     en: Multiplying before removing the shift changes the calculation. Undo the last operation first.
   - id: c4
+    indice: { fr: 'Cherche deux positions dont les doubles sont égaux modulo 26.', en: 'Look for two positions whose doubles are equal modulo 26.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Kintana affirme que $x\mapsto2x$ modulo $26$ permet toujours de retrouver une lettre. Quelle paire de positions différentes réfute cette affirmation en donnant la même sortie ?'
@@ -133,6 +157,7 @@ cartes:
     fr: Retrouver une lettre pour un exemple ne garantit pas que la clé fonctionne pour tout l’alphabet. Un seul doublon suffit à réfuter cette garantie.
     en: Recovering one example letter does not guarantee that the key works for the entire alphabet. One collision refutes that guarantee.
   - id: c5
+    indice: { fr: 'Une récurrence garde les $n$ lettres déjà bonnes et traite **une** lettre de plus avec la règle de déchiffrement.', en: 'An induction keeps the $n$ letters already right and handles **one** more letter with the decryption rule.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pour César, $P(n)$ signifie « chiffrer puis déchiffrer les $n$ premières lettres les restitue ». $P(0)$ est vrai pour le message vide : quel passage justifie la récurrence ?'
@@ -165,6 +190,7 @@ cartes:
     fr: Vérifier HI ne démontre pas le résultat pour tous les messages. Il faut justifier le passage pour une lettre quelconque.
     en: Checking HI does not prove the result for all messages. Justify the step for an arbitrary letter.
   - id: c6
+    indice: { fr: 'Combien d’étiquettes existent ? Il faut un message de plus que ce nombre.', en: 'How many labels exist? You need one message more than that number.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Kintana attribue une seule lettre A–Z comme étiquette à chaque message. Quel nombre minimal de messages garantit que deux partagent une étiquette ?'
@@ -189,6 +215,7 @@ cartes:
     fr: Le doublon est garanti sans connaître les messages. Le principe ne dit pas quelle étiquette sera répétée.
     en: A collision is guaranteed without knowing the messages. The principle does not say which label will repeat.
   - id: c7
+    indice: { fr: 'Multiplie $5$ par $21$, puis cherche le reste dans la division par $26$.', en: 'Multiply $5$ by $21$, then find the remainder when divided by $26$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Avant d’utiliser la clé affine $a=5,b=7$, Kintana vérifie son inverse $21$. Quel reste obtient-il pour $5\times21$ modulo $26$ ?'
@@ -197,6 +224,7 @@ cartes:
     verif: 'print((5*21)%26)'
     explication: { fr: '$105=4\times26+1$ : le reste $1$ confirme l’inverse multiplicatif.', en: '$105=4\times26+1$: remainder $1$ confirms the multiplicative inverse.' }
   - id: c8
+    indice: { fr: 'Numérote S, O, A, ajoute 4 à chaque position (modulo 26), puis reviens aux lettres.', en: 'Number S, O, A, add 4 to each position (modulo 26), then go back to letters.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Chiffre le message SOA avec César et $k=4$. Utilise A–Z et écris les trois lettres chiffrées sans espace.'
@@ -205,6 +233,7 @@ cartes:
     verif: "alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\nprint(''.join(alphabet[(alphabet.index(c)+4)%26] for c in 'SOA'))"
     explication: { fr: 'Les positions $18,14,0$ deviennent $22,18,4$, donc WSE.', en: 'Positions $18,14,0$ become $22,18,4$, giving WSE.' }
   - id: c9
+    indice: { fr: 'Numérote Q, M, E, retire 4 à chaque position (modulo 26), puis reviens aux lettres.', en: 'Number Q, M, E, subtract 4 from each position (modulo 26), then go back to letters.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Déchiffre le message QME avec César et $k=4$ : soustrais la clé. Écris les trois lettres sans espace.'
@@ -213,6 +242,7 @@ cartes:
     verif: "alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\nprint(''.join(alphabet[(alphabet.index(c)-4)%26] for c in 'QME'))"
     explication: { fr: 'Les positions $16,12,4$ redeviennent $12,8,0$, soit MIA.', en: 'Positions $16,12,4$ return to $12,8,0$, giving MIA.' }
   - id: c10
+    indice: { fr: 'Pour chaque lettre : calcule $5x+7$, puis son reste modulo 26, puis reviens à la lettre.', en: 'For each letter: compute $5x+7$, then its remainder modulo 26, then go back to the letter.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Passe au chiffrement affine $y\equiv5x+7\pmod{26}$ : chiffre SOA. Écris trois lettres A–Z sans espace.'

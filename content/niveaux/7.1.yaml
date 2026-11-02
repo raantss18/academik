@@ -1,6 +1,6 @@
 id: "7.1"
 module: 7
-duree_min: 10
+duree_min: 11
 titre:
   fr: Estimer
   en: Estimation
@@ -35,6 +35,7 @@ cartes:
       - fr: "12"
         en: "12"
     sortie: "2.4"
+    indice: { fr: 'Additionne les cinq mesures, puis divise par leur nombre (n’oublie pas le zéro).', en: 'Add the five measurements, then divide by their number (do not forget the zero).' }
     id: c1
   - type: idee
     fr: Un estimateur utilise un échantillon pour approcher une quantité inconnue. La moyenne additionne les mesures, puis divise par leur nombre.
@@ -78,6 +79,17 @@ cartes:
     exemple:
       fr: "Dans le tableau précédent, les écarts $-1$, $+1$ et $0$ se compensent : l’erreur moyenne est nulle."
       en: "In the previous table, the gaps $-1$, $+1$ and $0$ cancel out: the average error is zero."
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Parmi ces valeurs, laquelle ne change **pas** d’un échantillon à l’autre ?'
+    en: 'Among these values, which does **not** change from one sample to another?'
+    choix:
+      - { fr: 'Le paramètre de la population à estimer', en: 'The population parameter to estimate', juste: true }
+      - { fr: 'La moyenne de l’échantillon', en: 'The sample mean' }
+      - { fr: 'Les valeurs observées', en: 'The observed values' }
+    explication: { fr: 'Le paramètre est fixe ; les estimations varient avec l’échantillon.', en: 'The parameter is fixed; estimates vary with the sample.' }
+    indice: { fr: 'Une seule des trois est une propriété de la population entière.', en: 'Only one of the three is a property of the whole population.' }
   - type: exemple
     lang: python
     titre:
@@ -158,6 +170,7 @@ cartes:
     explication:
       fr: "La somme devient $15$, avec six valeurs : $15/6=2{,}5$."
       en: "The sum becomes $15$, with six values: $15/6=2.5$."
+    indice: { fr: 'Additionne l’ancienne somme et 3, puis divise par six.', en: 'Add the old sum and 3, then divide by six.' }
     id: c4
   - type: saisie
     note:
@@ -174,6 +187,7 @@ cartes:
     explication:
       fr: "On multiplie les probabilités : $0{,}5^2\\times0{,}5=0{,}125$."
       en: "Multiply the probabilities: $0.5^2\\times0.5=0.125$."
+    indice: { fr: 'Succès, succès, échec : multiplie $p$, $p$ et $1-p$ avec $p=0{,}5$.', en: 'Success, success, failure: multiply $p$, $p$ and $1-p$ with $p=0.5$.' }
     id: c5
   - type: saisie
     note:
@@ -188,6 +202,7 @@ cartes:
     explication:
       fr: On compare $0{,}046875$ à $0{,}125$. Ce choix ne cherche que parmi les deux candidats.
       en: Compare $0.046875$ with $0.125$. This choice searches only the two candidates.
+    indice: { fr: 'Calcule $L(p)=p^2(1-p)$ pour les deux valeurs et compare.', en: 'Compute $L(p)=p^2(1-p)$ for both values and compare.' }
     id: c6
   - type: piege
     fr: "La vraisemblance n’est pas la probabilité que le paramètre soit vrai : les données sont fixées et le paramètre varie."
@@ -211,6 +226,7 @@ cartes:
     explication:
       fr: La proportion observée vaut $6/10=0{,}6$. Pour ces essais indépendants, elle maximise la vraisemblance sur toutes les probabilités possibles.
       en: The observed proportion is $6/10=0.6$. For these independent trials, it maximizes likelihood over all possible probabilities.
+    indice: { fr: 'Applique $\hat p=k/n$ avec les valeurs de l’énoncé.', en: 'Apply $\hat p=k/n$ with the values from the statement.' }
     id: c8
   - type: saisie
     note:
@@ -226,6 +242,7 @@ cartes:
     explication:
       fr: La vraisemblance $p^{10}$ augmente sur $[0,1]$. Le maximum est au bord, sans prouver que tout essai futur réussira.
       en: The likelihood $p^{10}$ increases on $[0,1]$. Its maximum is at the boundary, without proving every future trial will succeed.
+    indice: { fr: 'Pour $p\in[0,1]$, la vraisemblance $p^{10}$ croît : où est son maximum sur cet intervalle ?', en: 'For $p\in[0,1]$, the likelihood $p^{10}$ grows: where is its maximum on this interval?' }
     id: c9
   - type: plus
     fr: "Pour aller plus loin : suppose des observations indépendantes, de même loi et de variance finie. La moyenne se stabilise quand leur nombre augmente (MIT 18.650, sources)."
@@ -247,6 +264,7 @@ cartes:
       fr: "On additionne succès et essais : $(2+10)/(4+16)=0{,}6$. Les tailles des lots déterminent les poids."
       en: "Add successes and trials: $(2+10)/(4+16)=0.6$. Batch sizes determine the weights."
     defi: true
+    indice: { fr: 'Regroupe les deux lots : additionne les succès, additionne les essais, puis divise.', en: 'Pool the two batches: add the successes, add the trials, then divide.' }
     id: c11
   - id: d_lien
     type: idee

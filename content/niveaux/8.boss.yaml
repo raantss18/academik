@@ -9,6 +9,7 @@ sources:
   - { titre: 'Python — opérations sur les ensembles', url: 'https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Le test a-t-il servi à calculer la moyenne avant d’être mis de côté ?', en: 'Was the test set used to compute the mean before being set aside?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana calcule la moyenne de **toutes** les données, s’en sert pour centrer les valeurs, **puis** coupe en train et test. Y a-t-il un problème ?'
@@ -129,6 +130,7 @@ cartes:
     fr: 'Un score **trop beau** (99 % sur un problème difficile) est un signal d’alarme, pas une victoire. Cherche d’abord une fuite avant de fêter le résultat.'
     en: 'A score that is **too good** (99% on a hard problem) is an alarm signal, not a win. Look for a leak before celebrating.'
   - id: c6
+    indice: { fr: 'Une colonne est une fuite si elle n’existe qu’après l’événement à prédire.', en: 'A column is a leak if it only exists after the event to predict.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'On prédit si un client **résiliera** son abonnement. Quelle colonne est une fuite ?'

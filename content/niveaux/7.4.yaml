@@ -39,6 +39,7 @@ cartes:
       - fr: "7"
         en: "7"
     sortie: "6.5"
+    indice: { fr: 'Additionne les quatre tirages et divise par quatre.', en: 'Add the four draws and divide by four.' }
     id: c1
   - type: idee
     fr: Le bootstrap tire avec remise autant d’observations que l’échantillon initial, puis recalcule la moyenne. Répéter ce procédé explore sa variabilité, sous des observations indépendantes, de même loi et suffisamment représentatives.
@@ -200,6 +201,7 @@ cartes:
     explication:
       fr: On garde la taille initiale. Augmenter le nombre de rééchantillons ne crée pas de nouvelles observations indépendantes.
       en: Keep the original size. Increasing the number of resamples does not create new independent observations.
+    indice: { fr: 'Un rééchantillon a la même taille que l’échantillon initial.', en: 'A resample has the same size as the initial sample.' }
     id: c4
   - type: saisie
     note:
@@ -215,6 +217,7 @@ cartes:
     explication:
       fr: Chaque tirage a quatre choix, donc $4^4=256$ suites équiprobables. Plusieurs produisent les mêmes valeurs.
       en: Each draw has four choices, so $4^4=256$ equally likely sequences. Several produce the same values.
+    indice: { fr: 'Quatre choix à chaque tirage, quatre tirages : multiplie.', en: 'Four choices at each draw, four draws: multiply.' }
     id: c5
   - type: saisie
     note:
@@ -231,6 +234,7 @@ cartes:
     explication:
       fr: Deux positions sur quatre contiennent $7$. Supprimer les doublons changerait la distribution empirique.
       en: Two of four positions contain $7$. Removing duplicates would change the empirical distribution.
+    indice: { fr: 'Combien de positions contiennent 7 parmi les quatre ? Divise par quatre.', en: 'How many of the four positions contain 7? Divide by four.' }
     id: c6
   - type: piege
     fr: Le bootstrap ne répare pas un échantillon biaisé et ne garantit pas une bonne couverture avec quatre observations. Pour des séries dépendantes, le tirage individuel détruit la dépendance.
@@ -258,6 +262,7 @@ cartes:
     explication:
       fr: Les deux tirages mixtes donnent $1$. La distribution des moyennes est $0,1,1,2$.
       en: The two mixed resamples give $1$. The distribution of means is $0,1,1,2$.
+    indice: { fr: 'Quels tirages ordonnés mélangent un 0 et un 2 ? Compte-les.', en: 'Which ordered draws mix a 0 and a 2? Count them.' }
     id: c8
   - type: saisie
     note:
@@ -274,6 +279,7 @@ cartes:
     explication:
       fr: Le rang inférieur est $25$, le supérieur $975$. Cette convention est précisée car d’autres méthodes interpolent.
       en: The lower rank is $25$, the upper rank $975$. This convention is specified because other methods interpolate.
+    indice: { fr: 'Multiplie $q$ par $B$ puis arrondis à l’entier supérieur.', en: 'Multiply $q$ by $B$ then round up to the next integer.' }
     id: c9
   - type: plus
     fr: "Pour aller plus loin : l’écart-type des moyennes rééchantillonnées estime l’erreur standard de la moyenne. Le percentile n’offre aucune garantie universelle ; SciPy propose aussi BCa, une méthode ajustant biais et asymétrie (sources)."
@@ -298,6 +304,7 @@ cartes:
       fr: Chaque tirage évite $5$ avec probabilité $3/4$. Les tirages sont indépendants conditionnellement à l’échantillon, donc $(3/4)^4=81/256$.
       en: Each draw avoids $5$ with probability $3/4$. Draws are independent conditional on the sample, so $(3/4)^4=81/256$.
     defi: true
+    indice: { fr: 'À chaque tirage, quelle probabilité d’éviter la valeur 5 ? Multiplie sur quatre tirages.', en: 'At each draw, what probability of avoiding the value 5? Multiply over four draws.' }
     id: c11
   - id: d_lien
     type: idee

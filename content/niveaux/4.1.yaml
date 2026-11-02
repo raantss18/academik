@@ -7,6 +7,7 @@ sources:
   - { titre: 'Gilbert Strang — MIT 18.06, espaces vectoriels', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
 cartes:
   - id: c1
+    indice: { fr: 'Compte seulement les occurrences du premier mot de l’ordre (chat) dans la phrase.', en: 'Count only the occurrences of the first word of the order (chat) in the sentence.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana compte les mots dans l’ordre (chat, lune). Pour « chat lune chat », quelle est la première coordonnée ?'
@@ -65,6 +66,7 @@ cartes:
       - { fr: 'On soustrait coordonnée par coordonnée : $6-2=4$ et $2-5=-3$. Donc $Q-P=(4,-3)$ : $4$ vers la droite, $3$ vers le bas.', en: 'Subtract coordinate by coordinate: $6-2=4$ and $2-5=-3$. So $Q-P=(4,-3)$: $4$ to the right, $3$ down.' }
       - { fr: 'Faire ce déplacement deux fois donne $2(4,-3)=(8,-6)$ : même sens, longueur doublée.', en: 'Making this move twice gives $2(4,-3)=(8,-6)$: same direction, doubled length.' }
   - id: c4
+    indice: { fr: 'Additionne les secondes coordonnées de $u$ et de $v$.', en: 'Add the second coordinates of $u$ and $v$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $u=(2,1)$ et $v=(1,3)$, donne la seconde coordonnée de $u+v$.'
@@ -73,6 +75,7 @@ cartes:
     verif: 'print(tuple(a+b for a,b in zip((2,1),(1,3)))[1])'
     explication: { fr: 'On additionne les secondes coordonnées : $1+3=4$.', en: 'Add the second coordinates: $1+3=4$.' }
   - id: c5
+    indice: { fr: 'Multiplie chaque coordonnée par 3 ; garde la première.', en: 'Multiply each coordinate by 3; keep the first one.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Multiplier un vecteur par $k$ multiplie toutes ses coordonnées par $k$. Quelle est la première coordonnée de $3(2,1)$ ?'
@@ -81,6 +84,7 @@ cartes:
     verif: 'print(tuple(3*a for a in (2,1))[0])'
     explication: { fr: '$3(2,1)=(6,3)$ : la flèche garde son sens et triple de longueur.', en: '$3(2,1)=(6,3)$: the arrow keeps its direction and triples in length.' }
   - id: c6
+    indice: { fr: 'La coordonnée verticale de $B-A$ est la différence des secondes coordonnées, dans l’ordre « arrivée moins départ ».', en: 'The vertical coordinate of $B-A$ is the difference of the second coordinates, in the order “arrival minus start”.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Un déplacement va de $A=(1,4)$ à $B=(3,1)$. Sa coordonnée verticale est celle de $B-A$ : calcule-la.'
@@ -93,6 +97,7 @@ cartes:
     fr: 'Même taille ne signifie pas mêmes axes : $(2,1)$ dans (chat, lune) devient $(1,2)$ dans (lune, chat).'
     en: 'Equal size does not mean matching axes: $(2,1)$ in (chat, lune) becomes $(1,2)$ in (lune, chat).'
   - id: c8
+    indice: { fr: 'Quelle position du vecteur donné correspond à « chat » ? Cette valeur devient la première coordonnée.', en: 'Which position of the given vector corresponds to “chat”? That value becomes the first coordinate.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Le vecteur $(5,2)$ utilise (lune, chat). Réécris-le dans (chat, lune) : quelle est sa première coordonnée ?'
@@ -106,6 +111,7 @@ cartes:
     en: 'A **linear combination** of $u$ and $v$ is a vector $a\,u+b\,v$: multiply each vector by a number, then add. The numbers $a$ and $b$ are the coefficients.'
     exemple: { fr: 'Avec $e_1=(1,0)$ et $e_2=(0,1)$ : $2e_1+3e_2=(2,0)+(0,3)=(2,3)$. Les coordonnées d’un vecteur sont les coefficients de cette combinaison.', en: 'With $e_1=(1,0)$ and $e_2=(0,1)$: $2e_1+3e_2=(2,0)+(0,3)=(2,3)$. A vector’s coordinates are the coefficients of this combination.' }
   - id: c9
+    indice: { fr: 'Calcule $2u$ coordonnée par coordonnée, ajoute $v$, puis lis la seconde coordonnée.', en: 'Compute $2u$ coordinate by coordinate, add $v$, then read the second coordinate.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Une combinaison linéaire additionne des multiples de vecteurs. Quelle est la seconde coordonnée de $2u+v$, avec $u=(1,2)$ et $v=(3,-1)$ ?'

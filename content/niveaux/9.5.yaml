@@ -9,6 +9,7 @@ sources:
   - { titre: 'scikit-learn — Cross-validation: evaluating estimator performance', url: 'https://scikit-learn.org/stable/modules/cross_validation.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Une pénalité énorme sur $w^2$ rend toute valeur de $w$ non nulle très coûteuse.', en: 'A huge penalty on $w^2$ makes any non-zero value of $w$ very costly.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'On ajoute à la perte une **pénalité** $\lambda w^2$. Si $\lambda$ est très grand, que devient le réglage $w$ après apprentissage ?'

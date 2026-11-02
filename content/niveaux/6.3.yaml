@@ -1,6 +1,6 @@
 id: "6.3"
 module: 6
-duree_min: 9
+duree_min: 10
 titre:
   fr: Variables aléatoires et lois usuelles
   en: Random variables and common distributions
@@ -34,6 +34,7 @@ cartes:
       - fr: 1/2
         en: 1/2
     sortie: 1/4
+    indice: { fr: 'Les deux valeurs possibles de $X$ doivent avoir des probabilités qui totalisent 1.', en: 'The two possible values of $X$ must have probabilities adding up to 1.' }
     id: c1
   - type: idee
     fr: Une variable aléatoire associe un nombre à chaque issue ; sa loi donne les probabilités correspondantes. Une Bernoulli code une réussite par 1 et un échec par 0.
@@ -128,6 +129,7 @@ cartes:
       en: "All three must fail: $(1/2)^3=1/8$."
     reponses:
       - 1/8
+    indice: { fr: 'Il faut trois échecs d’affilée : multiplie les probabilités d’échec.', en: 'You need three failures in a row: multiply the failure probabilities.' }
     id: c4
   - type: saisie
     note:
@@ -145,6 +147,7 @@ cartes:
       en: Success-failure and failure-success give $2(3/4)(1/4)=3/8$.
     reponses:
       - 3/8
+    indice: { fr: 'Il y a deux ordres possibles (réussite puis échec, ou l’inverse) : calcule l’un et double.', en: 'There are two possible orders (success then failure, or the opposite): compute one and double.' }
     id: c5
   - type: saisie
     note:
@@ -161,6 +164,7 @@ cartes:
       en: Two qualifying values out of five equally likely values.
     reponses:
       - 2/5
+    indice: { fr: 'Compte les valeurs qui conviennent, puis divise par le nombre total de valeurs.', en: 'Count the values that fit, then divide by the total number of values.' }
     id: c6
   - id: d_densite
     type: idee
@@ -209,6 +213,7 @@ cartes:
       en: The interval has length 2, so its area under the density is $2/8$.
     reponses:
       - 1/4
+    indice: { fr: 'Longueur de l’intervalle divisée par la longueur totale 8.', en: 'Length of the interval divided by the total length 8.' }
     id: c8
   - type: saisie
     note:
@@ -225,6 +230,7 @@ cartes:
       en: Symmetry divides the total area into two halves; a point has zero probability.
     reponses:
       - 1/2
+    indice: { fr: 'La densité est symétrique autour de 0 : quelle part de l’aire est à gauche ?', en: 'The density is symmetric around 0: what share of the area is on the left?' }
     id: c9
   - type: saisie
     note:
@@ -243,6 +249,7 @@ cartes:
     reponses:
       - 5/16
     defi: true
+    indice: { fr: 'Compte les issues à exactement 3 réussites, ajoute celle à 4, puis divise par 16.', en: 'Count the outcomes with exactly 3 successes, add the one with 4, then divide by 16.' }
     id: c10
   - id: d_lien
     type: idee

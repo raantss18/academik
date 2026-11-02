@@ -8,6 +8,7 @@ sources:
   - { titre: 'Python — module statistics', url: 'https://docs.python.org/3/library/statistics.html', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Range les trois nombres par ordre croissant : la médiane est celle du milieu.', en: 'Sort the three numbers in increasing order: the median is the middle one.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

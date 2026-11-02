@@ -243,11 +243,24 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(doublons).toEqual([]);
   });
   // Rythme (revue pédagogique du 2 nov.) : pas plus de 5 cartes d'explication d'affilée avant un exercice noté. Cette liste ne fait que RÉTRÉCIR (tâche T-017).
-  const RYTHME_EN_ATTENTE = new Set<string>(['0.1', '0.2', '0.3', '0.4', '0.5', '0.boss', '2.2', '3.1', '3.2', '3.3', '3.4', '3.5', '3.boss', '4.2', '7.1', '7.boss']);
+  const RYTHME_EN_ATTENTE = new Set<string>([]);
   const plusLongueSerie = (cartes: { type: string; note?: unknown }[]) => { let run = 0, max = 0; for (const c of cartes) { if (['idee', 'exemple', 'piege'].includes(c.type)) run++; else { if (c.note) max = Math.max(max, run); run = 0; } } return max; };
   it('E29 : le rythme alterne explication et pratique (≤ 5 explications d’affilée), hors liste d’attente', () => {
     const niveaux = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => parse(read(`content/niveaux/${f}`)) as { id: string; cartes: { type: string; note?: unknown }[] });
     expect(niveaux.filter(l => !RYTHME_EN_ATTENTE.has(l.id) && plusLongueSerie(l.cartes) > 5).map(l => l.id)).toEqual([]);
     expect(niveaux.filter(l => RYTHME_EN_ATTENTE.has(l.id) && plusLongueSerie(l.cartes) <= 5).map(l => l.id)).toEqual([]);
+  });
+  it('E30 : toute carte notée a un vrai indice, et il ne contient jamais la réponse attendue', () => {
+    const sans: string[] = [], fuite: string[] = [];
+    for (const f of readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'))) {
+      const d = parse(read(`content/niveaux/${f}`)) as { id: string; cartes: { id: string; note?: unknown; indice?: { fr: string }; reponses?: unknown[]; choix?: { fr: string; juste?: boolean }[] }[] };
+      for (const c of d.cartes) {
+        if (c.note && !c.indice) sans.push(`${d.id}.${c.id}`);
+        const h = c.indice?.fr ?? '';
+        for (const r of c.reponses ?? []) if (String(r).length >= 2 && h.includes(String(r))) fuite.push(`${d.id}.${c.id}`);
+        const j = (c.choix ?? []).find(x => x.juste); if (j && j.fr.length > 6 && h.includes(j.fr)) fuite.push(`${d.id}.${c.id}`);
+      }
+    }
+    expect(sans).toEqual([]); expect(fuite).toEqual([]);
   });
 });

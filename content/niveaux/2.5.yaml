@@ -9,6 +9,7 @@ sources:
   - { titre: 'Python — Tutoriel, les dictionnaires', url: 'https://docs.python.org/3/tutorial/datastructures.html#dictionaries', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Les indices d’une liste commencent à 0. Quel est l’élément d’indice 1 ?', en: 'List indices start at 0. Which element has index 1?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

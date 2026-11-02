@@ -9,6 +9,7 @@ sources:
   - { titre: 'Python — Tutoriel, portées et espaces de noms', url: 'https://docs.python.org/3/tutorial/classes.html#python-scopes-and-namespaces', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Remplace `x` par la valeur de l’appel dans le corps de la fonction, puis calcule.', en: 'Replace `x` with the call’s value in the function body, then compute.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

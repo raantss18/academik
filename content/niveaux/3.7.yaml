@@ -9,6 +9,7 @@ sources:
   - { titre: 'Python — Tutoriel, listes', url: 'https://docs.python.org/3/tutorial/datastructures.html#more-on-lists', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Une pile retire toujours le dernier élément ajouté. Suis la liste à chaque ligne.', en: 'A stack always removes the last element added. Follow the list line by line.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

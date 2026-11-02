@@ -9,6 +9,7 @@ sources:
   - { titre: 'Stanford CS229 — Machine Learning', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
 cartes:
   - id: c1
+    indice: { fr: 'Compte les cas où « normal » est la bonne réponse parmi les 100 messages.', en: 'Count the cases where “normal” is the right answer among the 100 messages.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Sur 100 messages, 90 sont **normaux** et 10 sont du **spam**. Un « modèle » répond toujours « normal ». Quelle part de ses réponses est juste ?'

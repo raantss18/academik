@@ -1,12 +1,13 @@
 id: '3.1'
 module: 3
-duree_min: 10
+duree_min: 12
 titre: { fr: 'Complexité', en: 'Complexity' }
 ia: { fr: 'Kintana estime comment le coût de recherche grandit avec ses documents.', en: 'Kintana estimates how search cost grows with its documents.' }
 sources:
   - { titre: 'Pat Morin — Open Data Structures, Mathematical Background', url: 'https://opendatastructures.org/ods-python/1_3_Mathematical_Background.html', licence: 'CC BY 2.5 CA ; explications et exercices originaux' }
 cartes:
   - id: c1
+    indice: { fr: 'Chaque document est comparé à tous les documents : combien de comparaisons pour un seul ?', en: 'Each document is compared with all documents: how many comparisons for just one?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Un programme compare chacun des $10$ documents à chacun des $10$ documents, y compris lui-même. Combien de comparaisons fait-il ?'
@@ -68,6 +69,17 @@ cartes:
     fr: "Douze lectures ne signifient pas douze secondes : le modèle compte les lectures, pas le temps
       réel."
     en: "Twelve reads do not mean twelve seconds: the model counts reads, not elapsed time."
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un programme parcourt une fois une liste de $n$ éléments. Quel est son coût ?'
+    en: 'A program goes through a list of $n$ elements once. What is its cost?'
+    choix:
+      - { fr: '$O(n)$', en: '$O(n)$', juste: true }
+      - { fr: '$O(\log n)$', en: '$O(\log n)$' }
+      - { fr: '$O(n^2)$', en: '$O(n^2)$' }
+    explication: { fr: 'Un seul parcours fait un nombre d’opérations proportionnel à $n$ : coût linéaire.', en: 'A single pass does a number of operations proportional to $n$: linear cost.' }
+    indice: { fr: 'Compte combien de fois chaque élément est regardé.', en: 'Count how many times each element is looked at.' }
   - id: c2a
     type: idee
     fr: "Notons $T(n)$ le coût pour $n$ données et $f(n)$ une croissance de référence. $T(n)=O(f(n))$
@@ -93,6 +105,17 @@ cartes:
       assert all(4*n+12 <= 6*n for n in range(6,1001))
       print(4*6+12)
     sortie: "36"
+  - id: v2
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Combien de fois peut-on diviser 16 par deux avant d’atteindre 1 ?'
+    en: 'How many times can you divide 16 by two before reaching 1?'
+    choix:
+      - { fr: '4', en: '4', juste: true }
+      - { fr: '8', en: '8' }
+      - { fr: '16', en: '16' }
+    explication: { fr: '$16\to8\to4\to2\to1$ : quatre divisions, car $\log_2 16=4$.', en: '$16\to8\to4\to2\to1$: four divisions, since $\log_2 16=4$.' }
+    indice: { fr: 'Divise de tête : 16, puis 8, puis…', en: 'Divide in your head: 16, then 8, then…' }
   - id: c2f
     type: idee
     fr: Le **logarithme en base deux**, noté $\log_2 n$, est l’exposant donnant $n$ comme puissance de
@@ -113,6 +136,7 @@ cartes:
         en: 'Sizes go through $8,4,2,1$: three halvings.'
       - { code: 'print(tours)', fr: 'Le résultat est $3=\log_2 8$, car $2^3=8$.', en: 'The result is $3=\log_2 8$, because $2^3=8$.' }
   - id: c4
+    indice: { fr: 'Combien de fois chaque document est-il lu ? Une fois : multiplie par le nombre de documents.', en: 'How many times is each document read? Once: multiply by the number of documents.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Un parcours lit chaque document une fois ; pour $37$ documents, combien de lectures ?'
@@ -121,6 +145,7 @@ cartes:
     verif: 'print(sum(1 for _ in range(37)))'
     explication: { fr: 'Une lecture par document donne $T(n)=n$.', en: 'One read per document gives $T(n)=n$.' }
   - id: c5
+    indice: { fr: 'Divise 64 par deux, puis le résultat par deux, et compte les divisions jusqu’à 1.', en: 'Divide 64 by two, then the result by two, and count the divisions down to 1.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Combien de divisions exactes par deux font passer $64$ à $1$ ?'
@@ -168,6 +193,7 @@ cartes:
     en: Two consecutive scans of six documents make twelve reads; two nested loops of six iterations
       make thirty-six operations.
   - id: c6
+    indice: { fr: 'Remplace $n$ par $20$ puis par $40$ dans $n^2$ et compare les deux coûts.', en: 'Replace $n$ with $20$ then with $40$ in $n^2$ and compare the two costs.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Si le coût exact est $n^2$, par quel facteur est-il multiplié quand $n$ passe de $20$ à $40$ ?'
@@ -176,6 +202,7 @@ cartes:
     verif: 'print(40**2 // 20**2)'
     explication: { fr: 'Doubler chaque dimension multiplie le coût par $2^2=4$.', en: 'Doubling each dimension multiplies the cost by $2^2=4$.' }
   - id: c7
+    indice: { fr: 'Cherche une constante $C$ et un seuil $n_0$ qui majorent le coût, comme dans la définition du grand O.', en: 'Look for a constant $C$ and a threshold $n_0$ that bound the cost, as in the big-O definition.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $n\geq1$, $3n+2\leq5n$. Quelle conclusion cette inégalité justifie-t-elle ?'
@@ -190,6 +217,7 @@ cartes:
     fr: '$O(n)$ est une borne de croissance, pas une durée : les constantes et la machine comptent pour les petites entrées.'
     en: '$O(n)$ is a growth bound, not a duration: constants and hardware matter for small inputs.'
   - id: c9
+    indice: { fr: 'Deux boucles l’une après l’autre : les coûts s’additionnent ou se multiplient ?', en: 'Two loops one after the other: do the costs add or multiply?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Deux boucles successives lisent respectivement $12$ puis $12$ éléments. Combien de lectures au total ?'

@@ -11,8 +11,8 @@
 | Constat | Mesure | Gravité | Suite |
 | --- | --- | --- | --- |
 | Les durées annoncées étaient **gonflées** | durée annoncée 17–20 min ; durée estimée (lecture à 180 mots/min + temps de réponse) ≈ 13 min en moyenne | haute | **corrigé** : `duree_min` = estimation, garde-fou E25 |
-| Une carte notée **sans indice** n'aide pas en cas d'erreur | 288 cartes notées sur 449 (64 %) sans `indice` | haute | **atténué** : renvoi vers la dernière explication (E26) ; vrais indices : tâche T-016 |
-| **Longues séries d'explications** sans répondre | 16 niveaux avec 6 à 10 cartes d'explication d'affilée avant le premier exercice noté | haute | **garde-fou E29** (liste d'attente qui rétrécit) ; réorganisation : tâche T-017 |
+| Une carte notée **sans indice** n'aide pas en cas d'erreur | 288 cartes notées sur 449 (64 %) sans `indice` | haute | **corrigé** : 288 indices écrits (T-016, E30) ; renvoi vers la dernière explication en secours (E26) |
+| **Longues séries d'explications** sans répondre | 16 niveaux avec 6 à 10 cartes d'explication d'affilée avant le premier exercice noté | haute | **corrigé** : 21 questions courtes insérées, aucune série au-delà de 5 cartes (E29, T-017) |
 | Un renvoi disait « on l'a déjà vu » pour un niveau **plus tardif** | 5.6 → 6.5 ; 5.8 → 6.3 | moyenne | **corrigé**, garde-fou E27 |
 | Des niveaux **isolés** (aucun lien avec les autres) | 26 niveaux sur 69 | moyenne | **corrigé** : une carte « lien » ajoutée ; carte générée `docs/CARTE-DES-LIENS.md` |
 | La ligne « Kintana sait… » était **recopiée** | 13 niveaux (modules 6 et 7, et 5.boss) | basse | **corrigé**, garde-fou E28 |
@@ -59,11 +59,11 @@
 3. Renvois vers un niveau plus tardif toujours au futur, garde-fou **E27** ; 5.6, 5.8, 8.1 corrigés.
 4. 26 niveaux reliés par une carte « lien » ; `docs/CARTE-DES-LIENS.md` générée (`node scripts/liens.mjs`).
 5. Chaque niveau a sa ligne « Kintana sait… » (garde-fou **E28**).
-6. Rythme explication/pratique : garde-fou **E29** avec liste d'attente de 16 niveaux.
+6. Rythme explication/pratique : 21 questions courtes insérées dans 16 niveaux, garde-fou **E29** (≤ 5 explications d'affilée).
+7. 288 indices écrits à la main, garde-fou **E30** (un indice par carte notée, jamais la réponse).
 
 ## 6. Reste à faire (tâches Codex READY à son retour, sinon Claude en relais)
 
-- **T-016** : écrire les 288 indices manquants.
-- **T-017** : réorganiser les 16 niveaux trop « lecture ».
+- ~~T-016 (288 indices)~~ et ~~T-017 (séries d'explications)~~ : faits le 2 nov. (E29, E30).
 - Faire **tester par de vrais élèves** (COMIMa) et mesurer les temps réels : seule vraie validation de cette revue.
 - Réfléchir à : niveaux « enquête », défis ★ / ★★, curseur de confiance, récapitulatif hebdomadaire, paquet NumPy/pandas facultatif.

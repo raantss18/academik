@@ -22,6 +22,7 @@ sources:
     }
 cartes:
   - id: c1
+    indice: { fr: 'Python affiche avec une fonction. Le texte à afficher va entre guillemets.', en: 'Python displays with a function. The text to display goes in quotes.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: "Ton assistant Kintana doit afficher **Bonjour Rakoto** à l'écran. Quelle
@@ -127,6 +128,7 @@ cartes:
     fr: Lire un nom avant de lui attribuer une valeur provoque une erreur. Python ne devine pas la valeur initiale.
     en: Reading a name before assigning it a value causes an error. Python does not guess the initial value.
   - id: c4
+    indice: { fr: 'Sans guillemets, `age` est une variable : remplace-la par sa valeur, puis calcule.', en: 'Without quotes, `age` is a variable: replace it by its value, then compute.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: "Après `age = 15`, qu'affiche `print(age + 1)` ?"
@@ -213,6 +215,7 @@ cartes:
     fr: Sans le préfixe `f`, les accolades restent du texte. `"{documents}"` ne remplace pas le nom par sa valeur.
     en: Without the `f` prefix, braces remain text. `"{documents}"` does not replace the name with its value.
   - id: c6
+    indice: { fr: 'Qu’est-ce qui doit exister avant de pouvoir être utilisé ? Commence par cette ligne.', en: 'What must exist before it can be used? Start with that line.' }
     type: parsons
     note: { kind: exercise, poids: 1 }
     fr: "Remets ces lignes dans l'ordre pour afficher `Bonjour Soa`."
@@ -251,6 +254,7 @@ cartes:
       print(total_2)
     sortie: "8"
   - id: c7
+    indice: { fr: 'Un nom ne commence pas par un chiffre et n’a ni tiret ni espace. Teste chaque proposition.', en: 'A name does not start with a digit and has no dash or space. Test each option.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: "Lequel de ces noms est un nom de variable **valide** ?"
@@ -267,6 +271,7 @@ cartes:
         reserved word like `class`."
 
   - id: c8
+    indice: { fr: 'Dans une f-string, Python calcule ce qui est entre accolades. Écris ensuite le texte entier.', en: 'In an f-string, Python computes what is between braces. Then write the whole text.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: "Qu'affiche `print(f\"{2 + 3} ans\")` ? (écris exactement ce qui s'affiche)"
@@ -280,6 +285,7 @@ cartes:
       en: "In an f-string, what is between braces is **computed**: `2 + 3` gives 5."
 
   - id: c9
+    indice: { fr: 'Quel signe demande à Python de mettre la valeur d’une variable dans un texte ?', en: 'Which sign asks Python to put a variable’s value into a text?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: "Complète : `prenom = \"Hery\"` puis `print(f\"Salut ___\")` pour afficher
@@ -302,6 +308,7 @@ cartes:
         would write the word `prenom`."
 
   - id: c10
+    indice: { fr: 'Les guillemets rendent le texte littéral. Que contiennent-ils exactement ?', en: 'Quotes make the text literal. What exactly do they contain?' }
     type: saisie
     note: { kind: quiz, poids: 1 }
     fr: "Récap. Avec `nom = \"Soa\"`, qu'affiche `print(\"nom\")` ?"
@@ -341,6 +348,7 @@ cartes:
     fr: Un chiffre entre guillemets fait partie d’une chaîne. Python ne le transforme pas automatiquement en nombre pour une addition.
     en: A digit inside quotes belongs to a string. Python does not automatically turn it into a number for addition.
   - id: c11
+    indice: { fr: 'Les guillemets autour de `2` et de `3` en font du texte. Que fait `+` sur du texte ?', en: 'The quotes around `2` and `3` make them text. What does `+` do on text?' }
     type: qcm
     note: { kind: quiz, poids: 1 }
     defi: true

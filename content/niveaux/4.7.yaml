@@ -9,6 +9,7 @@ sources:
   - { titre: 'Python — module fractions', url: 'https://docs.python.org/3/library/fractions.html', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Une ligne qui est un multiple d’une autre n’apporte rien de nouveau. Compte les lignes restantes.', en: 'A row that is a multiple of another brings nothing new. Count the remaining rows.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Dans la matrice $\begin{pmatrix}1&2\\2&4\end{pmatrix}$, la seconde ligne est le **double** de la première. Combien de lignes vraiment différentes a-t-elle ?'

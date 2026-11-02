@@ -8,6 +8,7 @@ sources:
   - { titre: 'Boyd, Vandenberghe et Nobel — diapositives révisées en 2023 (référence uniquement)', url: 'https://web.stanford.edu/~boyd/cvxbook/bv_cvxslides.pdf', licence: 'Aucune licence libre indiquée ; lien seulement, aucun extrait repris' }
 cartes:
   - id: c1
+    indice: { fr: 'Calcule $f(2)$ et la moyenne de $f(0)$ et $f(4)$ : lequel est le plus petit ?', en: 'Compute $f(2)$ and the average of $f(0)$ and $f(4)$: which is smaller?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Pour $f(x)=x^2$, compare $f(2)$ à la moyenne de $f(0)$ et $f(4)$. Où se trouve la valeur au milieu ?'
@@ -62,6 +63,7 @@ cartes:
       - { fr: '$L''''(w)=2>0$ partout : la fonction est strictement convexe.', en: '$L''''(w)=2>0$ everywhere: the function is strictly convex.' }
       - { fr: '$L''(3)=0$ et $L(w)\geq2=L(3)$, avec égalité seulement en $3$ : le minimum est unique.', en: '$L''(3)=0$ and $L(w)\geq2=L(3)$, with equality only at $3$: the minimum is unique.' }
   - id: c4
+    indice: { fr: 'Dérive deux fois : la dérivée seconde d’un polynôme du second degré est une constante.', en: 'Differentiate twice: the second derivative of a quadratic polynomial is a constant.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $q(x)=3x^2-4x+7$, calcule la dérivée seconde $q''''(x)$.'
@@ -73,6 +75,7 @@ cartes:
       print(q(1)-2*q(0)+q(-1))
     explication: { fr: '$q''(x)=6x-4$, puis $q''''(x)=6>0$ ; $q$ est strictement convexe sur les réels.', en: '$q''(x)=6x-4$, then $q''''(x)=6>0$; $q$ is strictly convex on the real line.' }
   - id: c5
+    indice: { fr: 'Un carré est toujours positif ou nul. Pour quelle valeur de $w$ vaut-il zéro ?', en: 'A square is always positive or zero. For which value of $w$ is it zero?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Quel réel $w$ minimise $L(w)=(w-5)^2+4$ ? Donne le paramètre, pas la perte.'
@@ -85,6 +88,7 @@ cartes:
       print(Fraction(-b,2*a))
     explication: { fr: 'Le carré est minimal et nul en $w=5$ ; la perte minimale vaut alors $4$.', en: 'The square is minimized at zero when $w=5$; the minimum loss is then $4$.' }
   - id: c6
+    indice: { fr: 'Une fonction constante prend la même valeur partout : combien de points donnent le minimum ?', en: 'A constant function takes the same value everywhere: how many points give the minimum?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'La fonction constante $f(x)=7$ sur les réels est convexe. Son minimum est-il unique ?'
@@ -95,6 +99,7 @@ cartes:
       - { fr: 'Elle ne possède aucun minimum.', en: 'It has no minimum.' }
     explication: { fr: 'Toutes les valeurs sont égales ; la convexité seule ne donne pas l’unicité, contrairement à la stricte convexité lorsqu’un minimum existe.', en: 'All values are equal; convexity alone does not ensure uniqueness, unlike strict convexity when a minimum exists.' }
   - id: c7
+    indice: { fr: 'Calcule $f(1)$ et $f(5)$, puis $(1-t)f(1)+tf(5)$ avec $t=1/4$.', en: 'Compute $f(1)$ and $f(5)$, then $(1-t)f(1)+tf(5)$ with $t=1/4$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $f(x)=x^2$, $x=1$, $y=5$ et $t=1/4$, calcule la borne $(1-t)f(x)+tf(y)$ dans l’inégalité de convexité.'
@@ -115,6 +120,7 @@ cartes:
     en: 'Without convexity, a zero slope can mislead: the point may be a local minimum, a maximum, or neither. Convexity removes this risk.'
     exemple: { fr: 'Pour $f(x)=x^4-2x^2$ : $f''(x)=4x^3-4x$ s’annule en $-1$, $0$ et $1$. Les points $\pm1$ sont des minimums ($f=-1$) ; en $0$, $f''''(0)=-4<0$ : c’est un maximum local.', en: 'For $f(x)=x^4-2x^2$: $f''(x)=4x^3-4x$ vanishes at $-1$, $0$ and $1$. The points $\pm1$ are minima ($f=-1$); at $0$, $f''''(0)=-4<0$: it is a local maximum.' }
   - id: c9
+    indice: { fr: 'Calcule la dérivée seconde de $-x^2$ : son signe décide de la convexité.', en: 'Compute the second derivative of $-x^2$: its sign decides convexity.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pourquoi $f(x)=-x^2$ n’est-elle pas convexe sur les réels ?'

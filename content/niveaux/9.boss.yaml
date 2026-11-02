@@ -10,6 +10,7 @@ sources:
   - { titre: 'NIST — FIPS 180-4, Secure Hash Standard (SHA-256)', url: 'https://csrc.nist.gov/pubs/fips/180-4/upd1/final', licence: 'Domaine public (publication du gouvernement des États-Unis)' }
 cartes:
   - id: c1
+    indice: { fr: 'Un test qui change, ou qui sert à choisir le modèle, est-il encore neuf ?', en: 'Is a test set that changes, or serves to choose the model, still new?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Pourquoi dit-on qu’un jeu de test doit être **gelé** ?'

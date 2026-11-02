@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.18] — 2026-11-02
+
+### Message fr
+Quand tu te trompes, chaque question te donne maintenant un vrai indice, et les leçons te font répondre plus souvent au lieu de lire de longues explications d'affilée.
+
+### Message en
+When you get something wrong, every question now gives you a real hint, and lessons make you answer more often instead of reading long runs of explanations.
+
 ## [0.3.17] — 2026-11-02
 
 ### Message fr

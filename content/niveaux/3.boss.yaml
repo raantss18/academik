@@ -1,6 +1,6 @@
 id: '3.boss'
 module: 3
-duree_min: 13
+duree_min: 14
 titre: { fr: 'L’index inversé', en: 'The inverted index' }
 ia: { fr: 'Kintana sait retrouver un document vite : index inversé, tri, recherche.', en: 'Kintana can find a document quickly: inverted indexing, sorting, and searching.' }
 sources:
@@ -19,6 +19,7 @@ sources:
       repris du livre
 cartes:
   - id: c1
+    indice: { fr: 'On part d’un mot pour retrouver des documents. Quelle structure associe un mot à des identifiants ?', en: 'We start from a word to find documents. Which structure associates a word with identifiers?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana doit répondre souvent à « quels documents contiennent ce mot ? ». Quelle structure prépare directement cette recherche ?'
@@ -75,6 +76,17 @@ cartes:
       toujours ce que tu comptes."
     en: "Counting occurrences of pin gives three, but counting its documents gives two: always specify
       what you count."
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Que garde l’intersection de deux ensembles ?'
+    en: 'What does the intersection of two sets keep?'
+    choix:
+      - { fr: 'Les éléments communs aux deux', en: 'The elements common to both', juste: true }
+      - { fr: 'Tous les éléments des deux', en: 'All the elements of both' }
+      - { fr: 'Les éléments d’un seul des deux', en: 'The elements of only one of them' }
+    explication: { fr: 'L’intersection traduit « ET » : $A\cap B$ garde ce qui est dans $A$ et dans $B$.', en: 'The intersection translates “AND”: $A\cap B$ keeps what is in $A$ and in $B$.' }
+    indice: { fr: 'L’intersection est le « ET » logique.', en: 'The intersection is the logical “AND”.' }
   - id: c2d
     type: idee
     fr: "L’**intersection** garde les éléments communs à deux ensembles. Elle traduit « ET » : $A\\cap
@@ -109,6 +121,17 @@ cartes:
       sont en minuscules, séparés par des espaces. Chaque occurrence est lue, même répétée."
     en: "Our corpus: `1: 'riz eau riz'`, `2: 'eau sel'`, `3: 'riz sel'`, `4: 'eau riz sel'`. Words are
       lowercase, separated by spaces. Every occurrence is read, including repetitions."
+  - id: v2
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un index inversé associe chaque mot à quoi ?'
+    en: 'An inverted index associates each word with what?'
+    choix:
+      - { fr: 'Aux identifiants des documents qui le contiennent', en: 'The identifiers of the documents that contain it', juste: true }
+      - { fr: 'À sa longueur', en: 'Its length' }
+      - { fr: 'À son numéro dans l’alphabet', en: 'Its number in the alphabet' }
+    explication: { fr: 'On part du mot pour retrouver les documents, au lieu de parcourir tous les documents.', en: 'We start from the word to find the documents, instead of going through every document.' }
+    indice: { fr: 'Pense à l’index à la fin d’un livre.', en: 'Think of the index at the back of a book.' }
   - id: c3
     type: exemple
     lang: python
@@ -145,6 +168,7 @@ cartes:
       print(sum(len(t.split()) for t in docs.values()))
     sortie: "5"
   - id: c4
+    indice: { fr: 'Additionne le nombre de mots de chaque document, répétitions comprises.', en: 'Add the number of words of each document, repetitions included.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Dans ce corpus, combien d’occurrences de mots la construction parcourt-elle, répétitions incluses ?'
@@ -153,6 +177,7 @@ cartes:
     verif: "docs = ['riz eau riz', 'eau sel', 'riz sel', 'eau riz sel']\nprint(sum(len(text.split()) for text in docs))"
     explication: { fr: 'Les longueurs sont $3,2,2,3$, soit $10$ occurrences ; l’ensemble retire les doublons seulement lors du stockage.', en: 'The lengths are $3,2,2,3$, giving $10$ occurrences; the set removes duplicates only when storing IDs.' }
   - id: c5
+    indice: { fr: 'Cherche le mot `sel` dans chaque document du corpus et compte les documents.', en: 'Look for the word `sel` in each document of the corpus and count the documents.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Combien de documents distincts contient l’entrée `sel` de cet index ?'
@@ -208,6 +233,7 @@ cartes:
     en: Sorting orders results; it does not change which documents match the query. An insertion
       position may designate the end of the list.
   - id: c6
+    indice: { fr: 'Où s’insérerait 3 dans `[1, 2, 4]` pour garder l’ordre ?', en: 'Where would 3 be inserted in `[1, 2, 4]` to keep the order?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'La liste triée des documents contenant `eau` est `[1, 2, 4]`. Quelle position donne `bisect_left` pour l’identifiant $3$ ?'
@@ -216,6 +242,7 @@ cartes:
     verif: "from bisect import bisect_left\nprint(bisect_left([1, 2, 4], 3))"
     explication: { fr: 'La position $2$ contient $4$, pas $3$ : la position d’insertion ne prouve pas la présence.', en: 'Position $2$ contains $4$, not $3$: an insertion position does not prove membership.' }
   - id: c7
+    indice: { fr: 'Quelle écriture évite l’erreur quand la clé est absente et donne un ensemble vide ?', en: 'Which writing avoids the error when the key is absent and gives an empty set?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pour une requête dont un mot est absent, quelle expression renvoie un résultat vide sans erreur ?'
@@ -228,6 +255,7 @@ cartes:
     sortie: '0'
     explication: { fr: '`get` fournit un ensemble vide pour le mot absent ; l’intersection avec cet ensemble reste vide.', en: '`get` supplies an empty set for the missing word; intersecting with it stays empty.' }
   - id: c8
+    indice: { fr: 'Trie les identifiants dans l’ordre croissant, puis lis le deuxième.', en: 'Sort the identifiers in increasing order, then read the second.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Tu affiches les résultats `{4, 1, 3}` en ordre croissant. Quel identifiant apparaît en deuxième ?'
@@ -291,6 +319,7 @@ cartes:
     en: "A nearby document does not necessarily contain the requested word: distance and content are
       separate conditions to check."
   - id: c9
+    indice: { fr: 'Parcours en largeur : liste les sommets découverts à distance 1, puis à distance 2.', en: 'Breadth-first: list the vertices found at distance 1, then at distance 2.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Les liens orientés entre documents sont 1 → 2, 1 → 3, 2 → 4, 3 → 4 et 4 → 1. À quelle distance minimale de 1 se trouve 4 ?'

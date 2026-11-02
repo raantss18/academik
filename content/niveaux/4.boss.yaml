@@ -8,6 +8,7 @@ sources:
   - { titre: 'scikit-learn — cosine_similarity', url: 'https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html', licence: 'BSD-3-Clause' }
 cartes:
   - id: c1
+    indice: { fr: 'Compte les occurrences du mot « chat » dans la phrase, sans compter « lune ».', en: 'Count the occurrences of the word “chat” in the sentence, without counting “lune”.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana reçoit « chat lune chat chat ». Dans le vocabulaire ordonné (chat, lune), quelle est la première coordonnée du vecteur de comptage ?'
@@ -60,6 +61,7 @@ cartes:
     verif: 'from math import sqrt; q,d=[1,0],[3,4]; dot=sum(a*b for a,b in zip(q,d)); nq=sqrt(sum(a*a for a in q)); nd=sqrt(sum(b*b for b in d)); print(None if nq==0 or nd==0 else dot/(nq*nd))'
     sortie: '0.6'
   - id: c4
+    indice: { fr: 'La première coordonnée de $Dq$ est le produit scalaire de la première ligne par $q$.', en: 'The first coordinate of $Dq$ is the dot product of the first row with $q$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Deux textes deviennent les lignes de $D=\begin{pmatrix}3&4\\0&5\end{pmatrix}$. Pour $q=(1,0)$, donne la première coordonnée de $Dq$, avant normalisation.'
@@ -68,6 +70,7 @@ cartes:
     verif: 'D,q=[[3,4],[0,5]],[1,0]; print([sum(a*b for a,b in zip(row,q)) for row in D][0])'
     explication: { fr: '$Dq=(3,0)$ : un produit scalaire par texte, pas encore les cosinus.', en: '$Dq=(3,0)$: one dot product per text, not yet the cosines.' }
   - id: c5
+    indice: { fr: 'Calcule le produit scalaire, puis divise par le produit des normes de $(6,8)$ et $(1,0)$.', en: 'Compute the dot product, then divide by the product of the norms of $(6,8)$ and $(1,0)$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Un texte a été répété deux fois : son vecteur devient $(6,8)$. Pour la requête $(1,0)$, calcule son cosinus sous forme de fraction irréductible.'
@@ -76,6 +79,7 @@ cartes:
     verif: 'from fractions import Fraction; from math import isqrt; q,d=(1,0),(6,8); print(Fraction(sum(a*b for a,b in zip(q,d)),isqrt(sum(a*a for a in q))*isqrt(sum(b*b for b in d))))'
     explication: { fr: '$6/10=3/5$ : le texte répété garde la même direction, donc le même score.', en: '$6/10=3/5$: the repeated text keeps the same direction, hence the same score.' }
   - id: c6
+    indice: { fr: 'Soustrais la première équation de la seconde pour éliminer $y$.', en: 'Subtract the first equation from the second to eliminate $y$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Des scores imposent les poids $x+y=3$ et $2x+y=5$. Retrouve $x$, le poids du premier mot.'
@@ -98,6 +102,7 @@ cartes:
     fr: 'Un texte sans mot du vocabulaire donne le vecteur nul : marque son cosinus comme indéfini ; même un score élevé entre textes non nuls mesure les comptages, sans garantir le même sens.'
     en: 'A text containing no vocabulary words gives the zero vector: mark its cosine as undefined; even a high score between nonzero texts measures counts without guaranteeing the same meaning.'
   - id: c8
+    indice: { fr: 'Que se passe-t-il quand une norme est nulle dans la division du cosinus ?', en: 'What happens when a norm is zero in the cosine’s division?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Avec le vocabulaire (chat, lune), « soleil » devient $(0,0)$. Quel résultat doit renvoyer le code de l’exemple pour sa comparaison à $(1,0)$ ?'
@@ -110,6 +115,7 @@ cartes:
     sortie: 'None'
     explication: { fr: 'Le dénominateur est nul ; la branche `None` évite la division et distingue l’absence de direction de l’orthogonalité.', en: 'The denominator is zero; the `None` branch avoids division and distinguishes absence of direction from orthogonality.' }
   - id: c9
+    indice: { fr: 'Applique $A$ au vecteur $(0,1)$ et compare le résultat à ce vecteur.', en: 'Apply $A$ to the vector $(0,1)$ and compare the result with that vector.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Avant de compresser, Kintana applique $A=\operatorname{diag}(5,2)$. Quelle est la valeur propre associée à $v=(0,1)$ ?'
@@ -118,6 +124,7 @@ cartes:
     verif: 'from fractions import Fraction; A=[[5,0],[0,2]]; v=[0,1]; w=[sum(a*b for a,b in zip(row,v)) for row in A]; k=Fraction(w[1],v[1]); assert w==[k*t for t in v]; print(k)'
     explication: { fr: '$Av=(0,2)=2v$ : la direction verticale est étirée d’un facteur $2$.', en: '$Av=(0,2)=2v$: the vertical direction is stretched by a factor of $2$.' }
   - id: c10
+    indice: { fr: 'Applique $A_1$ au vecteur $(0,3)$ puis calcule la norme du résultat.', en: 'Apply $A_1$ to the vector $(0,3)$ then compute the norm of the result.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $A=\operatorname{diag}(5,2)$, tronque la SVD en gardant seulement la valeur singulière $5$ : $A_1=\operatorname{diag}(5,0)$. Quelle est la norme de $A_1(0,3)$ ?'

@@ -36,6 +36,7 @@ cartes:
       - fr: "2"
         en: "2"
     sortie: "8"
+    indice: { fr: 'La borne inférieure est le centre moins la marge.', en: 'The lower bound is the centre minus the margin.' }
     id: c1
   - type: idee
     fr: Un intervalle de confiance encadre une estimation avec une marge. Une méthode à $95\%$ couvre le paramètre fixe dans environ $95\%$ des répétitions, sous ses hypothèses.
@@ -145,6 +146,7 @@ cartes:
     explication:
       fr: "L’erreur standard décrit la variabilité de la moyenne : $2/4=0{,}5$, pas celle d’une observation."
       en: "The standard error describes variability of the mean: $2/4=0.5$, not variability of an observation."
+    indice: { fr: 'Calcule $\sqrt{16}$ puis divise $\sigma$ par ce résultat.', en: 'Compute $\sqrt{16}$ then divide $\sigma$ by that result.' }
     id: c4
   - type: saisie
     note:
@@ -163,6 +165,7 @@ cartes:
     explication:
       fr: La marge vaut $1{,}96$ erreurs standards, donc $0{,}98$.
       en: The margin is $1.96$ standard errors, hence $0.98$.
+    indice: { fr: 'Marge = facteur × erreur standard.', en: 'Margin = factor × standard error.' }
     id: c5
   - type: saisie
     note:
@@ -178,6 +181,7 @@ cartes:
     explication:
       fr: "La marge varie comme $1/\\sqrt n$ : il faut quatre fois plus d’observations indépendantes."
       en: "The margin scales as $1/\\sqrt n$: you need four times as many independent observations."
+    indice: { fr: 'La marge varie comme $1/\sqrt n$ : que faut-il faire à $n$ pour diviser $\sqrt n$ par 2 ?', en: 'The margin varies as $1/\sqrt n$: what must be done to $n$ to divide $\sqrt n$ by 2?' }
     id: c6
   - type: piege
     fr: Après observation, l’intervalle contient le paramètre fixe ou ne le contient pas. « 95 % » qualifie la méthode répétée, pas une probabilité attribuée au paramètre.
@@ -225,6 +229,7 @@ cartes:
     explication:
       fr: Le premier et le troisième contiennent $10$. Quatre répétitions ne suffisent pas pour mesurer précisément la couverture.
       en: The first and third contain $10$. Four repetitions are too few to estimate coverage precisely.
+    indice: { fr: 'Pour chaque intervalle, regarde si $10$ est entre les bornes (incluses).', en: 'For each interval, check whether $10$ is between the bounds (included).' }
     id: c8
   - type: saisie
     note:
@@ -243,6 +248,7 @@ cartes:
     explication:
       fr: Une confiance plus élevée élargit l’intervalle, à données identiques.
       en: Higher confidence widens the interval for the same data.
+    indice: { fr: 'Marge = nouveau facteur × erreur standard.', en: 'Margin = new factor × standard error.' }
     id: c9
   - type: plus
     fr: "Pour aller plus loin : si l’écart-type de population est inconnu, on l’estime avec les observations. Pour des observations normales indépendantes, on utilise alors un facteur de Student, dépendant de la taille (NIST, sources)."
@@ -265,6 +271,7 @@ cartes:
       fr: Il faut $\sqrt n\ge1{,}96\times4/0{,}98=8$, donc $n\ge64$. La moyenne ne change pas la marge.
       en: We need $\sqrt n\ge1.96\times4/0.98=8$, so $n\ge64$. The mean does not change the margin.
     defi: true
+    indice: { fr: 'Résous « facteur × $\sigma/\sqrt n\leq0{,}98$ » pour $\sqrt n$, puis élève au carré.', en: 'Solve “factor × $\sigma/\sqrt n\leq0.98$” for $\sqrt n$, then square.' }
     id: c11
   - type: retenir
     fr: "À retenir : Kintana accompagne une estimation d’une marge et de ses hypothèses. La couverture est une propriété de répétition de la méthode."

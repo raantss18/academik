@@ -1,7 +1,7 @@
 # Niveau 2.2 — Python 2 : décider. Original academik ; notions vérifiées dans le tutoriel officiel Python (instructions if) et la référence (comparaisons).
 id: '2.2'
 module: 2
-duree_min: 17
+duree_min: 18
 titre: { fr: 'Décider', en: 'Deciding' }
 ia: { fr: 'Kintana sait choisir entre plusieurs réponses selon une condition.', en: 'Kintana can choose between several answers depending on a condition.' }
 sources:
@@ -12,6 +12,7 @@ sources:
   - { titre: 'Python — Référence, comparaisons', url: 'https://docs.python.org/3/reference/expressions.html#comparisons', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Teste la condition avec la valeur de `age` : est-elle vraie ou fausse ? Choisis alors la branche.', en: 'Test the condition with the value of `age`: is it true or false? Then pick the branch.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
@@ -91,6 +92,17 @@ cartes:
       - { code: '    print("admis")', fr: 'Ce décalage de quatre espaces, l’**indentation**, dit que la ligne appartient au `if`. Elle s’exécute.', en: 'This four-space shift, the **indentation**, says the line belongs to the `if`. It runs.' }
       - { code: 'else:', fr: 'Le `else` ne s’exécute que si la condition était fausse : ici, on le saute.', en: 'The `else` only runs if the condition was false: here, it is skipped.' }
       - { code: '    print("refusé")', fr: 'Cette ligne est sautée. Le programme affiche donc seulement `admis`.', en: 'This line is skipped. The program therefore displays only `admis`.' }
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Que vaut la condition `7 >= 7` ?'
+    en: 'What is the value of the condition `7 >= 7`?'
+    choix:
+      - { fr: '`True`', en: '`True`', juste: true }
+      - { fr: '`False`', en: '`False`' }
+      - { fr: '`7`', en: '`7`' }
+    explication: { fr: '`>=` accepte l’égalité : sept est bien supérieur ou égal à sept.', en: '`>=` accepts equality: seven is indeed greater than or equal to seven.' }
+    indice: { fr: '`>=` signifie « supérieur ou égal ».', en: '`>=` means “greater than or equal to”.' }
   - id: d_indent
     type: idee
     fr: Un bloc regroupe les instructions d’une branche. L’indentation marque cette appartenance ; revenir à gauche signifie sortir du bloc.
@@ -202,6 +214,7 @@ cartes:
     fr: Tester d’abord « au moins cinq » absorberait aussi vingt. Dans cette classification, commence par le seuil le plus élevé.
     en: Testing “at least five” first would also capture twenty. In this classification, start with the highest threshold.
   - id: c6
+    indice: { fr: 'Lis les conditions dans l’ordre : la première vraie est la seule exécutée.', en: 'Read the conditions in order: the first true one is the only one run.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: |

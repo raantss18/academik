@@ -9,6 +9,7 @@ sources:
   - { titre: 'GNU Coreutils — ls -l', url: 'https://www.gnu.org/software/coreutils/manual/html_node/What-information-is-listed.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Lis les trois lettres du premier groupe : `rw-`. Qui est ce groupe ?', en: 'Read the three letters of the first group: `rw-`. Who is that group?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Un fichier affiche `-rw-r--r--` dans `ls -l`. Qui peut le **modifier** ?'
@@ -39,6 +40,7 @@ cartes:
       - { fr: 'Le `-` du début indique un fichier. Puis `rw-` : le propriétaire lit et modifie, sans lancer.', en: 'The leading `-` means a file. Then `rw-`: the owner reads and changes, without running.' }
       - { fr: 'Ensuite `r--` : le groupe lit seulement. Enfin `---` : les autres n’ont aucun droit.', en: 'Then `r--`: the group only reads. Finally `---`: others have no permission at all.' }
   - id: c3
+    indice: { fr: 'Cherche la lettre `x` dans chacun des trois groupes de trois lettres.', en: 'Look for the letter `x` in each of the three groups of three letters.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Dans `-rwxr-xr-x`, qui peut **lancer** le fichier ?'
@@ -128,6 +130,7 @@ cartes:
     en: 'For a **folder**, the letters change meaning. `r` lets you list its content. `w` lets you create or delete files in it. `x` lets you enter it with `cd`.'
     exemple: { fr: 'Un dossier `drwxr-xr-x` (`755`) : tous peuvent y entrer et le lister, seul le propriétaire peut y ajouter ou retirer des fichiers.', en: 'A folder `drwxr-xr-x` (`755`): everyone can enter and list it, only the owner can add or remove files.' }
   - id: c7
+    indice: { fr: 'Calcule la somme des droits pour chacun des trois groupes : propriétaire, groupe, autres.', en: 'Compute the sum of permissions for each of the three groups: owner, group, others.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Kintana veut qu’un script soit **lancé par tous mais modifié par elle seule**. Quel mode choisir ?'

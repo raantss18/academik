@@ -9,6 +9,7 @@ sources:
   - { titre: 'MIT 6.036 — Introduction to Machine Learning', url: 'https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/about', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
 cartes:
   - id: c1
+    indice: { fr: 'Calcule l’écart de chaque prédiction, élève au carré, puis fais la moyenne.', en: 'Compute each prediction’s gap, square it, then average.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Un modèle prédit `1, 2, 3` alors que les vraies valeurs sont `1, 2, 5`. Quelle est la **moyenne des erreurs au carré** ?'

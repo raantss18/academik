@@ -1,6 +1,6 @@
 id: '0.1'
 module: 0
-duree_min: 11
+duree_min: 12
 titre: { fr: 'Vrai ou faux ?', en: 'True or false?' }
 ia: { fr: 'Kintana distingue une règle générale, un témoin et un contre-exemple.', en: 'Kintana distinguishes a general rule, a witness and a counterexample.' }
 sources:
@@ -8,6 +8,7 @@ sources:
   - { titre: 'Oscar Levin — Mathematical Statements', url: 'https://discrete.openmathbooks.org/dmoi3/sec_intro-statements.html', licence: 'CC BY-SA 4.0' }
 cartes:
   - id: c1
+    indice: { fr: 'Cherche le nombre de la liste qui n’est pas pair.', en: 'Look for the number in the list that is not even.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana affirme : « Tous les nombres de la liste $[2,4,7]$ sont pairs. » Quel nombre réfute cette affirmation ?'
@@ -42,6 +43,17 @@ cartes:
     type: piege
     fr: "Une proposition n’est pas forcément vraie : « douze est impair » est une proposition fausse."
     en: "A statement need not be true: “twelve is odd” is a false statement."
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Laquelle de ces phrases est une proposition ?'
+    en: 'Which of these sentences is a proposition?'
+    choix:
+      - { fr: '« Ferme la porte ! »', en: '“Close the door!”' }
+      - { fr: '« Sept est un nombre pair »', en: '“Seven is an even number”', juste: true }
+      - { fr: '« Quelle heure est-il ? »', en: '“What time is it?”' }
+    explication: { fr: 'Une proposition est vraie ou fausse. « Sept est pair » est fausse, mais c’est bien une proposition.', en: 'A proposition is true or false. “Seven is even” is false, but it is a proposition.' }
+    indice: { fr: 'Cherche la phrase dont on peut dire « vrai » ou « faux ».', en: 'Look for the sentence you can call “true” or “false”.' }
   - id: c2a
     type: idee
     fr: 'Deux symboles reviennent partout. Ils parlent toujours d’un **ensemble précisé** : la liste des objets dont on parle.'
@@ -75,6 +87,17 @@ cartes:
     type: piege
     fr: Trouver un témoin ne signifie pas qu’il est unique. Dans cette liste, dix et douze sont deux témoins de parité.
     en: Finding a witness does not mean it is unique. In this list, ten and twelve are two witnesses of evenness.
+  - id: v2
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quelle est la négation de « tous les nombres de la liste sont pairs » ?'
+    en: 'What is the negation of “all numbers in the list are even”?'
+    choix:
+      - { fr: 'Aucun nombre de la liste n’est pair', en: 'No number in the list is even' }
+      - { fr: 'Au moins un nombre de la liste n’est pas pair', en: 'At least one number in the list is not even', juste: true }
+      - { fr: 'Tous les nombres de la liste sont impairs', en: 'All numbers in the list are odd' }
+    explication: { fr: 'Le contraire de « tous » est « au moins un ne… pas », pas « aucun ».', en: 'The opposite of “all” is “at least one not…”, not “none”.' }
+    indice: { fr: 'Relis la carte sur la négation : le contraire de « tous » n’est pas « aucun ».', en: 'Reread the negation card: the opposite of “all” is not “none”.' }
   - id: c2b
     type: idee
     fr: '**Nier** une phrase, c’est dire le contraire exact. Le contraire de « tous » n’est pas « aucun » : c’est « au moins un ne… pas ».'
@@ -93,6 +116,7 @@ cartes:
       - { fr: '$6$ ne vérifie pas la règle : la proposition universelle est fausse.', en: '$6$ fails the rule: the universal statement is false.' }
       - { fr: 'Sa négation est « il existe un élément supérieur ou égal à $5$ » ; $6$ en est un témoin.', en: 'Its negation is “there is an element greater than or equal to $5$”; $6$ is a witness.' }
   - id: c4
+    indice: { fr: 'Une proposition est vraie ou fausse. Une question ou un ordre ne l’est pas.', en: 'A proposition is true or false. A question or an order is not.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Laquelle est une proposition dont on peut décider la vérité ?'
@@ -103,6 +127,7 @@ cartes:
       - { fr: '$8$ est pair.', en: '$8$ is even.', juste: true }
     explication: { fr: 'L’affirmation sur $8$ est vraie ; une question et un ordre n’affirment rien de vrai ou faux.', en: 'The claim about $8$ is true; a question and a command assert nothing true or false.' }
   - id: c5
+    indice: { fr: 'Le contraire de « tous » n’est pas « aucun » : relis la carte sur la négation.', en: 'The opposite of “all” is not “none”: reread the negation card.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Quelle est la négation de « tous les messages sont lisibles » ?'
@@ -113,6 +138,7 @@ cartes:
       - { fr: 'Au moins un message est lisible.', en: 'At least one message is readable.' }
     explication: { fr: '« Pas tous » exige un échec, sans imposer que tous échouent.', en: '“Not all” requires one failure, without requiring every message to fail.' }
   - id: c6
+    indice: { fr: 'Teste chaque élément de l’ensemble l’un après l’autre : calcule son carré et compare à 8.', en: 'Test each element of the set in turn: compute its square and compare with 8.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Dans $E=\{1,2,3,4\}$, combien de témoins vérifient $x^2>8$ ?'
@@ -121,6 +147,7 @@ cartes:
     verif: 'print(sum(x*x > 8 for x in [1,2,3,4]))'
     explication: { fr: '$3$ et $4$ conviennent, car leurs carrés sont $9$ et $16$.', en: '$3$ and $4$ work, since their squares are $9$ and $16$.' }
   - id: c7
+    indice: { fr: 'Pour nier « il existe », il faut que le cas soit exclu pour chaque fichier.', en: 'To negate “there exists”, the case must be excluded for every file.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Quelle est la négation de « il existe un fichier vide » ?'
@@ -161,6 +188,7 @@ cartes:
     fr: La réciproque échange les deux parties d’une implication. « Pair implique multiple de quatre » est faux, même si la règle initiale est vraie.
     en: The converse swaps the two parts of an implication. “Even implies multiple of four” is false, even though the original rule is true.
   - id: c8
+    indice: { fr: 'Une promesse n’est fausse que dans un seul cas : quand la condition est remplie et la suite non.', en: 'A promise is false in only one case: when the condition holds and the result does not.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pour une règle « si $P$, alors $Q$ », quel cas la rend fausse ?'
@@ -171,6 +199,7 @@ cartes:
       - { fr: '$P$ vrai, $Q$ vrai', en: '$P$ true, $Q$ true' }
     explication: { fr: 'La règle promet $Q$ lorsque $P$ est vrai ; seule une promesse non tenue la réfute.', en: 'The rule promises $Q$ when $P$ is true; only a broken promise refutes it.' }
   - id: c9
+    indice: { fr: 'Qu’en est-il des entiers que personne n’a testés ? Un test partiel n’est pas une preuve.', en: 'What about the integers nobody tested? A partial test is not a proof.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: '« Tous les entiers positifs vérifient cette règle. » Kintana teste seulement les $100$ premiers avec succès : que peut-il conclure ?'

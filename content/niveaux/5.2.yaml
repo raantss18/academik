@@ -7,6 +7,7 @@ sources:
   - { titre: 'MIT OCW — 18.01SC, Differentiation', url: 'https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
 cartes:
   - id: c1
+    indice: { fr: 'Pente moyenne = variation de $f$ divisée par variation de $x$ : calcule $f(3)$ et $f(2)$.', en: 'Average slope = change in $f$ divided by change in $x$: compute $f(3)$ and $f(2)$.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Pour $f(x)=x^2$, quelle est la pente moyenne entre $x=2$ et $x=3$ ?'
@@ -64,6 +65,7 @@ cartes:
       - { fr: 'Le quotient $[E(w+h)-E(w)]/h$ vaut $2w-6+h$ pour $h\ne0$.', en: 'The quotient $[E(w+h)-E(w)]/h$ equals $2w-6+h$ for $h\ne0$.' }
       - { fr: 'À la limite, $E''(w)=2(w-3)$ ; en $w=1$, la pente vaut $-4$.', en: 'Taking the limit gives $E''(w)=2(w-3)$; at $w=1$, the slope is $-4$.' }
   - id: c4
+    indice: { fr: 'Dérive $x^2$ avec la règle du cours, puis remplace $x$ par $5$.', en: 'Differentiate $x^2$ with the rule from the lesson, then replace $x$ with $5$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $f(x)=x^2$, calcule $f''(5)$.'
@@ -75,6 +77,7 @@ cartes:
       print(((x+h)**2-(x-h)**2)/(2*h))
     explication: { fr: '$f''(x)=2x$, donc $f''(5)=10$ ; la différence centrée est exacte pour ce polynôme quadratique.', en: '$f''(x)=2x$, so $f''(5)=10$; the centered difference is exact for this quadratic polynomial.' }
   - id: c5
+    indice: { fr: 'Dérive d’abord $E(w)=(w-3)^2$ avec la règle du niveau (ou développe), puis remplace $w$ par $4$.', en: 'First differentiate $E(w)=(w-3)^2$ with the level’s rule (or expand), then replace $w$ with $4$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $E(w)=(w-3)^2$, calcule $E''(4)$.'
@@ -92,6 +95,7 @@ cartes:
     en: 'The **tangent** at $a$ is the line $y=f(a)+f''(a)(x-a)$. Near $a$, we read an approximate value of $f(x)$ on it.'
     exemple: { fr: 'Pour $f(x)=x^2$ en $a=1$ : $y=1+2(x-1)$. En $x=1{,}1$, la tangente donne $1{,}2$ ; la vraie valeur est $1{,}21$ : l’écart est petit.', en: 'For $f(x)=x^2$ at $a=1$: $y=1+2(x-1)$. At $x=1.1$, the tangent gives $1.2$; the true value is $1.21$: the gap is small.' }
   - id: c6
+    indice: { fr: 'Tangente en 2 : $f(2)+f''(2)\times0{,}1$. Calcule les deux termes.', en: 'Tangent at 2: $f(2)+f''(2)\times0.1$. Compute both terms.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Utilise la tangente à $f(x)=x^2$ en $2$ pour APPROCHER $f(2{,}1)$ (point ou virgule).'
@@ -102,6 +106,7 @@ cartes:
       print(2**2 + Fraction(1,10)*2*2)
     explication: { fr: 'La tangente donne $4+0{,}1\times4=4{,}4$ ; la vraie valeur est $4{,}41$, car on néglige $h^2$.', en: 'The tangent gives $4+0.1\times4=4.4$; the true value is $4.41$, because we omit $h^2$.' }
   - id: c7
+    indice: { fr: 'Une dérivée existe seulement si les pentes à gauche et à droite sont égales.', en: 'A derivative exists only if the slopes on the left and on the right are equal.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $f(x)=|x|$, le quotient $[f(h)-f(0)]/h$ vaut $-1$ à gauche et $1$ à droite. Que conclus-tu ?'
@@ -116,6 +121,7 @@ cartes:
     fr: 'Une dérivée nulle ne garantit pas un minimum : pour $f(x)=x^3$, $f''(0)=0$, mais la fonction prend des valeurs négatives à gauche et positives à droite.'
     en: 'A zero derivative does not guarantee a minimum: for $f(x)=x^3$, $f''(0)=0$, but the function takes negative values on the left and positive values on the right.'
   - id: c9
+    indice: { fr: 'Dérive terme à terme : la constante disparaît. Remplace ensuite $x$ par $2$.', en: 'Differentiate term by term: the constant disappears. Then replace $x$ with $2$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Si $f(x)=3x^2-2x+7$, combien vaut $f''(2)$ ?'
