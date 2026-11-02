@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 18,
-  "version": "0.3.15",
+  "build": 20,
+  "version": "0.3.17",
   "notes": {
-   "fr": "Les messages de mise à jour sont de nouveau lisibles sur la carte : une petite fiche claire, qui ne cache plus la ville ni les boutons.",
-   "en": "Update messages are readable again on the map: a small, clear card that no longer hides the city or the buttons."
+   "fr": "Le cours s'agrandit encore : fin des modules 3, 4 et 5, et un nouveau module « Apprentissage automatique » (droite, biais et variance, classer, mesurer, régularisation, arbres). Les niveaux sont reliés entre eux, les durées affichées sont plus justes, et quand tu te trompes, une carte te renvoie vers l'explication à relire.",
+   "en": "The course grows again: end of modules 3, 4 and 5, and a new “Machine learning” module (line fitting, bias and variance, classifying, measuring, regularisation, trees). Levels are linked together, displayed durations are more accurate, and when you get something wrong, a card points you back to the explanation to reread."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.15/academik-0.3.15.apk",
-    "sha256": "5e74f38cd8ae1f435ee54a7a702ee2edbc2d08b8adb65eeb4de288e2b901867b",
-    "bytes": 10434680
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.17/academik-0.3.17.apk",
+    "sha256": "588a4065f00719550c37ee1aa281684acb4519cfa090d6bd64f42dc2ea4d3060",
+    "bytes": 10585808
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.15/academik-0.3.15-x86_64.AppImage",
-    "sha256": "113f2fe6cb944a06b6191d7f4ded7ce0830e0315eddbd45d357010cb3ff791e4",
-    "bytes": 114936312
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.17/academik-0.3.17-x86_64.AppImage",
+    "sha256": "2f1fe058418f3cfc06e95d56486bec1fa0a90acd740f1efb1fa778ac1ac6585c",
+    "bytes": 115071480
    }
   }
  },
  "history": [
+  {
+   "build": 18,
+   "version": "0.3.15",
+   "notes": {
+    "fr": "Les messages de mise à jour sont de nouveau lisibles sur la carte : une petite fiche claire, qui ne cache plus la ville ni les boutons.",
+    "en": "Update messages are readable again on the map: a small, clear card that no longer hides the city or the buttons."
+   }
+  },
   {
    "build": 17,
    "version": "0.3.14",
