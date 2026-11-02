@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 26,
-  "version": "0.3.23",
+  "build": 27,
+  "version": "0.3.24",
   "notes": {
-   "fr": "Nouveau module « Transformers » : tu découpes du texte en tokens (BPE), tu écris le softmax, l'attention, le masque et le tirage avec température, puis tu assembles un mini-GPT qui génère du texte.",
-   "en": "New “Transformers” module: you split text into tokens (BPE), write the softmax, attention, mask and temperature sampling, then assemble a mini-GPT that generates text."
+   "fr": "Nouveau module « LLM locaux » : tu calcules la mémoire d'un modèle, tu le quantifies, tu mets en forme un prompt, tu estimes la vitesse, tu lis les licences, puis tu choisis le meilleur modèle pour ta machine.",
+   "en": "New “Local LLMs” module: you compute a model's memory, quantise it, format a prompt, estimate speed, read licences, then choose the best model for your machine."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.23/academik-0.3.23.apk",
-    "sha256": "978c7516d5f6ab08d34f516ffbbcce43bade04afdfc753bd123e6445f3e9343a",
-    "bytes": 10802803
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.24/academik-0.3.24.apk",
+    "sha256": "93d79612452e09cd35284b09f5fc1a25ecca9e66885b08e3ad239126f61339fe",
+    "bytes": 10857806
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.23/academik-0.3.23-x86_64.AppImage",
-    "sha256": "da11ba0fe1e23727d8eb6dca7b1eaeca932e276e5cdc9e3cbc3847cc3c115825",
-    "bytes": 115259896
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.24/academik-0.3.24-x86_64.AppImage",
+    "sha256": "d4f3ee62f368c9b17a7e73d1268a260a722e29b03017ef424e6e67c5c0bfeee9",
+    "bytes": 115317240
    }
   }
  },
  "history": [
+  {
+   "build": 26,
+   "version": "0.3.23",
+   "notes": {
+    "fr": "Nouveau module « Transformers » : tu découpes du texte en tokens (BPE), tu écris le softmax, l'attention, le masque et le tirage avec température, puis tu assembles un mini-GPT qui génère du texte.",
+    "en": "New “Transformers” module: you split text into tokens (BPE), write the softmax, attention, mask and temperature sampling, then assemble a mini-GPT that generates text."
+   }
+  },
   {
    "build": 25,
    "version": "0.3.22",
