@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 15,
-  "version": "0.3.12",
+  "build": 16,
+  "version": "0.3.13",
   "notes": {
-   "fr": "Les liens « Pour aller plus loin » sont maintenant un simple texte cliquable : plus d'adresse qui déborde de l'écran.",
-   "en": "“Further reading” links are now plain clickable text: no more long addresses overflowing the screen."
+   "fr": "Tu peux commencer chaque module quand tu veux : son premier niveau est toujours ouvert, il n'est pas nécessaire de tout réussir pour avancer. La page « À propos » donne aussi le contact de l'auteur et un lien pour télécharger l'application.",
+   "en": "You can start every module whenever you like: its first level is always open, you do not need to pass everything to move on. The “About” page also gives the author’s contact and a link to download the app."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.12/academik-0.3.12.apk",
-    "sha256": "518355f87910fdaf510fa893dabd6e063e533fc8e59600f3b26fce9229ccc3fb",
-    "bytes": 10215708
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.13/academik-0.3.13.apk",
+    "sha256": "0861730e6ba0bf2e9affa6ee4da4aa4fc01acd1688411c50c6b85b0b7f9ab904",
+    "bytes": 10330627
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.12/academik-0.3.12-x86_64.AppImage",
-    "sha256": "d644322c92664b7a08d0f42f5468818b6387db764f90d097aca08f2de212a25b",
-    "bytes": 114731512
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.13/academik-0.3.13-x86_64.AppImage",
+    "sha256": "2a8c946854fd967e3a1c9dc802fa04a98ce562892ef3087de4fb6695e704030a",
+    "bytes": 114833912
    }
   }
  },
  "history": [
+  {
+   "build": 15,
+   "version": "0.3.12",
+   "notes": {
+    "fr": "Les liens « Pour aller plus loin » sont maintenant un simple texte cliquable : plus d'adresse qui déborde de l'écran.",
+    "en": "“Further reading” links are now plain clickable text: no more long addresses overflowing the screen."
+   }
+  },
   {
    "build": 14,
    "version": "0.3.11",
