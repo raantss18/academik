@@ -158,36 +158,36 @@ cartes:
   fr: 'Une **probabilité** s’estime comme une moyenne d’indicatrices : pour chaque simulation, on compte $1$ si l’événement a lieu (ici, prix final $>$ seuil), $0$ sinon. La moyenne de ces $0$ et $1$ est la fréquence observée, estimation de la probabilité.'
   en: 'A **probability** is estimated as a mean of indicators: for each simulation, we count $1$ if the event occurs (here, final price $>$ threshold), $0$ otherwise. The mean of these $0$s and $1$s is the observed frequency, an estimate of the probability.'
   exemple:
-    fr: Si 1 800 simulations sur 10 000 dépassent le seuil, la probabilité estimée est $0{,}18$.
-    en: If 1,800 simulations out of 10,000 exceed the threshold, the estimated probability is $0.18$.
+    fr: 'Avec la graine 1 et un seuil de 120 €, 2 203 simulations sur 10 000 dépassent le seuil : probabilité estimée $0{,}22$ (la théorie donne $0{,}223$).'
+    en: 'With seed 1 and a threshold of €120, 2,203 simulations out of 10,000 exceed it: estimated probability $0.22$ (theory gives $0.223$).'
   figure:
     kind: tableau
     entetes:
     - fr: Simulations
       en: Simulations
-    - fr: Dépassent le seuil
-      en: Exceed threshold
+    - fr: Dépassent 120 €
+      en: Exceed €120
     - fr: Fréquence
       en: Frequency
     cellules:
     - - '100'
-      - '21'
-      - 0,21
+      - '23'
+      - 0,23
     - - 1 000
-      - '184'
-      - 0,184
+      - '207'
+      - 0,207
     - - fr: 10 000
         en: 10,000
         ton: ok
-      - fr: 1 803
-        en: 1,803
+      - fr: 2 203
+        en: 2,203
         ton: ok
-      - fr: 0,180
-        en: '0.180'
+      - fr: 0,220
+        en: '0.220'
         ton: ok
     legende:
-      fr: La fréquence se stabilise quand le nombre d’essais augmente.
-      en: The frequency stabilises as the number of trials grows.
+      fr: 'Valeurs réellement simulées ($S_0=100$, $\mu=5\,\%$, $\sigma=20\,\%$, graine 1) : la fréquence se stabilise près de $0{,}223$.'
+      en: 'Values actually simulated ($S_0=100$, $\mu=5\%$, $\sigma=20\%$, seed 1): the frequency settles near $0.223$.'
 - id: c8
   type: code
   note:

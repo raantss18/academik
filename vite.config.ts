@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { VitePWA } from 'vite-plugin-pwa';
 import { readFileSync, mkdirSync, copyFileSync, existsSync, statSync } from 'node:fs';
@@ -16,11 +16,17 @@ const pyodideFiles = () => ({
   },
 });
 
+// Politique de sécurité du contenu du site publié (la même que l'AppImage, voir src-tauri/tauri.conf.json) :
+// aucun script ni réseau hors du site lui-même. Ajoutée seulement à la construction (le serveur de dev a besoin d'un WebSocket).
+const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://raantss18.github.io; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; base-uri 'self'";
+const cspMeta = (): Plugin => ({ name: 'academik-csp', apply: 'build', transformIndexHtml: html => html.replace('<head>', `<head>\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`) });
+
 export default defineConfig({
   base: './',
   define: { __APP_BUILD__: Number(process.env.ACADEMIK_TEST_BUILD) || build.build,   // ACADEMIK_TEST_BUILD : essai de la bannière de mise à jour avec une fausse ancienne version (jamais pour une publication)
      __APP_VERSION__: JSON.stringify(build.version) },
   plugins: [
+    cspMeta(),
     pyodideFiles(),
     svelte(),
     // Hors ligne d'abord : tout le jeu (code, contenu, police, icônes) est précaché au premier chargement.

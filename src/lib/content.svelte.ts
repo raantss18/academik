@@ -10,7 +10,15 @@ import type { CursusModule, Level } from './level';
  * Le contenu téléchargé (IndexedDB) le remplace s'il est plus récent.
  */
 let bundled: Pack | null = null;
-const loadBundled = async (): Promise<Pack> => (bundled ??= (await import('../generated/content.json')).default as unknown as Pack);
+// Contenu embarqué en morceaux (un par module), chargés à la demande puis réunis : aucun fichier ne dépasse la limite du précache.
+const MORCEAUX = import.meta.glob<{ default: Partial<Pack> }>('../generated/pack/*.json');
+async function loadBundled(): Promise<Pack> {
+  if (bundled) return bundled;
+  const parts = await Promise.all(Object.values(MORCEAUX).map(f => f().then(m => m.default)));
+  const pack = { ...VIDE } as Pack, levels: Pack['levels'] = {}, sha: Pack['sha'] = {};
+  for (const p of parts) { Object.assign(pack, p.cursus ? p : {}); Object.assign(levels, p.levels ?? {}); Object.assign(sha, p.sha ?? {}); }
+  return (bundled = { ...pack, levels, sha });
+}
 const store = idbPackStore();
 const VIDE: Pack = { rev: 0, minBuild: 0, cursus: { modules: [] }, cursusSha: '', levels: {}, sha: {} };
 

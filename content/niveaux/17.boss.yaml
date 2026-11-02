@@ -10,7 +10,7 @@ ia:
   en: Kintana tells a real discovery from a lucky chance, and says so in her report.
 sources:
 - titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
-  url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551
+  url: https://doi.org/10.3905/jpm.2014.40.5.094
   licence: Lien seulement ; texte non repris
 - titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
   url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/
@@ -367,5 +367,5 @@ cartes:
   en: '$t=\bar r/(s/\sqrt n)$, p-value $=\text{erfc}(|t|/\sqrt2)$. Best of $N$: threshold $\alpha/N$. Report the trials, the raw, the corrected. Rejection is a result. Strictly educational framework.'
 - id: c13
   type: plus
-  fr: Pour aller plus loin, consulte [The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) ; cet article demande une connexion.
-  en: To go further, see [The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551); this paper needs a connection.
+  fr: Pour aller plus loin, consulte [The Deflated Sharpe Ratio](https://doi.org/10.3905/jpm.2014.40.5.094) ; cet article demande une connexion.
+  en: To go further, see [The Deflated Sharpe Ratio](https://doi.org/10.3905/jpm.2014.40.5.094); this paper needs a connection.

@@ -110,6 +110,13 @@ if (process.argv[1] && process.argv[1].endsWith('build-content.mjs')) {
   const compat = JSON.parse(readFileSync('content/compat.json', 'utf8'));
   const pack = writePacks(out, Number(process.env.CONTENT_REV) || revNow(), compat.minBuild);
   const json = JSON.stringify(pack);
-  writeFileSync('src/generated/content.json', json);
+  writeFileSync('src/generated/content.json', json);   // pour les tests et les outils (jamais importé par l'app)
+  // L'app charge le contenu embarqué en plusieurs morceaux (un par module) : un fichier unique dépassait la limite de
+  // 2 Mio du précache hors ligne (Workbox), et grossissait à chaque module. Garde-fou E41.
+  rmSync('src/generated/pack', { recursive: true, force: true }); mkdirSync('src/generated/pack', { recursive: true });
+  const { levels, sha, ...tete } = pack, parModule = {};
+  for (const [id, lvl] of Object.entries(levels)) { const m = String(lvl.module ?? id.split('.')[0]); (parModule[m] ??= { levels: {}, sha: {} }).levels[id] = lvl; parModule[m].sha[id] = sha[id]; }
+  writeFileSync('src/generated/pack/tete.json', JSON.stringify(tete));
+  for (const [m, part] of Object.entries(parModule)) writeFileSync(`src/generated/pack/module-${m.padStart(2, '0')}.json`, JSON.stringify(part));
   console.log(`content.json (rév. ${pack.rev}) : ${Object.keys(out.levels).length} niveau(x), ${(json.length / 1024).toFixed(1)} Ko, ${(gzipSync(json).length / 1024).toFixed(1)} Ko gzip`);
 }

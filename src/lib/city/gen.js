@@ -194,6 +194,15 @@ const THEMES = [
     kinds: { hall: 3, shop: 2, tower: 1, house: 1 }, count: 24, align: .9,
     props: { lamp: 8, person: 4, car: 2, crate: 2 },
     lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
+  { place: 'Le Rova', blurb: 'Palais sur la colline, terrasses et lumières : là où toutes les briques se rejoignent.', path: 0, smooth: true,
+    top: '#5a3a36', cliff: '#6a4640', lip: '#6e7a48', road: '#33221f', roadHi: '#ffe0a0', dash: true, night: '#1a0a0c',
+    patches: ['#6a4640', '#5a3a36', '#6e7a48'],
+    walls: ['#ecd9cf', '#d9bfb1', '#c2a28f', '#f5e8e0', '#a8836f'], roofs: ['#8c2a24', '#71211d', '#a63a32'],
+    roofW: { flat: 2, hip: 2, gable: 2 }, win: ['#ffe9a8', '#ffd36b', '#ffcf80'], leaf: ['#3f7a48', '#52965a', '#6aae6a'],
+    trees: { round: 1, conifer: 1, bush: 1 }, nTrees: 10,
+    kinds: { hall: 2, tower: 2, house: 1, shop: 1 }, count: 24, align: .9,
+    props: { lamp: 8, person: 4, car: 2, crate: 2 },
+    lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

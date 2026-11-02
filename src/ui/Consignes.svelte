@@ -5,7 +5,7 @@
   import { updates } from '../lib/updates.svelte';
   import LogoMenu from './LogoMenu.svelte';
   import { content } from '../lib/content.svelte';
-  import { APP_BUILD, APP_VERSION, platform } from '../lib/platform';
+  import { APP_BUILD, APP_VERSION, DOWNLOAD_APK, DOWNLOAD_APPIMAGE, platform } from '../lib/platform';
   let { onexit }: { onexit: () => void } = $props();
   const fr = i18n.lang === 'fr';
   let confirm = $state(false);
@@ -69,7 +69,14 @@
       <li>{fr ? 'Téléphone / WhatsApp : ' : 'Phone / WhatsApp: '}<a href="https://wa.me/261334383882" target="_blank" rel="noopener noreferrer">+261 33 43 838 82</a></li>
       <li>GitHub : <a href="https://github.com/raantss18/academik" target="_blank" rel="noopener noreferrer">github.com/raantss18/academik</a></li>
     </ul>
-    <p><a class="dl" href="https://github.com/raantss18/academik/releases/latest" target="_blank" rel="noopener noreferrer">{fr ? 'Télécharger l’application (Android, Linux)' : 'Download the app (Android, Linux)'}</a></p>
+    {#if platform() === 'web'}
+      <p>{fr ? 'Installer l’application, qui fonctionne entièrement hors ligne :' : 'Install the app, which works fully offline:'}</p>
+      <ul class="links">
+        <li><a class="dl" href={DOWNLOAD_APK} rel="noopener noreferrer">{fr ? 'Télécharger pour Android (APK)' : 'Download for Android (APK)'}</a></li>
+        <li><a class="dl" href={DOWNLOAD_APPIMAGE} rel="noopener noreferrer">{fr ? 'Télécharger pour Linux (AppImage)' : 'Download for Linux (AppImage)'}</a></li>
+      </ul>
+    {/if}
+    <p><a href="https://github.com/raantss18/academik/releases/latest" target="_blank" rel="noopener noreferrer">{fr ? 'Toutes les versions et leurs empreintes SHA-256' : 'All versions and their SHA-256 fingerprints'}</a></p>
     <p class="muted">{fr ? 'Code sous licence Apache-2.0 ; chaque contenu garde la licence de sa source.' : 'Code under the Apache-2.0 licence; each piece of content keeps its source’s licence.'}</p>
   </section>
 </div>

@@ -3,6 +3,7 @@
   // jusqu'au bâtiment du niveau. `valeur` va de 0 à 1.
   import { ambianceDe } from '../lib/ambiance';
   import { theme } from '../lib/theme.svelte';
+  import { i18n } from '../lib/i18n.svelte';
   let { valeur, module, max, now }: { valeur: number; module: number; max: number; now: number } = $props();
   const D = 'M6 24 C50 4, 90 40, 140 20 S230 6, 294 22';
   let path: SVGPathElement | undefined = $state(), pos = $state({ x: 6, y: 24 });
@@ -11,7 +12,7 @@
   $effect(() => { if (path) { const p = path.getPointAtLength(path.getTotalLength() * Math.min(1, Math.max(0, valeur))); pos = { x: p.x, y: p.y }; } });
 </script>
 
-<div class="route" role="progressbar" aria-valuemin="0" aria-valuemax={max} aria-valuenow={now}>
+<div class="route" role="progressbar" aria-label={i18n.lang === 'fr' ? 'Progression dans le niveau' : 'Progress in the level'} aria-valuemin="0" aria-valuemax={max} aria-valuenow={now}>
   <svg viewBox="0 0 300 48" preserveAspectRatio="none" aria-hidden="true">
     <path d={D} fill="none" stroke="var(--c-border)" stroke-width="7" stroke-linecap="round" />
     <path d={D} fill="none" stroke="var(--c-surface-2)" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 9" />

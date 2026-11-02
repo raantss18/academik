@@ -140,3 +140,8 @@
 - **Fait** : 16 Processus stochastiques, 17 Recherche quantitative, 18 Performance, 19 Sécurité, 20 Évaluer et produire (6 niveaux chacun, boss compris) ; cinq quartiers ; 763 tests.
 - **Non vérifié** : appareils réels ; durées mesurées ; relecture croisée par Codex ; boss final du cursus (agent quant) pas encore écrit.
 
+### Vérification complète, sécurité, accessibilité, boss final (2026-11-02, 0.3.27)
+
+- **Fait** : 165 liens contrôlés (DOI par Crossref), chiffres des modules 11 à 21 recalculés (un tableau inventé corrigé), audit du contenu (KaTeX, QCM, traductions) sur 136 niveaux ; CSP stricte site et AppImage (polices KaTeX débloquées sur Linux) ; audit axe-core à 0 violation ; réponses numériques tolérantes ; téléchargement des apps depuis le site ; boss final (module 21) ; 773 tests.
+- **Non vérifié** : appareils réels, lecteur d'écran, service worker réel, vrais élèves, relecture par Codex ; liens `nlp.stanford.edu` et `otexts.com` injoignables depuis cette machine.
+

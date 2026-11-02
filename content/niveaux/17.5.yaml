@@ -10,7 +10,7 @@ ia:
   en: Kintana tests an idea on the past without cheating, and counts her trials.
 sources:
 - titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
-  url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551
+  url: https://doi.org/10.3905/jpm.2014.40.5.094
   licence: Lien seulement ; texte non repris
 - titre: Harvey, Liu, Zhu — … and the Cross-Section of Expected Returns (2016)
   url: https://doi.org/10.1093/rfs/hhv059
@@ -311,5 +311,5 @@ cartes:
   en: 'Honest backtest: hypothesis first, past information only, costs, chronological split, counting of trials. Best of $N$ noises $\approx\sqrt{2\ln N}$. Bonferroni correction: threshold $\alpha/N$. Doubt is part of the result.'
 - id: c15
   type: plus
-  fr: Pour approfondir, consulte [The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) ; cet article demande une connexion.
-  en: For further study, see [The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551); this paper needs a connection.
+  fr: Pour approfondir, consulte [The Deflated Sharpe Ratio](https://doi.org/10.3905/jpm.2014.40.5.094) ; cet article demande une connexion.
+  en: For further study, see [The Deflated Sharpe Ratio](https://doi.org/10.3905/jpm.2014.40.5.094); this paper needs a connection.

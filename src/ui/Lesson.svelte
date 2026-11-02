@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { answerOk } from '../lib/answer';
   import { md } from '../lib/md';
   import Ambiance from './Ambiance.svelte';
   import Route from './Route.svelte';
@@ -59,13 +60,12 @@
   const hasAnswer = $derived(card.type === 'qcm' || card.type === 'tentative' || card.type === 'saisie' || card.type === 'parsons' || card.type === 'terminal' || card.type === 'code');
   const canCheck = $derived(busy ? false : card.type === 'saisie' || card.type === 'code' ? text.trim().length > 0 : card.type === 'parsons' ? chosen.length === (card.lignes?.length ?? 0) : card.type === 'terminal' ? ran > 0 : selected !== null);
 
-  const norm = (s: string) => s.trim().replace(/\s+/g, ' ').toLowerCase();
   /** « Exécuter » : lance le programme seul (sans les tests), autant de fois que l'élève veut. */
   async function runCode() { if (busy || result) return; busy = true; pyNote = ''; pyOut = await python.run(text); busy = false; if (pyOut.unavailable) pyNote = ui('py_off'); }
   async function check() {
     let ok = false;
     if (card.type === 'qcm' || card.type === 'tentative') ok = !!card.choix![selected!].juste;
-    else if (card.type === 'saisie') ok = card.reponses!.some(r => norm(r) === norm(text));
+    else if (card.type === 'saisie') ok = answerOk(card.reponses!, text);
     else if (card.type === 'code') {
       busy = true; pyNote = ''; const r = await python.run(text, card.tests); busy = false; pyOut = r;
       if (r.unavailable) { pyNote = ui('py_off'); return; }   // moteur absent : ce n'est pas une erreur de l'élève, on ne note rien

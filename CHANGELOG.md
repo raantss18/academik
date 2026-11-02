@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.27] — 2026-11-02
+
+### Message fr
+Le boss final du parcours est là : Kintana mène une recherche de bout en bout et sait rejeter une fausse découverte. Sur le site, tu peux télécharger directement les apps Android et Linux. Les formules s'affichent avec leurs vraies polices sur Linux, le code est plus lisible, et une bonne réponse écrite autrement (2,0 ou 75 %) est maintenant acceptée.
+
+### Message en
+The path's final boss is here: Kintana carries out research end to end and knows how to reject a false discovery. On the website, you can download the Android and Linux apps directly. Formulas now show with their real fonts on Linux, code is more readable, and a right answer written differently (2.0 or 75%) is now accepted.
+
 ## [0.3.26] — 2026-11-02
 
 ### Message fr
