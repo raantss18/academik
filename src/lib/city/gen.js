@@ -122,6 +122,15 @@ const THEMES = [
     kinds: { hall: 2, house: 2, tower: 2, shop: 2 }, count: 24, align: .9,
     props: { lamp: 8, person: 4, car: 1, crate: 3 },
     lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
+  { place: 'Le Garage des Modèles', blurb: 'Ateliers, rayonnages de pièces et balances : on y pèse, on y règle, on y choisit.', path: 3, smooth: false,
+    top: '#3a4448', cliff: '#465358', lip: '#5a7060', road: '#2a3236', roadHi: '#e8f0a8', dash: true, night: '#101a1c',
+    patches: ['#4a565a', '#3a4448', '#56645a'],
+    walls: ['#d6dcd8', '#c1c9c4', '#a9b3ad', '#e6ebe8', '#8f9b95'], roofs: ['#3f5a66', '#2f4650', '#51707e'],
+    roofW: { flat: 4, hip: 1, gable: 1 }, win: ['#fff0a8', '#ffe27a', '#ffd36b'], leaf: ['#3a6b4a', '#4a8559', '#5e9e6c'],
+    trees: { round: 1, conifer: 2, bush: 1 }, nTrees: 8,
+    kinds: { hall: 3, shop: 2, house: 1, tower: 1 }, count: 24, align: .9,
+    props: { lamp: 8, person: 3, car: 4, crate: 5 },
+    lm: ['hall', 'tower', 'hall', 'hall', 'clock'], boss: 'dome' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

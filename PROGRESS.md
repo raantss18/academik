@@ -125,3 +125,8 @@
 - **Fait** : 12.1 à 12.5 et boss « Ton mini-GPT » (BPE, softmax, plongements, attention, masque et positions, échantillonnage) ; quartier « L’Atelier des Tisseurs » ; 660 tests.
 - **Non vérifié** : appareils réels ; durées mesurées ; relecture croisée par Codex.
 
+### Module 13 « LLM locaux » (2026-11-02, 0.3.24)
+
+- **Fait** : 13.1 à 13.5 et boss « Choisis ton modèle » ; quartier « Le Garage des Modèles » ; 672 tests.
+- **Non vérifié** : appareils réels ; chiffres de vitesse et de licence à relire avec un vrai modèle ; relecture croisée par Codex.
+

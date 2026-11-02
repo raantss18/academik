@@ -127,3 +127,12 @@ modules:
       - { id: "12.4", titre: { fr: "Masque et positions" } }
       - { id: "12.5", titre: { fr: "Échantillonner" } }
       - { id: "12.boss", boss: true, titre: { fr: "Ton mini-GPT" } }
+  - id: 13
+    titre: { fr: "LLM locaux", en: "Local LLMs" }
+    niveaux:
+      - { id: "13.1", titre: { fr: "Pré-entraîner, adapter, inférer" } }
+      - { id: "13.2", titre: { fr: "Le budget mémoire" } }
+      - { id: "13.3", titre: { fr: "La quantification" } }
+      - { id: "13.4", titre: { fr: "Prompts et modèles de chat" } }
+      - { id: "13.5", titre: { fr: "Vitesse et licences" } }
+      - { id: "13.boss", boss: true, titre: { fr: "Choisis ton modèle" } }

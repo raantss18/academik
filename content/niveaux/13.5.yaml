@@ -1,0 +1,245 @@
+# Niveau 13.5 — LLM locaux 5 : vitesse (bande passante) et licences des poids. Original academik ; notions vérifiées dans la documentation de llama.cpp (citée) et la définition de l’IA open source de l’OSI (lien seulement).
+id: '13.5'
+module: 13
+duree_min: 16
+titre:
+  fr: Vitesse et licences
+  en: Speed and licences
+ia:
+  fr: Kintana sait combien de temps elle mettra à répondre et si elle a le droit d’utiliser son modèle.
+  en: Kintana knows how long she will take to answer and whether she may use her model.
+sources:
+- titre: llama.cpp — dépôt officiel (inférence locale)
+  url: https://github.com/ggml-org/llama.cpp
+  licence: MIT ; documentation citée
+- titre: Open Source Initiative — Open Source AI Definition
+  url: https://opensource.org/ai
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Ton ordinateur a un processeur très rapide, mais une mémoire lente. Pour générer chaque token, le modèle doit relire tous ses poids. Qu’est-ce qui limite alors le plus la vitesse ?
+  en: Your computer has a very fast processor but slow memory. To generate each token, the model must reread all its weights. What limits the speed the most then?
+  choix:
+  - fr: La vitesse de lecture de la mémoire (la bande passante)
+    en: The memory read speed (bandwidth)
+    juste: true
+  - fr: La couleur de l’écran
+    en: The screen colour
+  - fr: Le nombre de touches du clavier
+    en: The number of keyboard keys
+  indice:
+    fr: Chaque token demande de lire toute la taille du modèle. Quelle ressource transporte ces octets ?
+    en: Each token requires reading the model’s whole size. Which resource carries these bytes?
+  explication:
+    fr: 'La génération est limitée par la **bande passante mémoire** : lire les poids prend plus de temps que calculer avec.'
+    en: 'Generation is limited by **memory bandwidth**: reading the weights takes longer than computing with them.'
+- id: c2
+  type: idee
+  fr: 'Pour chaque nouveau token, le modèle lit tous ses poids une fois. Donc la vitesse maximale est environ : **bande passante ÷ taille du modèle**. Un modèle deux fois plus petit (par la quantification) répond environ deux fois plus vite.'
+  en: 'For each new token, the model reads all its weights once. So the maximum speed is about: **bandwidth ÷ model size**. A model twice as small (through quantisation) answers about twice as fast.'
+  exemple:
+    fr: 'Avec 50 Go/s de bande passante et un modèle de 4 Go : environ 12,5 tokens par seconde.'
+    en: 'With 50 GB/s of bandwidth and a 4 GB model: about 12.5 tokens per second.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Taille du modèle
+      en: Model size
+    - fr: Débit à 50 Go/s
+      en: Speed at 50 GB/s
+    cellules:
+    - - 14 Go
+      - fr: 3,6 tok/s
+        en: 3.6 tok/s
+    - - 7 Go
+      - fr: 7,1 tok/s
+        en: 7.1 tok/s
+    - - fr: 4 Go
+        en: 4 GB
+        ton: ok
+      - fr: 12,5 tok/s
+        en: 12.5 tok/s
+        ton: ok
+    legende:
+      fr: Quantifier accélère aussi, pas seulement économiser la mémoire.
+      en: Quantising also speeds up, not only saves memory.
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `tokens_par_s(bande_go_s, taille_go)`** : la vitesse maximale en tokens par seconde, soit la bande passante divisée par la taille du modèle.'
+  en: 'Your turn. **Write `tokens_par_s(bande_go_s, taille_go)`**: the maximum speed in tokens per second, that is the bandwidth divided by the model size.'
+  depart: |
+    # écris ta fonction tokens_par_s ici
+  tests: |-
+    assert tokens_par_s(50, 4) == 12.5
+    assert tokens_par_s(100, 100) == 1
+    assert tokens_par_s(0, 4) == 0
+  solutionCode: |
+    def tokens_par_s(bande_go_s, taille_go):
+        return bande_go_s / taille_go
+  indice:
+    fr: 'Une division : `bande_go_s / taille_go`.'
+    en: 'A division: `bande_go_s / taille_go`.'
+  explication:
+    fr: 'C’est un plafond : la vitesse réelle est un peu plus basse (calculs, cache KV, système).'
+    en: 'It is a ceiling: the real speed is a little lower (computations, KV cache, system).'
+- id: c4
+  type: idee
+  fr: 'Une réponse a deux phases. Le **prefill** lit ton prompt d’un coup, en parallèle : c’est rapide, des centaines de tokens par seconde. Le **decode** produit la réponse un token à la fois : c’est plus lent.'
+  en: 'A response has two phases. **Prefill** reads your prompt all at once, in parallel: it is fast, hundreds of tokens per second. **Decode** produces the answer one token at a time: it is slower.'
+  exemple:
+    fr: Un prompt de 800 tokens à 400 tok/s est lu en 2 s ; 100 tokens de réponse à 10 tok/s prennent 10 s.
+    en: An 800-token prompt at 400 tok/s is read in 2 s; 100 answer tokens at 10 tok/s take 10 s.
+- id: c4b
+  type: idee
+  fr: 'Un contexte long ralentit le decode : à chaque token, le modèle relit aussi le cache KV. Pour une conversation très longue, la vitesse baisse, et la mémoire monte. Garder des échanges courts accélère et économise.'
+  en: 'A long context slows decode: at each token, the model also rereads the KV cache. For a very long conversation, speed drops and memory rises. Keeping exchanges short speeds things up and saves memory.'
+  exemple:
+    fr: À 100 000 tokens de contexte, le cache KV peut dépasser la taille du modèle lui-même.
+    en: At 100,000 tokens of context, the KV cache can exceed the model’s own size.
+- id: c5
+  type: exemple
+  titre:
+    fr: Combien de temps pour une réponse ?
+    en: How long for an answer?
+  lang: python
+  etapes:
+  - code: prefill = 800 / 400
+    fr: 'Le prompt de 800 tokens, lu à 400 tok/s : `2.0` s.'
+    en: 'The 800-token prompt, read at 400 tok/s: `2.0` s.'
+  - code: decode = 100 / 10
+    fr: 'La réponse de 100 tokens, produite à 10 tok/s : `10.0` s.'
+    en: 'The 100-token answer, produced at 10 tok/s: `10.0` s.'
+  - code: print(prefill + decode)
+    fr: 'Au total : `12.0` secondes.'
+    en: 'In total: `12.0` seconds.'
+  verif: |-
+    prefill = 800 / 400
+    decode = 100 / 10
+    print(prefill + decode)
+  sortie: '12.0'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `temps_reponse(n_prompt, n_sortie, prefill_tps, decode_tps)`** : `n_prompt / prefill_tps + n_sortie / decode_tps`.'
+  en: '**Write `temps_reponse(n_prompt, n_sortie, prefill_tps, decode_tps)`**: `n_prompt / prefill_tps + n_sortie / decode_tps`.'
+  depart: |
+    # écris ta fonction temps_reponse ici
+  tests: |-
+    assert temps_reponse(800, 100, 400, 10) == 12.0
+    assert temps_reponse(0, 50, 100, 25) == 2.0
+    assert temps_reponse(100, 0, 50, 5) == 2.0
+  solutionCode: |
+    def temps_reponse(n_prompt, n_sortie, prefill_tps, decode_tps):
+        return n_prompt / prefill_tps + n_sortie / decode_tps
+  indice:
+    fr: Additionne le temps de lecture du prompt et le temps de génération de la réponse.
+    en: Add the prompt reading time and the answer generation time.
+  explication:
+    fr: Pour une réponse courte à un long prompt, le prefill domine ; pour une réponse longue, c’est le decode.
+    en: For a short answer to a long prompt, prefill dominates; for a long answer, it is decode.
+- id: c7
+  type: idee
+  fr: Les poids ont une **licence**, distincte de celle du code et des données. Une licence **permissive** (Apache-2.0, MIT) autorise presque tout. Une licence **communautaire** fixe des conditions. Une licence **non commerciale** interdit les usages payants.
+  en: Weights have a **licence**, separate from that of the code and the data. A **permissive** licence (Apache-2.0, MIT) allows almost everything. A **community** licence sets conditions. A **non-commercial** licence forbids paid uses.
+  exemple:
+    fr: '« Poids ouverts » ne veut pas dire « logiciel libre » : tu peux télécharger les poids sans avoir le droit de les revendre.'
+    en: '“Open weights” does not mean “free software”: you can download the weights without the right to resell them.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Type
+      en: Type
+    - fr: Usage commercial
+      en: Commercial use
+    cellules:
+    - - fr: permissive
+        en: permissive
+      - fr: oui
+        en: 'yes'
+        ton: ok
+    - - fr: communautaire
+        en: community
+      - fr: à lire
+        en: to read
+    - - fr: non commerciale
+        en: non-commercial
+      - fr: non
+        en: 'no'
+        ton: bad
+    legende:
+      fr: Lis toujours la licence exacte du modèle que tu choisis.
+      en: Always read the exact licence of the model you choose.
+- id: c8
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `peut_utiliser(licence, commercial)`** : renvoie `"oui"` pour `"apache-2.0"` et `"mit"` ; pour `"non-commerciale"`, `"non"` si `commercial` est vrai, sinon `"oui"` ; pour tout autre cas, `"à lire"`.'
+  en: 'Challenge. **Write `peut_utiliser(licence, commercial)`**: return `"oui"` for `"apache-2.0"` and `"mit"`; for `"non-commerciale"`, `"non"` if `commercial` is true, otherwise `"oui"`; for any other case, `"à lire"`.'
+  depart: |
+    # écris ta fonction peut_utiliser ici
+  tests: |-
+    assert peut_utiliser("mit", True) == "oui"
+    assert peut_utiliser("apache-2.0", False) == "oui"
+    assert peut_utiliser("non-commerciale", True) == "non"
+    assert peut_utiliser("non-commerciale", False) == "oui"
+    assert peut_utiliser("communautaire", True) == "à lire"
+    assert peut_utiliser("inconnue", False) == "à lire"
+  solutionCode: |
+    def peut_utiliser(licence, commercial):
+        if licence in ("apache-2.0", "mit"):
+            return "oui"
+        if licence == "non-commerciale":
+            return "non" if commercial else "oui"
+        return "à lire"
+  indice:
+    fr: 'Une suite de `if` : permissives d’abord, puis non commerciale, et `"à lire"` par défaut.'
+    en: 'A series of `if`s: permissive first, then non-commercial, and `"à lire"` by default.'
+  explication:
+    fr: 'Le cas par défaut est prudent : une licence inconnue se lit, on ne la présume jamais libre.'
+    en: 'The default case is cautious: an unknown licence is read, never presumed free.'
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un modèle de 5 Go tourne sur une machine à 60 Go/s de bande passante. Quelle est la vitesse maximale, en tokens par seconde ?
+  en: A 5 GB model runs on a machine with 60 GB/s of bandwidth. What is the maximum speed, in tokens per second?
+  reponses:
+  - '12'
+  verif: print(int(60 / 5))
+  indice:
+    fr: Divise la bande passante par la taille du modèle.
+    en: Divide the bandwidth by the model size.
+  explication:
+    fr: $60/5=12$ tokens par seconde.
+    en: $60/5=12$ tokens per second.
+- id: c10
+  type: piege
+  fr: 'Trois licences se cumulent : celle du **code** qui fait tourner le modèle, celle des **poids**, et les conditions des **données** d’entraînement. Un code sous licence MIT n’autorise pas pour autant à réutiliser les poids n’importe comment.'
+  en: 'Three licences add up: that of the **code** that runs the model, that of the **weights**, and the terms of the training **data**. MIT-licensed code does not authorise reusing the weights however you like.'
+- id: c11
+  type: idee
+  fr: Sur un petit appareil, le processeur seul suffit pour de petits modèles quantifiés. Une carte graphique accélère nettement parce qu’elle a une mémoire très rapide. Un téléphone récent fait tourner des modèles d’un à trois milliards de paramètres.
+  en: On a small device, the processor alone is enough for small quantised models. A graphics card speeds things up considerably because it has very fast memory. A recent phone runs models of one to three billion parameters.
+  exemple:
+    fr: Une carte graphique peut offrir plus de 400 Go/s, contre 40 à 80 Go/s pour la mémoire d’un portable ordinaire.
+    en: A graphics card can offer over 400 GB/s, against 40 to 80 GB/s for an ordinary laptop’s memory.
+- id: c12
+  type: retenir
+  fr: 'Vitesse maximale $\approx$ bande passante ÷ taille du modèle. Prefill rapide, decode lent. Les poids ont leur propre licence : permissive, communautaire ou non commerciale. Lis-la avant d’utiliser un modèle.'
+  en: 'Maximum speed $\approx$ bandwidth ÷ model size. Fast prefill, slow decode. Weights have their own licence: permissive, community or non-commercial. Read it before using a model.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [la définition de l’IA open source](https://opensource.org/ai) ; ce site demande une connexion.
+  en: For further study, see [the open source AI definition](https://opensource.org/ai); this site needs a connection.

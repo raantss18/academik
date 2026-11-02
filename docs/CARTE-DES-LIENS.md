@@ -149,9 +149,20 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
-| **12.1** Tokens et BPE | Kintana découpe le texte en morceaux numérotés, comme le font tous les modèles de langage. | — | 12.boss |
+| **12.1** Tokens et BPE | Kintana découpe le texte en morceaux numérotés, comme le font tous les modèles de langage. | — | 12.boss, 13.4 |
 | **12.2** Softmax et plongements | Kintana transforme des scores en probabilités et des mots en vecteurs qu’elle sait comparer. | — | 12.3 |
 | **12.3** L’attention | Kintana regarde les bons mots du contexte en pesant chacun d’eux. | 12.2 | 12.4 |
 | **12.4** Masque et positions | Kintana sait où se trouve chaque mot et s’interdit de lire la suite du texte. | 12.3 | — |
 | **12.5** Échantillonner | Kintana choisit le mot suivant : sûr ou audacieux, selon un réglage de température. | — | 12.boss |
 | **12.boss** Ton mini-GPT | Kintana génère du texte : tu as assemblé la boucle complète d’un transformer. | 12.1, 12.5 | — |
+
+## 13 · LLM locaux
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **13.1** Pré-entraîner, adapter, inférer | Kintana distingue ce qui coûte des millions d’heures de calcul de ce qu’elle peut faire sur ton appareil. | — | — |
+| **13.2** Le budget mémoire | Kintana sait calculer si un modèle tient dans la mémoire de ton appareil. | — | 13.boss |
+| **13.3** La quantification | Kintana réduit ses poids à quelques bits pour tenir dans la mémoire, en acceptant une petite erreur. | — | — |
+| **13.4** Prompts et modèles de chat | Kintana met en forme la conversation comme son modèle l’attend et surveille sa fenêtre de contexte. | 12.1 | — |
+| **13.5** Vitesse et licences | Kintana sait combien de temps elle mettra à répondre et si elle a le droit d’utiliser son modèle. | — | 13.boss |
+| **13.boss** Choisis ton modèle | Kintana choisit son propre modèle : assez petit pour tenir, assez libre pour servir, assez grand pour bien répondre. | 13.2, 13.5 | — |

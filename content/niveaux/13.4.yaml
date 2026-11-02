@@ -1,0 +1,273 @@
+# Niveau 13.4 — LLM locaux 4 : prompts, modèles de chat, fenêtre de contexte. Original academik ; notions vérifiées dans la documentation Hugging Face Transformers (citée) et le cours LLM de Hugging Face (cité).
+id: '13.4'
+module: 13
+duree_min: 16
+titre:
+  fr: Prompts et modèles de chat
+  en: Prompts and chat templates
+ia:
+  fr: Kintana met en forme la conversation comme son modèle l’attend et surveille sa fenêtre de contexte.
+  en: Kintana formats the conversation as her model expects and watches her context window.
+sources:
+- titre: Hugging Face — Chat Templates (documentation Transformers)
+  url: https://huggingface.co/docs/transformers/chat_templating
+  licence: Apache-2.0 ; documentation citée
+- titre: Hugging Face — LLM Course
+  url: https://huggingface.co/learn/llm-course
+  licence: Cours en ligne ; contenu cité, texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un modèle de chat a été entraîné avec des balises précises autour de chaque message. Que se passe-t-il si tu lui envoies ta question sans ces balises, ou avec celles d’un autre modèle ?
+  en: A chat model was trained with precise tags around each message. What happens if you send your question without those tags, or with another model’s?
+  choix:
+  - fr: Il répond souvent moins bien, sans signaler d’erreur
+    en: It often answers worse, without flagging an error
+    juste: true
+  - fr: Il refuse de répondre et affiche un message
+    en: It refuses to answer and shows a message
+  - fr: 'Rien : les balises ne servent à rien'
+    en: 'Nothing: the tags are useless'
+  indice:
+    fr: Le modèle a appris un format. Que fait-on quand le format change sans prévenir ?
+    en: The model learned a format. What happens when the format changes without warning?
+  explication:
+    fr: 'Aucune erreur n’apparaît : la qualité baisse en silence. Il faut respecter le **modèle de chat** (chat template) de chaque famille.'
+    en: 'No error appears: quality drops silently. Each family’s **chat template** must be respected.'
+- id: c2
+  type: idee
+  fr: Une conversation est une liste de messages, chacun avec un **rôle**. Le rôle `system` fixe le comportement général. Le rôle `user` porte tes questions. Le rôle `assistant` porte les réponses du modèle.
+  en: A conversation is a list of messages, each with a **role**. The `system` role sets the general behaviour. The `user` role carries your questions. The `assistant` role carries the model’s answers.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Rôle
+      en: Role
+    - fr: Contenu
+      en: Content
+    cellules:
+    - - system
+      - fr: consignes générales
+        en: general instructions
+    - - user
+      - fr: ta question
+        en: your question
+    - - fr: assistant
+        en: assistant
+        ton: ok
+      - fr: la réponse
+        en: the answer
+        ton: ok
+    legende:
+      fr: Le modèle complète le texte juste après la balise `assistant`.
+      en: The model completes the text right after the `assistant` tag.
+- id: c3
+  type: idee
+  fr: 'Le **modèle de chat** transforme la liste de messages en un seul texte avec des balises spéciales, qui sont des tokens réservés. À la fin, il ajoute la balise de l’assistant : le modèle n’a plus qu’à écrire sa réponse.'
+  en: 'The **chat template** turns the list of messages into a single text with special tags, which are reserved tokens. At the end, it adds the assistant tag: the model only has to write its answer.'
+  exemple:
+    fr: 'Les balises changent d’une famille de modèles à l’autre : ne recopie jamais celles d’un autre modèle.'
+    en: 'Tags change from one model family to another: never copy another model’s.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Assembler un prompt
+    en: Assembling a prompt
+  lang: python
+  etapes:
+  - code: |-
+      msgs = [{"role": "system", "contenu": "Sois bref."},
+              {"role": "user", "contenu": "Bonjour"}]
+    fr: 'Deux messages : une consigne et une question.'
+    en: 'Two messages: an instruction and a question.'
+  - code: |-
+      texte = ""
+      for m in msgs:
+          texte += "<|" + m["role"] + "|>\n" + m["contenu"] + "<|fin|>\n"
+    fr: Chaque message devient `<|rôle|>`, son contenu, puis `<|fin|>`.
+    en: Each message becomes `<|role|>`, its content, then `<|fin|>`.
+  - code: print(texte + "<|assistant|>")
+    fr: 'On ajoute la balise de l’assistant : le modèle écrira la suite.'
+    en: 'We add the assistant tag: the model will write what follows.'
+  verif: |-
+    msgs = [{"role": "system", "contenu": "Sois bref."},
+            {"role": "user", "contenu": "Bonjour"}]
+    texte = ""
+    for m in msgs:
+        texte += "<|" + m["role"] + "|>\n" + m["contenu"] + "<|fin|>\n"
+    print(texte + "<|assistant|>")
+  sortie: |-
+    <|system|>
+    Sois bref.<|fin|>
+    <|user|>
+    Bonjour<|fin|>
+    <|assistant|>
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `formater(messages)`** : pour chaque message `m` (dictionnaire avec `"role"` et `"contenu"`), ajoute `"<|" + m["role"] + "|>\n" + m["contenu"] + "<|fin|>\n"`, puis termine par `"<|assistant|>\n"`.'
+  en: 'Your turn. **Write `formater(messages)`**: for each message `m` (dictionary with `"role"` and `"contenu"`), append `"<|" + m["role"] + "|>\n" + m["contenu"] + "<|fin|>\n"`, then finish with `"<|assistant|>\n"`.'
+  depart: |
+    # écris ta fonction formater ici
+  tests: |-
+    r = formater([{"role": "user", "contenu": "Salut"}])
+    assert r == "<|user|>\nSalut<|fin|>\n<|assistant|>\n"
+    assert formater([]) == "<|assistant|>\n"
+    assert formater([{"role": "system", "contenu": "A"}, {"role": "user", "contenu": "B"}]).count("<|fin|>") == 2
+  solutionCode: |
+    def formater(messages):
+        texte = ""
+        for m in messages:
+            texte += "<|" + m["role"] + "|>\n" + m["contenu"] + "<|fin|>\n"
+        return texte + "<|assistant|>\n"
+  indice:
+    fr: Une boucle qui concatène un morceau par message, puis la balise finale de l’assistant.
+    en: A loop concatenating one piece per message, then the final assistant tag.
+  explication:
+    fr: 'La dernière balise reste ouverte exprès : c’est là que le modèle commence à écrire.'
+    en: 'The last tag is deliberately left open: this is where the model starts writing.'
+- id: c6
+  type: idee
+  fr: 'Le modèle ne lit qu’un nombre limité de tokens : sa **fenêtre de contexte**. Elle contient la consigne, l’historique, ta question et la réponse en cours. Dépassée, le début est perdu ou la génération s’arrête.'
+  en: 'The model reads only a limited number of tokens: its **context window**. It contains the instruction, the history, your question and the answer in progress. Once exceeded, the beginning is lost or generation stops.'
+  exemple:
+    fr: Avec une fenêtre de 4 000 tokens, une conversation de 3 800 tokens ne laisse que 200 tokens pour la réponse.
+    en: With a 4,000-token window, a 3,800-token conversation leaves only 200 tokens for the answer.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: La fenêtre de contexte
+        en: The context window
+      noeuds:
+      - fr: consigne
+        en: instruction
+      - fr: historique
+        en: history
+      - fr: question
+        en: question
+      - fr: place pour la réponse
+        en: room for the answer
+        ton: ok
+    legende:
+      fr: Tout ce qui précède la réponse consomme la même fenêtre.
+      en: Everything before the answer consumes the same window.
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `estimer_tokens(texte)`** : 0 si le texte est vide, sinon `max(1, round(len(texte) / 4))` (environ 4 caractères par token en anglais ; un peu moins en français).'
+  en: '**Write `estimer_tokens(texte)`**: 0 if the text is empty, otherwise `max(1, round(len(texte) / 4))` (about 4 characters per token in English; a little fewer in French).'
+  depart: |
+    # écris ta fonction estimer_tokens ici
+  tests: |-
+    assert estimer_tokens("") == 0
+    assert estimer_tokens("abcdefgh") == 2
+    assert estimer_tokens("a") == 1
+    assert estimer_tokens("x" * 400) == 100
+  solutionCode: |
+    def estimer_tokens(texte):
+        if not texte:
+            return 0
+        return max(1, round(len(texte) / 4))
+  indice:
+    fr: Traite d’abord le texte vide, puis calcule `round(len(texte) / 4)` en veillant à renvoyer au moins `1`.
+    en: Handle the empty text first, then compute `round(len(texte) / 4)` making sure to return at least `1`.
+  explication:
+    fr: 'C’est une estimation : pour un compte exact, il faut le vrai tokenizer du modèle (niveau 12.1).'
+    en: 'It is an estimate: for an exact count, you need the model’s real tokenizer (level 12.1).'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Avec la règle de 4 caractères par token, combien de tokens pour un texte de 600 caractères ?
+  en: With the rule of 4 characters per token, how many tokens for a 600-character text?
+  reponses:
+  - '150'
+  verif: print(round(600 / 4))
+  indice:
+    fr: Divise le nombre de caractères par 4.
+    en: Divide the number of characters by 4.
+  explication:
+    fr: $600/4=150$ tokens.
+    en: $600/4=150$ tokens.
+- id: c9
+  type: idee
+  fr: 'Un bon prompt est clair et précis : le rôle du modèle, la tâche, le format attendu. Ajoute parfois un ou deux **exemples** de réponse (few-shot). Un exemple bien choisi vaut souvent un long paragraphe.'
+  en: 'A good prompt is clear and precise: the model’s role, the task, the expected format. Sometimes add one or two **examples** of an answer (few-shot). A well-chosen example is often worth a long paragraph.'
+  exemple:
+    fr: '« Classe en positif ou négatif. Exemple : "génial" → positif. Texte : "décevant" → » guide le modèle vers un seul mot.'
+    en: '“Classify as positive or negative. Example: “great” → positive. Text: “disappointing” →” guides the model to a single word.'
+- id: c10
+  type: piege
+  fr: Un texte collé dans un prompt peut contenir des **ordres cachés** (« ignore tes consignes »). Le modèle ne distingue pas toujours tes instructions des données. Traite tout texte venu d’ailleurs comme non fiable ; le module 15 approfondit ce point.
+  en: Text pasted into a prompt can contain **hidden orders** (“ignore your instructions”). The model does not always distinguish your instructions from data. Treat any text from elsewhere as untrusted; module 15 goes deeper.
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `tronquer(messages, limite)`** : tant que le total `estimer_tokens` des contenus dépasse `limite`, supprime le **plus ancien** message dont le rôle n’est pas `"system"`. Renvoie la nouvelle liste (sans modifier l’originale). `estimer_tokens` est fournie.'
+  en: 'Challenge. **Write `tronquer(messages, limite)`**: while the `estimer_tokens` total of the contents exceeds `limite`, delete the **oldest** message whose role is not `"system"`. Return the new list (without modifying the original). `estimer_tokens` is provided.'
+  depart: |
+    def estimer_tokens(texte):
+        if not texte:
+            return 0
+        return max(1, round(len(texte) / 4))
+
+    # écris ta fonction tronquer ici
+  tests: |-
+    m = [{"role": "system", "contenu": "x" * 40}, {"role": "user", "contenu": "y" * 40}, {"role": "assistant", "contenu": "z" * 40}, {"role": "user", "contenu": "w" * 40}]
+    r = tronquer(m, 30)
+    assert [x["role"] for x in r] == ["system", "assistant", "user"][:len(r)] or r[0]["role"] == "system"
+    assert sum(estimer_tokens(x["contenu"]) for x in r) <= 30
+    assert len(m) == 4
+    assert tronquer(m, 1000) == m
+    assert tronquer(m, 0) == [m[0]]
+  solutionCode: |
+    def estimer_tokens(texte):
+        if not texte:
+            return 0
+        return max(1, round(len(texte) / 4))
+
+    def tronquer(messages, limite):
+        msgs = list(messages)
+        def total():
+            return sum(estimer_tokens(m["contenu"]) for m in msgs)
+        while total() > limite:
+            for i, m in enumerate(msgs):
+                if m["role"] != "system":
+                    del msgs[i]
+                    break
+            else:
+                break
+        return msgs
+  indice:
+    fr: 'Copie la liste, puis boucle : tant que le total dépasse, supprime le premier message non `system` ; arrête-toi s’il n’en reste plus.'
+    en: 'Copy the list, then loop: while the total exceeds, delete the first non-`system` message; stop if none remain.'
+  explication:
+    fr: Garder la consigne et oublier les plus vieux échanges est la stratégie la plus simple. D’autres résument l’historique au lieu de le supprimer.
+    en: Keeping the instruction and forgetting the oldest exchanges is the simplest strategy. Others summarise the history instead of deleting it.
+- id: c12
+  type: idee
+  fr: Le niveau suivant mesure la **vitesse** et les **licences**. Un prompt long coûte du temps de lecture, et le modèle choisi doit pouvoir être utilisé légalement pour ton projet.
+  en: The next level measures **speed** and **licences**. A long prompt costs reading time, and the chosen model must be legally usable for your project.
+  exemple:
+    fr: Un historique de 3 000 tokens relu à chaque question ralentit la réponse ; le résumer l’accélère.
+    en: A 3,000-token history re-read at each question slows the answer; summarising it speeds it up.
+- id: c13
+  type: retenir
+  fr: 'Un prompt est une liste de messages (system, user, assistant) mise en forme par le modèle de chat du modèle. Respecte ses balises. La fenêtre de contexte est limitée : compte les tokens. Méfie-toi du texte venu d’ailleurs.'
+  en: 'A prompt is a list of messages (system, user, assistant) formatted by the model’s chat template. Respect its tags. The context window is limited: count the tokens. Distrust text from elsewhere.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [la documentation des modèles de chat](https://huggingface.co/docs/transformers/chat_templating) ; ce site demande une connexion.
+  en: For further study, see [the chat templates documentation](https://huggingface.co/docs/transformers/chat_templating); this site needs a connection.

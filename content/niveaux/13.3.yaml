@@ -1,0 +1,317 @@
+# Niveau 13.3 — LLM locaux 3 : quantification absmax. Original academik ; notions vérifiées dans Dettmers et al. 2022 (arXiv 2208.07339) et la documentation de llama.cpp (citée).
+id: '13.3'
+module: 13
+duree_min: 19
+titre:
+  fr: La quantification
+  en: Quantisation
+ia:
+  fr: Kintana réduit ses poids à quelques bits pour tenir dans la mémoire, en acceptant une petite erreur.
+  en: Kintana shrinks her weights to a few bits to fit in memory, accepting a small error.
+sources:
+- titre: 'Dettmers et al. — LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale'
+  url: https://arxiv.org/abs/2208.07339
+  licence: Article en accès libre ; idée citée
+- titre: llama.cpp — dépôt officiel (formats de quantification)
+  url: https://github.com/ggml-org/llama.cpp
+  licence: MIT ; documentation citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: On veut stocker le poids `0.4137` sur seulement 8 bits (256 valeurs possibles) au lieu de 32. Que doit-on accepter ?
+  en: We want to store the weight `0.4137` on only 8 bits (256 possible values) instead of 32. What must we accept?
+  choix:
+  - fr: 'Une petite erreur d’arrondi : on retrouvera une valeur proche, pas exacte'
+    en: 'A small rounding error: we will recover a close value, not an exact one'
+    juste: true
+  - fr: 'Aucune perte : 8 bits suffisent toujours'
+    en: 'No loss: 8 bits always suffice'
+  - fr: Que le poids devienne toujours zéro
+    en: That the weight always becomes zero
+  indice:
+    fr: '256 valeurs possibles pour représenter une infinité de nombres réels : que se passe-t-il entre deux valeurs ?'
+    en: '256 possible values to represent infinitely many real numbers: what happens between two values?'
+  explication:
+    fr: 'On arrondit à la valeur la plus proche parmi 256 : c’est la **quantification**. L’erreur est petite si on choisit bien l’échelle.'
+    en: 'We round to the nearest of 256 values: this is **quantisation**. The error is small if we choose the scale well.'
+- id: c2
+  type: idee
+  fr: La quantification **absmax** range les poids sur des entiers. On calcule une **échelle** $s=\max|w|/(2^{b-1}-1)$, puis on stocke $q=\text{round}(w/s)$. Pour retrouver une valeur approchée, on calcule $q\times s$.
+  en: '**Absmax** quantisation maps the weights to integers. We compute a **scale** $s=\max|w|/(2^{b-1}-1)$, then store $q=\text{round}(w/s)$. To recover an approximate value, we compute $q\times s$.'
+  exemple:
+    fr: 'Pour $w=(0{,}5;\,-1;\,0{,}25)$ et $b=8$ : $s=1/127$. Alors $q=(64;\,-127;\,32)$ et on retrouve $(0{,}504;\,-1;\,0{,}252)$.'
+    en: 'For $w=(0.5;\,-1;\,0.25)$ and $b=8$: $s=1/127$. Then $q=(64;\,-127;\,32)$ and we recover $(0.504;\,-1;\,0.252)$.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Quantifier puis dé-quantifier
+        en: Quantise then dequantise
+      noeuds:
+      - fr: poids réels
+        en: real weights
+      - fr: ÷ échelle, arrondi
+        en: ÷ scale, round
+      - fr: entiers $q$
+        en: integers $q$
+      - fr: × échelle
+        en: × scale
+        ton: ok
+    legende:
+      fr: On stocke les entiers et une seule échelle par groupe de poids.
+      en: We store the integers and a single scale per group of weights.
+- id: c2b
+  type: exemple
+  titre:
+    fr: Quantifier à la main
+    en: Quantising by hand
+  lang: python
+  etapes:
+  - code: |-
+      w = [0.5, -1.0, 0.25]
+      s = max(abs(x) for x in w) / 127
+    fr: On calcule l’échelle à partir du plus grand poids en valeur absolue.
+    en: We compute the scale from the weight largest in absolute value.
+  - code: q = [round(x / s) for x in w]
+    fr: On arrondit chaque poids en un entier.
+    en: We round each weight to an integer.
+  - code: print(q, [round(v * s, 3) for v in q])
+    fr: On affiche `[64, -127, 32]` puis les valeurs retrouvées `[0.504, -1.0, 0.252]`.
+    en: We display `[64, -127, 32]` then the recovered values `[0.504, -1.0, 0.252]`.
+  verif: |-
+    w = [0.5, -1.0, 0.25]
+    s = max(abs(x) for x in w) / 127
+    q = [round(x / s) for x in w]
+    print(q, [round(v * s, 3) for v in q])
+  sortie: '[64, -127, 32] [0.504, -1.0, 0.252]'
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `quantifier(w, bits)`** : calcule `niveaux = 2 ** (bits - 1) - 1`, l’`echelle = max(abs(x) for x in w) / niveaux`, puis renvoie `([round(x / echelle) for x in w], echelle)`.'
+  en: 'Your turn. **Write `quantifier(w, bits)`**: compute `niveaux = 2 ** (bits - 1) - 1`, the `echelle = max(abs(x) for x in w) / niveaux`, then return `([round(x / echelle) for x in w], echelle)`.'
+  depart: |
+    # écris ta fonction quantifier ici
+  tests: |-
+    q, s = quantifier([0.5, -1.0, 0.25], 8)
+    assert q == [64, -127, 32] and abs(s - 1/127) < 1e-12
+    q, s = quantifier([1.0, -1.0, 0.0], 4)
+    assert q == [7, -7, 0]
+    assert max(abs(v) for v in quantifier([3.0, -2.0, 1.0], 8)[0]) == 127
+  solutionCode: |
+    def quantifier(w, bits):
+        niveaux = 2 ** (bits - 1) - 1
+        echelle = max(abs(x) for x in w) / niveaux
+        return [round(x / echelle) for x in w], echelle
+  indice:
+    fr: 'Trois lignes : les niveaux, l’échelle, puis la liste arrondie. Renvoie le couple `(q, echelle)`.'
+    en: 'Three lines: the levels, the scale, then the rounded list. Return the pair `(q, echelle)`.'
+  explication:
+    fr: 'Le plus grand poids en valeur absolue devient toujours l’entier extrême (127 pour 8 bits) : il est représenté sans erreur.'
+    en: 'The weight largest in absolute value always becomes the extreme integer (127 for 8 bits): it is represented without error.'
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `dequantifier(q, echelle)`** : renvoie la liste des `v * echelle` pour chaque entier `v` de `q`.'
+  en: '**Write `dequantifier(q, echelle)`**: return the list of `v * echelle` for each integer `v` of `q`.'
+  depart: |
+    # écris ta fonction dequantifier ici
+  tests: |-
+    r = dequantifier([64, -127, 32], 1/127)
+    assert abs(r[0] - 0.50394) < 1e-4 and abs(r[1] + 1) < 1e-12
+    assert dequantifier([], 3) == []
+    assert dequantifier([2, 4], 0.5) == [1.0, 2.0]
+  solutionCode: |
+    def dequantifier(q, echelle):
+        return [v * echelle for v in q]
+  indice:
+    fr: 'Une compréhension de liste : `[v * echelle for v in q]`.'
+    en: 'A list comprehension: `[v * echelle for v in q]`.'
+  explication:
+    fr: 'Le résultat n’est pas exactement les poids d’origine : la différence est l’**erreur de quantification**.'
+    en: 'The result is not exactly the original weights: the difference is the **quantisation error**.'
+- id: c4b
+  type: idee
+  fr: 'On stocke les entiers sur peu de bits, avec une échelle pour chaque groupe (par exemple 32 poids). Cette échelle prend un peu de place en plus : 4 bits par poids donnent en pratique un peu plus de 4 bits au total.'
+  en: 'The integers are stored on few bits, with one scale per group (for example 32 weights). This scale takes a little extra room: 4 bits per weight give in practice slightly more than 4 bits in total.'
+  exemple:
+    fr: 'Pour 32 poids en 4 bits (128 bits) et une échelle de 16 bits : 144 bits, soit 4,5 bits par poids.'
+    en: 'For 32 weights at 4 bits (128 bits) and a 16-bit scale: 144 bits, that is 4.5 bits per weight.'
+- id: c5
+  type: idee
+  fr: 'Moins de bits, plus d’erreur. En 8 bits, on a 255 niveaux : l’erreur est minuscule. En 4 bits, seulement 15 niveaux : l’erreur est visible, mais le modèle reste souvent utilisable. En 2 bits, la qualité chute nettement.'
+  en: 'Fewer bits, more error. At 8 bits we have 255 levels: the error is tiny. At 4 bits, only 15 levels: the error is visible, but the model often remains usable. At 2 bits, quality drops sharply.'
+  exemple:
+    fr: Pour des poids entre $-1$ et $1$, le pas est $1/127\approx0{,}008$ en 8 bits, mais $1/7\approx0{,}14$ en 4 bits.
+    en: For weights between $-1$ and $1$, the step is $1/127\approx0.008$ at 8 bits, but $1/7\approx0.14$ at 4 bits.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Bits
+      en: Bits
+    - fr: Niveaux
+      en: Levels
+    - fr: Pas (poids entre -1 et 1)
+      en: Step (weights between -1 and 1)
+    cellules:
+    - - '8'
+      - '255'
+      - 0,008
+    - - '4'
+      - '15'
+      - 0,14
+    - - fr: '2'
+        en: '2'
+        ton: bad
+      - fr: '3'
+        en: '3'
+        ton: bad
+      - fr: '1'
+        en: '1'
+        ton: bad
+    legende:
+      fr: Le pas est la taille de l’erreur d’arrondi maximale doublée.
+      en: The step is twice the maximum rounding error.
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `erreur_max(w, bits)`** : quantifie `w`, dé-quantifie, puis renvoie le plus grand écart absolu entre les poids d’origine et les poids retrouvés. `quantifier` et `dequantifier` sont fournies.'
+  en: '**Write `erreur_max(w, bits)`**: quantise `w`, dequantise, then return the largest absolute gap between the original weights and the recovered ones. `quantifier` and `dequantifier` are provided.'
+  depart: |
+    def quantifier(w, bits):
+        niveaux = 2 ** (bits - 1) - 1
+        echelle = max(abs(x) for x in w) / niveaux
+        return [round(x / echelle) for x in w], echelle
+
+    def dequantifier(q, echelle):
+        return [v * echelle for v in q]
+
+    # écris ta fonction erreur_max ici
+  tests: |-
+    w = [0.5, -1.0, 0.25, 0.1]
+    assert erreur_max(w, 8) < 0.004
+    assert erreur_max(w, 4) > erreur_max(w, 8)
+    assert erreur_max([1.0, -1.0], 4) < 1e-12
+  solutionCode: |
+    def quantifier(w, bits):
+        niveaux = 2 ** (bits - 1) - 1
+        echelle = max(abs(x) for x in w) / niveaux
+        return [round(x / echelle) for x in w], echelle
+
+    def dequantifier(q, echelle):
+        return [v * echelle for v in q]
+
+    def erreur_max(w, bits):
+        q, echelle = quantifier(w, bits)
+        r = dequantifier(q, echelle)
+        return max(abs(a - b) for a, b in zip(w, r))
+  indice:
+    fr: Appelle `quantifier`, puis `dequantifier`, puis `max(abs(a - b) for a, b in zip(w, r))`.
+    en: Call `quantifier`, then `dequantifier`, then `max(abs(a - b) for a, b in zip(w, r))`.
+  explication:
+    fr: 'L’erreur maximale ne dépasse jamais la moitié du pas : on arrondit au plus proche.'
+    en: 'The maximum error never exceeds half the step: we round to the nearest.'
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Combien de niveaux positifs (hors zéro) la quantification absmax offre-t-elle en 4 bits ?
+  en: How many positive levels (excluding zero) does absmax quantisation offer at 4 bits?
+  reponses:
+  - '7'
+  verif: print(2 ** (4 - 1) - 1)
+  indice:
+    fr: Applique la formule $2^{b-1}-1$ avec $b=4$.
+    en: Apply the formula $2^{b-1}-1$ with $b=4$.
+  explication:
+    fr: '$2^3-1=7$ : les entiers vont de $-7$ à $7$.'
+    en: '$2^3-1=7$: the integers range from $-7$ to $7$.'
+- id: c8
+  type: piege
+  fr: 'Un seul poids énorme dégrade tout le groupe. L’échelle dépend du plus grand poids : s’il est dix fois plus grand que les autres, les petits poids sont écrasés sur quelques niveaux. On quantifie donc **par petits blocs** de poids, chacun avec sa propre échelle.'
+  en: 'One enormous weight degrades the whole group. The scale depends on the largest weight: if it is ten times larger than the others, the small weights are squeezed onto a few levels. So we quantise **in small blocks** of weights, each with its own scale.'
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `bits_pour_erreur(w, seuil)`** : le plus petit nombre de bits entre `2` et `8` tel que `erreur_max(w, bits) <= seuil` ; `None` si aucun ne convient. Les fonctions précédentes sont fournies.'
+  en: 'Challenge. **Write `bits_pour_erreur(w, seuil)`**: the smallest number of bits between `2` and `8` such that `erreur_max(w, bits) <= seuil`; `None` if none suits. The previous functions are provided.'
+  depart: |
+    def quantifier(w, bits):
+        niveaux = 2 ** (bits - 1) - 1
+        echelle = max(abs(x) for x in w) / niveaux
+        return [round(x / echelle) for x in w], echelle
+
+    def dequantifier(q, echelle):
+        return [v * echelle for v in q]
+
+    def erreur_max(w, bits):
+        q, echelle = quantifier(w, bits)
+        r = dequantifier(q, echelle)
+        return max(abs(a - b) for a, b in zip(w, r))
+
+    # écris ta fonction bits_pour_erreur ici
+  tests: |-
+    w = [0.5, -1.0, 0.25, 0.1]
+    assert bits_pour_erreur(w, 0.004) == 8
+    assert bits_pour_erreur(w, 0.1) in (3, 4, 5)
+    assert bits_pour_erreur(w, 1e-12) is None
+    assert bits_pour_erreur([1.0, -1.0], 1e-9) == 2
+  solutionCode: |
+    def quantifier(w, bits):
+        niveaux = 2 ** (bits - 1) - 1
+        echelle = max(abs(x) for x in w) / niveaux
+        return [round(x / echelle) for x in w], echelle
+
+    def dequantifier(q, echelle):
+        return [v * echelle for v in q]
+
+    def erreur_max(w, bits):
+        q, echelle = quantifier(w, bits)
+        r = dequantifier(q, echelle)
+        return max(abs(a - b) for a, b in zip(w, r))
+
+    def bits_pour_erreur(w, seuil):
+        for bits in range(2, 9):
+            if erreur_max(w, bits) <= seuil:
+                return bits
+        return None
+  indice:
+    fr: 'Une boucle `for bits in range(2, 9)` : renvoie `bits` dès que l’erreur convient ; `None` à la fin.'
+    en: 'A loop `for bits in range(2, 9)`: return `bits` as soon as the error suits; `None` at the end.'
+  explication:
+    fr: Choisir la précision au plus juste est exactement l’arbitrage qu’on fait entre qualité et mémoire pour un modèle local.
+    en: Choosing the precision just right is exactly the trade-off made between quality and memory for a local model.
+- id: c9b
+  type: idee
+  fr: Les formats de llama.cpp ont des noms comme Q8_0 ou Q4_K_M. Le chiffre est le nombre de bits ; le reste décrit les blocs et le mélange de précisions. Plus le chiffre est bas, plus le fichier est petit.
+  en: llama.cpp formats have names like Q8_0 or Q4_K_M. The number is the bits; the rest describes the blocks and the precision mix. The lower the number, the smaller the file.
+  exemple:
+    fr: 'Q4_K_M est un choix courant : un bon compromis entre taille et qualité pour la plupart des usages.'
+    en: 'Q4_K_M is a common choice: a good compromise between size and quality for most uses.'
+- id: c10
+  type: idee
+  fr: Pour un grand modèle, la perte de qualité en 8 bits est quasi invisible, et souvent modérée en 4 bits. On l’évalue en comparant les réponses ou la **perplexité** avant et après. Les formats GGUF de llama.cpp mélangent plusieurs précisions selon les couches.
+  en: For a large model, the quality loss at 8 bits is almost invisible, and often moderate at 4 bits. It is evaluated by comparing answers or the **perplexity** before and after. The GGUF formats of llama.cpp mix several precisions across layers.
+  exemple:
+    fr: Un fichier « Q4 » d’un modèle de 7 milliards fait environ 4 Go, contre 14 Go en 16 bits.
+    en: A “Q4” file of a 7-billion model is about 4 GB, against 14 GB at 16 bits.
+- id: c11
+  type: retenir
+  fr: 'Quantification absmax : $s=\max|w|/(2^{b-1}-1)$, $q=\text{round}(w/s)$, retour $q\times s$. Moins de bits, plus d’erreur. Un poids géant dégrade son groupe : on quantifie par blocs.'
+  en: 'Absmax quantisation: $s=\max|w|/(2^{b-1}-1)$, $q=\text{round}(w/s)$, recovery $q\times s$. Fewer bits, more error. A giant weight degrades its group: we quantise in blocks.'
+- id: c12
+  type: plus
+  fr: Pour approfondir, consulte [LLM.int8()](https://arxiv.org/abs/2208.07339) ; cet article demande une connexion.
+  en: For further study, see [LLM.int8()](https://arxiv.org/abs/2208.07339); this paper needs a connection.

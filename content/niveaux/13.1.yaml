@@ -1,0 +1,246 @@
+# Niveau 13.1 — LLM locaux 1 : pré-entraînement, adaptation, inférence. Original academik ; notions vérifiées dans Kaplan et al. 2020 (arXiv 2001.08361), Hoffmann et al. 2022 (arXiv 2203.15556) et le cours LLM de Hugging Face (cité).
+id: '13.1'
+module: 13
+duree_min: 16
+titre:
+  fr: Pré-entraîner, adapter, inférer
+  en: Pretrain, adapt, infer
+ia:
+  fr: Kintana distingue ce qui coûte des millions d’heures de calcul de ce qu’elle peut faire sur ton appareil.
+  en: Kintana tells apart what costs millions of compute hours from what she can do on your device.
+sources:
+- titre: Hugging Face — LLM Course
+  url: https://huggingface.co/learn/llm-course
+  licence: Cours en ligne ; contenu cité, texte non repris
+- titre: Hoffmann et al. — Training Compute-Optimal Large Language Models (Chinchilla)
+  url: https://arxiv.org/abs/2203.15556
+  licence: Article en accès libre ; règle citée
+- titre: Kaplan et al. — Scaling Laws for Neural Language Models
+  url: https://arxiv.org/abs/2001.08361
+  licence: Article en accès libre ; formule citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un modèle brut, qui sait seulement prolonger du texte, reçoit la consigne « résume ce paragraphe » et se met à écrire la suite du paragraphe. Quelle étape lui manque ?
+  en: A raw model, which only knows how to continue text, receives the instruction “summarise this paragraph” and starts writing the paragraph’s continuation. Which stage is missing?
+  choix:
+  - fr: 'L’adaptation : l’apprentissage à suivre des consignes'
+    en: 'Adaptation: learning to follow instructions'
+    juste: true
+  - fr: Davantage d’inférence
+    en: More inference
+  - fr: Un plus petit vocabulaire
+    en: A smaller vocabulary
+  indice:
+    fr: Le modèle sait prédire le mot suivant. Qui lui apprend à répondre plutôt qu’à continuer ?
+    en: The model knows how to predict the next word. Who teaches it to answer rather than continue?
+  explication:
+    fr: Le pré-entraînement donne la langue et les connaissances. L’**adaptation** (SFT, préférences) apprend le format question-réponse.
+    en: Pretraining gives language and knowledge. **Adaptation** (SFT, preferences) teaches the question-answer format.
+- id: c2
+  type: idee
+  fr: 'La vie d’un modèle a trois temps. Le **pré-entraînement** prédit le mot suivant sur d’énormes textes. L’**adaptation** apprend à suivre des consignes. L’**inférence** est l’usage : tu poses une question, le modèle répond.'
+  en: 'A model’s life has three stages. **Pretraining** predicts the next word on huge texts. **Adaptation** teaches following instructions. **Inference** is the use: you ask a question, the model answers.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Phase
+      en: Stage
+    - fr: But
+      en: Goal
+    - fr: Coût
+      en: Cost
+    cellules:
+    - - fr: Pré-entraînement
+        en: Pretraining
+      - fr: langue et savoir
+        en: language and knowledge
+      - fr: énorme, une fois
+        en: huge, once
+    - - fr: Adaptation
+        en: Adaptation
+      - fr: suivre des consignes
+        en: follow instructions
+      - fr: modéré
+        en: moderate
+    - - fr: Inférence
+        en: Inference
+        ton: ok
+      - fr: répondre
+        en: answer
+        ton: ok
+      - fr: à chaque requête
+        en: per request
+        ton: ok
+    legende:
+      fr: Sur ton appareil, tu ne fais que l’inférence.
+      en: On your device, you only do inference.
+- id: c3
+  type: idee
+  fr: 'Le coût du pré-entraînement se compte en opérations. Règle de pouce : environ $6\,N\,D$ opérations, avec $N$ paramètres et $D$ tokens d’entraînement. Doubler le modèle ou les données double le coût.'
+  en: 'The cost of pretraining is counted in operations. Rule of thumb: about $6\,N\,D$ operations, with $N$ parameters and $D$ training tokens. Doubling the model or the data doubles the cost.'
+  exemple:
+    fr: 'Pour $N=10^9$ et $D=2\times10^{10}$ : $6\times10^9\times2\times10^{10}=1{,}2\times10^{20}$ opérations.'
+    en: 'For $N=10^9$ and $D=2\times10^{10}$: $6\times10^9\times2\times10^{10}=1.2\times10^{20}$ operations.'
+- id: c3b
+  type: idee
+  fr: 'Le modèle apprend en lisant le texte et en prédisant le mot suivant, des milliards de fois. Aucune étiquette humaine n’est nécessaire : le texte lui-même fournit la bonne réponse, c’est l’apprentissage **auto-supervisé**.'
+  en: 'The model learns by reading text and predicting the next word, billions of times. No human label is needed: the text itself provides the right answer; this is **self-supervised** learning.'
+  exemple:
+    fr: Dans « le chat dort », le mot « dort » est la bonne réponse pour le contexte « le chat ».
+    en: In “the cat sleeps”, the word “sleeps” is the right answer for the context “the cat”.
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `flops_entrainement(n_params, n_tokens)`** : le coût estimé du pré-entraînement, soit `6 * n_params * n_tokens`.'
+  en: 'Your turn. **Write `flops_entrainement(n_params, n_tokens)`**: the estimated pretraining cost, that is `6 * n_params * n_tokens`.'
+  depart: |
+    # écris ta fonction flops_entrainement ici
+  tests: |-
+    assert flops_entrainement(1e9, 2e10) == 1.2e20
+    assert flops_entrainement(0, 5) == 0
+    assert flops_entrainement(2, 3) == 36
+  solutionCode: |
+    def flops_entrainement(n_params, n_tokens):
+        return 6 * n_params * n_tokens
+  indice:
+    fr: 'Une seule ligne : le produit de six, du nombre de paramètres et du nombre de tokens.'
+    en: 'A single line: the product of six, the number of parameters and the number of tokens.'
+  explication:
+    fr: Le facteur 6 vient d’environ 2 opérations pour la passe avant et 4 pour la rétropropagation par paramètre et par token.
+    en: The factor 6 comes from roughly 2 operations for the forward pass and 4 for backpropagation per parameter and per token.
+- id: c5
+  type: exemple
+  titre:
+    fr: Combien de jours de calcul ?
+    en: How many days of computing?
+  lang: python
+  etapes:
+  - code: flops = 6 * 1e9 * 2e10
+    fr: Le coût du modèle à un milliard de paramètres.
+    en: The cost of the one-billion-parameter model.
+  - code: debit = 1e14 * 0.4
+    fr: Une carte à `1e14` opérations par seconde, utilisée à 40 %.
+    en: A card at `1e14` operations per second, used at 40%.
+  - code: print(round(flops / debit / 86400, 1))
+    fr: On affiche `34.7` jours pour une seule carte.
+    en: We display `34.7` days for a single card.
+  verif: |-
+    flops = 6 * 1e9 * 2e10
+    debit = 1e14 * 0.4
+    print(round(flops / debit / 86400, 1))
+  sortie: '34.7'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `jours(flops, debit)`** : le nombre de jours pour effectuer `flops` opérations à `debit` opérations par seconde (un jour = 86 400 secondes).'
+  en: '**Write `jours(flops, debit)`**: the number of days to perform `flops` operations at `debit` operations per second (one day = 86,400 seconds).'
+  depart: |
+    # écris ta fonction jours ici
+  tests: |-
+    assert jours(86400, 1) == 1
+    assert abs(jours(1.2e20, 4e13) - 34.72) < 0.01
+    assert jours(0, 5) == 0
+  solutionCode: |
+    def jours(flops, debit):
+        return flops / debit / 86400
+  indice:
+    fr: Divise les opérations par le débit pour obtenir des secondes, puis par `86400`.
+    en: Divide the operations by the throughput to get seconds, then by `86400`.
+  explication:
+    fr: 'Avec mille cartes en parallèle, ce calcul de 35 jours tombe à environ une heure : c’est pourquoi on entraîne sur des grappes.'
+    en: 'With a thousand cards in parallel, this 35-day computation drops to about an hour: this is why we train on clusters.'
+- id: c7
+  type: idee
+  fr: L’adaptation prend plusieurs formes. Le **SFT** (réglage supervisé) montre des exemples de bonnes réponses. Les **préférences** apprennent à choisir la meilleure réponse entre deux. Le **RLVR** récompense une réponse vérifiable, comme un calcul juste.
+  en: Adaptation takes several forms. **SFT** (supervised fine-tuning) shows examples of good answers. **Preferences** teach choosing the better answer between two. **RLVR** rewards a verifiable answer, such as a correct calculation.
+  exemple:
+    fr: Pour un exercice de mathématiques, le RLVR donne une récompense seulement si le résultat final est correct.
+    en: For a maths exercise, RLVR gives a reward only if the final result is correct.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Du modèle brut à l’assistant
+        en: From raw model to assistant
+      noeuds:
+      - fr: modèle brut
+        en: raw model
+      - fr: SFT
+        en: SFT
+      - fr: préférences
+        en: preferences
+      - fr: assistant
+        en: assistant
+        ton: ok
+    legende:
+      fr: Chaque étape coûte bien moins que le pré-entraînement.
+      en: Each stage costs far less than pretraining.
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Pour $N=10^9$ paramètres et $D=10^{10}$ tokens, combien d’opérations (en unités de $10^{19}$) la règle $6ND$ prédit-elle ?
+  en: For $N=10^9$ parameters and $D=10^{10}$ tokens, how many operations (in units of $10^{19}$) does the $6ND$ rule predict?
+  reponses:
+  - '6'
+  verif: print(int(6 * 1e9 * 1e10 / 1e19))
+  indice:
+    fr: Calcule $6\times10^9\times10^{10}$, puis exprime-le en multiples de $10^{19}$.
+    en: Compute $6\times10^9\times10^{10}$, then express it in multiples of $10^{19}$.
+  explication:
+    fr: '$6\times10^{19}$ : le résultat vaut six fois l’unité.'
+    en: '$6\times10^{19}$: the result is six times the unit.'
+- id: c9
+  type: piege
+  fr: 'Un modèle ne sait que ce qu’il a vu avant sa date de coupure. Il ne connaît ni l’actualité récente ni tes cours, sauf si on les lui fournit. Il peut aussi inventer avec aplomb : c’est une **hallucination**. Le module 14 (RAG) y répond.'
+  en: 'A model only knows what it saw before its cutoff date. It knows neither recent news nor your courses, unless they are supplied. It may also invent with confidence: this is a **hallucination**. Module 14 (RAG) addresses this.'
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `ratio_tokens(n_params, n_tokens)`** : renvoie le couple `(r, verdict)` où `r = n_tokens / n_params` et `verdict` vaut `"en dessous de la règle"` si `r < 20`, sinon `"au niveau de la règle ou au-delà"`. Règle de pouce de Chinchilla : environ 20 tokens par paramètre.'
+  en: 'Challenge. **Write `ratio_tokens(n_params, n_tokens)`**: return the pair `(r, verdict)` where `r = n_tokens / n_params` and `verdict` is `"en dessous de la règle"` if `r < 20`, otherwise `"au niveau de la règle ou au-delà"`. Chinchilla rule of thumb: about 20 tokens per parameter.'
+  depart: |
+    # écris ta fonction ratio_tokens ici
+  tests: |-
+    assert ratio_tokens(1e9, 1e9) == (1.0, "en dessous de la règle")
+    assert ratio_tokens(1e9, 2e10)[1] == "au niveau de la règle ou au-delà"
+    assert ratio_tokens(1e9, 1e12) == (1000.0, "au niveau de la règle ou au-delà")
+  solutionCode: |
+    def ratio_tokens(n_params, n_tokens):
+        r = n_tokens / n_params
+        if r < 20:
+            return r, "en dessous de la règle"
+        return r, "au niveau de la règle ou au-delà"
+  indice:
+    fr: Calcule `r`, puis un `if r < 20` qui renvoie le premier verdict ; sinon le second.
+    en: Compute `r`, then an `if r < 20` returning the first verdict; otherwise the second.
+  explication:
+    fr: 'Les modèles récents s’entraînent souvent bien au-delà de 20 tokens par paramètre : un modèle plus petit mais plus entraîné coûte moins cher à utiliser.'
+    en: 'Recent models are often trained well beyond 20 tokens per parameter: a smaller but better-trained model is cheaper to use.'
+- id: c11
+  type: idee
+  fr: 'Retiens ce que tu fais en local : de l’**inférence**, parfois un petit réglage. Ce qui limite alors ton appareil, c’est la **mémoire** et la **vitesse**. Les niveaux suivants les mesurent : budget de RAM (13.2), quantification (13.3), prompts (13.4), vitesse et licences (13.5).'
+  en: 'Remember what you do locally: **inference**, sometimes a small tuning. What limits your device is then **memory** and **speed**. The next levels measure them: RAM budget (13.2), quantisation (13.3), prompts (13.4), speed and licences (13.5).'
+  exemple:
+    fr: Un petit modèle de 1 milliard de paramètres tourne sur un téléphone récent ; un modèle de 70 milliards demande un serveur.
+    en: A small model of 1 billion parameters runs on a recent phone; a 70-billion model needs a server.
+- id: c12
+  type: retenir
+  fr: 'Trois temps : pré-entraînement, adaptation, inférence. Coût du pré-entraînement $\approx6ND$. Adaptation : SFT, préférences, RLVR. En local, tu fais de l’inférence, limitée par la mémoire et la vitesse.'
+  en: 'Three stages: pretraining, adaptation, inference. Pretraining cost $\approx6ND$. Adaptation: SFT, preferences, RLVR. Locally, you do inference, limited by memory and speed.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [le cours LLM de Hugging Face](https://huggingface.co/learn/llm-course) ; ce cours demande une connexion.
+  en: For further study, see [the Hugging Face LLM course](https://huggingface.co/learn/llm-course); this course needs a connection.

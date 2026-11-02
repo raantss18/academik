@@ -1,0 +1,325 @@
+# Niveau 13.boss — Choisis ton modèle (mission : le meilleur modèle local pour une machine donnée). Original academik ; notions des niveaux 13.1 à 13.5, vérifiées dans la documentation de llama.cpp (citée) et le cours LLM de Hugging Face (cité).
+id: 13.boss
+module: 13
+duree_min: 12
+titre:
+  fr: Choisis ton modèle
+  en: Choose your model
+ia:
+  fr: 'Kintana choisit son propre modèle : assez petit pour tenir, assez libre pour servir, assez grand pour bien répondre.'
+  en: 'Kintana chooses her own model: small enough to fit, free enough to use, large enough to answer well.'
+sources:
+- titre: llama.cpp — dépôt officiel
+  url: https://github.com/ggml-org/llama.cpp
+  licence: MIT ; documentation citée
+- titre: Hugging Face — LLM Course
+  url: https://huggingface.co/learn/llm-course
+  licence: Cours en ligne ; contenu cité, texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Tu veux installer un assistant sur un ordinateur de 8 Go de RAM, pour un usage commercial. Quels critères entrent dans le choix du modèle ?
+  en: You want to install an assistant on a computer with 8 GB of RAM, for commercial use. Which criteria enter the choice of model?
+  choix:
+  - fr: La mémoire, la licence, la vitesse et la qualité attendue
+    en: Memory, licence, speed and the expected quality
+    juste: true
+  - fr: Seulement le nombre de paramètres
+    en: Only the number of parameters
+  - fr: Seulement le nom du modèle
+    en: Only the name of the model
+  indice:
+    fr: Un modèle trop gros ne tourne pas, un modèle interdit ne s’utilise pas. Que faut-il vérifier d’autre ?
+    en: A model that is too big does not run, a forbidden model cannot be used. What else must be checked?
+  explication:
+    fr: 'Le bon choix croise plusieurs contraintes : **mémoire** (13.2, 13.3), **licence** (13.5), **vitesse** (13.5) et qualité.'
+    en: 'The right choice combines several constraints: **memory** (13.2, 13.3), **licence** (13.5), **speed** (13.5) and quality.'
+- id: c2
+  type: idee
+  fr: 'Mission : choisir le meilleur modèle local parmi cinq candidats, pour une machine donnée. Tu vas filtrer par **licence**, filtrer par **mémoire** selon la précision (16, 8 ou 4 bits), puis choisir le plus grand qui reste.'
+  en: 'Mission: choose the best local model among five candidates, for a given machine. You will filter by **licence**, filter by **memory** according to the precision (16, 8 or 4 bits), then pick the largest that remains.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le tri des candidats
+        en: Sorting the candidates
+      noeuds:
+      - fr: tous les modèles
+        en: all the models
+      - fr: filtre licence
+        en: licence filter
+      - fr: filtre mémoire
+        en: memory filter
+      - fr: le plus grand
+        en: the largest
+        ton: ok
+    legende:
+      fr: Chaque filtre élimine des candidats ; il reste ceux qui conviennent.
+      en: Each filter eliminates candidates; those that suit remain.
+- id: c3
+  type: exemple
+  titre:
+    fr: Un candidat sur une machine de 8 Go
+    en: One candidate on an 8 GB machine
+  lang: python
+  etapes:
+  - code: params, ram, marge = 7, 8, 1.2
+    fr: Un modèle de 7 milliards de paramètres, 8 Go de RAM, 20 % de marge.
+    en: A 7-billion-parameter model, 8 GB of RAM, 20% margin.
+  - code: |-
+      for bits in (16, 8, 4):
+          besoin = params * bits / 8 * marge
+          print(bits, round(besoin, 1), besoin <= ram)
+    fr: Pour chaque précision, on calcule le besoin et on le compare à la RAM.
+    en: For each precision, we compute the need and compare it with the RAM.
+  verif: |-
+    params, ram, marge = 7, 8, 1.2
+    for bits in (16, 8, 4):
+        besoin = params * bits / 8 * marge
+        print(bits, round(besoin, 1), besoin <= ram)
+  sortie: |-
+    16 16.8 False
+    8 8.4 False
+    4 4.2 True
+- id: c4
+  type: idee
+  fr: 'Une licence « à lire » (communautaire) n’est ni un oui ni un non : tu la lis avant de décider. Pour le tri automatique, on **écarte** ces modèles tant que la lecture n’a pas été faite. C’est la prudence par défaut.'
+  en: 'A “to read” (community) licence is neither a yes nor a no: you read it before deciding. For the automatic sort, we **set aside** these models until the reading has been done. That is the default caution.'
+  exemple:
+    fr: Ici, le modèle de 13 milliards est écarté non pas parce qu’il est mauvais, mais parce que sa licence n’a pas encore été lue.
+    en: Here, the 13-billion model is set aside not because it is bad, but because its licence has not yet been read.
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `variantes_possibles(modeles, ram_go, commercial, marge=1.2)`** : pour chaque modèle dont `peut_utiliser(licence, commercial)` vaut `"oui"`, et pour chaque `bits` de `BITS` tel que `memoire_go(params, bits) * marge <= ram_go`, ajoute le couple `(nom, bits)`. Renvoie la liste.'
+  en: 'Your turn. **Write `variantes_possibles(modeles, ram_go, commercial, marge=1.2)`**: for each model whose `peut_utiliser(licence, commercial)` is `"oui"`, and for each `bits` of `BITS` such that `memoire_go(params, bits) * marge <= ram_go`, append the pair `(nom, bits)`. Return the list.'
+  depart: |
+    MODELES = [
+        {"nom": "Petit-1B", "params": 1, "licence": "apache-2.0"},
+        {"nom": "Moyen-3B", "params": 3, "licence": "mit"},
+        {"nom": "Grand-7B", "params": 7, "licence": "communautaire"},
+        {"nom": "Geant-13B", "params": 13, "licence": "communautaire"},
+        {"nom": "Libre-8B", "params": 8, "licence": "non-commerciale"},
+    ]
+    BITS = (16, 8, 4)
+
+    def memoire_go(n_params_milliards, bits):
+        return n_params_milliards * bits / 8
+
+    def peut_utiliser(licence, commercial):
+        if licence in ("apache-2.0", "mit"):
+            return "oui"
+        if licence == "non-commerciale":
+            return "non" if commercial else "oui"
+        return "à lire"
+
+    # écris ta fonction variantes_possibles ici
+  tests: |-
+    v = variantes_possibles(MODELES, 8, True)
+    assert ("Petit-1B", 16) in v and ("Moyen-3B", 16) in v and ("Moyen-3B", 4) in v
+    assert all(n != "Grand-7B" and n != "Geant-13B" and n != "Libre-8B" for n, _ in v)
+    w = variantes_possibles(MODELES, 8, False)
+    assert ("Libre-8B", 4) in w and ("Libre-8B", 8) not in w
+    assert variantes_possibles(MODELES, 0.1, True) == []
+  solutionCode: |
+    MODELES = [
+        {"nom": "Petit-1B", "params": 1, "licence": "apache-2.0"},
+        {"nom": "Moyen-3B", "params": 3, "licence": "mit"},
+        {"nom": "Grand-7B", "params": 7, "licence": "communautaire"},
+        {"nom": "Geant-13B", "params": 13, "licence": "communautaire"},
+        {"nom": "Libre-8B", "params": 8, "licence": "non-commerciale"},
+    ]
+    BITS = (16, 8, 4)
+
+    def memoire_go(n_params_milliards, bits):
+        return n_params_milliards * bits / 8
+
+    def peut_utiliser(licence, commercial):
+        if licence in ("apache-2.0", "mit"):
+            return "oui"
+        if licence == "non-commerciale":
+            return "non" if commercial else "oui"
+        return "à lire"
+
+    def variantes_possibles(modeles, ram_go, commercial, marge=1.2):
+        sortie = []
+        for m in modeles:
+            if peut_utiliser(m["licence"], commercial) != "oui":
+                continue
+            for bits in BITS:
+                if memoire_go(m["params"], bits) * marge <= ram_go:
+                    sortie.append((m["nom"], bits))
+        return sortie
+  indice:
+    fr: 'Deux boucles imbriquées : sur les modèles (avec un `continue` si la licence n’est pas `"oui"`), puis sur `BITS`.'
+    en: 'Two nested loops: over the models (with a `continue` if the licence is not `"oui"`), then over `BITS`.'
+  explication:
+    fr: 'Le résultat liste toutes les variantes qui conviennent : un même modèle peut apparaître en plusieurs précisions.'
+    en: 'The result lists all the variants that suit: one same model may appear in several precisions.'
+- id: c6
+  type: idee
+  fr: 'Un grand modèle quantifié bat souvent un petit modèle en pleine précision, à mémoire égale. Un modèle de 7 milliards en 4 bits (3,5 Go) est souvent meilleur qu’un modèle de 3 milliards en 16 bits (6 Go). D’où la règle : **le plus grand modèle qui tient**.'
+  en: 'A large quantised model often beats a small full-precision model, at equal memory. A 7-billion model at 4 bits (3.5 GB) is often better than a 3-billion model at 16 bits (6 GB). Hence the rule: **the largest model that fits**.'
+  exemple:
+    fr: 'C’est une règle de pouce : la qualité réelle se vérifie sur tes propres questions.'
+    en: 'This is a rule of thumb: the real quality is checked on your own questions.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Option
+      en: Option
+    - fr: Mémoire
+      en: Memory
+    - fr: Qualité typique
+      en: Typical quality
+    cellules:
+    - - 3B, 16 bits
+      - 6 Go
+      - fr: moyenne
+        en: average
+    - - fr: 7B, 4 bits
+        en: 7B, 4 bits
+        ton: ok
+      - fr: 3,5 Go
+        en: 3.5 GB
+        ton: ok
+      - fr: meilleure
+        en: better
+        ton: ok
+    legende:
+      fr: À mémoire comparable, mieux vaut plus de paramètres que plus de bits.
+      en: At comparable memory, more parameters beat more bits.
+- id: c7
+  type: piege
+  fr: Choisir uniquement d’après la taille est une erreur. Un modèle de 8 milliards qui sait mal ton sujet peut valoir moins qu’un plus petit, adapté à ta langue. Teste avec tes propres exemples avant de l’adopter.
+  en: Choosing only by size is a mistake. An 8-billion model that knows your subject poorly can be worth less than a smaller one suited to your language. Test with your own examples before adopting it.
+- id: c8
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 2
+  fr: 'Défi. **Écris `meilleur(modeles, ram_go, commercial)`** : parmi `variantes_possibles`, renvoie le couple `(nom, bits)` du modèle de plus de paramètres ; à égalité, celui de plus de bits. Renvoie `None` s’il n’y a aucune variante. `variantes_possibles` est fournie.'
+  en: 'Challenge. **Write `meilleur(modeles, ram_go, commercial)`**: among `variantes_possibles`, return the pair `(nom, bits)` of the model with the most parameters; on a tie, the one with the most bits. Return `None` if there is no variant. `variantes_possibles` is provided.'
+  depart: |
+    MODELES = [
+        {"nom": "Petit-1B", "params": 1, "licence": "apache-2.0"},
+        {"nom": "Moyen-3B", "params": 3, "licence": "mit"},
+        {"nom": "Grand-7B", "params": 7, "licence": "communautaire"},
+        {"nom": "Geant-13B", "params": 13, "licence": "communautaire"},
+        {"nom": "Libre-8B", "params": 8, "licence": "non-commerciale"},
+    ]
+    BITS = (16, 8, 4)
+
+    def memoire_go(n_params_milliards, bits):
+        return n_params_milliards * bits / 8
+
+    def peut_utiliser(licence, commercial):
+        if licence in ("apache-2.0", "mit"):
+            return "oui"
+        if licence == "non-commerciale":
+            return "non" if commercial else "oui"
+        return "à lire"
+
+    def variantes_possibles(modeles, ram_go, commercial, marge=1.2):
+        sortie = []
+        for m in modeles:
+            if peut_utiliser(m["licence"], commercial) != "oui":
+                continue
+            for bits in BITS:
+                if memoire_go(m["params"], bits) * marge <= ram_go:
+                    sortie.append((m["nom"], bits))
+        return sortie
+
+    # écris ta fonction meilleur ici
+  tests: |-
+    assert meilleur(MODELES, 8, True) == ("Moyen-3B", 16)
+    assert meilleur(MODELES, 8, False) == ("Libre-8B", 4)
+    assert meilleur(MODELES, 0.1, True) is None
+    assert meilleur(MODELES, 100, True) == ("Moyen-3B", 16)
+  solutionCode: |
+    MODELES = [
+        {"nom": "Petit-1B", "params": 1, "licence": "apache-2.0"},
+        {"nom": "Moyen-3B", "params": 3, "licence": "mit"},
+        {"nom": "Grand-7B", "params": 7, "licence": "communautaire"},
+        {"nom": "Geant-13B", "params": 13, "licence": "communautaire"},
+        {"nom": "Libre-8B", "params": 8, "licence": "non-commerciale"},
+    ]
+    BITS = (16, 8, 4)
+
+    def memoire_go(n_params_milliards, bits):
+        return n_params_milliards * bits / 8
+
+    def peut_utiliser(licence, commercial):
+        if licence in ("apache-2.0", "mit"):
+            return "oui"
+        if licence == "non-commerciale":
+            return "non" if commercial else "oui"
+        return "à lire"
+
+    def variantes_possibles(modeles, ram_go, commercial, marge=1.2):
+        sortie = []
+        for m in modeles:
+            if peut_utiliser(m["licence"], commercial) != "oui":
+                continue
+            for bits in BITS:
+                if memoire_go(m["params"], bits) * marge <= ram_go:
+                    sortie.append((m["nom"], bits))
+        return sortie
+
+    def meilleur(modeles, ram_go, commercial):
+        params = {m["nom"]: m["params"] for m in modeles}
+        candidats = variantes_possibles(modeles, ram_go, commercial)
+        if not candidats:
+            return None
+        return max(candidats, key=lambda c: (params[c[0]], c[1]))
+  indice:
+    fr: 'Fabrique un dictionnaire nom → paramètres, puis `max(candidats, key=lambda c: (params[c[0]], c[1]))`.'
+    en: 'Build a name → parameters dictionary, then `max(candidats, key=lambda c: (params[c[0]], c[1]))`.'
+  explication:
+    fr: 'Sans usage commercial, le modèle non commercial de 8 milliards devient le meilleur choix en 4 bits : la licence change la réponse.'
+    en: 'Without commercial use, the 8-billion non-commercial model becomes the best choice at 4 bits: the licence changes the answer.'
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Le modèle choisi pour l’usage commercial est « Moyen-3B » en 16 bits. Combien de Go de poids ce choix demande-t-il ?
+  en: The model chosen for commercial use is “Moyen-3B” at 16 bits. How many GB of weights does this choice require?
+  reponses:
+  - '6'
+  verif: print(int(3 * 16 / 8))
+  indice:
+    fr: 'Utilise la formule du niveau 13.2 : paramètres en milliards × bits ÷ 8.'
+    en: 'Use the formula of level 13.2: parameters in billions × bits ÷ 8.'
+  explication:
+    fr: $3\times16/8=6$ Go, soit 7,2 Go avec la marge de 20 %, sous les 8 Go de la machine.
+    en: $3\times16/8=6$ GB, that is 7.2 GB with the 20% margin, below the machine’s 8 GB.
+- id: c10
+  type: idee
+  fr: 'Pour aller plus loin : mesure la **vitesse** réelle (niveau 13.5) et vérifie la **qualité** sur quelques questions à toi. Tiens compte de la **langue** du modèle. Un bon choix se documente : licence lue, version, date.'
+  en: 'To go further: measure the real **speed** (level 13.5) and check the **quality** on a few of your own questions. Consider the model’s **language**. A good choice is documented: licence read, version, date.'
+  exemple:
+    fr: 'Note dans un fichier : nom, version, source, licence et date de téléchargement. Tu pourras justifier ton choix plus tard.'
+    en: 'Note in a file: name, version, source, licence and download date. You will be able to justify your choice later.'
+- id: c11
+  type: idee
+  fr: Tu sais maintenant choisir et interroger un modèle local. Le module 14 y ajoutera ta bibliothèque de cours. Le **RAG** retrouve les bons passages, et le modèle répond en **citant ses sources**.
+  en: You now know how to choose and query a local model. Module 14 will add your library of courses to it. **RAG** retrieves the right passages, and the model answers **citing its sources**.
+  exemple:
+    fr: Le modèle seul invente parfois ; avec ses sources sous les yeux, il peut répondre et montrer d’où vient chaque phrase.
+    en: The model alone sometimes invents; with its sources in front of it, it can answer and show where each sentence comes from.
+- id: c12
+  type: retenir
+  fr: 'Choisir un modèle local : filtrer par licence, filtrer par mémoire selon la précision, prendre le plus grand qui tient, puis tester sur tes propres questions. Documente ton choix.'
+  en: 'Choosing a local model: filter by licence, filter by memory according to the precision, take the largest that fits, then test on your own questions. Document your choice.'
+- id: c13
+  type: plus
+  fr: Pour aller plus loin, consulte [le cours LLM de Hugging Face](https://huggingface.co/learn/llm-course) ; ce cours demande une connexion.
+  en: To go further, see [the Hugging Face LLM course](https://huggingface.co/learn/llm-course); this course needs a connection.

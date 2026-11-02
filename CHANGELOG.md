@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.24] — 2026-11-02
+
+### Message fr
+Nouveau module « LLM locaux » : tu calcules la mémoire d'un modèle, tu le quantifies, tu mets en forme un prompt, tu estimes la vitesse, tu lis les licences, puis tu choisis le meilleur modèle pour ta machine.
+
+### Message en
+New “Local LLMs” module: you compute a model's memory, quantise it, format a prompt, estimate speed, read licences, then choose the best model for your machine.
+
 ## [0.3.23] — 2026-11-02
 
 ### Message fr
