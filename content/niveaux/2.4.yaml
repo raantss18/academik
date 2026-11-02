@@ -1,0 +1,203 @@
+# Niveau 2.4 — Python 4 : fonctions. Original academik ; notions vérifiées dans le tutoriel officiel Python (définir des fonctions, portée des noms).
+id: '2.4'
+module: 2
+duree_min: 18
+titre: { fr: 'Fonctions', en: 'Functions' }
+ia: { fr: 'Kintana range ses gestes dans des fonctions qu’elle peut réutiliser.', en: 'Kintana packs her moves into functions she can reuse.' }
+sources:
+  - { titre: 'Python — Tutoriel, définir des fonctions', url: 'https://docs.python.org/3/tutorial/controlflow.html#defining-functions', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — Tutoriel, portées et espaces de noms', url: 'https://docs.python.org/3/tutorial/classes.html#python-scopes-and-namespaces', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      def double(x):
+          return 2 * x
+      print(double(4))
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      def double(x):
+          return 2 * x
+      print(double(4))
+      ```
+    choix:
+      - { fr: '`8`', en: '`8`', juste: true }
+      - { fr: '`4`', en: '`4`' }
+      - { fr: '`double(4)`', en: '`double(4)`' }
+    verif: |-
+      def double(x):
+          return 2 * x
+      print(double(4))
+    sortie: '8'
+    explication: { fr: 'On appelle `double` avec `x = 4` : elle **renvoie** $2\times4=8$, que `print` affiche.', en: 'We call `double` with `x = 4`: it **returns** $2\times4=8$, which `print` displays.' }
+  - id: c2
+    type: idee
+    fr: 'Une **fonction** est un bloc de code qui a un nom. On la **définit** avec `def`, on lui donne des **paramètres** (ses entrées), et elle **renvoie** un résultat avec `return`.'
+    en: 'A **function** is a block of code with a name. We **define** it with `def`, give it **parameters** (its inputs), and it **returns** a result with `return`.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: '`def carre(x): return x * x`', en: '`def carre(x): return x * x`' }
+          noeuds: [{ fr: 'entrée : `x`', en: 'input: `x`' }, { fr: 'calcul : `x * x`', en: 'computation: `x * x`' }, { fr: '`return` : le résultat', en: '`return`: the result', ton: ok }]
+      legende: { fr: 'On l’utilise en l’**appelant** : `carre(5)` donne `25`.', en: 'We use it by **calling** it: `carre(5)` gives `25`.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Définir puis appeler', en: 'Defining then calling' }
+    lang: python
+    etapes:
+      - { code: 'def carre(x):', fr: 'On définit `carre`, qui reçoit un paramètre `x`. Les deux-points ouvrent le bloc.', en: 'We define `carre`, which receives a parameter `x`. The colon opens the block.' }
+      - { code: '    return x * x', fr: 'Ce bloc indenté est le corps. Il renvoie le produit de `x` par lui-même.', en: 'This indented block is the body. It returns the product of `x` by itself.' }
+      - { code: 'print(carre(5))', fr: 'On appelle `carre` avec `5` : `x` vaut 5 dans le corps, le résultat est `25`.', en: 'We call `carre` with `5`: `x` is 5 in the body, the result is `25`.' }
+    verif: |-
+      def carre(x):
+          return x * x
+      print(carre(5))
+    sortie: '25'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris une fonction `est_pair(n)`** qui renvoie `True` si `n` est pair et `False` sinon. Le jeu l’appellera avec plusieurs nombres.'
+    en: 'Your turn. **Write a function `est_pair(n)`** that returns `True` if `n` is even and `False` otherwise. The game will call it with several numbers.'
+    depart: |
+      # écris ta fonction est_pair ici
+    tests: |
+      assert est_pair(4) is True
+      assert est_pair(7) is False
+      assert est_pair(0) is True
+      assert est_pair(-3) is False
+    solutionCode: |
+      def est_pair(n):
+          return n % 2 == 0
+    indice: { fr: 'Un nombre pair a pour reste 0 dans la division par 2. Renvoie directement le résultat de la comparaison.', en: 'An even number has remainder 0 when divided by 2. Return the result of the comparison directly.' }
+    explication: { fr: '`n % 2 == 0` est déjà un booléen : on le renvoie tel quel.', en: '`n % 2 == 0` is already a boolean: we return it as is.' }
+  - id: d_ret
+    type: idee
+    fr: '`return` **renvoie** une valeur à celui qui appelle ; `print` ne fait que l’**afficher** à l’écran. Une fonction qui n’a pas de `return` renvoie `None`, la valeur « rien ».'
+    en: '`return` **gives back** a value to the caller; `print` only **displays** it on screen. A function with no `return` gives back `None`, the “nothing” value.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Fonction', en: 'Function' }, { fr: '`y = f(3)` donne…', en: '`y = f(3)` gives…' }, { fr: 'Utilisable ensuite ?', en: 'Usable afterwards?' }]
+      cellules:
+        - ['`def f(x): return x + 1`', '`y = 4`', { fr: 'oui : `y + 1` donne `5`', en: 'yes: `y + 1` gives `5`', ton: ok }]
+        - ['`def f(x): print(x + 1)`', '`y = None`', { fr: 'non : `y + 1` est une erreur', en: 'no: `y + 1` is an error', ton: bad }]
+      legende: { fr: 'Avec `print`, `4` s’affiche mais n’est pas gardé ; avec `return`, il est gardé.', en: 'With `print`, `4` is displayed but not kept; with `return`, it is kept.' }
+  - id: d_ret_ex
+    type: exemple
+    titre: { fr: 'Réutiliser un résultat', en: 'Reusing a result' }
+    lang: python
+    etapes:
+      - { code: 'def triple(x):', fr: 'On définit `triple` avec un paramètre.', en: 'We define `triple` with a parameter.' }
+      - { code: '    return 3 * x', fr: 'Elle **renvoie** le triple de `x`.', en: 'It **returns** the triple of `x`.' }
+      - { code: 'print(triple(triple(2)))', fr: '`triple(2)` renvoie 6, puis `triple(6)` renvoie 18. On peut emboîter les appels car les résultats sont renvoyés.', en: '`triple(2)` returns 6, then `triple(6)` returns 18. Calls can be nested because the results are returned.' }
+    verif: |-
+      def triple(x):
+          return 3 * x
+      print(triple(triple(2)))
+    sortie: '18'
+  - id: d_p_none
+    type: piege
+    fr: 'Oublier le `return` est l’erreur classique : la fonction calcule bien, mais celui qui l’appelle reçoit `None`. Si le résultat sert ensuite, il faut `return`, pas `print`.'
+    en: 'Forgetting `return` is the classic mistake: the function does compute, but the caller receives `None`. If the result is used afterwards, you need `return`, not `print`.'
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec `def f(x): return x + 2`, que vaut `f(f(1))` ?'
+    en: 'With `def f(x): return x + 2`, what is `f(f(1))`?'
+    reponses: ['5']
+    verif: |-
+      def f(x):
+          return x + 2
+      print(f(f(1)))
+    indice: { fr: 'Calcule d’abord `f(1)`, puis applique `f` à ce résultat.', en: 'Compute `f(1)` first, then apply `f` to that result.' }
+    explication: { fr: '`f(1)` vaut 3, puis `f(3)` vaut 5.', en: '`f(1)` is 3, then `f(3)` is 5.' }
+  - id: d_defaut
+    type: idee
+    fr: 'Une fonction peut avoir **plusieurs paramètres**, et des **valeurs par défaut** : `def salue(nom, mot="bonjour")`. Si l’appel ne donne pas `mot`, Python utilise `"bonjour"`.'
+    en: 'A function can have **several parameters**, and **default values**: `def salue(nom, mot="bonjour")`. If the call does not give `mot`, Python uses `"bonjour"`.'
+    exemple: { fr: '`salue("Ana")` donne `bonjour Ana` ; `salue("Ana", "salut")` donne `salut Ana`. Les paramètres avec défaut viennent toujours en dernier.', en: '`salue("Ana")` gives `bonjour Ana`; `salue("Ana", "salut")` gives `salut Ana`. Parameters with defaults always come last.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris une fonction `moyenne(a, b)`** qui renvoie la moyenne de deux nombres.'
+    en: '**Write a function `moyenne(a, b)`** that returns the average of two numbers.'
+    depart: |
+      # écris ta fonction moyenne ici
+    tests: |
+      assert moyenne(2, 4) == 3
+      assert moyenne(10, 20) == 15
+      assert moyenne(1, 2) == 1.5
+      assert moyenne(-2, 2) == 0
+    solutionCode: |
+      def moyenne(a, b):
+          return (a + b) / 2
+    indice: { fr: 'Additionne les deux nombres entre parenthèses, puis divise par 2.', en: 'Add the two numbers in parentheses, then divide by 2.' }
+    explication: { fr: '`(a + b) / 2` : les parenthèses font l’addition avant la division.', en: '`(a + b) / 2`: the parentheses make the addition happen before the division.' }
+  - id: d_portee
+    type: idee
+    fr: 'Une variable créée **dans** une fonction est **locale** : elle n’existe que pendant l’appel. Une variable créée **hors** de toute fonction est **globale** : la fonction peut la lire.'
+    en: 'A variable created **inside** a function is **local**: it only exists during the call. A variable created **outside** any function is **global**: the function can read it.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Où ?', en: 'Where?' }, { fr: 'Existe…', en: 'Exists…' }, { fr: 'Visible depuis…', en: 'Visible from…' }]
+      cellules:
+        - [{ fr: 'dans la fonction', en: 'inside the function' }, { fr: 'pendant l’appel', en: 'during the call' }, { fr: 'la fonction seulement', en: 'the function only' }]
+        - [{ fr: 'hors de toute fonction', en: 'outside any function' }, { fr: 'tout le programme', en: 'the whole program' }, { fr: 'partout (en lecture)', en: 'everywhere (to read)', ton: ok }]
+      legende: { fr: 'Deux variables de même nom, l’une locale et l’autre globale, restent **deux** variables distinctes.', en: 'Two variables with the same name, one local and one global, stay **two** distinct variables.' }
+  - id: d_portee_ex
+    type: exemple
+    titre: { fr: 'Deux `x` différents', en: 'Two different `x`' }
+    lang: python
+    etapes:
+      - { code: 'x = 10', fr: 'Une variable globale `x` vaut 10.', en: 'A global variable `x` is 10.' }
+      - { code: 'def f():', fr: 'On définit une fonction sans paramètre.', en: 'We define a function with no parameter.' }
+      - { code: '    x = 5', fr: 'Ici, `x = 5` crée un `x` **local** ; le `x` global n’est pas touché.', en: 'Here, `x = 5` creates a **local** `x`; the global `x` is not touched.' }
+      - { code: '    return x', fr: 'La fonction renvoie son `x` local : 5.', en: 'The function returns its local `x`: 5.' }
+      - { code: 'print(f(), x)', fr: 'On affiche `5 10` : le `x` global vaut toujours 10.', en: 'We display `5 10`: the global `x` is still 10.' }
+    verif: |-
+      x = 10
+      def f():
+          x = 5
+          return x
+      print(f(), x)
+    sortie: '5 10'
+  - id: d_petites
+    type: idee
+    fr: 'Une bonne fonction fait **une seule chose** et porte un nom clair. On construit les gros programmes en assemblant de petites fonctions, plus faciles à tester une par une.'
+    en: 'A good function does **one thing** and has a clear name. Big programs are built by assembling small functions, easier to test one by one.'
+    exemple: { fr: '`aire(l, h)` renvoie `l * h` ; `perimetre(l, h)` renvoie `2 * (l + h)`. Deux petites fonctions valent mieux qu’une seule qui ferait tout.', en: '`aire(l, h)` returns `l * h`; `perimetre(l, h)` returns `2 * (l + h)`. Two small functions beat a single one doing everything.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris une fonction `factorielle(n)`** qui renvoie $n! = 1\times2\times\dots\times n$ (avec `factorielle(0)` égal à 1). Utilise une boucle.'
+    en: 'Challenge. **Write a function `factorielle(n)`** that returns $n! = 1\times2\times\dots\times n$ (with `factorielle(0)` equal to 1). Use a loop.'
+    depart: |
+      # écris ta fonction factorielle ici
+    tests: |
+      assert factorielle(0) == 1
+      assert factorielle(1) == 1
+      assert factorielle(5) == 120
+      assert factorielle(6) == 720
+    solutionCode: |
+      def factorielle(n):
+          p = 1
+          for i in range(2, n + 1):
+              p = p * i
+          return p
+    indice: { fr: 'Un produit part de 1 (niveau 2.3). Pour `n = 0`, la boucle ne tourne pas et le résultat reste 1.', en: 'A product starts at 1 (level 2.3). For `n = 0`, the loop does not run and the result stays 1.' }
+    explication: { fr: 'L’accumulateur `p` multiplie 2, 3, …, `n` ; le cas 0 donne 1 sans tour de boucle.', en: 'The accumulator `p` multiplies 2, 3, …, `n`; the case 0 gives 1 with no loop turn.' }
+  - id: c8
+    type: retenir
+    fr: '`def nom(paramètres):` définit, `return` renvoie (≠ `print`), un appel donne le résultat. Les variables créées dans la fonction restent locales.'
+    en: '`def name(parameters):` defines, `return` gives back (≠ `print`), a call gives the result. Variables created in the function stay local.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — Définir des fonctions](https://docs.python.org/3/tutorial/controlflow.html#defining-functions) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — Defining functions](https://docs.python.org/3/tutorial/controlflow.html#defining-functions); this optional reading needs a connection.

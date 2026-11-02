@@ -1,0 +1,211 @@
+# Niveau 2.5 — Python 5 : listes et dictionnaires. Original academik ; notions vérifiées dans le tutoriel officiel Python (listes, dictionnaires) et la référence des types de séquences.
+id: '2.5'
+module: 2
+duree_min: 18
+titre: { fr: 'Listes et dictionnaires', en: 'Lists and dictionaries' }
+ia: { fr: 'Kintana range plusieurs valeurs ensemble : une liste de notes, un dictionnaire de mots comptés.', en: 'Kintana keeps several values together: a list of marks, a dictionary of counted words.' }
+sources:
+  - { titre: 'Python — Tutoriel, les listes', url: 'https://docs.python.org/3/tutorial/introduction.html#lists', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Python — Tutoriel, les dictionnaires', url: 'https://docs.python.org/3/tutorial/datastructures.html#dictionaries', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      notes = [12, 8, 15]
+      print(notes[1])
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      notes = [12, 8, 15]
+      print(notes[1])
+      ```
+    choix:
+      - { fr: '`12`', en: '`12`' }
+      - { fr: '`8`', en: '`8`', juste: true }
+      - { fr: '`15`', en: '`15`' }
+    verif: |-
+      notes = [12, 8, 15]
+      print(notes[1])
+    sortie: '8'
+    explication: { fr: 'On compte à partir de **0** : `notes[0]` vaut 12, `notes[1]` vaut 8.', en: 'We count from **0**: `notes[0]` is 12, `notes[1]` is 8.' }
+  - id: c2
+    type: idee
+    fr: 'Une **liste** range plusieurs valeurs dans l’ordre : `[12, 8, 15]`. Chaque valeur a un **indice**, qui commence à **0**. Un indice négatif compte depuis la fin.'
+    en: 'A **list** keeps several values in order: `[12, 8, 15]`. Each value has an **index**, which starts at **0**. A negative index counts from the end.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Expression', en: 'Expression' }, { fr: 'Résultat', en: 'Result' }]
+      cellules:
+        - ['`notes[0]`', '`12`']
+        - ['`notes[-1]`', { fr: '`15` (le dernier)', en: '`15` (the last one)', ton: ok }]
+        - ['`notes[0:2]`', '`[12, 8]`']
+        - ['`len(notes)`', '`3`']
+      legende: { fr: '`notes[0:2]` prend les indices 0 et 1 : comme `range`, la fin est exclue.', en: '`notes[0:2]` takes indices 0 and 1: like `range`, the end is excluded.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Construire et parcourir une liste', en: 'Building and going through a list' }
+    lang: python
+    etapes:
+      - { code: 'notes = [12, 8]', fr: 'On crée une liste de deux notes.', en: 'We create a list of two marks.' }
+      - { code: 'notes.append(15)', fr: '`append` ajoute une valeur **à la fin** : la liste devient `[12, 8, 15]`.', en: '`append` adds a value **at the end**: the list becomes `[12, 8, 15]`.' }
+      - { code: 'total = 0', fr: 'On prépare un accumulateur, comme au niveau 2.3.', en: 'We prepare an accumulator, as in level 2.3.' }
+      - { code: 'for n in notes:\n    total = total + n', fr: 'La boucle donne directement chaque valeur : 12, 8, puis 15. Pas besoin de `range`.', en: 'The loop gives each value directly: 12, 8, then 15. No need for `range`.' }
+      - { code: 'print(total / len(notes))', fr: 'On divise par le nombre de notes : $35/3\approx11{,}67$.', en: 'We divide by the number of marks: $35/3\approx11.67$.' }
+    verif: |-
+      notes = [12, 8]
+      notes.append(15)
+      total = 0
+      for n in notes:
+          total = total + n
+      print(round(total / len(notes), 2))
+    sortie: '11.67'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris une fonction `nb_admis(notes)`** qui renvoie combien de notes de la liste valent au moins 10.'
+    en: 'Your turn. **Write a function `nb_admis(notes)`** that returns how many marks in the list are at least 10.'
+    depart: |
+      # écris ta fonction nb_admis ici
+    tests: |
+      assert nb_admis([12, 8, 15]) == 2
+      assert nb_admis([]) == 0
+      assert nb_admis([10, 10, 9]) == 2
+      assert nb_admis([1, 2, 3]) == 0
+    solutionCode: |
+      def nb_admis(notes):
+          compte = 0
+          for n in notes:
+              if n >= 10:
+                  compte = compte + 1
+          return compte
+    indice: { fr: 'Un compteur, une boucle sur la liste, un `if n >= 10` à l’intérieur ; renvoie le compteur à la fin.', en: 'A counter, a loop over the list, an `if n >= 10` inside; return the counter at the end.' }
+    explication: { fr: 'La liste vide donne 0 : la boucle ne tourne pas et le compteur reste à 0.', en: 'The empty list gives 0: the loop does not run and the counter stays at 0.' }
+  - id: d_alias
+    type: idee
+    fr: 'Une liste est **modifiable**. Écrire `b = a` ne copie pas la liste : `a` et `b` sont **deux noms pour la même liste**. Pour une vraie copie, écris `b = a.copy()`.'
+    en: 'A list is **mutable**. Writing `b = a` does not copy the list: `a` and `b` are **two names for the same list**. For a real copy, write `b = a.copy()`.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Écriture', en: 'Code' }, { fr: 'Après `b.append(3)`', en: 'After `b.append(3)`' }]
+      cellules:
+        - ['`b = a`', { fr: '`a` change aussi', en: '`a` changes too', ton: bad }]
+        - ['`b = a.copy()`', { fr: '`a` ne change pas', en: '`a` does not change', ton: ok }]
+      legende: { fr: 'Avec `a = [1, 2]` au départ : le premier cas donne `a == [1, 2, 3]`.', en: 'Starting from `a = [1, 2]`: the first case gives `a == [1, 2, 3]`.' }
+  - id: d_alias_ex
+    type: exemple
+    titre: { fr: 'Le piège de l’alias', en: 'The alias trap' }
+    lang: python
+    etapes:
+      - { code: 'a = [1, 2]', fr: 'Une liste `a`.', en: 'A list `a`.' }
+      - { code: 'b = a', fr: '`b` désigne **la même** liste, pas une copie.', en: '`b` points to **the same** list, not a copy.' }
+      - { code: 'b.append(3)', fr: 'On modifie la liste par le nom `b`.', en: 'We change the list through the name `b`.' }
+      - { code: 'print(a)', fr: '`a` montre aussi le `3` : `[1, 2, 3]`.', en: '`a` shows the `3` too: `[1, 2, 3]`.' }
+    verif: |-
+      a = [1, 2]
+      b = a
+      b.append(3)
+      print(a)
+    sortie: '[1, 2, 3]'
+  - id: d_dict
+    type: idee
+    fr: 'Un **dictionnaire** associe une **clé** à une **valeur** : `{"ana": 15, "rado": 17}`. On retrouve une valeur par sa clé, comme un mot dans un dictionnaire. L’ordre importe peu.'
+    en: 'A **dictionary** associates a **key** with a **value**: `{"ana": 15, "rado": 17}`. We find a value by its key, like a word in a dictionary. Order matters little.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Clé', en: 'Key' }, { fr: 'Valeur', en: 'Value' }]
+      cellules:
+        - ['`"ana"`', '`15`']
+        - ['`"rado"`', '`17`']
+      legende: { fr: '`age["rado"]` donne `17` ; `age["soa"] = 16` ajoute une nouvelle entrée.', en: '`age["rado"]` gives `17`; `age["soa"] = 16` adds a new entry.' }
+  - id: d_dict_ex
+    type: exemple
+    titre: { fr: 'Lire, ajouter, mettre à jour', en: 'Reading, adding, updating' }
+    lang: python
+    etapes:
+      - { code: 'age = {"ana": 15}', fr: 'On crée un dictionnaire avec une entrée.', en: 'We create a dictionary with one entry.' }
+      - { code: 'age["rado"] = 17', fr: 'On ajoute la clé `"rado"` avec la valeur 17.', en: 'We add the key `"rado"` with the value 17.' }
+      - { code: 'age["ana"] = age["ana"] + 1', fr: 'On met à jour : la valeur de `"ana"` passe de 15 à 16.', en: 'We update: the value of `"ana"` goes from 15 to 16.' }
+      - { code: 'print(age["ana"], len(age))', fr: 'On affiche `16 2` : la valeur d’Ana et le nombre d’entrées.', en: 'We display `16 2`: Ana’s value and the number of entries.' }
+    verif: |-
+      age = {"ana": 15}
+      age["rado"] = 17
+      age["ana"] = age["ana"] + 1
+      print(age["ana"], len(age))
+    sortie: '16 2'
+  - id: d_p_cle
+    type: piege
+    fr: 'Lire une clé absente (`age["soa"]` alors qu’elle n’existe pas) provoque une **erreur**. Pour éviter cela, écris `age.get("soa", 0)` : il renvoie `0` si la clé manque.'
+    en: 'Reading a missing key (`age["soa"]` when it does not exist) causes an **error**. To avoid it, write `age.get("soa", 0)`: it returns `0` if the key is missing.'
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec `d = {"a": 1, "b": 2, "c": 3}`, que renvoie `len(d)` ?'
+    en: 'With `d = {"a": 1, "b": 2, "c": 3}`, what does `len(d)` return?'
+    reponses: ['3']
+    verif: 'print(len({"a": 1, "b": 2, "c": 3}))'
+    indice: { fr: '`len` compte les entrées, c’est-à-dire les clés.', en: '`len` counts the entries, that is, the keys.' }
+    explication: { fr: 'Trois clés, donc trois entrées.', en: 'Three keys, so three entries.' }
+  - id: d_parcours
+    type: idee
+    fr: 'Pour parcourir un dictionnaire, on utilise `.items()`, qui donne chaque paire **(clé, valeur)** : `for cle, valeur in d.items():`. C’est le schéma de comptage de Kintana.'
+    en: 'To go through a dictionary, use `.items()`, which gives each **(key, value)** pair: `for key, value in d.items():`. This is Kintana’s counting pattern.'
+    exemple: { fr: 'Pour compter les mots de `"a b a"` : `compte = {}` ; à chaque mot, `compte[m] = compte.get(m, 0) + 1`. On obtient `{"a": 2, "b": 1}`.', en: 'To count the words of `"a b a"`: `count = {}`; for each word, `count[w] = count.get(w, 0) + 1`. We get `{"a": 2, "b": 1}`.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris une fonction `compter(texte)`** qui renvoie un dictionnaire : pour chaque mot de `texte` (séparés par des espaces), le nombre de fois où il apparaît.'
+    en: '**Write a function `compter(texte)`** that returns a dictionary: for each word of `texte` (separated by spaces), the number of times it appears.'
+    depart: |
+      # écris ta fonction compter ici
+    tests: |
+      assert compter("a b a") == {"a": 2, "b": 1}
+      assert compter("") == {}
+      assert compter("x x x") == {"x": 3}
+      assert compter("le chat le chien") == {"le": 2, "chat": 1, "chien": 1}
+    solutionCode: |
+      def compter(texte):
+          compte = {}
+          for mot in texte.split():
+              compte[mot] = compte.get(mot, 0) + 1
+          return compte
+    indice: { fr: '`texte.split()` donne la liste des mots. Pour chacun, `compte.get(mot, 0) + 1`.', en: '`texte.split()` gives the list of words. For each one, `compte.get(mot, 0) + 1`.' }
+    explication: { fr: '`get(mot, 0)` évite l’erreur au premier passage d’un mot ; on ajoute 1 à chaque occurrence.', en: '`get(mot, 0)` avoids the error the first time a word appears; we add 1 at each occurrence.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris une fonction `plus_frequent(texte)`** qui renvoie le mot le plus fréquent de `texte`. On suppose qu’un seul mot est le plus fréquent.'
+    en: 'Challenge. **Write a function `plus_frequent(texte)`** that returns the most frequent word of `texte`. Assume a single word is the most frequent.'
+    depart: |
+      # écris ta fonction plus_frequent ici
+    tests: |
+      assert plus_frequent("a b a c a b") == "a"
+      assert plus_frequent("x") == "x"
+      assert plus_frequent("le chat le chien le") == "le"
+      assert plus_frequent("non oui oui") == "oui"
+    solutionCode: |
+      def plus_frequent(texte):
+          compte = {}
+          for mot in texte.split():
+              compte[mot] = compte.get(mot, 0) + 1
+          meilleur = None
+          for mot, n in compte.items():
+              if meilleur is None or n > compte[meilleur]:
+                  meilleur = mot
+          return meilleur
+    indice: { fr: 'Compte d’abord comme avant, puis parcours `compte.items()` en retenant le mot au plus grand nombre.', en: 'Count first as before, then go through `compte.items()` keeping the word with the highest number.' }
+    explication: { fr: 'Deux étapes : compter, puis chercher le maximum en gardant le meilleur mot rencontré.', en: 'Two steps: count, then find the maximum by keeping the best word seen.' }
+  - id: c8
+    type: retenir
+    fr: 'Liste : ordonnée, indices dès 0, modifiable (`b = a` ne copie pas). Dictionnaire : clé → valeur, `.get(cle, défaut)` pour éviter l’erreur, `.items()` pour parcourir.'
+    en: 'List: ordered, indices from 0, mutable (`b = a` does not copy). Dictionary: key → value, `.get(key, default)` to avoid the error, `.items()` to go through.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — Listes et dictionnaires](https://docs.python.org/3/tutorial/datastructures.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — Lists and dictionaries](https://docs.python.org/3/tutorial/datastructures.html); this optional reading needs a connection.
