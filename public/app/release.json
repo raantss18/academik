@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 22,
-  "version": "0.3.19",
+  "build": 23,
+  "version": "0.3.20",
   "notes": {
-   "fr": "Nouveau module « Séries temporelles » : lire une série, stabilité, mémoire, prévoir avec un modèle simple, mesurer l'agitation et évaluer sans tricher. L'application démarre aussi plus vite : le premier chargement est cinq fois plus léger.",
-   "en": "New “Time series” module: reading a series, stability, memory, forecasting with a simple model, measuring agitation and evaluating without cheating. The app also starts faster: the first load is five times lighter."
+   "fr": "La carte est plus fluide quand tu zoomes, et chaque leçon prend les couleurs de son quartier, de jour comme de nuit, avec une brume légère et quelques lucioles qui ne gênent jamais la lecture.",
+   "en": "The map is smoother when you zoom, and each lesson takes the colours of its district, by day and by night, with a light mist and a few fireflies that never get in the way of reading."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.19/academik-0.3.19.apk",
-    "sha256": "8240622c26de3344e08e3f6dd5e6d55c5a2f4f35c93dad3f0c826012ad94f13c",
-    "bytes": 10679425
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.20/academik-0.3.20.apk",
+    "sha256": "5e3eba0daa59cb5c4b95743b120995ceb96486a5881880a7bc89a764009337ac",
+    "bytes": 10682189
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.19/academik-0.3.19-x86_64.AppImage",
-    "sha256": "ef30ace24906bbd70e7e3a7824c832be0b94941c37e5889c6a5d3e16d3e79039",
-    "bytes": 115149304
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.20/academik-0.3.20-x86_64.AppImage",
+    "sha256": "3f2bbdc01dd754cc72d925f40ea07d6fc9996ad0bb90f23306318dcdf784b61e",
+    "bytes": 115153400
    }
   }
  },
  "history": [
+  {
+   "build": 22,
+   "version": "0.3.19",
+   "notes": {
+    "fr": "Nouveau module « Séries temporelles » : lire une série, stabilité, mémoire, prévoir avec un modèle simple, mesurer l'agitation et évaluer sans tricher. L'application démarre aussi plus vite : le premier chargement est cinq fois plus léger.",
+    "en": "New “Time series” module: reading a series, stability, memory, forecasting with a simple model, measuring agitation and evaluating without cheating. The app also starts faster: the first load is five times lighter."
+   }
+  },
   {
    "build": 20,
    "version": "0.3.17",
