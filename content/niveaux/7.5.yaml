@@ -39,6 +39,7 @@ cartes:
       - fr: "50"
         en: "50"
     sortie: "5"
+    indice: { fr: 'Espérance = nombre de tests × probabilité de faux positif d’un test.', en: 'Expectation = number of tests × false-positive probability of one test.' }
     id: c1
   - type: idee
     fr: Bonferroni partage un budget de risque entre tous les tests prévus. Avec des p-valeurs valides, cela borne le risque d’au moins un faux positif, sans exiger des tests indépendants.
@@ -153,6 +154,7 @@ cartes:
     explication:
       fr: "On partage le budget de risque entre les dix tests : $0{,}05/10=0{,}005$."
       en: "Split the risk budget across ten tests: $0.05/10=0.005$."
+    indice: { fr: 'Divise le risque familial par le nombre de tests.', en: 'Divide the family risk by the number of tests.' }
     id: c4
   - type: saisie
     note:
@@ -168,6 +170,7 @@ cartes:
     explication:
       fr: Trois tests passent sans correction, contre deux avec Bonferroni. Cela ne révèle pas lesquels sont de vrais signaux.
       en: Three tests pass without correction, versus two with Bonferroni. This does not reveal which are real signals.
+    indice: { fr: 'Compte les p-valeurs inférieures à $0{,}05$.', en: 'Count the p-values below $0.05$.' }
     id: c5
   - type: saisie
     note:
@@ -184,6 +187,7 @@ cartes:
     explication:
       fr: La probabilité de zéro rejet vaut $0{,}95^2$. Le complément vaut $0{,}0975$, déjà supérieur à $0{,}05$.
       en: The probability of zero rejections is $0.95^2$. Its complement is $0.0975$, already greater than $0.05$.
+    indice: { fr: 'Calcule d’abord la probabilité de zéro faux positif, puis prends le complémentaire.', en: 'First compute the probability of zero false positives, then take the complement.' }
     id: c6
   - type: piege
     fr: Compte aussi les essais abandonnés. Choisir la meilleure règle après exploration puis prétendre n’avoir fait qu’un test invalide la justification du seuil.
@@ -213,6 +217,7 @@ cartes:
     explication:
       fr: On obtient $0{,}08$, supérieur au seuil familial $0{,}05$. Ce test ne passe pas la correction.
       en: The result is $0.08$, above family-wise level $0.05$. This test does not pass the correction.
+    indice: { fr: 'Multiplie $m$ par $p$, puis plafonne à 1 avec le minimum.', en: 'Multiply $m$ by $p$, then cap at 1 with the minimum.' }
     id: c8
   - type: saisie
     note:
@@ -228,6 +233,7 @@ cartes:
     explication:
       fr: Le produit vaut $2$, mais une p-valeur ajustée est plafonnée à $1$.
       en: The product is $2$, but an adjusted p-value is capped at $1$.
+    indice: { fr: 'Calcule $mp$ puis compare à 1 : la p-valeur ajustée ne dépasse jamais 1.', en: 'Compute $mp$ then compare with 1: the adjusted p-value never exceeds 1.' }
     id: c9
   - type: plus
     fr: "Pour aller plus loin : Harvey, Liu et Zhu (2016) motivent la correction face à la recherche de nombreux facteurs. Leur seuil discuté en finance n’est pas une constante universelle (lien uniquement, sources)."
@@ -250,6 +256,7 @@ cartes:
       fr: "On compte $100$ tests : $0{,}05/100=0{,}0005$. Si les tests eux-mêmes sont adaptés aux résultats, leur validité doit aussi être réexaminée."
       en: "Count $100$ tests: $0.05/100=0.0005$. If the tests themselves are adapted to the results, their validity also needs reassessment."
     defi: true
+    indice: { fr: 'Combien de tests au total dans la famille ? Divise le risque familial par ce nombre.', en: 'How many tests in total in the family? Divide the family risk by that number.' }
     id: c11
   - id: d_lien
     type: idee

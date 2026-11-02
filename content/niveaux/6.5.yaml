@@ -1,6 +1,6 @@
 id: "6.5"
 module: 6
-duree_min: 9
+duree_min: 10
 titre:
   fr: Entropie
   en: Entropy
@@ -33,6 +33,7 @@ cartes:
       - fr: "4"
         en: "4"
     sortie: "2"
+    indice: { fr: 'La surprise est $-\log_2 p$ : à quelle puissance de 2 correspond $1/4$ ?', en: 'Surprise is $-\log_2 p$: which power of 2 is $1/4$?' }
     id: c1
   - type: idee
     fr: "L’entropie est la surprise moyenne : multiplie chaque surprise par sa probabilité, puis additionne. Elle se mesure ici en bits."
@@ -153,6 +154,7 @@ cartes:
       en: "The word is certain: $-1\\log_2 1=0$."
     reponses:
       - "0"
+    indice: { fr: 'La surprise d’un événement certain est nulle. Pondère par sa probabilité.', en: 'The surprise of a certain event is zero. Weight it by its probability.' }
     id: c4
   - type: saisie
     note:
@@ -169,6 +171,7 @@ cartes:
       en: Each word has one bit of surprise; the average is one bit.
     reponses:
       - "1"
+    indice: { fr: 'Calcule la surprise d’un mot de probabilité $1/2$, puis la moyenne pondérée.', en: 'Compute the surprise of a word of probability $1/2$, then the weighted average.' }
     id: c5
   - type: saisie
     note:
@@ -185,6 +188,7 @@ cartes:
       en: $\log_2 4=2$ bits.
     reponses:
       - "2"
+    indice: { fr: 'Pour des mots équiprobables, l’entropie est le logarithme en base 2 du nombre de mots.', en: 'For equally likely words, entropy is the base-2 logarithm of the number of words.' }
     id: c6
   - type: piege
     fr: Une faible entropie signifie que le modèle hésite peu, pas qu’il a raison ; une prédiction certaine peut être fausse.
@@ -212,6 +216,7 @@ cartes:
       en: Its surprise is 1 bit; the distribution’s average entropy is $1.5$ bits.
     reponses:
       - "1"
+    indice: { fr: 'Applique $-\log_2 p$ avec la probabilité du premier mot.', en: 'Apply $-\log_2 p$ with the probability of the first word.' }
     id: c8
   - type: saisie
     note:
@@ -228,6 +233,7 @@ cartes:
       en: The third word contributes nothing; never evaluate $\log_2 0$.
     reponses:
       - "1"
+    indice: { fr: 'Ne calcule jamais $\log_2 0$ : ne garde que les mots de probabilité non nulle.', en: 'Never compute $\log_2 0$: keep only the words with non-zero probability.' }
     id: c9
   - type: saisie
     note:
@@ -246,6 +252,7 @@ cartes:
     reponses:
       - "3"
     defi: true
+    indice: { fr: 'Combien de couples y a-t-il ? Sont-ils équiprobables ? Applique $\log_2$ ou additionne les entropies.', en: 'How many pairs are there? Are they equally likely? Apply $\log_2$ or add the entropies.' }
     id: c10
   - id: d_lien
     type: idee

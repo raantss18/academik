@@ -9,6 +9,7 @@ sources:
   - { titre: '3Blue1Brown — Essence of linear algebra (linear transformations)', url: 'https://www.3blue1brown.com/topics/linear-algebra', licence: 'CC BY-NC-SA 4.0 (source citée, texte non repris)' }
 cartes:
   - id: c1
+    indice: { fr: 'Chaque coordonnée du résultat est le produit d’une ligne de la matrice par le vecteur.', en: 'Each coordinate of the result is the product of a row of the matrix by the vector.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'La matrice $A=\begin{pmatrix}2&0\\0&3\end{pmatrix}$ agit sur le vecteur $(1,1)$. Quel vecteur obtient-on ?'

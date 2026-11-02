@@ -1,6 +1,6 @@
 id: '0.5'
 module: 0
-duree_min: 11
+duree_min: 13
 titre: { fr: 'Congruences', en: 'Congruences' }
 ia: { fr: 'Kintana calcule sur un alphabet circulaire et retrouve une lettre grâce à un inverse modulaire.', en: 'Kintana computes on a circular alphabet and recovers a letter using a modular inverse.' }
 sources:
@@ -8,6 +8,7 @@ sources:
   - { titre: 'Szabolcs Tengely — Classical ciphers, Université de Debrecen', url: 'https://shrek.unideb.hu/~tengely/crypto/section-2.html', licence: 'Licence non vérifiée : référence en lien seulement, aucun extrait repris' }
 cartes:
   - id: c1
+    indice: { fr: 'Additionne, puis retire un tour complet de 26 positions.', en: 'Add, then remove a full turn of 26 positions.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Les positions d’un alphabet sont numérotées de $0$ à $25$. Depuis la position $24$, Kintana avance de $5$ positions en revenant à $0$ après $25$ : où arrive-t-il ?'
@@ -39,6 +40,17 @@ cartes:
     type: piege
     fr: Un reste modulo huit ne vaut jamais huit. Après la dernière position, on revient à zéro.
     en: A remainder modulo eight is never eight. After the last position, we return to zero.
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel est le reste de 17 dans la division par 5 ?'
+    en: 'What is the remainder of 17 when divided by 5?'
+    choix:
+      - { fr: '2', en: '2', juste: true }
+      - { fr: '3', en: '3' }
+      - { fr: '12', en: '12' }
+    explication: { fr: '$17=3\times5+2$ : trois tours complets et un reste de $2$.', en: '$17=3\times5+2$: three full turns and a remainder of $2$.' }
+    indice: { fr: 'Combien de fois 5 entre-t-il dans 17 ? Ce qui reste est la réponse.', en: 'How many times does 5 fit in 17? What is left is the answer.' }
   - id: c2
     type: idee
     fr: '$a\equiv b\pmod m$ se lit « $a$ est **congru** à $b$ modulo $m$ ». Cela veut dire que $a$ et $b$ ont le **même reste** dans la division par $m$, autrement dit que $m$ divise $a-b$.'
@@ -73,6 +85,17 @@ cartes:
     type: piege
     fr: "Réduire les facteurs ne termine pas toujours le calcul. Le résultat obtenu peut encore dépasser le module : il faut reprendre son reste."
     en: "Reducing the factors does not always finish the calculation. The result may still exceed the modulus: take its remainder again."
+  - id: v2
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel est le reste de $13\times2$ dans la division par 5 ?'
+    en: 'What is the remainder of $13\times2$ when divided by 5?'
+    choix:
+      - { fr: '1', en: '1', juste: true }
+      - { fr: '3', en: '3' }
+      - { fr: '6', en: '6' }
+    explication: { fr: '$13\times2=26=5\times5+1$ : le reste est $1$. On pouvait aussi réduire : $13\equiv3$, puis $3\times2=6\equiv1$.', en: '$13\times2=26=5\times5+1$: the remainder is $1$. You could also reduce: $13\equiv3$, then $3\times2=6\equiv1$.' }
+    indice: { fr: 'Calcule le produit, puis son reste ; ou réduis 13 avant.', en: 'Compute the product, then its remainder; or reduce 13 first.' }
   - id: c2b
     type: idee
     fr: 'Un **inverse** de $a$ modulo $m$ est un entier $u$ tel que $au\equiv1\pmod m$ : multiplier par $u$ défait la multiplication par $a$. Il existe exactement quand $a$ et $m$ n’ont pas de diviseur commun autre que $1$.'
@@ -92,6 +115,7 @@ cartes:
       - { fr: '$3\times5=15\equiv1\pmod7$ : $5$ est un inverse de $3$.', en: '$3\times5=15\equiv1\pmod7$: $5$ is an inverse of $3$.' }
       - { fr: 'On multiplie par $5$ : $x\equiv25\equiv4\pmod7$ ; vérification : $3\times4=12\equiv5\pmod7$.', en: 'Multiply by $5$: $x\equiv25\equiv4\pmod7$; check: $3\times4=12\equiv5\pmod7$.' }
   - id: c4
+    indice: { fr: 'Combien de fois 6 entre-t-il dans 47 ? Ce qui reste est le reste.', en: 'How many times does 6 fit into 47? What is left over is the remainder.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Quel est le reste de $47$ dans la division par $6$ ?'
@@ -100,6 +124,7 @@ cartes:
     verif: 'print(47%6)'
     explication: { fr: '$47=7\times6+5$ et $0\leq5<6$.', en: '$47=7\times6+5$ and $0\leq5<6$.' }
   - id: c5
+    indice: { fr: 'Ajoute 26 au nombre négatif jusqu’à tomber entre 0 et 25.', en: 'Add 26 to the negative number until it falls between 0 and 25.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Quel entier entre $0$ et $25$ est congru à $-3$ modulo $26$ ?'
@@ -108,6 +133,7 @@ cartes:
     verif: 'print((-3)%26)'
     explication: { fr: 'On ajoute $26$ : $-3+26=23$ ; la différence entre les deux représentants est un multiple de $26$.', en: 'Add $26$: $-3+26=23$; the difference between the two representatives is a multiple of $26$.' }
   - id: c6
+    indice: { fr: 'Additionne les restes, puis reprends le reste de la somme modulo 7.', en: 'Add the remainders, then take the remainder of the sum modulo 7.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Si $a\equiv5\pmod7$ et $b\equiv4\pmod7$, quel est le reste de $a+b$ modulo $7$ ?'
@@ -116,6 +142,7 @@ cartes:
     verif: 'print((5+4)%7)'
     explication: { fr: '$5+4=9\equiv2\pmod7$ ; ajouter des multiples de $7$ à $a$ ou $b$ ne change pas ce reste.', en: '$5+4=9\equiv2\pmod7$; adding multiples of $7$ to $a$ or $b$ does not change this remainder.' }
   - id: c7
+    indice: { fr: 'Remplace 17 et 19 par leurs restes modulo 5 avant de multiplier, puis réduis encore.', en: 'Replace 17 and 19 with their remainders modulo 5 before multiplying, then reduce again.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Calcule le reste de $17\times19$ modulo $5$ en réduisant d’abord les facteurs.'
@@ -141,6 +168,7 @@ cartes:
     fr: Un inverse modulaire n’est pas la fraction usuelle. Modulo huit, trois est son propre inverse car neuf a pour reste un.
     en: A modular inverse is not the usual fraction. Modulo eight, three is its own inverse because nine has remainder one.
   - id: c9
+    indice: { fr: 'Un inverse $u$ donnerait $2u\equiv1$. Un nombre $2u$ peut-il valoir un reste de $1$ modulo $26$ ?', en: 'An inverse $u$ would give $2u\equiv1$. Can a number $2u$ have a remainder of $1$ modulo $26$?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Combien d’inverses de $2$ modulo $26$ y a-t-il entre $0$ et $25$ ?'

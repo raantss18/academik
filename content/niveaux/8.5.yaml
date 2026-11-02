@@ -10,6 +10,7 @@ sources:
   - { titre: 'Python — module random', url: 'https://docs.python.org/3/library/random.html', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Le modèle a-t-il déjà vu ces exemples ? Que mesure-t-on quand il les revoit ?', en: 'Has the model already seen these examples? What do we measure when it sees them again?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Un modèle apprend sur 80 exemples, puis on mesure son score **sur ces mêmes 80 exemples**. Que mesure ce score ?'

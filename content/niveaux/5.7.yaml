@@ -9,6 +9,7 @@ sources:
   - { titre: 'MIT 18.02 — Multivariable Calculus', url: 'https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
 cartes:
   - id: c1
+    indice: { fr: 'Dérive l’extérieur (le carré), puis multiplie par la pente de l’intérieur $2x+1$.', en: 'Differentiate the outside (the square), then multiply by the slope of the inside $2x+1$.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Soit $f(x)=(2x+1)^2$. Combien vaut sa pente en $x=0$ ?'

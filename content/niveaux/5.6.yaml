@@ -9,6 +9,7 @@ sources:
   - { titre: 'Python — module math (exp, log)', url: 'https://docs.python.org/3/library/math.html#power-and-logarithmic-functions', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Rappelle-toi : tout nombre à la puissance 0 vaut 1.', en: 'Remember: any number to the power 0 is 1.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

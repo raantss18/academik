@@ -8,6 +8,7 @@ sources:
   - { titre: 'NumPy — définition de la SVD (consultation uniquement)', url: 'https://numpy.org/doc/stable/reference/generated/numpy.linalg.svd.html', licence: 'BSD-3-Clause' }
 cartes:
   - id: c1
+    indice: { fr: 'Compare $(4,0)$ à $(1,0)$ : par combien faut-il multiplier la seconde pour obtenir la première ?', en: 'Compare $(4,0)$ with $(1,0)$: by what do you multiply the second to get the first?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Une transformation envoie $(1,0)$ sur $(4,0)$. Par quel facteur multiplie-t-elle cette flèche ?'
@@ -49,6 +50,7 @@ cartes:
       - { fr: 'Pour $v=(1,1)$ : $Bv=(3,3)=3v$, donc $\lambda=3$ : une autre direction propre.', en: 'For $v=(1,1)$: $Bv=(3,3)=3v$, so $\lambda=3$: another eigen-direction.' }
       - { fr: 'Pour $v=(0,1)$ : $Bv=(1,3)$ n’est pas un multiple de $v$ : ce n’est pas une direction propre.', en: 'For $v=(0,1)$: $Bv=(1,3)$ is not a multiple of $v$: it is not an eigen-direction.' }
   - id: c4
+    indice: { fr: 'Calcule $Av$, puis compare à $v$ : par quel nombre faut-il multiplier $v$ ?', en: 'Compute $Av$, then compare with $v$: by what number do you multiply $v$?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour la même matrice $A=\begin{pmatrix}3&1\\1&3\end{pmatrix}$, calcule la valeur propre associée à $v=(1,-1)$.'
@@ -67,6 +69,7 @@ cartes:
           noeuds: [{ fr: '$V^T$ : réorienter', en: '$V^T$: reorient' }, { fr: '$\Sigma$ : étirer chaque axe', en: '$\Sigma$: stretch each axis', ton: ok }, { fr: '$U$ : réorienter', en: '$U$: reorient' }]
       legende: { fr: 'Les étirements de $\Sigma$ sont les valeurs singulières, rangées de la plus grande à la plus petite.', en: 'The stretches in $\Sigma$ are the singular values, sorted from largest to smallest.' }
   - id: c5
+    indice: { fr: 'Pour une matrice diagonale, les étirements sont lus sur la diagonale. Le plus grand vient en premier.', en: 'For a diagonal matrix, the stretches are read on the diagonal. The largest comes first.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'La SVD décompose une transformation réelle en réorientation, étirement, puis réorientation : $A=U\Sigma V^T$, avec $U,V$ orthogonales (longueurs conservées) et $\Sigma$ diagonale non négative. Pour $A=\operatorname{diag}(4,2)$, on peut prendre $U=V=I$ : quelle est la plus grande valeur singulière, donc le plus grand étirement ?'
@@ -75,6 +78,7 @@ cartes:
     verif: 'from math import isqrt; A=[[4,0],[0,2]]; squares=[sum(x*x for x in col) for col in zip(*A)]; print(isqrt(max(squares)))'
     explication: { fr: 'Le cercle unité devient une ellipse de demi-axes $4$ et $2$ ; ici $\Sigma=A$.', en: 'The unit circle becomes an ellipse with semiaxes $4$ and $2$; here $\Sigma=A$.' }
   - id: c6
+    indice: { fr: 'Calcule $A(1,0)$ et compare à $(1,0)$, en gardant le signe.', en: 'Compute $A(1,0)$ and compare with $(1,0)$, keeping the sign.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $A=\operatorname{diag}(-4,2)$, la direction $(1,0)$ est renversée et sa longueur quadruple. Quelle est la valeur propre associée à cette direction ?'
@@ -92,6 +96,7 @@ cartes:
     en: 'To find the singular values of $A$, compute $A^TA$, find its eigenvalues, then take their square roots.'
     exemple: { fr: 'Pour $A=\operatorname{diag}(3,-2)$ : $A^TA=\operatorname{diag}(9,4)$, de valeurs propres $9$ et $4$. Les valeurs singulières sont donc $3$ et $2$, jamais négatives.', en: 'For $A=\operatorname{diag}(3,-2)$: $A^TA=\operatorname{diag}(9,4)$, with eigenvalues $9$ and $4$. The singular values are therefore $3$ and $2$, never negative.' }
   - id: c8
+    indice: { fr: 'Prends les racines carrées positives des deux nombres, puis garde la plus petite.', en: 'Take the positive square roots of both numbers, then keep the smaller.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Les carrés des valeurs singulières sont les valeurs propres de $A^TA$. Pour $A=\begin{pmatrix}0&4\\2&0\end{pmatrix}$, on obtient $A^TA=\operatorname{diag}(4,16)$ : quelle est la plus petite valeur singulière ?'
@@ -112,6 +117,7 @@ cartes:
         - ['$0{,}5$', '$0{,}25$', { fr: '$\approx0{,}2\,\%$', en: '$\approx0.2\,\%$', ton: bad }]
       legende: { fr: 'Total $=109{,}25$ : garder seulement $\sigma=10$ conserve plus de $91\,\%$ de l’information.', en: 'Total $=109.25$: keeping only $\sigma=10$ preserves over $91\,\%$ of the information.' }
   - id: c9
+    indice: { fr: 'Combien de colonnes non nulles reste-t-il dans $\operatorname{diag}(4,0)$ ?', en: 'How many non-zero columns remain in $\operatorname{diag}(4,0)$?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Tronquer la SVD garde seulement les plus grands étirements. Pour $A=\operatorname{diag}(4,2)$, on garde $A_1=\operatorname{diag}(4,0)$ : combien de directions indépendantes survivent, autrement dit quel est son rang ?'

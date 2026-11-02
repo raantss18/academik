@@ -9,6 +9,7 @@ sources:
   - { titre: 'MIT 6.036 — Introduction to Machine Learning', url: 'https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/about', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
 cartes:
   - id: c1
+    indice: { fr: 'Une probabilité de 0,5 est à mi-chemin entre « sûr que non » (0) et « sûr que oui » (1).', en: 'A probability of 0.5 is halfway between “sure it is no” (0) and “sure it is yes” (1).' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Un modèle donne la probabilité $0{,}5$ à une demande d’être une salutation. Que veut dire $0{,}5$ ?'

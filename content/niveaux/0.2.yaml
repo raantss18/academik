@@ -1,6 +1,6 @@
 id: '0.2'
 module: 0
-duree_min: 11
+duree_min: 12
 titre: { fr: 'Démontrer', en: 'Proving' }
 ia: { fr: 'Kintana justifie une règle et sait réfuter une généralisation abusive.', en: 'Kintana justifies a rule and can refute an unjustified generalisation.' }
 sources:
@@ -8,6 +8,7 @@ sources:
   - { titre: 'Oscar Levin — Proofs', url: 'https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html', licence: 'CC BY-SA 4.0' }
 cartes:
   - id: c1
+    indice: { fr: 'Cherche un nombre impair qui n’est pas premier : il se décompose en deux facteurs.', en: 'Look for an odd number that is not prime: it splits into two factors.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana prétend que tout entier positif impair est premier. Quel nombre parmi ceux-ci le réfute ?'
@@ -50,6 +51,17 @@ cartes:
     type: piege
     fr: "Un cas hors de l’hypothèse ne réfute rien : quatre ne peut pas réfuter une règle sur les multiples de trois."
     en: "A case outside the hypothesis refutes nothing: four cannot refute a rule about multiples of three."
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pour réfuter « tout multiple de trois est impair », que faut-il trouver ?'
+    en: 'To refute “every multiple of three is odd”, what must you find?'
+    choix:
+      - { fr: 'Un seul multiple de trois qui est pair', en: 'A single multiple of three that is even', juste: true }
+      - { fr: 'Beaucoup de multiples de trois impairs', en: 'Many odd multiples of three' }
+      - { fr: 'Un nombre pair qui n’est pas multiple de trois', en: 'An even number that is not a multiple of three' }
+    explication: { fr: 'Un seul contre-exemple suffit, et il doit vérifier l’hypothèse (multiple de trois) tout en contredisant la conclusion.', en: 'One counterexample is enough, and it must satisfy the hypothesis (multiple of three) while contradicting the conclusion.' }
+    indice: { fr: 'Un contre-exemple vérifie l’hypothèse mais pas la conclusion.', en: 'A counterexample satisfies the hypothesis but not the conclusion.' }
   - id: c2a
     type: idee
     fr: 'Avant les méthodes, trois notations. Une **implication** relie une hypothèse $P$ à une conclusion $Q$. Le symbole $\neg$ veut dire « non » : il nie une phrase.'
@@ -88,6 +100,7 @@ cartes:
     fr: Calculer une somme particulière illustre la preuve. Seules les lettres représentant des entiers quelconques permettent ici de couvrir toutes les sommes.
     en: Calculating one particular sum illustrates the proof. Only letters representing arbitrary integers cover all sums here.
   - id: c4
+    indice: { fr: 'Remplace $u$ et $v$ dans la formule $2(u+v)$, puis effectue la somme dans la parenthèse.', en: 'Replace $u$ and $v$ in the formula $2(u+v)$, then compute the sum in the parentheses.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Dans la preuve précédente, prends $u=4$ et $v=7$. Quel entier multiplie $2$ dans $a+b=2(u+v)$ ?'
@@ -120,6 +133,7 @@ cartes:
     fr: Inverser les deux phrases ne suffit pas. La contraposée échange leur place et nie chacune ; la réciproque échange seulement leur place.
     en: Swapping the two statements is not enough. The contrapositive swaps and negates both; the converse only swaps them.
   - id: c5
+    indice: { fr: 'Contraposée : on inverse hypothèse et conclusion, et on nie les deux.', en: 'Contrapositive: swap hypothesis and conclusion, and negate both.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Quelle est la contraposée de « si $n^2$ est pair, alors $n$ est pair », pour $n$ entier ?'
@@ -130,6 +144,7 @@ cartes:
       - { fr: 'Si $n^2$ est impair, alors $n$ est impair.', en: 'If $n^2$ is odd, then $n$ is odd.' }
     explication: { fr: 'On échange hypothèse et conclusion en les niant toutes les deux ; la réciproque ne suffit pas.', en: 'Swap hypothesis and conclusion and negate both; the converse is not enough.' }
   - id: c6
+    indice: { fr: 'Développe $(2k+1)^2$ puis cherche la forme « deux fois un entier plus un ».', en: 'Expand $(2k+1)^2$ then look for the form “twice an integer plus one”.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pour finir cette contraposée, pose $n=2k+1$. Quelle écriture montre que $n^2$ est impair ?'
@@ -168,6 +183,7 @@ cartes:
     fr: Une contradiction doit découler de l’hypothèse supposée. Un calcul faux ajouté au raisonnement ne constitue pas une preuve.
     en: A contradiction must follow from the assumed hypothesis. Adding an incorrect calculation does not make a proof.
   - id: c7
+    indice: { fr: 'Si $M$ est le plus grand entier, regarde ce qui se passe quand on lui ajoute $1$.', en: 'If $M$ is the largest integer, look at what happens when you add $1$.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'On suppose qu’il existe un plus grand entier $M$. Quelle contradiction termine la preuve par l’absurde ?'
@@ -178,6 +194,7 @@ cartes:
       - { fr: '$M+1$ est un entier plus grand que $M$.', en: '$M+1$ is an integer greater than $M$.', juste: true }
     explication: { fr: 'L’entier $M+1$ contredit la maximalité supposée de $M$ : il n’existe donc pas de plus grand entier.', en: 'The integer $M+1$ contradicts the assumed maximality of $M$, so there is no greatest integer.' }
   - id: c8
+    indice: { fr: 'Teste les premiers entiers positifs un par un, en commençant par le plus petit.', en: 'Test the first positive integers one by one, starting with the smallest.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Quel est le plus petit entier positif qui réfute « $n^2>n$ pour tout entier positif $n$ » ?'
@@ -186,6 +203,7 @@ cartes:
     verif: 'print(next(n for n in range(1,10) if not n*n > n))'
     explication: { fr: 'Pour $n=1$, le carré vaut $1$ : l’inégalité stricte échoue dès le premier entier positif.', en: 'For $n=1$, the square is $1$: the strict inequality fails at the first positive integer.' }
   - id: c9
+    indice: { fr: 'Une preuve générale utilise une lettre, pas des exemples. Écris ce que veut dire « divisible par 6 ».', en: 'A general proof uses a letter, not examples. Write what “divisible by 6” means.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pour prouver qu’un entier divisible par $6$ est pair, quelle démarche est directe et générale ?'
@@ -196,6 +214,7 @@ cartes:
       - { fr: 'Supposer que tout entier pair est divisible par $6$.', en: 'Assume every even integer is divisible by $6$.' }
     explication: { fr: 'La définition de la divisibilité fournit $k$ ; $3k$ est entier, donc $n$ est pair.', en: 'The definition of divisibility supplies $k$; $3k$ is an integer, so $n$ is even.' }
   - id: c10
+    indice: { fr: 'Teste les entiers pairs dans l’ordre : le premier qui n’est pas multiple de 6 convient.', en: 'Test the even integers in order: the first one that is not a multiple of 6 works.' }
     type: saisie
     defi: true
     note: { kind: quiz, poids: 1 }

@@ -10,6 +10,7 @@ sources:
   - { titre: 'Python — Référence, instruction while', url: 'https://docs.python.org/3/reference/compound_stmts.html#the-while-statement', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Écris les valeurs successives de `i` et de `total` après chaque tour.', en: 'Write the successive values of `i` and `total` after each turn.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

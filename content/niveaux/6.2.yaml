@@ -33,6 +33,7 @@ cartes:
       - fr: 1/3
         en: 1/3
     sortie: 3/4
+    indice: { fr: 'Le groupe de référence est celui des messages signalés : divise le nombre d’utiles par ce total.', en: 'The reference group is the flagged messages: divide the number of useful ones by that total.' }
     id: c1
   - type: idee
     fr: "Conditionner signifie choisir un groupe de référence. La notation $P(A\\mid B)$ se lit « probabilité de A sachant B » : on compte seulement dans B."
@@ -152,6 +153,7 @@ cartes:
       en: In $B=\{4,5,6\}$, two outcomes are even.
     reponses:
       - 2/3
+    indice: { fr: 'Garde seulement les issues de $B$, puis compte celles qui sont paires.', en: 'Keep only the outcomes of $B$, then count those that are even.' }
     id: c4
   - type: saisie
     note:
@@ -169,6 +171,7 @@ cartes:
       en: One outcome out of four; this also equals $P(A)P(B)$.
     reponses:
       - 1/4
+    indice: { fr: 'Pour des événements indépendants, on multiplie les probabilités.', en: 'For independent events, multiply the probabilities.' }
     id: c5
   - type: saisie
     note:
@@ -184,6 +187,7 @@ cartes:
       en: "The two categories are disjoint: add their counts."
     reponses:
       - 1/4
+    indice: { fr: 'Additionne les messages signalés (utiles et autres), puis divise par 100.', en: 'Add the flagged messages (useful and others), then divide by 100.' }
     id: c6
   - type: piege
     fr: Inverser le conditionnement change le groupe de référence ; « utile parmi les signalés » diffère de « signalé parmi les utiles ».
@@ -210,6 +214,7 @@ cartes:
       en: Divide by the 20 useful messages, not the 25 flagged ones.
     reponses:
       - 3/4
+    indice: { fr: 'Le groupe de référence est maintenant celui des messages utiles.', en: 'The reference group is now the useful messages.' }
     id: c8
   - type: saisie
     note:
@@ -225,6 +230,7 @@ cartes:
       en: The 10 non-useful messages are part of the 25 flagged ones.
     reponses:
       - 2/5
+    indice: { fr: 'Parmi les messages signalés, combien sont inutiles ? Divise par le total des signalés.', en: 'Among the flagged messages, how many are useless? Divide by the total flagged.' }
     id: c9
   - type: saisie
     note:

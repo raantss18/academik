@@ -1,6 +1,6 @@
 id: '0.3'
 module: 0
-duree_min: 10
+duree_min: 11
 titre: { fr: 'Récurrence', en: 'Mathematical induction' }
 ia: { fr: 'Kintana justifie une règle qui reste vraie à chaque étape de traitement.', en: 'Kintana justifies a rule that remains true at every processing step.' }
 sources:
@@ -8,6 +8,7 @@ sources:
   - { titre: 'Oscar Levin — Induction', url: 'https://discrete.openmathbooks.org/dmoi3/sec_seq-induction.html', licence: 'CC BY-SA 4.0' }
 cartes:
   - id: c1
+    indice: { fr: 'Une chaîne d’implications a besoin d’un point de départ. Lequel ?', en: 'A chain of implications needs a starting point. Which one?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana sait que chaque étape réussie entraîne la réussite de la suivante. Que manque-t-il pour garantir toutes les étapes à partir de la première ?'
@@ -47,6 +48,17 @@ cartes:
       - { fr: 'Le compteur commence à $u_0=2$ et suit $u_{n+1}=u_n+3$ ; on veut prouver $u_n=2+3n$.', en: 'The counter starts at $u_0=2$ and follows $u_{n+1}=u_n+3$; we want to prove $u_n=2+3n$.' }
       - { fr: 'Initialisation : $u_0=2=2+3\times0$.', en: 'Base case: $u_0=2=2+3\times0$.' }
       - { fr: 'Si $u_k=2+3k$, alors $u_{k+1}=u_k+3=2+3(k+1)$ ; donc la formule vaut pour tout entier $n\geq0$.', en: 'If $u_k=2+3k$, then $u_{k+1}=u_k+3=2+3(k+1)$; hence the formula holds for every integer $n\geq0$.' }
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Par quoi commence une preuve par récurrence ?'
+    en: 'What does a proof by induction start with?'
+    choix:
+      - { fr: 'Par vérifier le premier cas (l’initialisation)', en: 'By checking the first case (initialisation)', juste: true }
+      - { fr: 'Par supposer que tout est vrai', en: 'By assuming everything is true' }
+      - { fr: 'Par tester dix valeurs au hasard', en: 'By testing ten random values' }
+    explication: { fr: 'On vérifie d’abord le premier domino, puis on prouve que chaque domino fait tomber le suivant.', en: 'We first check the first domino, then prove that each domino knocks over the next.' }
+    indice: { fr: 'Pense au premier domino.', en: 'Think of the first domino.' }
   - id: d_start
     type: exemple
     titre:
@@ -66,6 +78,7 @@ cartes:
     fr: Vérifier plusieurs valeurs ne remplace pas l’hérédité. Une formule peut marcher au début puis échouer plus loin.
     en: Checking several values does not replace the inductive step. A formula may work initially and fail later.
   - id: c4
+    indice: { fr: 'Applique la règle trois fois à partir de $u_0$ : on ajoute $3$ à chaque pas.', en: 'Apply the rule three times from $u_0$: add $3$ at each step.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Avec $u_0=2$ et $u_{n+1}=u_n+3$, calcule $u_3$.'
@@ -74,6 +87,7 @@ cartes:
     verif: "u=2\nfor _ in range(3): u+=3\nprint(u)"
     explication: { fr: 'Les valeurs successives sont $2$, $5$, $8$, $11$ ; l’indice commence à zéro.', en: 'The successive values are $2$, $5$, $8$, $11$; the index starts at zero.' }
   - id: c5
+    indice: { fr: 'L’initialisation porte sur le **premier** entier concerné par la propriété.', en: 'Initialisation concerns the **first** integer covered by the property.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Dans une récurrence visant tous les entiers $n\geq3$, quel cas doit-on initialiser ?'
@@ -110,6 +124,7 @@ cartes:
     fr: L’hypothèse au rang courant sert à démontrer le suivant. Supposer directement la formule au rang suivant serait tourner en rond.
     en: The hypothesis at the current index helps prove the next. Assuming the formula directly at the next index would be circular.
   - id: c6
+    indice: { fr: 'Dans l’hérédité, on suppose le rang $k$ pour en déduire le rang $k+1$, jamais l’inverse.', en: 'In the inductive step, we assume rank $k$ to deduce rank $k+1$, never the opposite.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pour prouver $1+\cdots+n=n(n+1)/2$ pour $n\geq1$, quelle hypothèse peut-on utiliser à l’étape $k\to k+1$ ?'
@@ -120,6 +135,7 @@ cartes:
       - { fr: '$1+\cdots+k=k(k+1)/2$ pour un $k\geq1$ fixé quelconque.', en: '$1+\cdots+k=k(k+1)/2$ for a fixed arbitrary $k\geq1$.', juste: true }
     explication: { fr: 'On suppose le rang $k$ uniquement pour établir le passage ; supposer le résultat visé serait circulaire.', en: 'We assume case $k$ only to establish the transition; assuming the target result would be circular.' }
   - id: c7
+    indice: { fr: 'Ajoute $k+1$ à $k(k+1)/2$, puis factorise $k+1$.', en: 'Add $k+1$ to $k(k+1)/2$, then factor out $k+1$.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'À partir de $S_k=k(k+1)/2$, on ajoute $k+1$. Quelle expression obtient-on pour $S_{k+1}$ ?'
@@ -130,6 +146,7 @@ cartes:
       - { fr: '$(k+1)^2/2$', en: '$(k+1)^2/2$' }
     explication: { fr: 'On factorise $k+1$ : $(k+1)(k/2+1)=(k+1)(k+2)/2$ ; avec $S_1=1$, la récurrence est complète.', en: 'Factor out $k+1$: $(k+1)(k/2+1)=(k+1)(k+2)/2$; together with $S_1=1$, this completes the induction.' }
   - id: c8
+    indice: { fr: 'Applique la formule de la somme des $n$ premiers entiers avec $n=8$.', en: 'Apply the formula for the sum of the first $n$ integers with $n=8$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Kintana traite $1$ lettre, puis $2$, puis $3$, jusqu’à $8$ lettres au huitième tour. Combien de lettres a-t-il traitées en tout ?'
@@ -142,6 +159,7 @@ cartes:
     fr: Un passage qui saute un indice ne couvre pas automatiquement tous les entiers. Il faut un départ pour chaque chaîne indépendante.
     en: A step that skips an index does not automatically cover all integers. Each independent chain needs its own starting point.
   - id: c9
+    indice: { fr: 'Écris les indices atteints en partant de $0$ et en ajoutant $2$ à chaque fois.', en: 'Write the indices reached starting from $0$ and adding $2$ each time.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'On vérifie $P(0)$ et on prouve seulement $P(k)\Rightarrow P(k+2)$ pour tout $k\geq0$. Quels indices sont garantis ?'

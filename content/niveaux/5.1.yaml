@@ -7,6 +7,7 @@ sources:
   - { titre: 'MIT OCW — 18.01SC, Limits and Continuity', url: 'https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/part-a-definition-and-basic-rules/session-4-limits-and-continuity/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
 cartes:
   - id: c1
+    indice: { fr: 'La distance à 2 vaut $1/n$ : que devient-elle quand $n$ grandit ? Atteint-elle 0 ?', en: 'The distance to 2 is $1/n$: what does it become as $n$ grows? Does it reach 0?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana produit $u_n=2+1/n$ pour $n\geq1$. Peut-il se rapprocher de $2$ sans jamais atteindre $2$ ?'
@@ -61,6 +62,7 @@ cartes:
       - { fr: 'Factorise : $x^2-9=(x-3)(x+3)$, donc $f(x)=x+3$ hors de $3$.', en: 'Factor: $x^2-9=(x-3)(x+3)$, so $f(x)=x+3$ away from $3$.' }
       - { fr: 'Quand $x\to3$, $x+3\to6$ ; la limite vaut $6$ même si $f(3)$ est indéfinie.', en: 'As $x\to3$, $x+3\to6$; the limit is $6$ even though $f(3)$ is undefined.' }
   - id: c4
+    indice: { fr: 'Remplace $n$ par $10$ dans $2+1/n$.', en: 'Replace $n$ with $10$ in $2+1/n$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $u_n=2+1/n$, calcule $u_{10}$ (point ou virgule décimale).'
@@ -69,6 +71,7 @@ cartes:
     verif: 'print(2+1/10)'
     explication: { fr: '$u_{10}=2+0{,}1=2{,}1$ : ce terme est encore au-dessus de la limite.', en: '$u_{10}=2+0.1=2.1$: this term is still above the limit.' }
   - id: c5
+    indice: { fr: 'Résous $1/n<0{,}01$ : $n$ doit être plus grand que quoi ? L’inégalité est stricte.', en: 'Solve $1/n<0.01$: $n$ must be greater than what? The inequality is strict.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Quel est le plus petit entier $n\geq1$ tel que $|2+1/n-2|<0{,}01$ ?'
@@ -82,6 +85,7 @@ cartes:
       print(n)
     explication: { fr: 'Il faut $1/n<1/100$, donc $n>100$ ; $100$ ne suffit pas pour une inégalité stricte.', en: 'We need $1/n<1/100$, hence $n>100$; $100$ does not satisfy the strict inequality.' }
   - id: c6
+    indice: { fr: 'Compare ce que la fonction approche par la gauche et par la droite de 0.', en: 'Compare what the function approaches from the left and from the right of 0.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Une fonction vaut $-1$ pour $x<0$ et $1$ pour $x>0$. A-t-elle une limite réelle lorsque $x\to0$ des deux côtés ?'
@@ -92,6 +96,7 @@ cartes:
       - { fr: 'Oui, quelle que soit la valeur au point.', en: 'Yes, whatever the value at the point.' }
     explication: { fr: 'Une limite des deux côtés exige une même valeur à gauche et à droite ; fixer la valeur en zéro ne change rien.', en: 'A two-sided limit requires the same value from both sides; assigning a value at zero changes nothing.' }
   - id: c7
+    indice: { fr: 'Que devient $1/(n+1)$ quand $n$ devient très grand ? Retire-le de $3-1/(n+1)$.', en: 'What does $1/(n+1)$ become when $n$ is very large? Remove it from $3-1/(n+1)$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'La suite $v_n=(3n+2)/(n+1)$ vérifie $v_n=3-1/(n+1)$. Quelle est sa limite ?'
@@ -112,6 +117,7 @@ cartes:
     en: 'A function is **continuous** at $a$ if three things agree: $f(a)$ exists, the limit at $a$ exists, and the limit equals $f(a)$.'
     exemple: { fr: 'Pour $h(x)=\frac{x^2-4}{x-2}=x+2$ hors de $2$, la limite en $2$ vaut $4$. Si on pose $h(2)=4$, $h$ est continue ; si $h(2)=0$, elle ne l’est pas.', en: 'For $h(x)=\frac{x^2-4}{x-2}=x+2$ away from $2$, the limit at $2$ is $4$. If we set $h(2)=4$, $h$ is continuous; if $h(2)=0$, it is not.' }
   - id: c9
+    indice: { fr: 'La continuité exige que la valeur au point soit égale à la limite.', en: 'Continuity requires the value at the point to equal the limit.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'On sait que $\lim_{x\to3}f(x)=6$. Quelle condition supplémentaire rend $f$ continue en $3$ ?'

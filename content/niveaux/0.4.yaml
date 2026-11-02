@@ -1,6 +1,6 @@
 id: '0.4'
 module: 0
-duree_min: 11
+duree_min: 12
 titre: { fr: 'Tiroirs', en: 'The pigeonhole principle' }
 ia: { fr: 'Kintana détecte quand une collision de codes est inévitable.', en: 'Kintana detects when a code collision is unavoidable.' }
 sources:
@@ -11,6 +11,7 @@ sources:
   - { titre: 'MIT OCW — 18.200, Lecture 1: Pigeonhole Principle (2024)', url: 'https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/resources/mit18_200_s24_lec01_pdf/', licence: 'CC BY-NC-SA 4.0 ; vérification en ligne, aucun extrait repris' }
 cartes:
   - id: c1
+    indice: { fr: 'Cherche la pire répartition : combien de messages par dossier si on les étale le plus possible ?', en: 'Look for the worst distribution: how many messages per folder if spread out as much as possible?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana range $5$ messages dans $4$ dossiers, chacun dans un seul dossier. Quel est le plus grand nombre de messages qu’on peut garantir dans au moins un dossier ?'
@@ -52,6 +53,17 @@ cartes:
     type: piege
     fr: Compter les noms de fichiers comme tiroirs ne convient pas si le classement utilise les couleurs. Les catégories doivent correspondre au regroupement cherché.
     en: Counting filenames as drawers does not work if classification uses colours. Categories must match the grouping being sought.
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'On range 7 objets dans 3 tiroirs. Combien d’objets au moins dans un même tiroir ?'
+    en: 'We put 7 objects in 3 drawers. At least how many objects in one same drawer?'
+    choix:
+      - { fr: '2', en: '2' }
+      - { fr: '3', en: '3', juste: true }
+      - { fr: '7', en: '7' }
+    explication: { fr: 'Avec 2 objets par tiroir au plus, on en placerait 6 seulement : le septième impose 3 dans un tiroir.', en: 'With at most 2 objects per drawer, only 6 would fit: the seventh forces 3 into one drawer.' }
+    indice: { fr: 'Combien d’objets rentrent si chaque tiroir en a au plus deux ?', en: 'How many objects fit if each drawer has at most two?' }
   - id: c2a
     type: idee
     fr: '**Version générale** : avec $m$ tiroirs, $qm+1$ objets imposent au moins $q+1$ objets dans un même tiroir. Sinon, chaque tiroir en aurait au plus $q$, soit au plus $qm$ objets en tout.'
@@ -83,6 +95,7 @@ cartes:
     fr: Le principe ne choisit pas la boîte pleine. Une boîte précise peut rester vide alors qu’une autre dépasse le seuil.
     en: The principle does not choose the full box. A specific box may remain empty while another exceeds the threshold.
   - id: c4
+    indice: { fr: 'Combien d’étiquettes différentes peut-on distribuer sans jamais en répéter une ? Ajoute un fichier de plus.', en: 'How many different labels can be handed out without ever repeating one? Add one more file.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Il existe $6$ étiquettes possibles. Quel nombre minimal de fichiers garantit une étiquette partagée ?'
@@ -91,6 +104,7 @@ cartes:
     verif: 'capacity=6; print(capacity+1)'
     explication: { fr: '$6$ fichiers peuvent avoir chacun leur étiquette ; le septième impose une répétition.', en: '$6$ files can each have their own label; the seventh forces a repetition.' }
   - id: c5
+    indice: { fr: 'Le principe garantit qu’un tiroir est bien rempli, mais pas lequel. Regarde les mots de chaque réponse.', en: 'The principle guarantees that some drawer is well filled, but not which one. Look at the words of each answer.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Parmi $7$ fichiers portant chacun une étiquette A, B ou C, que garantit le principe ?'
@@ -101,6 +115,7 @@ cartes:
       - { fr: 'Une étiquette, pas nécessairement A, est utilisée au moins trois fois.', en: 'Some label, not necessarily A, is used at least three times.', juste: true }
     explication: { fr: 'Le principe garantit l’existence d’un tiroir assez rempli, pas son identité ni le remplissage des autres.', en: 'The principle guarantees the existence of a sufficiently full box, not its identity or the occupancy of the others.' }
   - id: c6
+    indice: { fr: 'Calcule la capacité maximale sans dossier à 3 messages, puis ajoute un message.', en: 'Compute the maximum capacity without any folder holding 3 messages, then add one message.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Kintana dispose de $4$ dossiers. Combien de messages faut-il au minimum pour garantir qu’un dossier en contienne au moins $3$ ?'
@@ -131,6 +146,7 @@ cartes:
     fr: Additionner deux et trois compte les symboles disponibles, pas les codes à deux positions. Il faut compter les associations possibles.
     en: Adding two and three counts available symbols, not two-position codes. Count the possible combinations instead.
   - id: c7
+    indice: { fr: 'Pour chaque position, combien de lettres sont possibles ? Multiplie les choix des deux positions.', en: 'For each position, how many letters are possible? Multiply the choices for the two positions.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Un code de deux symboles utilise seulement A ou B à chaque position, avec répétition permise. Combien de codes distincts existent ?'
@@ -139,6 +155,7 @@ cartes:
     verif: "from itertools import product\nprint(len(list(product('AB',repeat=2))))"
     explication: { fr: 'Les codes sont AA, AB, BA et BB : deux choix à chacune des deux positions.', en: 'The codes are AA, AB, BA and BB: two choices at each of the two positions.' }
   - id: c8
+    indice: { fr: 'Combien de codes y a-t-il ? Répartis les 10 messages le plus équitablement possible.', en: 'How many codes are there? Spread the 10 messages as evenly as possible.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Kintana attribue un de ces codes AA, AB, BA, BB à chacun de $10$ messages. Quel est le plus grand nombre de messages garanti pour au moins un code ?'
@@ -147,6 +164,7 @@ cartes:
     verif: "from itertools import product\nprint(min(max(counts) for counts in product(range(11),repeat=4) if sum(counts)==10))"
     explication: { fr: 'Deux par code n’en logeraient que $8$ ; $3,3,2,2$ montre que $4$ ne sont pas garantis.', en: 'Two per code would hold only $8$; $3,3,2,2$ shows that $4$ are not guaranteed.' }
   - id: c9
+    indice: { fr: 'Une collision est-elle forcée, ou seulement possible ? Imagine un fichier par étiquette.', en: 'Is a collision forced, or only possible? Imagine one file per label.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Si le nombre de fichiers égale le nombre d’étiquettes disponibles, une collision est-elle obligatoire ?'

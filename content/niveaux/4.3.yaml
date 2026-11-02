@@ -7,6 +7,7 @@ sources:
   - { titre: 'Gilbert Strang — MIT 18.06, multiplication matricielle', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
 cartes:
   - id: c1
+    indice: { fr: 'Une case par texte et par mot : multiplie le nombre de textes par le nombre de mots.', en: 'One cell per text and per word: multiply the number of texts by the number of words.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana range un texte par ligne et un mot du vocabulaire par colonne. Pour trois textes et deux mots, combien de cases faut-il ?'
@@ -63,6 +64,7 @@ cartes:
     verif: 'A,q=[[2,1],[0,3]],[1,2]; print([sum(a*b for a,b in zip(row,q)) for row in A])'
     sortie: '[4, 6]'
   - id: c4
+    indice: { fr: 'Le second score est le produit scalaire de la seconde ligne de $A$ avec $q$.', en: 'The second score is the dot product of the second row of $A$ with $q$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Avec $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$ et $q=(1,2)$, quel est le second score de $Aq$ ?'
@@ -71,6 +73,7 @@ cartes:
     verif: 'A,q=[[2,1],[0,3]],[1,2]; print(sum(a*b for a,b in zip(A[1],q)))'
     explication: { fr: 'La seconde ligne donne $0\times1+3\times2=6$.', en: 'The second row gives $0\times1+3\times2=6$.' }
   - id: c5
+    indice: { fr: '$A(0,1)$ est la seconde colonne de $A$ : lis sa première coordonnée.', en: '$A(0,1)$ is the second column of $A$: read its first coordinate.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$, calcule la première coordonnée de $A(0,1)$.'
@@ -84,6 +87,7 @@ cartes:
     en: 'The **transpose** $A^T$ is read “$A$ transpose”: the first row of $A$ becomes the first column of $A^T$, and so on.'
     exemple: { fr: 'Si $M=\begin{pmatrix}1&2&3\\4&5&6\end{pmatrix}$, de taille $2\times3$, alors $M^T=\begin{pmatrix}1&4\\2&5\\3&6\end{pmatrix}$, de taille $3\times2$.', en: 'If $M=\begin{pmatrix}1&2&3\\4&5&6\end{pmatrix}$, of size $2\times3$, then $M^T=\begin{pmatrix}1&4\\2&5\\3&6\end{pmatrix}$, of size $3\times2$.' }
   - id: c6
+    indice: { fr: 'Le coefficient $(2,1)$ de $A^T$ est celui qui était en ligne 1, colonne 2 de $A$.', en: 'The $(2,1)$ entry of $A^T$ is the one that was in row 1, column 2 of $A$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Transposer échange lignes et colonnes. Pour $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$, quel est le coefficient de $A^T$ en ligne 2, colonne 1 (indices à partir de 1) ?'
@@ -101,6 +105,7 @@ cartes:
     en: 'The product $AB$ applies $B$ first, then $A$: $(AB)x=A(Bx)$. So the number of columns of $A$ must equal the number of rows of $B$.'
     exemple: { fr: 'Avec $A=\begin{pmatrix}1&1\\0&1\end{pmatrix}$, $B=\operatorname{diag}(2,3)$ et $x=(1,1)$ : $Bx=(2,3)$, puis $A(2,3)=(5,3)$.', en: 'With $A=\begin{pmatrix}1&1\\0&1\end{pmatrix}$, $B=\operatorname{diag}(2,3)$ and $x=(1,1)$: $Bx=(2,3)$, then $A(2,3)=(5,3)$.' }
   - id: c8
+    indice: { fr: 'Applique $B$ d’abord à $(1,3)$, puis $A$ au résultat : $AB$ agit de droite à gauche.', en: 'Apply $B$ first to $(1,3)$, then $A$ to the result: $AB$ acts right to left.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Soient $A=\begin{pmatrix}2&0\\0&1\end{pmatrix}$ et $B=\begin{pmatrix}0&1\\1&0\end{pmatrix}$. Quelle est la première coordonnée de $AB(1,3)$ ?'
@@ -109,6 +114,7 @@ cartes:
     verif: "def mv(A,x): return [sum(a*b for a,b in zip(row,x)) for row in A]\nA,B=[[2,0],[0,1]],[[0,1],[1,0]]\nassert mv(B,mv(A,[1,3]))==[3,2]\nprint(mv(A,mv(B,[1,3]))[0])"
     explication: { fr: '$B$ échange les coordonnées : $(3,1)$ ; $A$ double la première : $(6,1)$ ; dans l’autre ordre, on aurait $(3,2)$.', en: '$B$ swaps coordinates: $(3,1)$; $A$ doubles the first: $(6,1)$; the other order would give $(3,2)$.' }
   - id: c9
+    indice: { fr: 'Le produit a autant de lignes que $A$ et autant de colonnes que $B$.', en: 'The product has as many rows as $A$ and as many columns as $B$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Pour multiplier $A$ de taille $2\times3$ par $B$ de taille $3\times4$, les dimensions intérieures coïncident. Combien de colonnes a $AB$ ?'

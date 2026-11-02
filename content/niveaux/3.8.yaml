@@ -9,6 +9,7 @@ sources:
   - { titre: 'Python — Tutoriel, dictionnaires', url: 'https://docs.python.org/3/tutorial/datastructures.html#dictionaries', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Additionne les poids de chaque route et compare les trois totaux.', en: 'Add up the weights of each route and compare the three totals.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Trois routes relient A à D : A→D coûte 9 ; A→B→D coûte 4 + 3 ; A→C→D coûte 2 + 2. Laquelle est la **moins coûteuse** ?'

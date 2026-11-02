@@ -1,6 +1,6 @@
 id: '3.2'
 module: 3
-duree_min: 11
+duree_min: 12
 titre: { fr: 'Trier', en: 'Sorting' }
 ia:
   {
@@ -20,6 +20,7 @@ sources:
     }
 cartes:
   - id: c1
+    indice: { fr: 'Trier range les éléments sans en supprimer. Combien d’éléments doit-il rester ?', en: 'Sorting arranges elements without removing any. How many elements must remain?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Tu tries les identifiants `[9, 2, 9, 4]` en ordre croissant. Quel résultat
@@ -114,6 +115,7 @@ cartes:
           en: 'Insert after $2$: `[2, 4, 7]`.'
         }
   - id: c4
+    indice: { fr: 'Trie d’abord la liste complète, puis lis l’élément d’indice 2 (le premier est d’indice 0).', en: 'Sort the whole list first, then read the element at index 2 (the first has index 0).' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Après le tri croissant de `[8, 3, 6, 1]`, quelle valeur est à l’indice $2$
@@ -129,6 +131,7 @@ cartes:
         en: 'The list becomes `[1, 3, 6, 8]`; index $2$ refers to the third item.'
       }
   - id: c5
+    indice: { fr: 'Seules les valeurs plus grandes que 3 doivent se décaler vers la droite. Lesquelles ?', en: 'Only the values greater than 3 must shift to the right. Which ones?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Combien d’éléments dois-tu décaler pour insérer $3$ dans le préfixe trié
@@ -159,6 +162,7 @@ cartes:
     en: In `[1, 6]`, inserting four requires moving six before writing four; overwriting six would lose
       an item.
   - id: c6
+    indice: { fr: 'Un tri stable garde l’ordre de départ des éléments à égalité de score.', en: 'A stable sort keeps the starting order of elements with equal scores.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Trie `[(''A'', 2), (''B'', 1), (''C'', 2)]` par score croissant avec un tri
@@ -234,6 +238,7 @@ cartes:
     fr: "Concaténer `[0, 6]` et `[3, 7]` donne `[0, 6, 3, 7]` : ce n’est pas une fusion triée."
     en: "Concatenating `[0, 6]` and `[3, 7]` gives `[0, 6, 3, 7]`: this is not a sorted merge."
   - id: c7
+    indice: { fr: 'Compare à chaque fois les plus petites valeurs restantes de chaque liste, et prends la plus petite.', en: 'Each time compare the smallest remaining values of each list, and take the smaller one.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Fusionne `[1, 5, 9]` et `[2, 4, 8]` en ordre croissant. Quel est le
@@ -299,6 +304,17 @@ cartes:
     fr: "La stabilité ne mesure pas la vitesse : elle décrit seulement l’ordre conservé entre clés
       égales."
     en: "Stability does not measure speed: it only describes the preserved order among equal keys."
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Jusqu’à quelles listes le tri fusion sépare-t-il d’abord la liste ?'
+    en: 'Down to which lists does merge sort first split the list?'
+    choix:
+      - { fr: 'Jusqu’à des listes d’un seul élément', en: 'Down to one-element lists', juste: true }
+      - { fr: 'Jusqu’à des listes de deux éléments', en: 'Down to two-element lists' }
+      - { fr: 'Jusqu’à la liste vide', en: 'Down to the empty list' }
+    explication: { fr: 'Une liste d’un élément est déjà triée : c’est le cas de base de la récursion.', en: 'A one-element list is already sorted: this is the base case of the recursion.' }
+    indice: { fr: 'Quelle liste est triée sans rien faire ?', en: 'Which list is sorted without doing anything?' }
   - id: c8
     type: piege
     fr: '`a.sort()` modifie `a` et renvoie `None` ; `sorted(a)` renvoie une nouvelle
@@ -326,6 +342,7 @@ cartes:
       print(r)
     sortie: None
   - id: c9
+    indice: { fr: '`sorted` renvoie une nouvelle liste. Que devient la liste d’origine `a` ?', en: '`sorted` returns a new list. What happens to the original list `a`?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Après `a = [5, 1, 3]; b = sorted(a)`, quelle valeur contient `a[0]` ?'

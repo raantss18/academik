@@ -39,6 +39,7 @@ cartes:
       - fr: "11"
         en: "11"
     sortie: "8"
+    indice: { fr: 'Chaque phrase de trois mots fournit des paires de mots voisins : combien ? Multiplie par le nombre de phrases.', en: 'Each three-word sentence gives pairs of neighbouring words: how many? Multiply by the number of sentences.' }
     id: c1
   - type: idee
     fr: Pour prédire après un mot, compte ses successeurs, puis divise chaque effectif par leur total.
@@ -161,6 +162,7 @@ cartes:
       en: The first and fourth sentences contain `chat dort`.
     reponses:
       - "2"
+    indice: { fr: 'Parcours les phrases du corpus et repère celles qui contiennent `chat dort`.', en: 'Go through the corpus sentences and spot those containing `chat dort`.' }
     id: c4
   - type: saisie
     note:
@@ -179,6 +181,7 @@ cartes:
       en: Three of the four successors of `le` are `chat`.
     reponses:
       - 3/4
+    indice: { fr: 'Compte les successeurs de `le`, puis la part de `chat` parmi eux. Simplifie.', en: 'Count the successors of `le`, then the share of `chat` among them. Simplify.' }
     id: c5
   - type: saisie
     note:
@@ -198,6 +201,7 @@ cartes:
       en: "`dort` has probability $2/3$, compared with $1/3$ for `joue`."
     reponses:
       - dort
+    indice: { fr: 'Compare les probabilités des successeurs de `chat` : prends le plus probable.', en: 'Compare the probabilities of the successors of `chat`: take the most likely.' }
     id: c6
   - id: d_unseen
     type: idee
@@ -227,6 +231,7 @@ cartes:
       en: The count is binomial with parameters $4$ and $3/4$; its expectation is $4(3/4)=3$.
     reponses:
       - "3"
+    indice: { fr: 'Pour 4 tirages indépendants, l’espérance est 4 fois la probabilité de `chat`.', en: 'For 4 independent draws, the expectation is 4 times the probability of `chat`.' }
     id: c8
   - type: saisie
     note:
@@ -246,6 +251,7 @@ cartes:
       en: "It is Bernoulli: $p(1-p)=(3/4)(1/4)=3/16$."
     reponses:
       - 3/16
+    indice: { fr: 'C’est un tirage Bernoulli de paramètre $p=P(\text{chat}\mid\text{le})$ : variance $p(1-p)$.', en: 'It is a Bernoulli draw with parameter $p=P(\text{chat}\mid\text{le})$: variance $p(1-p)$.' }
     id: c9
   - type: saisie
     note:
@@ -267,6 +273,7 @@ cartes:
       en: The model assigns probability 1 to `dort`, hence zero bits. This does not prove that `chien` is always followed by `dort` in the language.
     reponses:
       - "0"
+    indice: { fr: 'Quelle est la probabilité du seul mot observé ? Que vaut l’entropie dans ce cas ?', en: 'What is the probability of the only observed word? What is the entropy in that case?' }
     id: c10
   - type: saisie
     note:
@@ -288,6 +295,7 @@ cartes:
     reponses:
       - 1/2
     defi: true
+    indice: { fr: 'Multiplie les probabilités de chaque transition : `le`→`chat` puis `chat`→`dort`.', en: 'Multiply the probabilities of each transition: `le`→`chat` then `chat`→`dort`.' }
     id: c11
   - id: d_lien
     type: idee

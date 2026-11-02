@@ -1,6 +1,6 @@
 id: '3.4'
 module: 3
-duree_min: 11
+duree_min: 13
 titre: { fr: 'Hachage', en: 'Hashing' }
 ia: { fr: 'Kintana associe chaque mot aux identifiants de ses documents.', en: 'Kintana maps each word to its document IDs.' }
 sources:
@@ -15,6 +15,7 @@ sources:
     licence: PSF-2.0 ; exemples également sous 0BSD ; exemples pédagogiques originaux
 cartes:
   - id: c1
+    indice: { fr: 'Calcule $7\bmod5$ et $12\bmod5$ et compare les deux restes.', en: 'Compute $7\bmod5$ and $12\bmod5$ and compare the two remainders.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Une table jouet utilise $h(k)=k\bmod5$. Que se passe-t-il pour les clés $7$ et $12$ ?'
@@ -71,6 +72,17 @@ cartes:
       legende:
         fr: Le reste choisit le seau ; la clé complète distingue les entrées.
         en: The remainder chooses the bucket; the full key distinguishes entries.
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'À partir de quoi un dictionnaire Python retrouve-t-il une valeur ?'
+    en: 'What does a Python dictionary use to find a value?'
+    choix:
+      - { fr: 'De sa clé', en: 'Its key', juste: true }
+      - { fr: 'De sa position dans une liste', en: 'Its position in a list' }
+      - { fr: 'De sa taille', en: 'Its size' }
+    explication: { fr: 'Le dictionnaire associe une clé à une valeur ; le hachage transforme la clé en emplacement.', en: 'The dictionary associates a key with a value; hashing turns the key into a location.' }
+    indice: { fr: 'Un dictionnaire associe des clés à des valeurs.', en: 'A dictionary associates keys with values.' }
   - id: c2
     type: idee
     fr: 'Le **hachage** transforme une clé en un numéro de **seau** où la ranger. Deux clés différentes peuvent tomber dans le même seau : c’est une **collision**, on garde alors les deux.'
@@ -109,6 +121,17 @@ cartes:
         fr: 'Le seau $2$ contient maintenant les deux paires.'
         en: 'Bucket $2$ now contains both pairs.'
       - { code: "print(next(value for key, value in table[12 % 5] if key == 12))", fr: 'La comparaison de clés retrouve B sans confondre $7$ et $12$.', en: 'Comparing keys retrieves B without confusing $7$ and $12$.' }
+  - id: v2
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Deux clés différentes reçoivent le même code de hachage. Comment appelle-t-on cela ?'
+    en: 'Two different keys get the same hash code. What is this called?'
+    choix:
+      - { fr: 'Une collision', en: 'A collision', juste: true }
+      - { fr: 'Une erreur de syntaxe', en: 'A syntax error' }
+      - { fr: 'Un doublon de clé', en: 'A duplicate key' }
+    explication: { fr: 'Une collision est inévitable en théorie (principe des tiroirs, niveau 0.4) : la table doit savoir la gérer.', en: 'A collision is unavoidable in theory (pigeonhole principle, level 0.4): the table must know how to handle it.' }
+    indice: { fr: 'Rappelle-toi le principe des tiroirs du niveau 0.4.', en: 'Remember the pigeonhole principle of level 0.4.' }
   - id: c3a
     type: exemple
     titre:
@@ -127,6 +150,7 @@ cartes:
       print(next((v for k,v in bucket if k==32),None))
     sortie: None
   - id: c4
+    indice: { fr: 'Calcule le reste de la division de 24 par 7.', en: 'Compute the remainder of 24 divided by 7.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Avec $h(k)=k\bmod7$, quel est le seau de la clé $24$ ?'
@@ -135,6 +159,7 @@ cartes:
     verif: 'print(24 % 7)'
     explication: { fr: '$24=3\times7+3$ : le reste est $3$.', en: '$24=3\times7+3$: the remainder is $3$.' }
   - id: c5
+    indice: { fr: 'Calcule le reste modulo 5 de chaque clé et compte celles qui valent 1.', en: 'Compute each key’s remainder modulo 5 and count those equal to 1.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Insère les clés `[1, 6, 11, 3]` dans des seaux avec $h(k)=k\bmod5$. Combien de clés contient le seau $1$ ?'
@@ -191,6 +216,7 @@ cartes:
     en: Adding eight twice to a set does not create two documents; keeping a list of every occurrence
       would answer a different question.
   - id: c6
+    indice: { fr: 'Un ensemble ne garde pas deux fois le même élément. Ajouter 2 change-t-il quelque chose ?', en: 'A set does not keep the same element twice. Does adding 2 change anything?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Un dictionnaire contient `index = {''chat'': {2, 5}}`. Après `index[''chat''].add(2)`, combien d’identifiants contient cette entrée ?'
@@ -209,6 +235,7 @@ cartes:
         association.
       en: We can explicitly assign ID twenty to the word bleu, then save that mapping.
   - id: c7
+    indice: { fr: 'Pense à ce qui peut changer d’une exécution à l’autre pour les chaînes, et aux collisions.', en: 'Think about what can change from one run to another for strings, and about collisions.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pourquoi ne faut-il pas enregistrer `hash(''chat'')` comme identifiant durable d’un mot entre plusieurs exécutions Python ?'
@@ -252,6 +279,7 @@ cartes:
     en: "A fixed number of buckets is not enough as data grows: lists may grow longer even with an even
       distribution."
   - id: c9
+    indice: { fr: 'Une recherche séquentielle teste les clés dans l’ordre jusqu’à trouver la bonne. Où est 19 ?', en: 'A sequential search tests keys in order until it finds the right one. Where is 19?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Le seau contient les clés `[4, 9, 14, 19]` dans cet ordre. Une recherche séquentielle de $19$ compare combien de clés ?'

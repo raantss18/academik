@@ -9,6 +9,7 @@ sources:
   - { titre: 'Python — io.StringIO', url: 'https://docs.python.org/3/library/io.html#io.StringIO', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: '`split(",")` coupe à chaque virgule ; compte à partir de 0 pour l’indice.', en: '`split(",")` cuts at each comma; count from 0 for the index.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

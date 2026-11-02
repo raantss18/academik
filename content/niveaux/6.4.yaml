@@ -33,6 +33,7 @@ cartes:
       - fr: "2"
         en: "2"
     sortie: "1"
+    indice: { fr: 'Multiplie chaque valeur par sa probabilité, puis additionne.', en: 'Multiply each value by its probability, then add.' }
     id: c1
   - type: idee
     fr: L’espérance est la moyenne des valeurs, pondérées par leurs probabilités. On note cette moyenne $E[X]$ pour le score X.
@@ -147,6 +148,7 @@ cartes:
       en: "The high score has a smaller weight: $0(3/4)+4(1/4)=1$."
     reponses:
       - "1"
+    indice: { fr: 'Multiplie chaque valeur par sa probabilité : le grand score est rare.', en: 'Multiply each value by its probability: the large score is rare.' }
     id: c4
   - type: saisie
     note:
@@ -164,6 +166,7 @@ cartes:
       en: $(-1)^2(3/4)+3^2(1/4)=3$.
     reponses:
       - "3"
+    indice: { fr: 'Calcule l’écart de chaque valeur à l’espérance, élève au carré, puis pondère.', en: 'Compute each value’s gap to the expectation, square it, then weight it.' }
     id: c5
   - type: saisie
     note:
@@ -180,6 +183,7 @@ cartes:
       en: $p(1-p)=(1/4)(3/4)=3/16$.
     reponses:
       - 3/16
+    indice: { fr: 'Applique $p(1-p)$ avec $p=1/4$.', en: 'Apply $p(1-p)$ with $p=1/4$.' }
     id: c6
   - id: d_lgn
     type: idee
@@ -209,6 +213,7 @@ cartes:
       en: Linearity gives $E[X+Y]=E[X]+E[Y]=6$ without requiring independence.
     reponses:
       - "6"
+    indice: { fr: 'L’espérance d’une somme est la somme des espérances : additionne les deux.', en: 'The expectation of a sum is the sum of the expectations: add the two.' }
     id: c8
   - type: saisie
     note:
@@ -227,6 +232,7 @@ cartes:
       en: The average’s variance is $4/4=1$. Decreasing variance makes large deviations from the expectation less likely.
     reponses:
       - "1"
+    indice: { fr: 'Divise la variance individuelle par le nombre de scores.', en: 'Divide the individual variance by the number of scores.' }
     id: c9
   - type: saisie
     note:
@@ -244,6 +250,7 @@ cartes:
     reponses:
       - "25"
     defi: true
+    indice: { fr: 'La variance de la moyenne vaut $1/(4n)$ : résous $1/(4n)\leq1/100$.', en: 'The variance of the mean is $1/(4n)$: solve $1/(4n)\leq1/100$.' }
     id: c10
   - type: retenir
     fr: "Pour des scores indépendants de même loi et de variance finie, les écarts fixés entre moyenne et espérance deviennent improbables : loi des grands nombres."

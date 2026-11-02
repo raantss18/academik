@@ -9,6 +9,7 @@ sources:
   - { titre: 'GNU Bash Reference Manual — Redirections', url: 'https://www.gnu.org/software/bash/manual/bash.html#Redirections', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Le nom de la commande vient de « make directory ».', en: 'The command name comes from “make directory”.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana veut un nouveau dossier nommé `idees`. Quelle commande le crée ?'
@@ -152,6 +153,7 @@ cartes:
     indice: { fr: 'Un seul `>` pour la première ligne, puis `>>` pour la suivante.', en: 'A single `>` for the first line, then `>>` for the next.' }
     explication: { fr: '`>` crée le fichier avec `bonjour` ; `>>` ajoute `kintana` à la fin.', en: '`>` creates the file with `bonjour`; `>>` appends `kintana` at the end.' }
   - id: c8
+    indice: { fr: 'Combien de `>` y a-t-il ? Un seul remplace le contenu.', en: 'How many `>` are there? A single one replaces the content.' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Le fichier `liste.txt` contient `a`. Tu tapes `echo b > liste.txt`. Que contient-il ensuite ?'

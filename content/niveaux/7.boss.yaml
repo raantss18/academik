@@ -1,6 +1,6 @@
 id: 7.boss
 module: 7
-duree_min: 11
+duree_min: 12
 titre:
   fr: Le faux signal
   en: The false signal
@@ -48,6 +48,7 @@ cartes:
       - fr: "2000"
         en: "2000"
     sortie: "1000"
+    indice: { fr: 'Espérance = nombre de règles × essais par règle × probabilité de succès.', en: 'Expectation = number of rules × trials per rule × success probability.' }
     id: c1
   - type: idee
     fr: Sélectionner la meilleure règle parmi beaucoup d’essais peut faire passer du hasard pour un signal. Il faut tenir compte de tous les tests, même ceux abandonnés.
@@ -137,6 +138,17 @@ cartes:
         en: With $m=6$, the threshold is $\frac{0.05}{6}\approx0.0083$.
       - fr: "Seule $0{,}003$ passe. Le rapport doit dire : six règles testées, une retenue."
         en: "Only $0.003$ passes. The report must say: six rules tested, one kept."
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec 6 règles testées au risque familial de 5 %, quel est le seuil de Bonferroni par règle ?'
+    en: 'With 6 rules tested at a 5% family risk, what is the Bonferroni threshold per rule?'
+    choix:
+      - { fr: '$0{,}05/6\approx0{,}0083$', en: '$0.05/6\approx0.0083$', juste: true }
+      - { fr: '$0{,}05$', en: '$0.05$' }
+      - { fr: '$0{,}05\times6=0{,}3$', en: '$0.05\times6=0.3$' }
+    explication: { fr: 'On divise le risque familial par le nombre de tests : $0{,}05/6\approx0{,}0083$.', en: 'We divide the family risk by the number of tests: $0.05/6\approx0.0083$.' }
+    indice: { fr: 'Divise le risque familial par le nombre de règles.', en: 'Divide the family risk by the number of rules.' }
   - id: d_rapport
     type: idee
     fr: Un résultat honnête dit tout ce qui a été essayé. Sans ces informations, un lecteur ne peut pas juger si un signal est crédible.
@@ -197,6 +209,7 @@ cartes:
     explication:
       fr: La moyenne vaut $15/20=0{,}75$. La sélectionner parce qu’elle est la meilleure rend son résultat trop optimiste pour prédire de nouvelles données.
       en: The mean is $15/20=0.75$. Selecting it because it is best makes its result overly optimistic for predicting new data.
+    indice: { fr: 'Moyenne empirique = succès divisés par essais.', en: 'Empirical mean = successes divided by trials.' }
     id: c4
   - type: saisie
     note:
@@ -215,6 +228,7 @@ cartes:
     explication:
       fr: Cette petite p-valeur est calculée sous une règle fixée. Elle n’est pas la probabilité que la règle sélectionnée soit sans signal.
       en: This small p-value is computed for a fixed rule. It is not the probability that the selected rule has no signal.
+    indice: { fr: 'Divise $21700$ par $1048576$ et arrondis à six décimales.', en: 'Divide $21700$ by $1048576$ and round to six decimals.' }
     id: c5
   - type: saisie
     note:
@@ -231,6 +245,7 @@ cartes:
     explication:
       fr: La marge vaut $0{,}98$, donc l’intervalle est $[-0{,}48;1{,}48]$ et contient zéro. Ceci ne prouve pas un gain nul.
       en: The margin is $0.98$, so the interval is $[-0.48,1.48]$ and contains zero. This does not prove zero gain.
+    indice: { fr: 'Borne inférieure = moyenne − facteur × $\sigma/\sqrt n$.', en: 'Lower bound = mean − factor × $\sigma/\sqrt n$.' }
     id: c6
   - type: saisie
     note:
@@ -253,6 +268,7 @@ cartes:
     explication:
       fr: Les cinq échecs occupent cinq positions sur vingt. Ce bootstrap de la seule gagnante ne corrige pas la sélection parmi cent règles.
       en: The five failures occupy five of twenty positions. Bootstrapping only the winner does not correct selection among one hundred rules.
+    indice: { fr: 'Combien d’échecs parmi les vingt positions ? Divise par vingt.', en: 'How many failures among the twenty positions? Divide by twenty.' }
     id: c7
   - type: piege
     fr: Dans cette simulation, tous les rejets sont des faux positifs puisque toutes les hypothèses nulles sont vraies. Sur des données réelles, la vérité n’est généralement pas connue.
@@ -277,6 +293,7 @@ cartes:
     explication:
       fr: Le rejet unique est un faux positif. Un risque à long terme ne prescrit pas le nombre d’erreurs de chaque simulation.
       en: The single rejection is a false positive. A long-run risk does not prescribe the error count in each simulation.
+    indice: { fr: 'Les 100 hypothèses nulles sont vraies : tout rejet est-il juste ou faux ? Compte-les.', en: 'All 100 null hypotheses are true: is any rejection right or wrong? Count them.' }
     id: c9
   - type: saisie
     note:
@@ -294,6 +311,7 @@ cartes:
     explication:
       fr: Le seuil par test vaut $0{,}0005$. On compte toutes les règles, pas seulement la gagnante.
       en: The per-test threshold is $0.0005$. Count every rule, not just the winner.
+    indice: { fr: 'Divise le risque familial par le nombre total de règles testées.', en: 'Divide the family risk by the total number of rules tested.' }
     id: c10
   - type: saisie
     note:
@@ -316,6 +334,7 @@ cartes:
       fr: "Même le minimum dépasse le seuil : aucun rejet. Kintana refuse ce faux signal et demanderait une confirmation sur de nouvelles données indépendantes."
       en: "Even the minimum exceeds the threshold: no rejection. Kintana rejects this false signal and would require confirmation using new independent data."
     defi: true
+    indice: { fr: 'Compare la plus petite p-valeur au seuil corrigé : la passe-t-elle ?', en: 'Compare the smallest p-value with the corrected threshold: does it pass?' }
     id: c11
   - id: d_lien
     type: idee

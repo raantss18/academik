@@ -9,6 +9,7 @@ sources:
   - { titre: 'scikit-learn — Underfitting vs. Overfitting', url: 'https://scikit-learn.org/stable/auto_examples/model_selection/plot_underfitting_overfitting.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Un modèle qui ignore l’entrée ne peut pas suivre la forme des données : trop simple ou trop souple ?', en: 'A model that ignores the input cannot follow the shape of the data: too simple or too flexible?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Un modèle répond **toujours la moyenne** des exemples, quelle que soit l’entrée. Que lui reproche-t-on ?'

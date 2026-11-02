@@ -1,7 +1,7 @@
 # Niveau 1.5 — Le terminal 5 : Git. Original academik ; notions vérifiées dans Pro Git, 2e éd. (chap. 2, bases de Git ; source citée, texte non repris).
 id: '1.5'
 module: 1
-duree_min: 8
+duree_min: 9
 titre: { fr: 'Git', en: 'Git' }
 ia: { fr: 'Kintana garde l’historique de son travail : elle peut revenir en arrière et ne perd plus rien.', en: 'Kintana keeps the history of her work: she can go back and never loses anything again.' }
 sources:
@@ -9,6 +9,7 @@ sources:
   - { titre: 'Documentation officielle de Git — gitignore', url: 'https://git-scm.com/docs/gitignore', licence: 'GPL-2.0 (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Une commande enregistre, deux autres regardent seulement. Laquelle enregistre ?', en: 'One command records, two others only look. Which one records?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Kintana vient de terminer une version de son projet et veut en **garder une trace** dans l’historique. Quelle commande fait cela ?'
@@ -63,6 +64,7 @@ cartes:
     fr: '`git commit` n’enregistre **que ce qui a été préparé**. Un fichier modifié mais oublié par `git add` reste hors du commit : regarde `git status` avant.'
     en: '`git commit` records **only what has been staged**. A modified file forgotten by `git add` stays out of the commit: check `git status` first.'
   - id: c4
+    indice: { fr: 'Une modification doit être préparée avant le commit. L’a-t-elle été ?', en: 'A change must be staged before the commit. Was it?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Kintana modifie `main.py` puis tape directement `git commit -m "correction"`. Que contient le commit ?'
@@ -108,6 +110,7 @@ cartes:
     fr: 'Ignorer un fichier **après** l’avoir commité ne l’efface pas de l’historique : un secret publié est à considérer comme perdu. Mets-le dans `.gitignore` avant le premier commit.'
     en: 'Ignoring a file **after** committing it does not erase it from the history: a published secret must be considered lost. Put it in `.gitignore` before the first commit.'
   - id: c6
+    indice: { fr: 'Dans quel ordre passe un fichier : dossier de travail, zone de préparation, historique ?', en: 'In what order does a file go: working folder, staging area, history?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Quel est l’**ordre** correct pour enregistrer une modification ?'

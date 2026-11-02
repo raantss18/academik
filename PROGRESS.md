@@ -83,3 +83,9 @@
   regards (`docs/REVUE-PEDAGOGIQUE.md`) ; carte des liens générée ; durées honnêtes ; indice de repli ; garde-fous E25–E29 ; version 0.3.17.
 - **Vérifié** : 618 tests, solutions des cartes de code exécutées avec le vrai Python ; repli d'indice au navigateur.
 - **Non vérifié** : aucun vrai élève n'a joué ; durées estimées, pas mesurées ; 288 indices à écrire (T-016) et 16 niveaux à réorganiser (T-017).
+
+### Indices et rythme (2026-11-02, soir)
+
+- **Fait** : T-016 (288 indices écrits, un par carte notée) et T-017 (21 questions courtes insérées dans 16 niveaux) réalisées par Claude en relais ;
+  garde-fous E29 et E30 ; durées recalculées ; aucune nouvelle version d'app nécessaire (contenu seul).
+- **Non vérifié** : aucun vrai élève ; les indices n'ont pas été relus par un pair (relecture croisée Codex à son retour, 18 h 29).

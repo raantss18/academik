@@ -10,6 +10,7 @@ sources:
   - { titre: 'Python — functools.cache', url: 'https://docs.python.org/3/library/functools.html#functools.cache', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Déroule les appels : `f(3)` dépend de `f(2)`, et ainsi de suite jusqu’au cas de base.', en: 'Unroll the calls: `f(3)` depends on `f(2)`, and so on down to the base case.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

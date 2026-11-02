@@ -11,7 +11,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **0.1** Vrai ou faux ? | Kintana distingue une règle générale, un témoin et un contre-exemple. | — | — |
 | **0.2** Démontrer | Kintana justifie une règle et sait réfuter une généralisation abusive. | — | — |
 | **0.3** Récurrence | Kintana justifie une règle qui reste vraie à chaque étape de traitement. | — | — |
-| **0.4** Tiroirs | Kintana détecte quand une collision de codes est inévitable. | — | — |
+| **0.4** Tiroirs | Kintana détecte quand une collision de codes est inévitable. | — | 3.4 |
 | **0.5** Congruences | Kintana calcule sur un alphabet circulaire et retrouve une lettre grâce à un inverse modulaire. | — | — |
 | **0.boss** Le message secret | Kintana sait chiffrer et déchiffrer un message (César, affine). | — | — |
 
@@ -44,7 +44,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **3.1** Complexité | Kintana estime comment le coût de recherche grandit avec ses documents. | — | 3.3, 3.8, 5.6 |
 | **3.2** Trier | Kintana ordonne ses documents pour préparer la recherche. | — | 3.4, 3.6 |
 | **3.3** Dichotomie | Kintana retrouve un identifiant dans une liste triée sans tout parcourir. | 3.1 | 3.4 |
-| **3.4** Hachage | Kintana associe chaque mot aux identifiants de ses documents. | 3.2, 3.3 | — |
+| **3.4** Hachage | Kintana associe chaque mot aux identifiants de ses documents. | 0.4, 3.2, 3.3 | — |
 | **3.5** Graphes | Kintana explore les liens entre documents par distance croissante. | — | 3.7, 3.8 |
 | **3.6** Récursivité | Kintana résout un problème en le ramenant à un problème plus petit de même forme. | 3.2 | 3.7, 3.boss, 9.6 |
 | **3.7** Piles | Kintana vérifie que les parenthèses de ses formules sont bien fermées, grâce à une pile. | 3.5, 3.6 | — |

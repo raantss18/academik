@@ -8,6 +8,7 @@ sources:
   - { titre: 'MIT 18.01 — Single Variable Calculus (intégrales)', url: 'https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
 cartes:
   - id: c1
+    indice: { fr: 'Aire d’un rectangle : largeur fois hauteur. Quelle est la largeur de $0$ à $3$ ?', en: 'Area of a rectangle: width times height. What is the width from $0$ to $3$?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Une fonction vaut **2** partout entre $x=0$ et $x=3$. Quelle est l’aire du rectangle sous sa courbe ?'

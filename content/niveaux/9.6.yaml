@@ -9,6 +9,7 @@ sources:
   - { titre: 'Stanford CS229 — Machine Learning (arbres de décision)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
 cartes:
   - id: c1
+    indice: { fr: 'Un groupe pur ne contient qu’une seule classe.', en: 'A pure group contains only one class.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Trois groupes de messages (1 = spam, 0 = normal) : A = `1,1,1,1` ; B = `1,1,0,0` ; C = `1,0,0,0`. Lequel est le **plus pur** (le plus homogène) ?'

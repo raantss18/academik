@@ -1,6 +1,6 @@
 id: '3.5'
 module: 3
-duree_min: 12
+duree_min: 13
 titre: { fr: 'Graphes : parcours en largeur', en: 'Graphs: breadth-first search' }
 ia: { fr: 'Kintana explore les liens entre documents par distance croissante.', en: 'Kintana explores links between documents in increasing distance order.' }
 sources:
@@ -8,6 +8,7 @@ sources:
   - { titre: 'Python — collections.deque', url: 'https://docs.python.org/3/library/collections.html#collections.deque', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
 cartes:
   - id: c1
+    indice: { fr: 'Suis les liens orientés depuis A et compte les liens du plus court chemin vers D.', en: 'Follow the directed links from A and count the links of the shortest path to D.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'Des liens orientés vont de A vers B, de A vers C et de B vers D. Quelle distance minimale, en nombre de liens, sépare A de D ?'
@@ -70,6 +71,17 @@ cartes:
       même sans lien."
     en: "P → Q does not allow Q → P: a path must respect every arrow. An isolated vertex exists even
       without links."
+  - id: v1
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans un parcours en largeur, quel sommet est traité en premier ?'
+    en: 'In a breadth-first search, which vertex is processed first?'
+    choix:
+      - { fr: 'Le plus ancien arrivé dans la file', en: 'The oldest one to have joined the queue', juste: true }
+      - { fr: 'Le plus récent arrivé dans la file', en: 'The most recent one to have joined the queue' }
+      - { fr: 'Un sommet tiré au hasard', en: 'A randomly drawn vertex' }
+    explication: { fr: 'La file est « premier entré, premier sorti » : on explore par distance croissante.', en: 'The queue is “first in, first out”: we explore by increasing distance.' }
+    indice: { fr: 'Une file sert le premier arrivé.', en: 'A queue serves the first to arrive.' }
   - id: c2
     type: idee
     fr: La **distance** est ici le plus petit nombre de liens d’un chemin depuis le départ. Le
@@ -130,6 +142,17 @@ cartes:
       q.append("S")
       print(" ".join(q))
     sortie: Q R S
+  - id: v2
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Pourquoi marque-t-on un sommet dès qu’on l’ajoute à la file ?'
+    en: 'Why do we mark a vertex as soon as we add it to the queue?'
+    choix:
+      - { fr: 'Pour ne pas l’ajouter plusieurs fois', en: 'So as not to add it several times', juste: true }
+      - { fr: 'Pour le supprimer du graphe', en: 'To delete it from the graph' }
+      - { fr: 'Pour le trier', en: 'To sort it' }
+    explication: { fr: 'Sans marque, un cycle ferait tourner la boucle sans fin et on traiterait le même sommet plusieurs fois.', en: 'Without a mark, a cycle would make the loop run forever and we would process the same vertex several times.' }
+    indice: { fr: 'Imagine un cycle : que se passerait-il sans marque ?', en: 'Imagine a cycle: what would happen without a mark?' }
   - id: c2c
     type: idee
     fr: "**Marquer** un sommet signifie mémoriser qu’il est découvert. BFS le marque dès son ajout à la
@@ -156,6 +179,7 @@ cartes:
         en: 'After A, the queue holds B then C; after B, C then D; C does not enqueue D again.'
       - { code: "print(distance['D'])", fr: 'D est à distance $2$ ; ses deux chemins ne créent pas deux visites.', en: 'D is at distance $2$; its two paths do not create two visits.' }
   - id: c4
+    indice: { fr: 'Retire le premier de la file, ajoute à la fin, puis compte ce qui reste.', en: 'Remove the first from the queue, add at the end, then count what remains.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'La file contient `[B, C]`. Tu retires B puis ajoutes D à droite. Combien de sommets attendent maintenant ?'
@@ -164,6 +188,7 @@ cartes:
     verif: "from collections import deque\nq = deque(['B', 'C']); q.popleft(); q.append('D')\nprint(len(q))"
     explication: { fr: 'La file est `[C, D]` : deux sommets, avec C traité avant D.', en: 'The queue is `[C, D]`: two vertices, with C processed before D.' }
   - id: c5
+    indice: { fr: 'Une file sert le premier arrivé. Qui était dans la file avant D ?', en: 'A queue serves the first to arrive. Who was in the queue before D?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Dans l’exemple, dans quel ordre les sommets sortent-ils de la file ?'
@@ -198,6 +223,7 @@ cartes:
       print(count)
     sortie: "2"
   - id: c6
+    indice: { fr: 'Chaque sommet entre une seule fois dans la file grâce au marquage. Compte les sommets du cycle.', en: 'Each vertex enters the queue once thanks to marking. Count the vertices of the cycle.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Dans le cycle orienté A → B → C → A, combien de sommets distincts le BFS depuis A ajoute-t-il à la file, A inclus ?'
@@ -218,6 +244,7 @@ cartes:
     en: With P → Q and isolated S, only P has distance zero at the start; assigning zero to S would
       confuse it with P.
   - id: c7
+    indice: { fr: 'Un sommet est inaccessible si aucun chemin orienté ne mène à lui depuis A. Lesquels ?', en: 'A vertex is unreachable if no directed path leads to it from A. Which ones?' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Dans le graphe orienté A → B, B → C et D isolé, combien de sommets restent inaccessibles depuis A ?'
@@ -292,6 +319,7 @@ cartes:
         fr: BFS optimise la colonne des liens, pas celle des coûts variables.
         en: BFS optimizes the link column, not the varying-cost column.
   - id: c9
+    indice: { fr: 'BFS minimise le nombre de liens, pas le coût. Quel chemin a le moins de liens ?', en: 'BFS minimises the number of links, not the cost. Which path has the fewest links?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Les liens coûtent : A → D $9$, A → B $1$, B → D $1$. BFS choisit le chemin avec le moins de liens. Quel est son coût total ?'

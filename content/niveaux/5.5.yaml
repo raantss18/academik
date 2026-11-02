@@ -7,6 +7,7 @@ sources:
   - { titre: 'Boyd et Vandenberghe — Convex Optimization, chapitre 9', url: 'https://web.stanford.edu/~boyd/cvxbook/', licence: 'Copyright Cambridge University Press ; référence en lien seulement, aucun extrait repris' }
 cartes:
   - id: c1
+    indice: { fr: 'Pente négative : la perte baisse dans quel sens ? Déplace le paramètre dans ce sens.', en: 'Negative slope: in which direction does the loss go down? Move the parameter that way.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: 'La dérivée de la perte de Kintana est négative au réglage actuel. Quel petit déplacement permet de la réduire ?'
@@ -56,6 +57,7 @@ cartes:
         - ['$3$', '$5{,}25$', { fr: '$-1{,}5$', en: '$-1.5$', ton: ok }]
       legende: { fr: 'Pour $L(w)=(w-6)^2$, $\eta=\frac14$ : la pente se réduit de moitié à chaque pas ; $w_k$ approche $6$.', en: 'For $L(w)=(w-6)^2$, $\eta=\frac14$: the slope halves at each step; $w_k$ approaches $6$.' }
   - id: c4
+    indice: { fr: 'Calcule $L''(2)=2(w-4)$ puis applique $w-\eta L''(w)$.', en: 'Compute $L''(2)=2(w-4)$ then apply $w-\eta L''(w)$.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Toujours avec $L(w)=(w-4)^2$ et $\eta=1/4$, pars maintenant de $w=2$. Quel est le réglage suivant ?'
@@ -64,6 +66,7 @@ cartes:
     verif: 'from fractions import Fraction; print(2-Fraction(1,4)*2*(2-4))'
     explication: { fr: '$2-(1/4)(-4)=3$ ; on recalcule la dérivée au nouveau point.', en: '$2-(1/4)(-4)=3$; we recompute the derivative at the new point.' }
   - id: c5
+    indice: { fr: 'Remplace $w$ par $3$ dans $(w-4)^2$. Attention : on demande la perte.', en: 'Replace $w$ with $3$ in $(w-4)^2$. Careful: the loss is asked.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Au réglage $w=3$, combien vaut la perte $L(w)=(w-4)^2$ ?'
@@ -85,6 +88,7 @@ cartes:
         - ['$1{,}1$', '$-1{,}2$', { fr: 'diverge : $|w|$ grandit', en: 'diverges: $|w|$ grows', ton: bad }]
       legende: { fr: 'Pour $\eta>1$, chaque pas éloigne de $0$ : le pas doit rester assez petit.', en: 'For $\eta>1$ every step moves away from $0$: the step must stay small enough.' }
   - id: c6
+    indice: { fr: 'Calcule d’abord le nouveau $w$ avec $\eta=3/2$, puis la perte à ce nouveau réglage.', en: 'First compute the new $w$ with $\eta=3/2$, then the loss at that new setting.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Essaie un grand pas : pour $L(w)=(w-4)^2$, pars de $0$ avec $\eta=3/2$. Quelle est la perte APRÈS un pas ?'
@@ -93,6 +97,7 @@ cartes:
     verif: 'from fractions import Fraction; w=0-Fraction(3,2)*2*(0-4); print((w-4)**2)'
     explication: { fr: 'On arrive à $12$, donc la perte vaut $64$, contre $16$ au départ : le pas est trop grand.', en: 'We reach $12$, so the loss is $64$, compared with $16$ initially: the step size is too large.' }
   - id: c7
+    indice: { fr: 'Que devient $2^{-k}$ quand $k$ grandit ? Que fait alors $w_k$ ?', en: 'What does $2^{-k}$ become as $k$ grows? What does $w_k$ then do?' }
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: 'Pour $L(w)=(w-4)^2$ et $\eta=1/4$, on obtient $w_k=4(1-2^{-k})$. Que devient le réglage ?'
@@ -112,6 +117,7 @@ cartes:
     fr: 'Un petit gradient ne prouve pas toujours un bon minimum ; en pratique, contrôle aussi la perte et limite le nombre d’itérations.'
     en: 'A small gradient does not always prove that a minimum is good; in practice, also monitor the loss and cap the iteration count.'
   - id: c9
+    indice: { fr: 'Calcule la pente en $b$ au point $(0,0)$, puis applique $b-\eta\times$ pente.', en: 'Compute the slope in $b$ at the point $(0,0)$, then apply $b-\eta\times$ slope.' }
     type: saisie
     note: { kind: exercise, poids: 1 }
     fr: 'Avec $L(w,b)=(w-2)^2+(b+1)^2$, pars de $(0,0)$ et prends $\eta=1/4$. Quelle est la nouvelle valeur de $b$ ?'

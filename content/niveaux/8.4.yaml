@@ -9,6 +9,7 @@ sources:
   - { titre: 'Matplotlib — Histograms', url: 'https://matplotlib.org/stable/gallery/statistics/hist.html', licence: 'Matplotlib License (PSF-compatible, source citée)' }
 cartes:
   - id: c1
+    indice: { fr: 'Que fait la multiplication d’un texte par un entier ?', en: 'What does multiplying a text by an integer do?' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |

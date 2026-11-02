@@ -9,6 +9,7 @@ sources:
   - { titre: 'scikit-learn — Imputation of missing values', url: 'https://scikit-learn.org/stable/modules/impute.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
 cartes:
   - id: c1
+    indice: { fr: '`strip()` retire les espaces autour ; `title()` met la première lettre en majuscule.', en: '`strip()` removes the surrounding spaces; `title()` capitalises the first letter.' }
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
