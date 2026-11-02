@@ -1,6 +1,6 @@
 id: '0.5'
 module: 0
-duree_min: 18
+duree_min: 11
 titre: { fr: 'Congruences', en: 'Congruences' }
 ia: { fr: 'Kintana calcule sur un alphabet circulaire et retrouve une lettre grâce à un inverse modulaire.', en: 'Kintana computes on a circular alphabet and recovers a letter using a modular inverse.' }
 sources:
@@ -182,6 +182,10 @@ cartes:
     en: 'Recap: reducing a number means keeping its remainder. To undo a multiplication, Kintana looks for an inverse, which does not exist for every key.'
     exemple: { fr: 'Modulo $7$, multiplier par $3$ se défait en multipliant par $5$ : $4\times3=12\equiv5$, puis $5\times5=25\equiv4$.', en: 'Modulo $7$, multiplying by $3$ is undone by multiplying by $5$: $4\times3=12\equiv5$, then $5\times5=25\equiv4$.' }
 
+  - id: d_lien
+    type: idee
+    fr: 'Le reste d’une division, que tu manies ici, s’écrit `%` en Python : tu le retrouveras au niveau 2.2. Il sert aussi au chiffre du boss 0.boss.'
+    en: 'The remainder of a division, which you handle here, is written `%` in Python: you will find it again in level 2.2. It also serves the cipher of boss 0.boss.'
   - id: d_retenir
     type: retenir
     fr: Kintana calcule sur un alphabet circulaire et retrouve une lettre grâce à un inverse modulaire.

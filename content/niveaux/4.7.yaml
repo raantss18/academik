@@ -1,7 +1,7 @@
 # Niveau 4.7 — Algèbre linéaire 7 : rang, noyau et bases. Original academik ; notions vérifiées dans MIT 18.06 (indépendance, base, rang, noyau) et Mon_livre_d_algo / M1 (élimination de Gauss, notions reprises et réécrites).
 id: '4.7'
 module: 4
-duree_min: 18
+duree_min: 16
 titre: { fr: 'Rang, noyau et bases', en: 'Rank, kernel and bases' }
 ia: { fr: 'Kintana sait combien de directions vraiment différentes une matrice produit, et ce qu’elle écrase.', en: 'Kintana knows how many truly different directions a matrix produces, and what it crushes.' }
 sources:

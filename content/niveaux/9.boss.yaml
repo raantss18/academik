@@ -1,7 +1,7 @@
 # Niveau 9.boss — Classer une demande (mission : jeu de test local gelé). Original academik ; notions vérifiées dans la documentation scikit-learn (Common pitfalls, Metrics), la documentation Python (hashlib) et les niveaux 4.1, 4.2, 8.5, 9.4.
 id: '9.boss'
 module: 9
-duree_min: 19
+duree_min: 22
 titre: { fr: 'Classer une demande', en: 'Classifying a request' }
 ia: { fr: 'Kintana comprend l’intention d’une demande (salut, heure, aide), et prouve son score sur un jeu de test gelé.', en: 'Kintana understands the intent of a request (greeting, time, help), and proves her score on a frozen test set.' }
 sources:

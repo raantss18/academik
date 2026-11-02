@@ -1,7 +1,7 @@
 # Niveau 1.boss — Le fichier caché (mission cyber défensive, flag local). Original academik ; notions vérifiées dans les manuels GNU Coreutils (ls -a, chmod, cat), GNU grep et GNU Bash (pipelines).
 id: '1.boss'
 module: 1
-duree_min: 18
+duree_min: 15
 titre: { fr: 'Le fichier caché', en: 'The hidden file' }
 ia: { fr: 'Kintana mène une petite enquête dans un dossier : elle retrouve un fichier caché, le protège et compte les erreurs d’un journal.', en: 'Kintana runs a small investigation in a folder: she finds a hidden file, protects it and counts the errors of a log.' }
 sources:

@@ -1,7 +1,7 @@
 # Niveau 8.4 — Données 4 : voir les données. Original academik ; notions vérifiées dans la documentation officielle Python (collections.Counter, opérations sur les chaînes) et le tutoriel de Matplotlib sur les histogrammes (source citée).
 id: '8.4'
 module: 8
-duree_min: 17
+duree_min: 16
 titre: { fr: 'Voir les données', en: 'Seeing the data' }
 ia: { fr: 'Kintana dessine la forme d’une colonne de nombres, en texte, et sait repérer un graphique trompeur.', en: 'Kintana draws the shape of a column of numbers, in text, and knows how to spot a misleading chart.' }
 sources:

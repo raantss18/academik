@@ -1,6 +1,6 @@
 id: '4.3'
 module: 4
-duree_min: 17
+duree_min: 10
 titre: { fr: 'Matrices', en: 'Matrices' }
 ia: { fr: 'Kintana range les textes en lignes et calcule plusieurs scores en une opération matricielle.', en: 'Kintana stores texts as rows and computes several scores in one matrix operation.' }
 sources:

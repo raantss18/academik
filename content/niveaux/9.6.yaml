@@ -1,7 +1,7 @@
 # Niveau 9.6 — Apprentissage automatique 6 : arbres de décision. Original academik ; notions vérifiées dans la documentation scikit-learn (Decision Trees) et Stanford CS229.
 id: '9.6'
 module: 9
-duree_min: 18
+duree_min: 19
 titre: { fr: 'Arbres de décision', en: 'Decision trees' }
 ia: { fr: 'Kintana décide en posant une suite de questions simples, et apprend elle-même quelles questions poser.', en: 'Kintana decides by asking a series of simple questions, and learns for herself which questions to ask.' }
 sources:

@@ -1,7 +1,7 @@
 # Niveau 9.2 — Apprentissage automatique 2 : biais et variance. Original academik ; notions vérifiées dans Stanford CS229 (biais, variance, sur-apprentissage) et la documentation scikit-learn (Underfitting vs. Overfitting).
 id: '9.2'
 module: 9
-duree_min: 18
+duree_min: 16
 titre: { fr: 'Biais et variance', en: 'Bias and variance' }
 ia: { fr: 'Kintana règle la souplesse de son modèle : ni trop rigide pour comprendre, ni trop souple pour ne pas apprendre par cœur.', en: 'Kintana tunes the flexibility of her model: not too rigid to understand, not too flexible to avoid memorising.' }
 sources:

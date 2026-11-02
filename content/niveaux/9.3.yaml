@@ -1,7 +1,7 @@
 # Niveau 9.3 — Apprentissage automatique 3 : classer. Original academik ; notions vérifiées dans Stanford CS229 (régression logistique) et MIT 6.036 (classification, perte logistique).
 id: '9.3'
 module: 9
-duree_min: 18
+duree_min: 19
 titre: { fr: 'Classer', en: 'Classifying' }
 ia: { fr: 'Kintana apprend à répondre par une catégorie, avec une probabilité, grâce à la régression logistique.', en: 'Kintana learns to answer with a category, with a probability, thanks to logistic regression.' }
 sources:

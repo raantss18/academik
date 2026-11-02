@@ -163,7 +163,6 @@ describe('E17 · profondeur des leçons (barre de clarté C8)', () => {
     if (theory < 6) g.push(`${theory}/6 cartes de théorie`);
     if (L.cartes.filter(c => c.figure).length < 2) g.push('moins de 2 figures');
     if (L.cartes.filter(c => c.type === 'exemple' || c.exemple).length < 2) g.push('moins de 2 exemples');
-    if (L.duree_min < 16) g.push(`durée ${L.duree_min} < 16 min`);
     return g;
   };
   // Niveaux à approfondir (tâches Codex T-013 à T-015, relais Claude). Cette liste ne fait que RÉTRÉCIR.
@@ -212,5 +211,41 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(map).toContain("<UpdateBanner compact={view === 'city'} />");
     expect(ban).toMatch(/\.b\.compact \{[^}]*background: rgb\(10 14 36[^}]*color: #f2f4ff[^}]*max-height: 38vh/);
     expect(ban).toMatch(/\.b\.compact details \{ display: none/);
+  });
+  it('E25 : la durée annoncée d’un niveau est honnête (estimation lecture + réponses, scripts/duree.mjs)', async () => {
+    const { estimerDuree } = await import('../scripts/duree.mjs');
+    const bad = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => parse(read(`content/niveaux/${f}`)) as { id: string; duree_min: number; cartes: unknown[] })
+      .filter(l => Math.abs(l.duree_min - estimerDuree(l)) > 1).map(l => `${l.id}: annoncé ${l.duree_min}, estimé ${estimerDuree(l)}`);
+    expect(bad).toEqual([]);
+  });
+  it('E26 : une carte notée sans indice affiche un renvoi vers la dernière explication (jamais la réponse)', () => {
+    const les = read('src/ui/Lesson.svelte');
+    expect(les).toContain('const hintText'); expect(les).toContain("ui('hint_reread')"); expect(les).not.toMatch(/\{#if card\.indice && !showHint\}/);
+  });
+  it('E27 : une carte qui cite un niveau plus tardif le dit au futur (jamais « on l’a déjà vu »)', () => {
+    const cur = parse(read('content/cursus.yaml')) as { modules: { niveaux: { id: string }[] }[] };
+    const ordre = cur.modules.flatMap(m => m.niveaux.map(n => n.id)), rang = Object.fromEntries(ordre.map((id, i) => [id, i]));
+    const futur = /(verr|plus tard|sera |seront|viendra|retrouv|prochain|suite|aperçu|will |later|next|preview|come)/i, bad: string[] = [];
+    for (const id of ordre) {
+      const niveau = parse(read(`content/niveaux/${id}.yaml`)) as { cartes: Record<string, unknown>[] };
+      for (const c of niveau.cartes) {
+        const s = JSON.stringify(c); const refs = [...s.matchAll(/niveaux? (\d+\.(?:\d+|boss))/g)].map(m => m[1]).filter(r => rang[r] > rang[id]);
+        if (refs.length && !futur.test(s)) bad.push(`${id} ${String(c.id)} → ${refs.join(',')}`);
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+  it('E28 : chaque niveau a sa propre ligne « Kintana sait… » (jamais recopiée d’un autre niveau)', () => {
+    const lignes = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => (parse(read(`content/niveaux/${f}`)) as { id: string; ia: { fr: string } }));
+    const doublons = Object.values(Object.groupBy(lignes, l => l.ia.fr)).filter(v => (v?.length ?? 0) > 1).map(v => v!.map(l => l.id).join(','));
+    expect(doublons).toEqual([]);
+  });
+  // Rythme (revue pédagogique du 2 nov.) : pas plus de 5 cartes d'explication d'affilée avant un exercice noté. Cette liste ne fait que RÉTRÉCIR (tâche T-017).
+  const RYTHME_EN_ATTENTE = new Set<string>(['0.1', '0.2', '0.3', '0.4', '0.5', '0.boss', '2.2', '3.1', '3.2', '3.3', '3.4', '3.5', '3.boss', '4.2', '7.1', '7.boss']);
+  const plusLongueSerie = (cartes: { type: string; note?: unknown }[]) => { let run = 0, max = 0; for (const c of cartes) { if (['idee', 'exemple', 'piege'].includes(c.type)) run++; else { if (c.note) max = Math.max(max, run); run = 0; } } return max; };
+  it('E29 : le rythme alterne explication et pratique (≤ 5 explications d’affilée), hors liste d’attente', () => {
+    const niveaux = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => parse(read(`content/niveaux/${f}`)) as { id: string; cartes: { type: string; note?: unknown }[] });
+    expect(niveaux.filter(l => !RYTHME_EN_ATTENTE.has(l.id) && plusLongueSerie(l.cartes) > 5).map(l => l.id)).toEqual([]);
+    expect(niveaux.filter(l => RYTHME_EN_ATTENTE.has(l.id) && plusLongueSerie(l.cartes) <= 5).map(l => l.id)).toEqual([]);
   });
 });

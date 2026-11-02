@@ -1,6 +1,6 @@
 id: '4.1'
 module: 4
-duree_min: 16
+duree_min: 10
 titre: { fr: 'Vecteurs', en: 'Vectors' }
 ia: { fr: 'Kintana représente un texte par un vecteur de comptage, première brique de la similarité.', en: 'Kintana represents a text as a count vector, the first building block of similarity.' }
 sources:

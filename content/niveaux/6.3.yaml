@@ -1,12 +1,12 @@
 id: "6.3"
 module: 6
-duree_min: 17
+duree_min: 9
 titre:
   fr: Variables aléatoires et lois usuelles
   en: Random variables and common distributions
 ia:
-  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
-  en: "Kintana can predict the next word: a bigram model built by hand."
+  fr: "Kintana décrit un résultat incertain par une loi : Bernoulli, binomiale, uniforme."
+  en: "Kintana describes an uncertain outcome with a law: Bernoulli, binomial, uniform."
 sources:
   - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
     url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf
@@ -244,6 +244,10 @@ cartes:
       - 5/16
     defi: true
     id: c10
+  - id: d_lien
+    type: idee
+    fr: 'Une densité s’intègre : tu as déjà vu l’aire sous la courbe au niveau 5.8. Les lois usuelles reviendront dans les intervalles du niveau 7.2.'
+    en: 'A density is integrated: you have already seen the area under the curve in level 5.8. The usual laws will come back in the intervals of level 7.2.'
   - type: retenir
     fr: "À retenir : Bernoulli décrit un succès, binomiale compte des succès indépendants de même probabilité, et une densité décrit des valeurs continues."
     en: "Remember: Bernoulli describes one success, binomial counts independent successes with equal probability, and a density describes continuous values."

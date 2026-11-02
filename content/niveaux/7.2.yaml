@@ -1,12 +1,12 @@
 id: "7.2"
 module: 7
-duree_min: 17
+duree_min: 10
 titre:
   fr: Intervalles de confiance
   en: Confidence intervals
 ia:
-  fr: Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs.
-  en: Kintana can distinguish a real signal from chance and reject false positives.
+  fr: "Kintana encadre son estimation par un intervalle de confiance honnête."
+  en: "Kintana brackets her estimate with an honest confidence interval."
 sources:
   - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
     url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/

@@ -1,6 +1,6 @@
 id: '5.1'
 module: 5
-duree_min: 17
+duree_min: 9
 titre: { fr: 'Limites', en: 'Limits' }
 ia: { fr: 'Kintana distingue une valeur approchée de la limite de ses calculs.', en: 'Kintana distinguishes an approximate value from the limit of its computations.' }
 sources:
@@ -134,6 +134,10 @@ cartes:
       print(a+a)
     indice: { fr: 'Factorise une différence de carrés.', en: 'Factor a difference of squares.' }
     explication: { fr: 'Hors de $4$, $g(x)=x+4$ ; sa limite en $4$ vaut $8$, valeur du prolongement continu.', en: 'Away from $4$, $g(x)=x+4$; its limit at $4$ is $8$, the value of the continuous extension.' }
+  - id: d_lien
+    type: idee
+    fr: 'Les limites donnent un sens précis à « s’approcher ». Tu en auras besoin dès le niveau 5.2 : la dérivée est la limite d’un taux d’accroissement.'
+    en: 'Limits give a precise meaning to “getting close”. You will need them right away in level 5.2: the derivative is the limit of a rate of change.'
   - id: c11
     type: retenir
     fr: 'À retenir : une limite décrit une approche, la continuité la relie à la valeur au point ; Kintana peut ainsi raisonner sur une erreur qui tend vers zéro.'

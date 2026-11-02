@@ -1,6 +1,6 @@
 id: '0.4'
 module: 0
-duree_min: 18
+duree_min: 11
 titre: { fr: 'Tiroirs', en: 'The pigeonhole principle' }
 ia: { fr: 'Kintana détecte quand une collision de codes est inévitable.', en: 'Kintana detects when a code collision is unavoidable.' }
 sources:
@@ -178,6 +178,10 @@ cartes:
         - [{ fr: '$q+1$ dans un même tiroir', en: '$q+1$ in one drawer' }, '$qm$', { fr: '$qm+1$', en: '$qm+1$', ton: ok }]
       legende: { fr: 'Pour montrer que le seuil est le plus petit possible, donne aussi une répartition juste en dessous qui évite le regroupement.', en: 'To show the threshold is the smallest possible, also give a distribution just below it that avoids the grouping.' }
 
+  - id: d_lien
+    type: idee
+    fr: 'Le principe des tiroirs prouve qu’une collision existe. Il expliquera pourquoi une table de hachage (niveau 3.4) en a toujours, même bien conçue.'
+    en: 'The pigeonhole principle proves a collision exists. It will explain why a hash table (level 3.4) always has some, even when well designed.'
   - id: d_retenir
     type: retenir
     fr: Kintana détecte quand une collision de codes est inévitable.

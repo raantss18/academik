@@ -1,12 +1,12 @@
 id: "6.5"
 module: 6
-duree_min: 17
+duree_min: 9
 titre:
   fr: Entropie
   en: Entropy
 ia:
-  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
-  en: "Kintana can predict the next word: a bigram model built by hand."
+  fr: "Kintana mesure à quel point elle hésite sur le mot suivant (entropie)."
+  en: "Kintana measures how much she hesitates about the next word (entropy)."
 sources:
   - titre: Zhang, Lipton, Li et Smola — Dive into Deep Learning, Information Theory
     url: https://en.d2l.ai/chapter_appendix-mathematics-for-deep-learning/information-theory.html
@@ -247,6 +247,10 @@ cartes:
       - "3"
     defi: true
     id: c10
+  - id: d_lien
+    type: idee
+    fr: 'L’entropie utilise le logarithme du niveau 5.6. Elle mesure l’hésitation du modèle bigramme que tu construiras dans le boss 6.boss.'
+    en: 'Entropy uses the logarithm of level 5.6. It measures the hesitation of the bigram model you will build in boss 6.boss.'
   - type: retenir
     fr: "À retenir : les bits mesurent la surprise moyenne de Kintana, pas la vérité de ses phrases ; précise toujours la base du logarithme."
     en: "Remember: bits measure Kintana’s average surprise, not the truth of its sentences; always specify the logarithm base."

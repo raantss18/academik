@@ -1,12 +1,12 @@
 id: 7.boss
 module: 7
-duree_min: 18
+duree_min: 11
 titre:
   fr: Le faux signal
   en: The false signal
 ia:
-  fr: Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs.
-  en: Kintana can distinguish a real signal from chance and reject false positives.
+  fr: "Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs."
+  en: "Kintana can tell a real signal from chance, and rejects false positives."
 sources:
   - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
     url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/
@@ -317,6 +317,10 @@ cartes:
       en: "Even the minimum exceeds the threshold: no rejection. Kintana rejects this false signal and would require confirmation using new independent data."
     defi: true
     id: c11
+  - id: d_lien
+    type: idee
+    fr: 'Tu sais refuser un faux signal. Aux modules 8 et 9, la même discipline s’appliquera aux modèles : séparer, mesurer, corriger.'
+    en: 'You know how to reject a false signal. In modules 8 and 9, the same discipline will apply to models: separate, measure, correct.'
   - type: retenir
     fr: "À retenir : estimer, quantifier l’incertitude et corriger les tests multiples aide Kintana à refuser un faux signal, sans garantir zéro erreur."
     en: "Remember: estimation, uncertainty quantification, and multiple-testing correction help Kintana reject a false signal, without guaranteeing zero errors."

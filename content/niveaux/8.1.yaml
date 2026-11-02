@@ -1,7 +1,7 @@
 # Niveau 8.1 — Données 1 : lire un tableau. Original academik ; notions vérifiées dans la documentation officielle Python (module csv, io.StringIO).
 id: '8.1'
 module: 8
-duree_min: 18
+duree_min: 15
 titre: { fr: 'Lire un tableau', en: 'Reading a table' }
 ia: { fr: 'Kintana lit un tableau de données écrit en texte, pour pouvoir ensuite le nettoyer et le résumer.', en: 'Kintana reads a table of data written as text, so she can then clean and summarise it.' }
 sources:
@@ -159,7 +159,7 @@ cartes:
           lignes = csv.DictReader(io.StringIO(texte))
           return [float(l[nom]) for l in lignes]
     indice: { fr: 'Une liste construite avec `for l in …` : pour chaque ligne, `float(l[nom])`.', en: 'A list built with `for l in …`: for each row, `float(l[nom])`.' }
-    explication: { fr: 'On extrait une colonne entière, déjà convertie : c’est la base des résumés du niveau 8.3.', en: 'We extract a whole column, already converted: this is the basis of the summaries in level 8.3.' }
+    explication: { fr: 'On extrait une colonne entière, déjà convertie : ce sera la base des résumés du niveau 8.3.', en: 'We extract a whole column, already converted: this will be the basis of the summaries in level 8.3.' }
   - id: c7
     type: code
     defi: true

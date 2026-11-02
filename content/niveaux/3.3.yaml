@@ -1,6 +1,6 @@
 id: '3.3'
 module: 3
-duree_min: 20
+duree_min: 10
 titre: { fr: 'Dichotomie', en: 'Binary search' }
 ia: { fr: 'Kintana retrouve un identifiant dans une liste triée sans tout parcourir.', en: 'Kintana finds an ID in a sorted list without scanning every item.' }
 sources:
@@ -261,6 +261,10 @@ cartes:
     verif: "a, x = [1, 3, 5, 7, 9, 11, 13, 15], 6\nlo, hi, count = 0, len(a), 0\nwhile lo < hi:\n    mid = (lo+hi)//2\n    count += 1\n    if a[mid] < x: lo = mid+1\n    else: hi = mid\nassert lo == 3\nprint(count)"
     indice: { fr: 'Note chaque fenêtre et son milieu ; arrête quand les bornes se rejoignent.', en: 'Write down each window and midpoint; stop when the bounds meet.' }
     explication: { fr: 'Les indices testés sont $4$, $2$, $3$ ; la position finale est $3$, mais $6$ est absent.', en: 'The tested indices are $4$, $2$, $3$; the final position is $3$, but $6$ is absent.' }
+  - id: d_lien
+    type: idee
+    fr: 'La dichotomie divise le problème par deux, comme le logarithme du niveau 3.1 le prédisait. Tu la combineras avec le tri dans le boss 3.boss.'
+    en: 'Binary search halves the problem, as the logarithm of level 3.1 predicted. You will combine it with sorting in boss 3.boss.'
   - id: c11
     type: retenir
     fr: 'Liste triée, fenêtre qui rétrécit, puis test de présence : Kintana recherche avec $O(\log n)$ comparaisons au pire.'

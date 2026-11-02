@@ -2,7 +2,7 @@
 # (f-strings : https://docs.python.org/3/tutorial/inputoutput.html). Original academik.
 id: "2.1"
 module: 2
-duree_min: 18
+duree_min: 11
 titre: { fr: "Kintana dit bonjour", en: "Kintana says hello" }
 ia:
   fr: "Kintana sait maintenant afficher un message et le personnaliser avec un

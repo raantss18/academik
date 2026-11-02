@@ -1,7 +1,7 @@
 # Niveau 9.1 — Apprentissage automatique 1 : ajuster une droite. Original academik ; notions vérifiées dans Stanford CS229 (régression linéaire, moindres carrés, descente de gradient) et MIT 6.036.
 id: '9.1'
 module: 9
-duree_min: 18
+duree_min: 19
 titre: { fr: 'Ajuster une droite', en: 'Fitting a line' }
 ia: { fr: 'Kintana apprend ses premiers réglages : la droite qui passe au plus près d’un nuage de points.', en: 'Kintana learns her first settings: the line that passes closest to a cloud of points.' }
 sources:

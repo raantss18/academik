@@ -1,12 +1,12 @@
 id: "6.4"
 module: 6
-duree_min: 17
+duree_min: 10
 titre:
   fr: Espérance, variance et loi des grands nombres
   en: Expectation, variance, and the law of large numbers
 ia:
-  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
-  en: "Kintana can predict the next word: a bigram model built by hand."
+  fr: "Kintana résume une loi par sa moyenne attendue et sa dispersion."
+  en: "Kintana summarises a law by its expected mean and its spread."
 sources:
   - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
     url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf

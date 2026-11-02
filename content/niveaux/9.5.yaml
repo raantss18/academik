@@ -1,7 +1,7 @@
 # Niveau 9.5 — Apprentissage automatique 5 : régularisation et validation croisée. Original academik ; notions vérifiées dans Stanford CS229 (régularisation) et la documentation scikit-learn (Cross-validation).
 id: '9.5'
 module: 9
-duree_min: 18
+duree_min: 19
 titre: { fr: 'Régularisation et validation croisée', en: 'Regularisation and cross-validation' }
 ia: { fr: 'Kintana retient ses réglages pour ne pas s’emballer, et choisit ses hyperparamètres sans jamais toucher au test.', en: 'Kintana holds her settings back so they do not run away, and chooses her hyperparameters without ever touching the test set.' }
 sources:

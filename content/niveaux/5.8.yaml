@@ -1,7 +1,7 @@
 # Niveau 5.8 — Analyse 8 : intégrales. Original academik ; notions vérifiées dans MIT 18.01 (intégrale, sommes de Riemann, théorème fondamental) et lien avec le niveau 6.3 (densités).
 id: '5.8'
 module: 5
-duree_min: 18
+duree_min: 16
 titre: { fr: 'Intégrales', en: 'Integrals' }
 ia: { fr: 'Kintana mesure une aire sous une courbe, ce qui lui servira à calculer des probabilités et des moyennes continues.', en: 'Kintana measures an area under a curve, which will serve her to compute probabilities and continuous averages.' }
 sources:
@@ -102,8 +102,8 @@ cartes:
     en: 'A **signed** area can cancel out: $\int_{-1}^{1}x\,dx=0$, because the part below the axis offsets the part above. A zero integral does not mean “zero curve”.'
   - id: d_proba
     type: idee
-    fr: 'Le lien avec les probabilités (niveau 6.3) : pour une variable continue de **densité** $p$, la probabilité d’un intervalle est l’intégrale de la densité : $P(a\leq X\leq b)=\int_a^b p(x)\,dx$. L’aire totale vaut $1$.'
-    en: 'The link with probability (level 6.3): for a continuous variable with **density** $p$, the probability of an interval is the integral of the density: $P(a\leq X\leq b)=\int_a^b p(x)\,dx$. The total area is $1$.'
+    fr: 'Un aperçu du niveau 6.3, qui viendra plus tard. Une variable continue a une **densité** $p$. La probabilité d’un intervalle est l’intégrale de cette densité : $P(a\leq X\leq b)=\int_a^b p(x)\,dx$. L’aire totale vaut $1$.'
+    en: 'A preview of level 6.3, which comes later. A continuous variable has a **density** $p$. The probability of an interval is the integral of that density: $P(a\leq X\leq b)=\int_a^b p(x)\,dx$. The total area is $1$.'
     exemple: { fr: 'Loi uniforme sur $[0,8]$ : densité $\frac18$. La probabilité de $[2,6]$ est $\int_2^6\frac18\,dx=\frac{4}{8}=\frac12$. C’est exactement « longueur divisée par la longueur totale ».', en: 'Uniform law on $[0,8]$: density $\frac18$. The probability of $[2,6]$ is $\int_2^6\frac18\,dx=\frac{4}{8}=\frac12$. It is exactly “length divided by total length”.' }
   - id: c6
     type: code

@@ -1,7 +1,7 @@
 # Niveau 9.4 — Apprentissage automatique 4 : mesurer une classification. Original academik ; notions vérifiées dans la documentation scikit-learn (Metrics and scoring, Common pitfalls) et dans Stanford CS229.
 id: '9.4'
 module: 9
-duree_min: 18
+duree_min: 20
 titre: { fr: 'Mesurer une classification', en: 'Measuring a classification' }
 ia: { fr: 'Kintana mesure honnêtement ses réponses : combien de bonnes, combien de fausses alertes, combien d’oublis.', en: 'Kintana honestly measures her answers: how many right, how many false alarms, how many misses.' }
 sources:

@@ -1,6 +1,6 @@
 id: '4.5'
 module: 4
-duree_min: 17
+duree_min: 10
 titre: { fr: 'Valeurs propres et SVD', en: 'Eigenvalues and SVD' }
 ia: { fr: 'Kintana découvre comment réduire les dimensions de ses vecteurs, au prix d’une perte d’information.', en: 'Kintana discovers how to reduce vector dimensions at the cost of losing information.' }
 sources:

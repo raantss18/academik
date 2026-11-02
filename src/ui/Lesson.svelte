@@ -41,6 +41,12 @@
   const startBest = new Map(level.review ? [] : progress.best(level.id));
 
   const card = $derived(level.cartes[idx]);
+  /** Indice de la carte ; à défaut, un renvoi (sans réponse) vers la dernière carte d'explication qui précède. */
+  const hintText = $derived.by(() => {
+    if (card.indice) return md(t(card.indice));
+    for (let j = idx - 1; j >= 0; j--) { const c = level.cartes[j]; if (c.type === 'exemple' || c.type === 'idee') { const name = c.titre ? t(c.titre) : i18n.t(c as { fr?: string; en?: string }).replace(/[*`$\\]/g, '').split(/\s+/).slice(0, 7).join(' ') + '…'; return `${ui('hint_reread')} « ${name} »`; } }
+    return ui('hint_reread_generic');
+  });
   /* svelte-ignore state_referenced_locally */
   const total = level.cartes.length;
   const t = (x: Partial<{ fr: string; en: string }> | undefined) => i18n.t(x);
@@ -158,7 +164,7 @@
         {#if pyOut && (pyOut.out || pyOut.error) && !pyOut.unavailable && (pyOut.stage !== 'tests' || pyOut.out)}<pre class="tty pyout" aria-label={ui('py_out')}>{pyOut.out}{#if pyOut.stage !== 'tests' && pyOut.error}<span class="err">{pyOut.error}</span>{/if}</pre>{/if}
       {/if}
 
-      {#if showHint && card.indice}<p class="hint">💡 {@html md(t(card.indice))}</p>{/if}
+      {#if showHint}<p class="hint">💡 {@html hintText}</p>{/if}
 
       {#if result}
         <div class="fb" class:good={result.ok} role="status">
@@ -166,7 +172,7 @@
           {#if result.ok}
             <p>{@html md(t(card.explication))}</p>
           {:else}
-            {#if card.indice}<p>💡 {@html md(t(card.indice))}</p>{/if}
+            <p>💡 {@html hintText}</p>
             <p class="muted">{level.review ? ui('review_later') : ui('retry_later')}</p>
           {/if}
         </div>
@@ -177,7 +183,7 @@
       {#if card.type === 'exemple' && step + 1 < card.etapes!.length}
         <button class="btn primary" onclick={() => step++}>{ui('next_step')}</button>
       {:else if hasAnswer && !result}
-        {#if card.indice && !showHint}<button class="btn" onclick={() => { showHint = true; hints++; }}>{ui('hint')}</button>{/if}
+        {#if !showHint}<button class="btn" onclick={() => { showHint = true; hints++; }}>{ui('hint')}</button>{/if}
         <button class="btn primary" disabled={!canCheck} onclick={check}>{ui('check')}</button>
       {:else}
         <button class="btn primary" onclick={next}>{ui('continue')}</button>

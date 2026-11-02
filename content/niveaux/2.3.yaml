@@ -1,7 +1,7 @@
 # Niveau 2.3 — Python 3 : répéter. Original academik ; notions vérifiées dans le tutoriel officiel Python (instructions for, range, while, break).
 id: '2.3'
 module: 2
-duree_min: 18
+duree_min: 16
 titre: { fr: 'Répéter', en: 'Repeating' }
 ia: { fr: 'Kintana sait refaire la même chose plusieurs fois sans copier ses lignes.', en: 'Kintana can do the same thing several times without copying her lines.' }
 sources:

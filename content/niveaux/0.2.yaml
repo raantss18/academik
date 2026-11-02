@@ -1,6 +1,6 @@
 id: '0.2'
 module: 0
-duree_min: 18
+duree_min: 11
 titre: { fr: 'Démontrer', en: 'Proving' }
 ia: { fr: 'Kintana justifie une règle et sait réfuter une généralisation abusive.', en: 'Kintana justifies a rule and can refute an unjustified generalisation.' }
 sources:
@@ -218,6 +218,10 @@ cartes:
         - [{ fr: 'Contre-exemple', en: 'Counterexample', ton: bad }, { fr: 'un cas précis', en: 'one specific case' }, { fr: 'la règle est **fausse**', en: 'the rule is **false**', ton: bad }]
       legende: { fr: 'Les trois premières lignes **démontrent** ; la dernière **réfute**.', en: 'The first three rows **prove**; the last one **refutes**.' }
 
+  - id: d_lien
+    type: idee
+    fr: 'Tu sais démontrer une règle générale. Au niveau 0.3, tu verras la récurrence : elle la démontre pour une infinité de cas en deux temps.'
+    en: 'You can prove a general rule. In level 0.3, you will see induction: it proves it for infinitely many cases in two steps.'
   - id: d_retenir
     type: retenir
     fr: Kintana justifie une règle et sait réfuter une généralisation abusive.

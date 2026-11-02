@@ -1,6 +1,6 @@
 id: '0.1'
 module: 0
-duree_min: 18
+duree_min: 11
 titre: { fr: 'Vrai ou faux ?', en: 'True or false?' }
 ia: { fr: 'Kintana distingue une règle générale, un témoin et un contre-exemple.', en: 'Kintana distinguishes a general rule, a witness and a counterexample.' }
 sources:
@@ -203,6 +203,10 @@ cartes:
         - [{ fr: '« pour tout » est vrai', en: '“for every” is true' }, { fr: 'vérifier **chaque** cas (ensemble fini) ou faire une preuve', en: 'check **every** case (finite set) or write a proof', ton: bad }]
       legende: { fr: 'Kintana peut tout tester sur un ensemble fini ; sur tous les entiers, quelques tests ne prouvent rien.', en: 'Kintana can test everything on a finite set; on all integers, a few tests prove nothing.' }
 
+  - id: d_lien
+    type: idee
+    fr: 'La **preuve par contre-exemple** que tu viens d’utiliser a un contraire : au niveau 0.2, tu verras comment démontrer qu’une règle vaut pour tous les cas.'
+    en: 'The **proof by counterexample** you just used has an opposite: in level 0.2, you will see how to prove that a rule holds in every case.'
   - id: d_retenir
     type: retenir
     fr: Kintana distingue une règle générale, un témoin et un contre-exemple.
