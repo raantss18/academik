@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 29,
-  "version": "0.3.26",
+  "build": 30,
+  "version": "0.3.27",
   "notes": {
-   "fr": "Cinq nouveaux modules pour finir le parcours : processus stochastiques, recherche quantitative (avec un rapport qui sait rejeter un faux résultat), performance, sécurité (avec un lab d'injection de prompt) et évaluation jusqu'à la livraison responsable.",
-   "en": "Five new modules to complete the path: stochastic processes, quantitative research (with a report that knows how to reject a false result), performance, security (with a prompt-injection lab) and evaluation through to responsible delivery."
+   "fr": "Le boss final du parcours est là : Kintana mène une recherche de bout en bout et sait rejeter une fausse découverte. Sur le site, tu peux télécharger directement les apps Android et Linux. Les formules s'affichent avec leurs vraies polices sur Linux, le code est plus lisible, et une bonne réponse écrite autrement (2,0 ou 75 %) est maintenant acceptée.",
+   "en": "The path's final boss is here: Kintana carries out research end to end and knows how to reject a false discovery. On the website, you can download the Android and Linux apps directly. Formulas now show with their real fonts on Linux, code is more readable, and a right answer written differently (2.0 or 75%) is now accepted."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.26/academik-0.3.26.apk",
-    "sha256": "db35894baf99a29707ddfe49491ee3432f8be476d0144492a3de6d2322449c4a",
-    "bytes": 11311655
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.27/academik-0.3.27.apk",
+    "sha256": "ecb8e8cc66548b633ef062ffdef986f6165f3a645b58c6cf59beeb6fe7d22f59",
+    "bytes": 11355203
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.26/academik-0.3.26-x86_64.AppImage",
-    "sha256": "195e8ef71fe5ff979f178df02b0e27773abb4ca8915875e9b27ea2c2a6a39415",
-    "bytes": 115730936
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.27/academik-0.3.27-x86_64.AppImage",
+    "sha256": "11a38f9c771330c47d95d35b8c5d719e89f42bed7ece1e63761a20302539472d",
+    "bytes": 115812856
    }
   }
  },
  "history": [
+  {
+   "build": 29,
+   "version": "0.3.26",
+   "notes": {
+    "fr": "Cinq nouveaux modules pour finir le parcours : processus stochastiques, recherche quantitative (avec un rapport qui sait rejeter un faux résultat), performance, sécurité (avec un lab d'injection de prompt) et évaluation jusqu'à la livraison responsable.",
+    "en": "Five new modules to complete the path: stochastic processes, quantitative research (with a report that knows how to reject a false result), performance, security (with a prompt-injection lab) and evaluation through to responsible delivery."
+   }
+  },
   {
    "build": 28,
    "version": "0.3.25",
