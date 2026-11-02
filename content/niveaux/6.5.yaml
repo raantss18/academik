@@ -1,0 +1,253 @@
+id: "6.5"
+module: 6
+duree_min: 17
+titre:
+  fr: Entropie
+  en: Entropy
+ia:
+  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
+  en: "Kintana can predict the next word: a bigram model built by hand."
+sources:
+  - titre: Zhang, Lipton, Li et Smola — Dive into Deep Learning, Information Theory
+    url: https://en.d2l.ai/chapter_appendix-mathematics-for-deep-learning/information-theory.html
+    licence: CC BY-SA 4.0 pour le texte ; aucun code source repris ; exercices originaux
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Un mot a probabilité $1/4$. Sa surprise est $-\\log_2(1/4)$ : combien de bits ?"
+    en: "A word has probability $1/4$. Its surprise is $-\\log_2(1/4)$: how many bits?"
+    verif: |-
+      from math import log2
+      print(int(-log2(1/4)))
+    explication:
+      fr: $2^{-2}=1/4$, donc la surprise vaut 2 bits.
+      en: $2^{-2}=1/4$, so the surprise is 2 bits.
+    choix:
+      - fr: "1"
+        en: "1"
+      - fr: "2"
+        en: "2"
+        juste: true
+      - fr: "4"
+        en: "4"
+    sortie: "2"
+    id: c1
+  - type: idee
+    fr: "L’entropie est la surprise moyenne : multiplie chaque surprise par sa probabilité, puis additionne. Elle se mesure ici en bits."
+    en: "Entropy is average surprise: multiply each surprise by its probability, then add. Here it is measured in bits."
+    id: c2
+    exemple:
+      fr: huit mots équiprobables donnent chacun trois bits de surprise, donc trois bits en moyenne.
+      en: eight equally likely words each give three bits of surprise, hence three bits on average.
+  - id: d_surp
+    type: idee
+    fr: La **surprise** d’un événement de probabilité $p$ vaut $-\log_2 p$ bits. Plus l’événement est rare, plus il surprend ; un événement certain ne surprend pas.
+    en: The **surprise** of an event of probability $p$ is $-\log_2 p$ bits. The rarer the event, the more it surprises; a certain event does not surprise.
+    figure:
+      kind: tableau
+      entetes:
+        - $p$
+        - fr: Calcul
+          en: Computation
+        - fr: Surprise
+          en: Surprise
+      cellules:
+        - - $1$
+          - $-\log_2 1$
+          - $0$ bit
+        - - $\frac12$
+          - $-\log_2\frac12$
+          - $1$ bit
+        - - $\frac14$
+          - $-\log_2\frac14$
+          - $2$ bits
+        - - $\frac18$
+          - $-\log_2\frac18$
+          - fr: $3$ bits
+            en: $3$ bits
+            ton: ok
+      legende:
+        fr: Chaque fois que la probabilité est divisée par $2$, la surprise gagne $1$ bit.
+        en: Each time the probability is halved, the surprise gains $1$ bit.
+  - type: exemple
+    lang: python
+    titre:
+      fr: Trois mots inégalement probables
+      en: Three unequally likely words
+    etapes:
+      - code: |-
+          from math import log2
+          ps = [1/2,1/4,1/4]
+        fr: "Le prochain mot a trois probabilités : $1/2$, $1/4$, $1/4$."
+        en: "The next word has three probabilities: $1/2$, $1/4$, $1/4$."
+      - code: terms = [-p*log2(p) for p in ps]
+        fr: "Le logarithme en base deux donne la surprise : $-\\log_2 p$ pour une probabilité positive p. Pondère chaque surprise par sa probabilité."
+        en: "The base-two logarithm gives surprise: $-\\log_2 p$ for positive probability p. Weight each surprise by its probability."
+      - code: print(sum(terms))
+        fr: La somme vaut $1{,}5$ bit, moins que pour trois mots équiprobables.
+        en: The sum is $1.5$ bits, less than for three equally likely words.
+    verif: |-
+      from math import log2
+      ps = [1/2,1/4,1/4]
+      terms = [-p*log2(p) for p in ps]
+      print(sum(terms))
+    sortie: "1.5"
+    id: c3
+  - id: d_calc
+    type: exemple
+    titre:
+      fr: Une entropie de bout en bout
+      en: An entropy from start to finish
+    etapes:
+      - fr: Quatre mots ont pour probabilités $\frac18$, $\frac18$, $\frac14$ et $\frac12$.
+        en: Four words have probabilities $\frac18$, $\frac18$, $\frac14$ and $\frac12$.
+      - fr: Leurs surprises valent $3$, $3$, $2$ et $1$ bits.
+        en: Their surprises are $3$, $3$, $2$ and $1$ bits.
+      - fr: "On pondère : $\\frac38+\\frac38+\\frac24+\\frac12=1{,}75$ bit. C’est la surprise moyenne."
+        en: "Weight them: $\\frac38+\\frac38+\\frac24+\\frac12=1.75$ bit. This is the average surprise."
+  - id: d_compare
+    type: idee
+    fr: L’entropie est maximale quand tous les mots sont équiprobables, et nulle quand un mot est certain. Entre les deux, elle mesure l’hésitation du modèle.
+    en: Entropy is maximal when all words are equally likely, and zero when one word is certain. In between, it measures the model’s hesitation.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Loi sur deux mots
+          en: Law on two words
+        - fr: Entropie
+          en: Entropy
+        - fr: Hésitation
+          en: Hesitation
+      cellules:
+        - - $(\frac12,\frac12)$
+          - $1$ bit
+          - fr: maximale
+            en: maximal
+            ton: bad
+        - - $(\frac34,\frac14)$
+          - $\approx0{,}81$ bit
+          - fr: moyenne
+            en: medium
+        - - $(1,0)$
+          - $0$ bit
+          - fr: aucune
+            en: none
+            ton: ok
+      legende:
+        fr: "Pour $(\\frac34,\\frac14)$ : $\\frac34\\log_2\\frac43+\\frac14\\times2\\approx0{,}81$."
+        en: "For $(\\frac34,\\frac14)$: $\\frac34\\log_2\\frac43+\\frac14\\times2\\approx0.81$."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Un seul mot a probabilité 1. Quelle est l’entropie en bits ?
+    en: A single word has probability 1. What is the entropy in bits?
+    verif: |-
+      from math import log2
+      def H(ps): return -sum(p*log2(p) for p in ps if p>0)
+      print(int(H([1])))
+    explication:
+      fr: "Le mot est certain : $-1\\log_2 1=0$."
+      en: "The word is certain: $-1\\log_2 1=0$."
+    reponses:
+      - "0"
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Deux mots ont chacun probabilité $1/2$. Quelle est l’entropie en bits ?
+    en: Two words each have probability $1/2$. What is the entropy in bits?
+    verif: |-
+      from math import log2
+      def H(ps): return -sum(p*log2(p) for p in ps if p>0)
+      print(int(H([1/2,1/2])))
+    explication:
+      fr: Chaque mot surprend d’un bit ; la moyenne vaut un bit.
+      en: Each word has one bit of surprise; the average is one bit.
+    reponses:
+      - "1"
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Quatre mots sont équiprobables. Quelle est l’entropie en bits ?
+    en: Four words are equally likely. What is the entropy in bits?
+    verif: |-
+      from math import log2
+      def H(ps): return -sum(p*log2(p) for p in ps if p>0)
+      print(int(H([1/4]*4)))
+    explication:
+      fr: $\log_2 4=2$ bits.
+      en: $\log_2 4=2$ bits.
+    reponses:
+      - "2"
+    id: c6
+  - type: piege
+    fr: Une faible entropie signifie que le modèle hésite peu, pas qu’il a raison ; une prédiction certaine peut être fausse.
+    en: Low entropy means the model has little uncertainty, not that it is correct; a certain prediction can be wrong.
+    id: c7
+  - id: d_questions
+    type: idee
+    fr: "L’entropie se lit aussi en questions « oui ou non ». C’est le nombre moyen de questions pour deviner le mot, avec la meilleure stratégie. Cela vaut quand les probabilités sont des puissances de $\\frac12$."
+    en: "Entropy can also be read as yes/no questions. It is the average number of questions to guess the word, with the best strategy. This holds when probabilities are powers of $\\frac12$."
+    exemple:
+      fr: "Pour $(\\frac12,\\frac14,\\frac18,\\frac18)$ : « est-ce le premier ? » ($1$ question), puis « le deuxième ? »… On trouve en moyenne $1{,}75$ question, soit l’entropie."
+      en: "For $(\\frac12,\\frac14,\\frac18,\\frac18)$: “is it the first?” ($1$ question), then “the second?”… On average, $1.75$ questions, which is the entropy."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Trois mots ont probabilités $1/2$, $1/4$, $1/4$. Si le premier mot est observé, quelle est sa surprise, en bits ?
+    en: Three words have probabilities $1/2$, $1/4$, $1/4$. If the first word is observed, what is its surprise in bits?
+    verif: |-
+      from math import log2
+      ps=[1/2,1/4,1/4]
+      print(int(-log2(ps[0])))
+    explication:
+      fr: Sa surprise vaut 1 bit ; l’entropie moyenne de la distribution vaut $1{,}5$ bit.
+      en: Its surprise is 1 bit; the distribution’s average entropy is $1.5$ bits.
+    reponses:
+      - "1"
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: La loi vaut $(1/2,1/2,0)$. En omettant la contribution de la probabilité nulle, quelle est l’entropie en bits ?
+    en: The distribution is $(1/2,1/2,0)$. Omitting the zero-probability contribution, what is the entropy in bits?
+    verif: |-
+      from math import log2
+      def H(ps): return -sum(p*log2(p) for p in ps if p>0)
+      print(int(H([1/2,1/2,0])))
+    explication:
+      fr: Le troisième mot ne contribue pas ; on ne calcule jamais $\log_2 0$.
+      en: The third word contributes nothing; never evaluate $\log_2 0$.
+    reponses:
+      - "1"
+    id: c9
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : le premier mot est uniforme parmi deux mots, le second parmi quatre, indépendamment. Quelle est l’entropie du couple en bits ?"
+    en: "Challenge: the first word is uniform over two words, the second over four, independently. What is the pair’s entropy in bits?"
+    verif: |-
+      from math import log2
+      def H(ps): return -sum(p*log2(p) for p in ps if p>0)
+      ps=[a*b for a in [1/2]*2 for b in [1/4]*4]
+      print(int(H(ps)))
+    explication:
+      fr: Huit couples ont probabilité $1/8$ ; $\log_2 8=3=1+2$ bits grâce à l’indépendance.
+      en: Eight pairs have probability $1/8$; $\log_2 8=3=1+2$ bits thanks to independence.
+    reponses:
+      - "3"
+    defi: true
+    id: c10
+  - type: retenir
+    fr: "À retenir : les bits mesurent la surprise moyenne de Kintana, pas la vérité de ses phrases ; précise toujours la base du logarithme."
+    en: "Remember: bits measure Kintana’s average surprise, not the truth of its sentences; always specify the logarithm base."
+    id: c11

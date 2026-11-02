@@ -1,0 +1,305 @@
+id: "7.4"
+module: 7
+duree_min: 17
+titre:
+  fr: Bootstrap
+  en: Bootstrap
+ia:
+  fr: Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs.
+  en: Kintana can distinguish a real signal from chance and reject false positives.
+sources:
+  - titre: SciPy — scipy.stats.bootstrap, documentation actuelle
+    url: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html
+    licence: BSD-3-Clause ; référence uniquement, sans dépendance SciPy
+  - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
+    url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/
+    licence: CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Avant de commencer : pour estimer la variabilité d’une moyenne, on tire avec remise dans les observations. Le tirage $5,7,7,7$ a quelle moyenne ?"
+    en: "Before you start: to estimate a mean’s variability, sample observations with replacement. What is the mean of the resample $5,7,7,7$?"
+    verif: |-
+      import random, statistics
+      r = random.Random(704)
+      x = [r.randint(1, 9) for _ in range(4)]
+      b = [r.choice(x) for _ in x]
+      print(statistics.mean(b))
+    explication:
+      fr: La somme vaut $26$ sur quatre tirages. Une observation peut revenir plusieurs fois.
+      en: The sum is $26$ across four draws. An observation can appear several times.
+    choix:
+      - fr: "6.5"
+        en: "6.5"
+        juste: true
+      - fr: "6.25"
+        en: "6.25"
+      - fr: "7"
+        en: "7"
+    sortie: "6.5"
+    id: c1
+  - type: idee
+    fr: Le bootstrap tire avec remise autant d’observations que l’échantillon initial, puis recalcule la moyenne. Répéter ce procédé explore sa variabilité, sous des observations indépendantes, de même loi et suffisamment représentatives.
+    en: Bootstrap samples with replacement as many observations as the original sample, then recomputes the mean. Repeating this explores its variability, assuming independent, identically distributed, sufficiently representative observations. Hypothetical
+    id: c2
+    exemple:
+      fr: les valeurs 3 et 9 peuvent donner deux fois 3, une valeur de chaque, ou deux fois 9.
+      en: values 3 and 9 can produce two threes, one of each, or two nines.
+  - id: d_tirages
+    type: idee
+    fr: "Chaque rééchantillon a la taille de l’échantillon d’origine, avec remise : une valeur peut apparaître deux fois, une autre jamais. On calcule la moyenne de chacun."
+    en: "Each resample has the size of the original sample, drawn with replacement: one value may appear twice, another never. Compute the mean of each."
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Rééchantillon de $(4,8,9)$
+          en: Resample of $(4,8,9)$
+        - fr: Calcul
+          en: Computation
+        - fr: Moyenne
+          en: Mean
+      cellules:
+        - - $(4,4,9)$
+          - $17/3$
+          - $\approx5{,}67$
+        - - $(8,8,9)$
+          - $25/3$
+          - $\approx8{,}33$
+        - - $(4,8,8)$
+          - $20/3$
+          - $\approx6{,}67$
+        - - $(4,8,9)$
+          - $21/3$
+          - fr: $7$
+            en: $7$
+            ton: ok
+      legende:
+        fr: La moyenne d’origine vaut $7$ ; les moyennes rééchantillonnées l’entourent, ce qui mesure sa variabilité.
+        en: The original mean is $7$; the resampled means surround it, which measures its variability.
+  - type: exemple
+    lang: python
+    titre:
+      fr: Un premier rééchantillonnage
+      en: A first resample
+    etapes:
+      - code: import random, statistics
+        fr: On simule des observations, sans aucune donnée réelle.
+        en: Simulate observations, with no real data.
+      - code: |-
+          r = random.Random(704)
+          x = [r.randint(1, 9) for _ in range(4)]
+        fr: La graine donne $6,5,7,7$ ; la moyenne initiale vaut $6{,}25$.
+        en: The seed gives $6,5,7,7$; the original mean is $6.25$.
+      - code: b = [r.choice(x) for _ in x]
+        fr: Le tirage suivant donne $5,7,7,7$ avec remise.
+        en: The next resample is $5,7,7,7$, drawn with replacement.
+      - code: print(statistics.mean(b))
+        fr: Sa moyenne vaut $6{,}5$ ; un seul tirage ne suffit pas à mesurer la variabilité.
+        en: Its mean is $6.5$; one resample is not enough to measure variability.
+    verif: |-
+      import random, statistics
+      r = random.Random(704)
+      x = [r.randint(1, 9) for _ in range(4)]
+      b = [r.choice(x) for _ in x]
+      print(statistics.mean(b))
+    sortie: "6.5"
+    id: c3
+  - id: d_remise
+    type: exemple
+    titre:
+      fr: Pourquoi avec remise
+      en: Why with replacement
+    etapes:
+      - fr: "Prenons l’échantillon $(3,9)$ de moyenne $6$. Sans remise, tirer deux valeurs redonne toujours $(3,9)$ : la moyenne reste $6$."
+        en: "Take the sample $(3,9)$ with mean $6$. Without replacement, drawing two values always gives $(3,9)$: the mean stays $6$."
+      - fr: Avec remise, on peut obtenir $(3,3)$, $(3,9)$, $(9,3)$ ou $(9,9)$, de moyennes $3$, $6$, $6$, $9$.
+        en: With replacement, we can get $(3,3)$, $(3,9)$, $(9,3)$ or $(9,9)$, with means $3$, $6$, $6$, $9$.
+      - fr: Seule la remise fait varier la moyenne, donc seule elle permet de mesurer cette variabilité.
+        en: Only replacement makes the mean vary, so only it lets us measure that variability.
+  - id: d_percent
+    type: idee
+    fr: Pour un intervalle bootstrap « percentile », on trie les moyennes rééchantillonnées, puis on écarte une part égale de chaque extrémité. Les valeurs restantes donnent les bornes.
+    en: For a “percentile” bootstrap interval, sort the resampled means, then discard an equal share at each end. The remaining values give the bounds.
+    figure:
+      kind: nombres
+      liste:
+        - 5
+        - 5.3
+        - 5.5
+        - 5.6
+        - 5.8
+        - 6
+        - 6.1
+        - 6.2
+        - 6.3
+        - 6.4
+        - 6.5
+        - 6.6
+        - 6.7
+        - 6.8
+        - 7
+        - 7.1
+        - 7.3
+        - 7.5
+        - 7.8
+        - 8.2
+      groupes:
+        - valeurs:
+            - 5
+          ton: bad
+          label:
+            fr: $5\,\%$ écarté
+            en: $5\,\%$ discarded
+        - valeurs:
+            - 5.3
+            - 5.5
+            - 5.6
+            - 5.8
+            - 6
+            - 6.1
+            - 6.2
+            - 6.3
+            - 6.4
+            - 6.5
+            - 6.6
+            - 6.7
+            - 6.8
+            - 7
+            - 7.1
+            - 7.3
+            - 7.5
+            - 7.8
+          ton: ok
+          label:
+            fr: "conservé : de $5{,}3$ à $7{,}8$"
+            en: "kept: from $5.3$ to $7.8$"
+        - valeurs:
+            - 8.2
+          ton: bad
+          label:
+            fr: $5\,\%$ écarté
+            en: $5\,\%$ discarded
+      legende:
+        fr: "Vingt moyennes triées : on retire une valeur de chaque côté, d’où un intervalle à $90\\,\\%$ ; en pratique on en tire des milliers."
+        en: "Twenty sorted means: remove one value on each side, giving a $90\\,\\%$ interval; in practice thousands are drawn."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Avec quatre observations initiales, combien de tirages contient chaque rééchantillon bootstrap ordinaire ?
+    en: With four original observations, how many draws does each ordinary bootstrap resample contain?
+    reponses:
+      - "4"
+    verif: |-
+      import random
+      r=random.Random(704)
+      x=[r.randint(1,9) for _ in range(4)]
+      print(len([r.choice(x) for _ in x]))
+    explication:
+      fr: On garde la taille initiale. Augmenter le nombre de rééchantillons ne crée pas de nouvelles observations indépendantes.
+      en: Keep the original size. Increasing the number of resamples does not create new independent observations.
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Les quatre positions initiales sont distinguées, même si deux valeurs sont égales. Combien de suites d’indices de longueur quatre peut-on tirer avec remise ?
+    en: Distinguish the four original positions, even if two values are equal. How many index sequences of length four can be drawn with replacement?
+    reponses:
+      - "256"
+    verif: |-
+      from itertools import product
+      print(sum(1 for _ in product(range(4),repeat=4)))
+    explication:
+      fr: Chaque tirage a quatre choix, donc $4^4=256$ suites équiprobables. Plusieurs produisent les mêmes valeurs.
+      en: Each draw has four choices, so $4^4=256$ equally likely sequences. Several produce the same values.
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Dans $6,5,7,7$, quelle est la probabilité qu’un seul tirage bootstrap donne $7$ ?
+    en: In $6,5,7,7$, what is the probability that a single bootstrap draw gives $7$?
+    reponses:
+      - "0.5"
+      - 0,5
+    verif: |-
+      x=[6,5,7,7]
+      print(x.count(7)/len(x))
+    explication:
+      fr: Deux positions sur quatre contiennent $7$. Supprimer les doublons changerait la distribution empirique.
+      en: Two of four positions contain $7$. Removing duplicates would change the empirical distribution.
+    id: c6
+  - type: piege
+    fr: Le bootstrap ne répare pas un échantillon biaisé et ne garantit pas une bonne couverture avec quatre observations. Pour des séries dépendantes, le tirage individuel détruit la dépendance.
+    en: Bootstrap does not repair a biased sample or guarantee good coverage with four observations. For dependent series, resampling individual observations destroys dependence.
+    id: c7
+  - id: d_scipy
+    type: idee
+    fr: "Tu n’as pas à coder le bootstrap à la main : la bibliothèque SciPy fournit la fonction `scipy.stats.bootstrap`. Elle prend un échantillon et une statistique, puis renvoie un intervalle."
+    en: "You need not code the bootstrap by hand: the SciPy library provides the function `scipy.stats.bootstrap`. It takes a sample and a statistic, then returns an interval."
+    exemple:
+      fr: "Le principe reste celui du niveau : rééchantillonner avec remise, recalculer la statistique, lire les extrémités. Les hypothèses (observations indépendantes) restent à vérifier toi-même."
+      en: "The principle stays that of the level: resample with replacement, recompute the statistic, read the ends. The assumptions (independent observations) are still yours to check."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Pour illustrer une distribution bootstrap exacte, prends l’échantillon fictif $0,2$. Les quatre tirages ordonnés de taille deux sont $[0,0]$, $[0,2]$, $[2,0]$, $[2,2]$. Combien ont une moyenne de $1$ ?
+    en: To illustrate an exact bootstrap distribution, take the hypothetical sample $0,2$. The four ordered resamples of size two are $[0,0]$, $[0,2]$, $[2,0]$, $[2,2]$. How many have mean $1$?
+    reponses:
+      - "2"
+    verif: |-
+      from itertools import product
+      from statistics import mean
+      print(sum(mean(b)==1 for b in product([0,2],repeat=2)))
+    explication:
+      fr: Les deux tirages mixtes donnent $1$. La distribution des moyennes est $0,1,1,2$.
+      en: The two mixed resamples give $1$. The distribution of means is $0,1,1,2$.
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: "Pour un intervalle percentile illustratif à $95\\%$, trie $1000$ moyennes bootstrap. Le quantile inférieur correspond à la proportion $q=0{,}025$, avec $B=1000$ répétitions. Son rang est $\\lceil qB\\rceil$, le produit arrondi à l’entier supérieur, en comptant depuis 1 : quel est ce rang ?"
+    en: "For an illustrative $95\\%$ percentile interval, sort $1000$ bootstrap means. The lower quantile corresponds to proportion $q=0.025$, with $B=1000$ repetitions. Its rank is $\\lceil qB\\rceil$, the product rounded up to an integer, counting from 1: what is this rank?"
+    reponses:
+      - "25"
+    verif: |-
+      from fractions import Fraction
+      from math import ceil
+      print(ceil(Fraction(25,1000)*1000))
+    explication:
+      fr: Le rang inférieur est $25$, le supérieur $975$. Cette convention est précisée car d’autres méthodes interpolent.
+      en: The lower rank is $25$, the upper rank $975$. This convention is specified because other methods interpolate.
+    id: c9
+  - type: plus
+    fr: "Pour aller plus loin : l’écart-type des moyennes rééchantillonnées estime l’erreur standard de la moyenne. Le percentile n’offre aucune garantie universelle ; SciPy propose aussi BCa, une méthode ajustant biais et asymétrie (sources)."
+    en: "Further exploration: the standard deviation of resampled means estimates the standard error of the mean. Percentile intervals offer no universal guarantee; SciPy also offers BCa, a method adjusting for bias and skewness (sources)."
+    id: c10
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : dans $6,5,7,7$, la valeur $5$ occupe une seule position. Quelle est la probabilité qu’un rééchantillon de taille quatre ne la contienne jamais ?"
+    en: "Challenge: in $6,5,7,7$, value $5$ occupies a single position. What is the probability that a size-four resample never contains it?"
+    reponses:
+      - "0.31640625"
+      - 0,31640625
+      - 81/256
+    verif: |-
+      from itertools import product
+      from fractions import Fraction
+      x=[6,5,7,7]
+      print(Fraction(sum(5 not in b for b in product(x,repeat=4)),len(x)**4))
+    explication:
+      fr: Chaque tirage évite $5$ avec probabilité $3/4$. Les tirages sont indépendants conditionnellement à l’échantillon, donc $(3/4)^4=81/256$.
+      en: Each draw avoids $5$ with probability $3/4$. Draws are independent conditional on the sample, so $(3/4)^4=81/256$.
+    defi: true
+    id: c11
+  - type: retenir
+    fr: "À retenir : Kintana rééchantillonne avec remise pour explorer la variabilité, en conservant les doublons et sans confondre simulations supplémentaires et nouvelles données."
+    en: "Remember: Kintana resamples with replacement to explore variability, preserves duplicates, and distinguishes additional simulations from new data."
+    id: c12

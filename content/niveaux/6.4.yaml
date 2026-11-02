@@ -1,0 +1,251 @@
+id: "6.4"
+module: 6
+duree_min: 17
+titre:
+  fr: Espérance, variance et loi des grands nombres
+  en: Expectation, variance, and the law of large numbers
+ia:
+  fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
+  en: "Kintana can predict the next word: a bigram model built by hand."
+sources:
+  - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
+    url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf
+    licence: CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: Un score vaut 0 ou 2 avec probabilité $1/2$ chacun. Quelle est son espérance ?
+    en: A score is 0 or 2, each with probability $1/2$. What is its expectation?
+    verif: |-
+      from fractions import Fraction
+      print(sum(x*Fraction(1,2) for x in [0,2]))
+    explication:
+      fr: La moyenne pondérée vaut $0/2+2/2=1$.
+      en: The weighted mean is $0/2+2/2=1$.
+    choix:
+      - fr: "0"
+        en: "0"
+      - fr: "1"
+        en: "1"
+        juste: true
+      - fr: "2"
+        en: "2"
+    sortie: "1"
+    id: c1
+  - type: idee
+    fr: L’espérance est la moyenne des valeurs, pondérées par leurs probabilités. On note cette moyenne $E[X]$ pour le score X.
+    en: Expectation is the average of values weighted by their probabilities. We write this average as $E[X]$ for score X.
+    id: c2
+    exemple:
+      fr: trois scores équiprobables, dont la moyenne vaut 5.
+      en: three equally likely scores with mean 5.
+  - id: d_esp
+    type: idee
+    fr: Pour calculer $E[X]$, multiplie chaque valeur par sa probabilité, puis additionne. La moyenne théorique n’est pas forcément une valeur possible.
+    en: To compute $E[X]$, multiply each value by its probability, then add. The theoretical mean is not necessarily a possible value.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Valeur $x$
+          en: Value $x$
+        - $P(X=x)$
+        - $x\times P$
+      cellules:
+        - - $1$
+          - $\frac12$
+          - $\frac12$
+        - - $3$
+          - $\frac14$
+          - $\frac34$
+        - - $5$
+          - $\frac14$
+          - $\frac54$
+        - - fr: total
+            en: total
+          - $1$
+          - fr: $E[X]=\frac52$
+            en: $E[X]=\frac52$
+            ton: ok
+      legende:
+        fr: La somme de la dernière colonne donne $\frac12+\frac34+\frac54=\frac52$.
+        en: The sum of the last column gives $\frac12+\frac34+\frac54=\frac52$.
+  - type: exemple
+    lang: python
+    titre:
+      fr: Moyenne et dispersion
+      en: Mean and spread
+    etapes:
+      - code: |-
+          from fractions import Fraction
+          values = [0,2]
+        fr: Un score vaut 0 ou 2 avec la même probabilité.
+        en: A score is 0 or 2 with equal probability.
+      - code: mean = sum(Fraction(x,2) for x in values)
+        fr: La moyenne théorique vaut 1, même si aucun score ne vaut 1.
+        en: The theoretical mean is 1, even though no score equals 1.
+      - code: print(sum((x-mean)**2 / 2 for x in values))
+        fr: Les deux écarts au carré valent 1, donc la variance vaut 1.
+        en: Both squared deviations equal 1, so the variance is 1.
+    verif: |-
+      from fractions import Fraction
+      values = [0,2]
+      mean = sum(Fraction(x,2) for x in values)
+      print(sum((x-mean)**2 / 2 for x in values))
+    sortie: "1"
+    id: c3
+  - id: d_var
+    type: idee
+    fr: "La **variance** mesure la dispersion : $\\operatorname{Var}(X)=E[(X-E[X])^2]$. On prend l’écart à la moyenne, on l’élève au carré, puis on moyenne."
+    en: "The **variance** measures spread: $\\operatorname{Var}(X)=E[(X-E[X])^2]$. Take the gap to the mean, square it, then average."
+    figure:
+      kind: tableau
+      entetes:
+        - $x$
+        - fr: Écart à $\frac52$
+          en: Gap to $\frac52$
+        - fr: Carré
+          en: Square
+      cellules:
+        - - $1$
+          - $-\frac32$
+          - $\frac94$
+        - - $3$
+          - $\frac12$
+          - $\frac14$
+        - - $5$
+          - $\frac52$
+          - $\frac{25}4$
+      legende:
+        fr: "Poids $\\frac12,\\frac14,\\frac14$ : $\\frac98+\\frac1{16}+\\frac{25}{16}=\\frac{11}4$ est la variance."
+        en: "Weights $\\frac12,\\frac14,\\frac14$: $\\frac98+\\frac1{16}+\\frac{25}{16}=\\frac{11}4$ is the variance."
+  - id: d_jeu
+    type: exemple
+    titre:
+      fr: Un jeu est-il favorable ?
+      en: Is a game favorable?
+    etapes:
+      - fr: Un jeu coûte $2$ points et rapporte $5$ points avec probabilité $\frac14$, sinon rien.
+        en: A game costs $2$ points and pays $5$ points with probability $\frac14$, otherwise nothing.
+      - fr: Le gain net vaut $+3$ avec probabilité $\frac14$ et $-2$ avec probabilité $\frac34$.
+        en: The net gain is $+3$ with probability $\frac14$ and $-2$ with probability $\frac34$.
+      - fr: "$E=3\\times\\frac14-2\\times\\frac34=-\\frac34$ : en moyenne, on perd $0{,}75$ point par partie."
+        en: "$E=3\\times\\frac14-2\\times\\frac34=-\\frac34$: on average, you lose $0.75$ point per game."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Un score vaut 0 avec probabilité $3/4$ et 4 avec probabilité $1/4$. Calcule son espérance.
+    en: A score is 0 with probability $3/4$ and 4 with probability $1/4$. Compute its expectation.
+    verif: |-
+      from fractions import Fraction
+      law={0:Fraction(3,4),4:Fraction(1,4)}
+      print(sum(x*p for x,p in law.items()))
+    explication:
+      fr: "Le score élevé reçoit un poids plus faible : $0(3/4)+4(1/4)=1$."
+      en: "The high score has a smaller weight: $0(3/4)+4(1/4)=1$."
+    reponses:
+      - "1"
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: La variance est la moyenne des écarts au carré à l’espérance. Le score vaut 0 avec probabilité $3/4$, ou 4 avec probabilité $1/4$ ; son espérance vaut 1. Calcule sa variance.
+    en: Variance is the average squared distance from the expectation. The score is 0 with probability $3/4$, or 4 with probability $1/4$; its expectation is 1. Compute its variance.
+    verif: |-
+      from fractions import Fraction
+      law={0:Fraction(3,4),4:Fraction(1,4)}
+      m=sum(x*p for x,p in law.items())
+      print(sum((x-m)**2*p for x,p in law.items()))
+    explication:
+      fr: $(-1)^2(3/4)+3^2(1/4)=3$.
+      en: $(-1)^2(3/4)+3^2(1/4)=3$.
+    reponses:
+      - "3"
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: L’indicateur X vaut 1 avec probabilité $p=1/4$, sinon 0. Sa variance, notée $\operatorname{Var}(X)$, vaut $p(1-p)$. Calcule-la en fraction irréductible.
+    en: Indicator X equals 1 with probability $p=1/4$, otherwise 0. Its variance, written $\operatorname{Var}(X)$, equals $p(1-p)$. Compute it as a reduced fraction.
+    verif: |-
+      from fractions import Fraction
+      p=Fraction(1,4)
+      print((0-p)**2*(1-p)+(1-p)**2*p)
+    explication:
+      fr: $p(1-p)=(1/4)(3/4)=3/16$.
+      en: $p(1-p)=(1/4)(3/4)=3/16$.
+    reponses:
+      - 3/16
+    id: c6
+  - id: d_lgn
+    type: idee
+    fr: La **loi des grands nombres** dit que la moyenne de $n$ essais indépendants se rapproche de $E[X]$ quand $n$ grandit. Elle ne dit rien sur un essai isolé.
+    en: The **law of large numbers** says the average of $n$ independent trials gets close to $E[X]$ as $n$ grows. It says nothing about a single trial.
+    exemple:
+      fr: Un dé équilibré a pour espérance $3{,}5$. Sur $6$ lancers, une moyenne de $2{,}8$ ou de $4{,}5$ est normale ; sur $6000$ lancers, on attend une moyenne très proche de $3{,}5$.
+      en: A fair die has expectation $3.5$. Over $6$ rolls, an average of $2.8$ or $4.5$ is normal; over $6000$ rolls, expect an average very close to $3.5$.
+  - type: piege
+    fr: Une moyenne peut s’éloigner temporairement de l’espérance quand tu ajoutes un essai. La loi des grands nombres ne garantit aucune amélioration à chaque étape.
+    en: An average can temporarily move away from the expectation when you add a trial. The law of large numbers guarantees no improvement at every step.
+    id: c7
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: L’espérance d’une somme est la somme des espérances, même avec dépendance. Deux scores X et Y ont chacun une espérance de 3. Calcule l’espérance de leur somme, notée $E[X+Y]$.
+    en: The expectation of a sum is the sum of expectations, even with dependence. Scores X and Y each have expectation 3. Compute their sum’s expectation, written $E[X+Y]$.
+    verif: |-
+      from fractions import Fraction
+      law={(0,0):Fraction(1,2),(6,6):Fraction(1,2)}
+      assert sum(x*p for (x,y),p in law.items())==3
+      assert sum(y*p for (x,y),p in law.items())==3
+      print(sum((x+y)*p for (x,y),p in law.items()))
+    explication:
+      fr: La linéarité donne $E[X+Y]=E[X]+E[Y]=6$ sans hypothèse d’indépendance.
+      en: Linearity gives $E[X+Y]=E[X]+E[Y]=6$ without requiring independence.
+    reponses:
+      - "6"
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Pour des scores indépendants de même loi, divise la variance individuelle par le nombre de scores pour obtenir celle de leur moyenne. Quatre scores ont chacun une variance de 4. Quelle est la variance de leur moyenne ?
+    en: For independent scores with the same distribution, divide individual variance by the number of scores to obtain the variance of their average. Four scores each have variance 4. What is the variance of their average?
+    verif: |-
+      from fractions import Fraction
+      from itertools import product
+      means=[Fraction(sum(xs),4) for xs in product([0,4],repeat=4)]
+      m=sum(means)/len(means)
+      print(sum((x-m)**2 for x in means)/len(means))
+    explication:
+      fr: La variance de la moyenne vaut $4/4=1$. Une variance décroissante rend les grands écarts à l’espérance moins probables.
+      en: The average’s variance is $4/4=1$. Decreasing variance makes large deviations from the expectation less likely.
+    reponses:
+      - "1"
+    id: c9
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : une réussite suit Bernoulli avec une probabilité de succès $1/2$. Les essais sont indépendants. Combien d’essais faut-il au minimum pour que la variance de leur moyenne soit au plus $1/100$ ?"
+    en: "Challenge: success follows Bernoulli with success probability $1/2$. Trials are independent. What is the minimum number of trials making the variance of their average at most $1/100$?"
+    verif: |-
+      from fractions import Fraction
+      v=Fraction(1,2)*(1-Fraction(1,2))
+      print(next(n for n in range(1,101) if v/n<=Fraction(1,100)))
+    explication:
+      fr: La variance vaut $1/(4n)$ ; il faut $n\geq25$, sans garantie d’une erreur réalisée précise.
+      en: Variance is $1/(4n)$; we need $n\geq25$, without guaranteeing a particular realized error.
+    reponses:
+      - "25"
+    defi: true
+    id: c10
+  - type: retenir
+    fr: "Pour des scores indépendants de même loi et de variance finie, les écarts fixés entre moyenne et espérance deviennent improbables : loi des grands nombres."
+    en: "For independent scores with the same distribution and finite variance, fixed deviations between average and expectation become unlikely: the law of large numbers."
+    id: c11

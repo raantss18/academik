@@ -1,0 +1,257 @@
+id: "7.5"
+module: 7
+duree_min: 17
+titre:
+  fr: Tests multiples
+  en: Multiple testing
+ia:
+  fr: Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs.
+  en: Kintana can distinguish a real signal from chance and reject false positives.
+sources:
+  - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
+    url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/
+    licence: CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux
+  - titre: NIST — Bonferroni’s method
+    url: https://www.itl.nist.gov/div898/handbook/prc/section4/prc473.htm
+    licence: "Conditions NIST : information publique réutilisable sauf mention de copyright ; référence en lien, aucun extrait repris"
+  - titre: Harvey, Liu et Zhu — … and the Cross-Section of Expected Returns (2016)
+    url: https://doi.org/10.1093/rfs/hhv059
+    licence: Tous droits réservés (OUP) ; lien seulement, aucune donnée ni figure reprise
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Avant de commencer : $100$ tests portent chacun sur une hypothèse nulle vraie et ont chacun une probabilité de faux positif de $0{,}05$. Combien de faux positifs attend-on en moyenne ?"
+    en: "Before you start: $100$ tests each concern a true null and each have a false positive probability of $0.05$. How many false positives are expected on average?"
+    verif: |-
+      from fractions import Fraction
+      print(sum(Fraction(5,100) for _ in range(100)))
+    explication:
+      fr: "L’espérance de la somme vaut la somme des probabilités : $100$ fois $0{,}05$. Ce n’est pas un nombre garanti."
+      en: "The expectation of a sum is the sum of probabilities: $100$ times $0.05$. This is not a guaranteed count."
+    choix:
+      - fr: "0"
+        en: "0"
+      - fr: "5"
+        en: "5"
+        juste: true
+      - fr: "50"
+        en: "50"
+    sortie: "5"
+    id: c1
+  - type: idee
+    fr: Bonferroni partage un budget de risque entre tous les tests prévus. Avec des p-valeurs valides, cela borne le risque d’au moins un faux positif, sans exiger des tests indépendants.
+    en: Bonferroni shares a risk budget among all planned tests. With valid p-values, this bounds the risk of at least one false positive, without requiring independent tests. Hypothetical
+    id: c2
+    exemple:
+      fr: un budget de 0,06 réparti entre trois tests donne un seuil de 0,02 par test.
+      en: a budget of 0.06 shared among three tests gives each test a threshold of 0.02.
+  - id: d_famille
+    type: idee
+    fr: Plus on teste, plus on trouve de faux signaux. Avec $m$ tests indépendants à $5\,\%$ et aucun vrai effet, la chance d’au moins un faux positif vaut $1-0{,}95^m$.
+    en: The more you test, the more false signals you find. With $m$ independent tests at $5\,\%$ and no true effect, the chance of at least one false positive is $1-0.95^m$.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Nombre de tests $m$
+          en: Number of tests $m$
+        - $1-0{,}95^m$
+        - fr: Risque
+          en: Risk
+      cellules:
+        - - $1$
+          - $0{,}05$
+          - $5\,\%$
+        - - $5$
+          - $\approx0{,}23$
+          - $23\,\%$
+        - - $20$
+          - $\approx0{,}64$
+          - fr: $64\,\%$
+            en: $64\,\%$
+            ton: bad
+      legende:
+        fr: Avec vingt règles inutiles, il est plus probable qu’improbable d’en voir une « significative ».
+        en: With twenty useless rules, it is more likely than not that one looks “significant”.
+  - type: exemple
+    lang: python
+    titre:
+      fr: Compter tous les essais
+      en: Counting every test
+    etapes:
+      - code: from fractions import Fraction
+        fr: On utilise des p-valeurs fictives pour illustrer la décision.
+        en: Use hypothetical p-values to illustrate the decision.
+      - code: pvalues = [Fraction(1,1000), Fraction(1,100), Fraction(3,100), Fraction(1,5)]
+        fr: Les quatre valeurs sont $0{,}001$, $0{,}01$, $0{,}03$, $0{,}2$.
+        en: The four values are $0.001$, $0.01$, $0.03$, $0.2$.
+      - code: seuil = Fraction(5,100) / len(pvalues)
+        fr: Le seuil par test devient $0{,}0125$.
+        en: The per-test threshold becomes $0.0125$.
+      - code: print(sum(p <= seuil for p in pvalues))
+        fr: Deux tests passent le seuil corrigé.
+        en: Two tests pass the corrected threshold.
+    verif: |-
+      from fractions import Fraction
+      pvalues = [Fraction(1,1000), Fraction(1,100), Fraction(3,100), Fraction(1,5)]
+      seuil = Fraction(5,100) / len(pvalues)
+      print(sum(p <= seuil for p in pvalues))
+    sortie: "2"
+    id: c3
+  - id: d_seuilm
+    type: idee
+    fr: "La correction de Bonferroni divise le risque familial $\\alpha$ par le nombre de tests $m$ : chaque test est jugé au seuil $\\alpha/m$."
+    en: "The Bonferroni correction divides the family risk $\\alpha$ by the number of tests $m$: each test is judged at the threshold $\\alpha/m$."
+    figure:
+      kind: tableau
+      entetes:
+        - $m$
+        - $\alpha$
+        - fr: Seuil $\alpha/m$
+          en: Threshold $\alpha/m$
+      cellules:
+        - - $5$
+          - $0{,}05$
+          - $0{,}01$
+        - - $20$
+          - $0{,}05$
+          - $0{,}0025$
+        - - $50$
+          - $0{,}10$
+          - fr: $0{,}002$
+            en: $0.002$
+            ton: ok
+      legende:
+        fr: Plus la famille est grande, plus le seuil par test est sévère.
+        en: The larger the family, the stricter the threshold per test.
+  - id: d_exbonf
+    type: exemple
+    titre:
+      fr: Avant et après correction
+      en: Before and after correction
+    etapes:
+      - fr: Cinq règles donnent les p-valeurs $0{,}004$, $0{,}012$, $0{,}02$, $0{,}2$ et $0{,}6$. Sans correction, trois passent $0{,}05$.
+        en: Five rules give p-values $0.004$, $0.012$, $0.02$, $0.2$ and $0.6$. Without correction, three pass $0.05$.
+      - fr: Avec $m=5$, le seuil devient $\frac{0{,}05}{5}=0{,}01$.
+        en: With $m=5$, the threshold becomes $\frac{0.05}{5}=0.01$.
+      - fr: Seule $0{,}004$ passe encore. Les deux autres étaient compatibles avec du hasard.
+        en: Only $0.004$ still passes. The other two were compatible with chance.
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Pour une famille de $10$ tests et un risque familial $\alpha=0{,}05$, quel seuil Bonferroni utilises-tu par test ?
+    en: For a family of $10$ tests and family-wise level $\alpha=0.05$, what Bonferroni threshold do you use per test?
+    reponses:
+      - "0.005"
+      - 0,005
+      - 1/200
+    verif: |-
+      from fractions import Fraction
+      print(Fraction(5,100)/10)
+    explication:
+      fr: "On partage le budget de risque entre les dix tests : $0{,}05/10=0{,}005$."
+      en: "Split the risk budget across ten tests: $0.05/10=0.005$."
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Avec les p-valeurs fictives $0{,}001$, $0{,}01$, $0{,}03$, $0{,}2$, combien de tests auraient passé le seuil non corrigé de $0{,}05$ ?
+    en: With hypothetical p-values $0.001$, $0.01$, $0.03$, $0.2$, how many tests would pass the uncorrected $0.05$ threshold?
+    reponses:
+      - "3"
+    verif: |-
+      ps=[.001,.01,.03,.2]
+      print(sum(p<=.05 for p in ps))
+    explication:
+      fr: Trois tests passent sans correction, contre deux avec Bonferroni. Cela ne révèle pas lesquels sont de vrais signaux.
+      en: Three tests pass without correction, versus two with Bonferroni. This does not reveal which are real signals.
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Deux tests sont indépendants et portent sur des hypothèses nulles vraies. Chacun rejette avec probabilité $0{,}05$. Quelle est la probabilité d’au moins un faux positif ?
+    en: Two tests are independent and concern true null hypotheses. Each rejects with probability $0.05$. What is the probability of at least one false positive?
+    reponses:
+      - "0.0975"
+      - 0,0975
+    verif: |-
+      from decimal import Decimal
+      print(1-(1-Decimal("0.05"))**2)
+    explication:
+      fr: La probabilité de zéro rejet vaut $0{,}95^2$. Le complément vaut $0{,}0975$, déjà supérieur à $0{,}05$.
+      en: The probability of zero rejections is $0.95^2$. Its complement is $0.0975$, already greater than $0.05$.
+    id: c6
+  - type: piege
+    fr: Compte aussi les essais abandonnés. Choisir la meilleure règle après exploration puis prétendre n’avoir fait qu’un test invalide la justification du seuil.
+    en: Count abandoned attempts too. Selecting the best rule after exploration and then pretending only one test was run invalidates the threshold justification.
+    id: c7
+  - id: d_bruit
+    type: idee
+    fr: Même sur du bruit pur, un test à $5\,\%$ « trouve » un signal une fois sur vingt en moyenne. Sans correction, ces faux signaux sont inévitables.
+    en: Even on pure noise, a $5\,\%$ test “finds” a signal one time in twenty on average. Without correction, these false signals are unavoidable.
+    exemple:
+      fr: Sur $100$ règles sans aucun effet réel, on attend $100\times0{,}05=5$ faux signaux. Avec le seuil $\frac{0{,}05}{100}=0{,}0005$, on en attend au plus $0{,}05$.
+      en: Over $100$ rules with no real effect, expect $100\times0.05=5$ false signals. With the threshold $\frac{0.05}{100}=0.0005$, expect at most $0.05$.
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: "Note $m$ le nombre de tests et $p$ la p-valeur brute. La valeur ajustée de Bonferroni est $\\min(1,mp)$ : multiplie, puis plafonne à 1. Pour $m=10$ et $p=0{,}008$, calcule-la."
+    en: "Write $m$ for the number of tests and $p$ for the raw p-value. The Bonferroni-adjusted value is $\\min(1,mp)$: multiply, then cap at 1. For $m=10$ and $p=0.008$, compute it."
+    reponses:
+      - "0.08"
+      - 0,08
+      - "0.080"
+      - 0,080
+    verif: |-
+      from decimal import Decimal
+      print(min(Decimal(1),10*Decimal("0.008")))
+    explication:
+      fr: On obtient $0{,}08$, supérieur au seuil familial $0{,}05$. Ce test ne passe pas la correction.
+      en: The result is $0.08$, above family-wise level $0.05$. This test does not pass the correction.
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Pour $m=10$ et $p=0{,}2$, que vaut la p-valeur ajustée $\min(1,mp)$ ?
+    en: For $m=10$ and $p=0.2$, what is the adjusted p-value $\min(1,mp)$?
+    reponses:
+      - "1"
+    verif: |-
+      from fractions import Fraction
+      print(min(1,10*Fraction(1,5)))
+    explication:
+      fr: Le produit vaut $2$, mais une p-valeur ajustée est plafonnée à $1$.
+      en: The product is $2$, but an adjusted p-value is capped at $1$.
+    id: c9
+  - type: plus
+    fr: "Pour aller plus loin : Harvey, Liu et Zhu (2016) motivent la correction face à la recherche de nombreux facteurs. Leur seuil discuté en finance n’est pas une constante universelle (lien uniquement, sources)."
+    en: "Further exploration: Harvey, Liu and Zhu (2016) motivate correction when many factors are searched. The threshold they discuss in finance is not a universal constant (link only, sources)."
+    id: c10
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : $20$ tests prévus, puis $80$ supplémentaires sur les mêmes données, chacun avec une p-valeur valide. La famille compte tous ces tests. Pour un risque familial de $0{,}05$, quel seuil Bonferroni faut-il appliquer à chacun ?"
+    en: "Challenge: $20$ planned tests, then $80$ additional tests on the same data, each with a valid p-value. The family includes all these tests. For a family-wise level of $0.05$, what Bonferroni threshold must be applied to each?"
+    reponses:
+      - "0.0005"
+      - 0,0005
+      - 1/2000
+    verif: |-
+      from fractions import Fraction
+      print(Fraction(5,100)/(20+80))
+    explication:
+      fr: "On compte $100$ tests : $0{,}05/100=0{,}0005$. Si les tests eux-mêmes sont adaptés aux résultats, leur validité doit aussi être réexaminée."
+      en: "Count $100$ tests: $0.05/100=0.0005$. If the tests themselves are adapted to the results, their validity also needs reassessment."
+    defi: true
+    id: c11
+  - type: retenir
+    fr: "À retenir : Kintana compte toute la famille, corrige le risque et recherche une confirmation indépendante. Contrôler les faux positifs peut réduire la puissance."
+    en: "Remember: Kintana counts the full family, corrects the risk, and seeks independent confirmation. Controlling false positives can reduce power."
+    id: c12

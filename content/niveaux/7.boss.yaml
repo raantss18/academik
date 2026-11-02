@@ -1,0 +1,323 @@
+id: 7.boss
+module: 7
+duree_min: 18
+titre:
+  fr: Le faux signal
+  en: The false signal
+ia:
+  fr: Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs.
+  en: Kintana can distinguish a real signal from chance and reject false positives.
+sources:
+  - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
+    url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/
+    licence: CC BY-NC-SA 4.0 ; éléments tiers exclus ; exercices originaux
+  - titre: American Statistical Association — Statement on Statistical Significance and P-Values (2016)
+    url: https://www.amstat.org/asa/files/pdfs/P-ValueStatement.pdf
+    licence: Aucune licence libre indiquée ; lien seulement, aucun extrait reproduit
+  - titre: NIST — Confidence Limits for the Mean
+    url: https://www.itl.nist.gov/div898/handbook/eda/section3/eda352.htm
+    licence: "Conditions NIST : information publique réutilisable sauf mention de copyright ; référence en lien, aucun extrait repris"
+  - titre: SciPy — scipy.stats.bootstrap, documentation actuelle
+    url: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html
+    licence: BSD-3-Clause ; référence uniquement, sans dépendance SciPy
+  - titre: NIST — Bonferroni’s method
+    url: https://www.itl.nist.gov/div898/handbook/prc/section4/prc473.htm
+    licence: "Conditions NIST : information publique réutilisable sauf mention de copyright ; référence en lien, aucun extrait repris"
+  - titre: Harvey, Liu et Zhu — … and the Cross-Section of Expected Returns (2016)
+    url: https://doi.org/10.1093/rfs/hhv059
+    licence: Tous droits réservés (OUP) ; lien seulement, aucune donnée ni figure reprise
+cartes:
+  - type: tentative
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Avant de commencer : Kintana simule $100$ règles, chacune avec $20$ essais indépendants de probabilité de succès $0{,}5$. Combien de succès attend-on au total en moyenne ?"
+    en: "Before you start: Kintana simulates $100$ rules, each with $20$ independent trials with success probability $0.5$. How many successes are expected in total on average?"
+    verif: |-
+      from fractions import Fraction
+      print(sum(Fraction(1,2) for _ in range(100*20)))
+    explication:
+      fr: L’espérance vaut $100$ fois $20$ fois $0{,}5$. Aucun avantage réel n’est introduit.
+      en: The expectation is $100$ times $20$ times $0.5$. No real advantage is introduced.
+    choix:
+      - fr: "1000"
+        en: "1000"
+        juste: true
+      - fr: "100"
+        en: "100"
+      - fr: "2000"
+        en: "2000"
+    sortie: "1000"
+    id: c1
+  - type: idee
+    fr: Sélectionner la meilleure règle parmi beaucoup d’essais peut faire passer du hasard pour un signal. Il faut tenir compte de tous les tests, même ceux abandonnés.
+    en: Selecting the best rule among many trials can make chance look like a signal. Account for every test, including abandoned ones. Hypothetical
+    id: c2
+    exemple:
+      fr: parmi trois p-valeurs de 0,04, 0,30 et 0,80, seule la première passe 0,05 avant correction.
+      en: among three p-values of 0.04, 0.30, and 0.80, only the first passes 0.05 before correction.
+  - id: d_chaine
+    type: idee
+    fr: "Le niveau réunit tout le module : estimer, encadrer, tester, rééchantillonner, puis corriger pour le nombre d’essais. Chaque outil répond à une question précise."
+    en: "The level brings the whole module together: estimate, bracket, test, resample, then correct for the number of trials. Each tool answers a specific question."
+    figure:
+      kind: tableau
+      entetes:
+        - fr: Question
+          en: Question
+        - fr: Outil
+          en: Tool
+        - fr: Niveau
+          en: Level
+      cellules:
+        - - fr: quelle valeur ?
+            en: what value?
+          - fr: estimateur
+            en: estimator
+          - "7.1"
+        - - fr: avec quelle marge ?
+            en: with what margin?
+          - fr: intervalle
+            en: interval
+          - "7.2"
+        - - fr: est-ce du hasard ?
+            en: is it chance?
+          - fr: p-valeur
+            en: p-value
+          - "7.3"
+        - - fr: combien d’essais ?
+            en: how many trials?
+          - fr: Bonferroni
+            en: Bonferroni
+          - fr: "7.5"
+            en: "7.5"
+            ton: ok
+      legende:
+        fr: Le bootstrap (7.4) sert quand une formule d’intervalle est difficile à écrire.
+        en: The bootstrap (7.4) is used when an interval formula is hard to write.
+  - type: exemple
+    lang: python
+    titre:
+      fr: Fabriquer un faux signal reproductible
+      en: Generating a reproducible false signal
+    etapes:
+      - code: |-
+          import random, statistics
+          from math import comb
+          r = random.Random(708)
+        fr: La graine est fixée ; aucune donnée de marché n’est utilisée.
+        en: The seed is fixed; no market data are used.
+      - code: regles = [[int(r.random() < 0.5) for _ in range(20)] for _ in range(100)]
+        fr: "Chaque règle suit l’hypothèse nulle : succès de probabilité $0{,}5$, essais indépendants. On cherche un taux supérieur ; les $2000$ résultats viennent du hasard."
+        en: "Each rule follows the null hypothesis: success probability $0.5$, independent trials. We seek a higher rate; all $2000$ outcomes come from chance."
+      - code: pvalues = [sum(comb(20, j) for j in range(sum(x), 21)) / 2**20 for x in regles]
+        fr: Pour chaque règle, additionne les probabilités d’obtenir autant de succès ou davantage. `comb(20, j)` compte les suites contenant exactement `j` succès.
+        en: For each rule, add the probabilities of getting as many successes or more. `comb(20, j)` counts sequences containing exactly `j` successes.
+      - code: print(sum(p <= 0.05 for p in pvalues))
+        fr: Une règle paraît significative au seuil brut de $0{,}05$.
+        en: One rule appears significant at the uncorrected $0.05$ level.
+    verif: |-
+      import random, statistics
+      from math import comb
+      r = random.Random(708)
+      regles = [[int(r.random() < 0.5) for _ in range(20)] for _ in range(100)]
+      pvalues = [sum(comb(20, j) for j in range(sum(x), 21)) / 2**20 for x in regles]
+      print(sum(p <= 0.05 for p in pvalues))
+    sortie: "1"
+    id: c3
+  - id: d_sixr
+    type: exemple
+    titre:
+      fr: Six règles, un seul vrai signal ?
+      en: Six rules, a single real signal?
+    etapes:
+      - fr: Six règles donnent les p-valeurs $0{,}003$, $0{,}011$, $0{,}04$, $0{,}2$, $0{,}5$ et $0{,}9$. Trois passent $0{,}05$ sans correction.
+        en: Six rules give p-values $0.003$, $0.011$, $0.04$, $0.2$, $0.5$ and $0.9$. Three pass $0.05$ without correction.
+      - fr: Avec $m=6$, le seuil vaut $\frac{0{,}05}{6}\approx0{,}0083$.
+        en: With $m=6$, the threshold is $\frac{0.05}{6}\approx0.0083$.
+      - fr: "Seule $0{,}003$ passe. Le rapport doit dire : six règles testées, une retenue."
+        en: "Only $0.003$ passes. The report must say: six rules tested, one kept."
+  - id: d_rapport
+    type: idee
+    fr: Un résultat honnête dit tout ce qui a été essayé. Sans ces informations, un lecteur ne peut pas juger si un signal est crédible.
+    en: An honest result states everything that was tried. Without this information, a reader cannot judge whether a signal is credible.
+    figure:
+      kind: tableau
+      entetes:
+        - fr: À rapporter
+          en: To report
+        - fr: Pourquoi
+          en: Why
+        - fr: Appris en
+          en: Learned in
+      cellules:
+        - - fr: nombre de règles testées
+            en: number of rules tested
+          - fr: fixe le seuil corrigé
+            en: sets the corrected threshold
+          - "7.5"
+        - - fr: intervalle, pas seulement la moyenne
+            en: interval, not just the mean
+          - fr: montre l’incertitude
+            en: shows the uncertainty
+          - "7.2"
+        - - fr: hypothèses vérifiées
+            en: assumptions checked
+          - fr: indépendance, même loi
+            en: independence, same law
+          - "7.4"
+      legende:
+        fr: Ne pas rejeter une hypothèse nulle ne prouve pas l’absence d’effet.
+        en: Not rejecting a null hypothesis does not prove the absence of an effect.
+  - id: d_espfaux
+    type: idee
+    fr: "Avant d’examiner les données, estime combien de faux signaux le hasard seul fournirait : le nombre de règles multiplié par le seuil. C’est ta référence de comparaison."
+    en: "Before examining the data, estimate how many false signals chance alone would supply: the number of rules times the threshold. This is your benchmark."
+    exemple:
+      fr: "Pour $40$ règles à $0{,}05$ : $40\\times0{,}05=2$ faux signaux attendus. Trouver deux règles « significatives » n’a donc rien d’étonnant."
+      en: "For $40$ rules at $0.05$: $40\\times0.05=2$ expected false signals. Finding two “significant” rules is therefore unsurprising."
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: La règle à la plus petite p-valeur obtient $15$ succès sur $20$. Quelle est sa moyenne empirique, donc son estimation de la probabilité de succès ?
+    en: The rule with the smallest p-value gets $15$ successes out of $20$. What is its sample mean, hence its estimated success probability?
+    reponses:
+      - "0.75"
+      - 0,75
+    verif: |-
+      import random, statistics
+      from math import comb
+      r = random.Random(708)
+      regles = [[int(r.random() < 0.5) for _ in range(20)] for _ in range(100)]
+      pvalues = [sum(comb(20, j) for j in range(sum(x), 21)) / 2**20 for x in regles]
+      i = min(range(len(pvalues)), key=pvalues.__getitem__)
+      assert sum(regles[i]) == 15
+      print(statistics.mean(regles[i]))
+    explication:
+      fr: La moyenne vaut $15/20=0{,}75$. La sélectionner parce qu’elle est la meilleure rend son résultat trop optimiste pour prédire de nouvelles données.
+      en: The mean is $15/20=0.75$. Selecting it because it is best makes its result overly optimistic for predicting new data.
+    id: c4
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Pour $15$ succès sur $20$, la p-valeur additionne les probabilités d’obtenir $15$ à $20$ succès sous l’hypothèse nulle. Leur somme vaut $21700/1048576$. Arrondis cette p-valeur à six décimales.
+    en: For $15$ successes out of $20$, the p-value adds the probabilities of $15$ through $20$ successes under the null hypothesis. Their sum is $21700/1048576$. Round this p-value to six decimal places.
+    reponses:
+      - "0.020695"
+      - 0,020695
+    verif: |-
+      from math import comb
+      num=sum(comb(20,j) for j in range(15,21))
+      assert num==21700
+      print(f"{num/2**20:.6f}")
+    explication:
+      fr: Cette petite p-valeur est calculée sous une règle fixée. Elle n’est pas la probabilité que la règle sélectionnée soit sans signal.
+      en: This small p-value is computed for a fixed rule. It is not the probability that the selected rule has no signal.
+    id: c5
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: "Audit distinct : une mesure normale de gain a une moyenne observée $0{,}5$, un écart-type de population connu $2$ et $16$ observations indépendantes. Avec le facteur $1{,}96$, quelle est la borne inférieure de son intervalle de confiance ?"
+    en: "Separate audit: a normally distributed gain measurement has observed mean $0.5$, known population standard deviation $2$, and $16$ independent observations. Using factor $1.96$, what is the lower confidence endpoint?"
+    reponses:
+      - "-0.48"
+      - -0,48
+    verif: |-
+      from math import sqrt
+      print(round(.5-1.96*2/sqrt(16),2))
+    explication:
+      fr: La marge vaut $0{,}98$, donc l’intervalle est $[-0{,}48;1{,}48]$ et contient zéro. Ceci ne prouve pas un gain nul.
+      en: The margin is $0.98$, so the interval is $[-0.48,1.48]$ and contains zero. This does not prove zero gain.
+    id: c6
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Reprends la règle aux $15$ succès sur $20$. Pour un tirage bootstrap individuel avec remise, quelle est la probabilité de tirer un échec ?
+    en: Return to the rule with $15$ successes out of $20$. For one individual bootstrap draw with replacement, what is the probability of drawing a failure?
+    reponses:
+      - "0.25"
+      - 0,25
+    verif: |-
+      import random, statistics
+      from math import comb
+      r = random.Random(708)
+      regles = [[int(r.random() < 0.5) for _ in range(20)] for _ in range(100)]
+      pvalues = [sum(comb(20, j) for j in range(sum(x), 21)) / 2**20 for x in regles]
+      i=min(range(len(pvalues)),key=pvalues.__getitem__)
+      x=regles[i]
+      print(x.count(0)/len(x))
+    explication:
+      fr: Les cinq échecs occupent cinq positions sur vingt. Ce bootstrap de la seule gagnante ne corrige pas la sélection parmi cent règles.
+      en: The five failures occupy five of twenty positions. Bootstrapping only the winner does not correct selection among one hundred rules.
+    id: c7
+  - type: piege
+    fr: Dans cette simulation, tous les rejets sont des faux positifs puisque toutes les hypothèses nulles sont vraies. Sur des données réelles, la vérité n’est généralement pas connue.
+    en: In this simulation, all rejections are false positives because all null hypotheses are true. With real data, the truth is usually unknown.
+    id: c8
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Le programme trouve une règle sous le seuil brut $0{,}05$, alors que les $100$ hypothèses nulles sont vraies par construction. Combien d’erreurs de type I cette exécution commet-elle sans correction ?
+    en: The program finds one rule below the uncorrected $0.05$ threshold, while all $100$ null hypotheses are true by construction. How many type I errors does this run make without correction?
+    reponses:
+      - "1"
+    verif: |-
+      import random, statistics
+      from math import comb
+      r = random.Random(708)
+      regles = [[int(r.random() < 0.5) for _ in range(20)] for _ in range(100)]
+      pvalues = [sum(comb(20, j) for j in range(sum(x), 21)) / 2**20 for x in regles]
+      true_null=[True]*len(regles)
+      print(sum(h and p<=.05 for h,p in zip(true_null,pvalues)))
+    explication:
+      fr: Le rejet unique est un faux positif. Un risque à long terme ne prescrit pas le nombre d’erreurs de chaque simulation.
+      en: The single rejection is a false positive. A long-run risk does not prescribe the error count in each simulation.
+    id: c9
+  - type: saisie
+    note:
+      kind: exercise
+      poids: 1
+    fr: Pour ces $100$ tests, donne le seuil Bonferroni correspondant au risque familial $0{,}05$.
+    en: For these $100$ tests, give the Bonferroni threshold corresponding to family-wise level $0.05$.
+    reponses:
+      - "0.0005"
+      - 0,0005
+      - 1/2000
+    verif: |-
+      from fractions import Fraction
+      print(Fraction(5,100)/100)
+    explication:
+      fr: Le seuil par test vaut $0{,}0005$. On compte toutes les règles, pas seulement la gagnante.
+      en: The per-test threshold is $0.0005$. Count every rule, not just the winner.
+    id: c10
+  - type: saisie
+    note:
+      kind: quiz
+      poids: 1
+    fr: "Défi : la plus petite p-valeur est environ $0{,}020695$, et le seuil corrigé vaut $0{,}0005$. Combien de règles Kintana peut-il retenir comme significatives après Bonferroni ?"
+    en: "Challenge: the smallest p-value is about $0.020695$, and the corrected threshold is $0.0005$. How many rules can Kintana retain as significant after Bonferroni?"
+    reponses:
+      - "0"
+    verif: |-
+      import random, statistics
+      from math import comb
+      r = random.Random(708)
+      regles = [[int(r.random() < 0.5) for _ in range(20)] for _ in range(100)]
+      pvalues = [sum(comb(20, j) for j in range(sum(x), 21)) / 2**20 for x in regles]
+      from fractions import Fraction
+      seuil=Fraction(5,100)/len(regles)
+      print(sum(p<=seuil for p in pvalues))
+    explication:
+      fr: "Même le minimum dépasse le seuil : aucun rejet. Kintana refuse ce faux signal et demanderait une confirmation sur de nouvelles données indépendantes."
+      en: "Even the minimum exceeds the threshold: no rejection. Kintana rejects this false signal and would require confirmation using new independent data."
+    defi: true
+    id: c11
+  - type: retenir
+    fr: "À retenir : estimer, quantifier l’incertitude et corriger les tests multiples aide Kintana à refuser un faux signal, sans garantir zéro erreur."
+    en: "Remember: estimation, uncertainty quantification, and multiple-testing correction help Kintana reject a false signal, without guaranteeing zero errors."
+    id: c12
