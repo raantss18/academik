@@ -289,4 +289,10 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(amb).toContain('prefers-reduced-motion'); expect(amb).toContain('document.hidden'); expect(amb).toContain('focusin'); expect(amb).toContain('linear-gradient');
     expect(read('src/ui/Lesson.svelte')).toContain('<Ambiance module=');
   });
+  it('E34 : la leçon montre le chemin du quartier (progression accessible) et une silhouette dont les fenêtres s’allument aux bonnes réponses', () => {
+    const les = read('src/ui/Lesson.svelte'), route = read('src/ui/Route.svelte'), amb = read('src/ui/Ambiance.svelte');
+    expect(les).toContain('<Route valeur='); expect(les).toContain('lit={'); expect(les).toContain('rightCount');
+    expect(route).toContain('role="progressbar"'); expect(route).toContain('aria-valuenow'); expect(route).toContain('prefers-reduced-motion');
+    expect(amb).toContain('class:on={f.rang < nbAllumees}'); expect(amb).toContain('prefers-reduced-motion'); expect(amb).toContain('aria-hidden="true"');
+  });
 });

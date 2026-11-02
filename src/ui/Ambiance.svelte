@@ -3,13 +3,26 @@
   // Discret par conception : contraste du texte préservé, aucun clignotement, pause si l'onglet est caché ou qu'on saisit du texte,
   // image fixe si l'utilisateur demande moins d'animations ou si l'appareil est lent.
   import { onMount } from 'svelte';
-  import { ambianceDe, rgb, type Palette } from '../lib/ambiance';
+  import { ambianceDe, melange, rgb, type Palette } from '../lib/ambiance';
   import { theme } from '../lib/theme.svelte';
 
-  let { module }: { module: number } = $props();
+  let { module, lit = 0 }: { module: number; lit?: number } = $props();
   let canvas: HTMLCanvasElement | undefined = $state(), prefersDark = $state(typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches);
   const nuit = $derived(theme.value === 'dark' || (theme.value === 'auto' && prefersDark));
   const pal = $derived<Palette>(nuit ? ambianceDe(module).nuit : ambianceDe(module).jour);
+
+  // Silhouette du quartier (déterministe par module) : une fenêtre s'allume à chaque bonne réponse, comme sur l'accueil.
+  function graine(m: number) { let s = (m + 1) * 2654435761 >>> 0; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+  const immeubles = $derived.by(() => {
+    const r = graine(module), liste: { x: number; w: number; h: number; f: { x: number; y: number; rang: number }[] }[] = []; let x = -4, n = 0;
+    while (x < 304) { const w = 14 + Math.floor(r() * 14), h = 28 + Math.floor(r() * 64), f: { x: number; y: number; rang: number }[] = [];
+      for (let ry = 0; ry < Math.floor((h - 8) / 9); ry++) for (let cx = 0; cx < Math.floor((w - 4) / 6); cx++) f.push({ x: x + 3 + cx * 6, y: 120 - h + 5 + ry * 9, rang: n++ });
+      liste.push({ x, w, h, f }); x += w + 2; }
+    const ordre = liste.flatMap(b => b.f), rangs = ordre.map((_, i) => i).sort(() => r() - 0.5);
+    ordre.forEach((f, i) => { f.rang = rangs[i]; }); return liste;
+  });
+  const total = $derived(immeubles.reduce((s, b) => s + b.f.length, 0)), nbAllumees = $derived(Math.round(total * Math.max(0, Math.min(1, lit))));
+  const tour = $derived(melange(pal.haut, pal.bas, nuit ? 0.15 : 0.55)), eteint = $derived(melange(pal.haut, pal.bas, nuit ? 0.55 : 0.8));
 
   onMount(() => {
     const mq = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : null, onMq = () => (prefersDark = !!mq?.matches);
@@ -57,9 +70,20 @@
   });
 </script>
 
-<div class="amb" style="--haut:{pal.haut};--bas:{pal.bas}" aria-hidden="true"><canvas bind:this={canvas}></canvas></div>
+<div class="amb" style="--haut:{pal.haut};--bas:{pal.bas};--tour:{tour};--eteint:{eteint};--allume:{nuit ? '#ffd36b' : '#e0a21a'};--halo:{nuit ? '#ffcf80' : '#e8b44a'}" aria-hidden="true">
+  <canvas bind:this={canvas}></canvas>
+  <svg class="ville" viewBox="0 0 300 120" preserveAspectRatio="xMidYMax slice">
+    {#each immeubles as b}
+      <rect x={b.x} y={120 - b.h} width={b.w} height={b.h} fill="var(--tour)" />
+      {#each b.f as f}<rect class="fen" class:on={f.rang < nbAllumees} x={f.x} y={f.y} width="3.2" height="4.6" rx=".6" />{/each}
+    {/each}
+  </svg>
+</div>
 
 <style>
   .amb { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, var(--haut), var(--bas)); }
   canvas { width: 100%; height: 100%; display: block; }
+  .ville { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: min(24vh, 190px); }
+  .fen { fill: var(--eteint); transition: fill .6s, filter .6s; } .fen.on { fill: var(--allume); filter: drop-shadow(0 0 1.6px var(--halo)); }
+  @media (prefers-reduced-motion: reduce) { .fen { transition: none; } }
 </style>

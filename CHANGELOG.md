@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.21] — 2026-11-02
+
+### Message fr
+Dans chaque leçon, le repère rouge de la carte avance sur la route du quartier, et la silhouette du quartier en bas de l'écran s'allume fenêtre par fenêtre à chaque bonne réponse.
+
+### Message en
+In each lesson, the red marker from the map moves along the district road, and the district skyline at the bottom of the screen lights up window by window with each right answer.
+
 ## [0.3.20] — 2026-11-02
 
 ### Message fr

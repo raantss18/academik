@@ -23,7 +23,8 @@
     "modules 1, 2 complets ; module 8 « Données » (stdlib) ; version 0.3.14",
     "modules 3–5 complétés, module 9, revue pédagogique ; tâches T-016, T-017 prêtes ; version 0.3.17",
     "T-016 et T-017 terminées en relais ; contenu seul, sans nouvelle version",
-    "module 10 séries temporelles ; budget de premier chargement tenu ; version 0.3.19"
+    "module 10 séries temporelles ; budget de premier chargement tenu ; version 0.3.19",
+    "immersion : zoom GPU, fond par quartier, chemin et silhouette ; version 0.3.21"
   ],
   "in_progress": [
     "v0.1.0 : fusion de la PR #1 puis publication (attend l'accord d'Antsa)"
