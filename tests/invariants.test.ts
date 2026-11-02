@@ -237,7 +237,9 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
   });
   it('E28 : chaque niveau a sa propre ligne « Kintana sait… » (jamais recopiée d’un autre niveau)', () => {
     const lignes = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => (parse(read(`content/niveaux/${f}`)) as { id: string; ia: { fr: string } }));
-    const doublons = Object.values(Object.groupBy(lignes, l => l.ia.fr)).filter(v => (v?.length ?? 0) > 1).map(v => v!.map(l => l.id).join(','));
+    const groupes = new Map<string, string[]>();
+    for (const l of lignes) groupes.set(l.ia.fr, [...(groupes.get(l.ia.fr) ?? []), l.id]);
+    const doublons = [...groupes.values()].filter(v => v.length > 1).map(v => v.join(','));
     expect(doublons).toEqual([]);
   });
   // Rythme (revue pédagogique du 2 nov.) : pas plus de 5 cartes d'explication d'affilée avant un exercice noté. Cette liste ne fait que RÉTRÉCIR (tâche T-017).

@@ -2,7 +2,7 @@
 
 ## [Non publié]
 
-## [0.3.16] — 2026-11-02
+## [0.3.17] — 2026-11-02
 
 ### Message fr
 Le cours s'agrandit encore : fin des modules 3, 4 et 5, et un nouveau module « Apprentissage automatique » (droite, biais et variance, classer, mesurer, régularisation, arbres). Les niveaux sont reliés entre eux, les durées affichées sont plus justes, et quand tu te trompes, une carte te renvoie vers l'explication à relire.
