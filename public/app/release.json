@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 14,
-  "version": "0.3.11",
+  "build": 15,
+  "version": "0.3.12",
   "notes": {
-   "fr": "Les repères de niveaux ne se chevauchent plus : chacun est bien visible et cliquable, même dans les quartiers serrés.",
-   "en": "Level markers no longer overlap: each one is clearly visible and tappable, even in crowded districts."
+   "fr": "Les liens « Pour aller plus loin » sont maintenant un simple texte cliquable : plus d'adresse qui déborde de l'écran.",
+   "en": "“Further reading” links are now plain clickable text: no more long addresses overflowing the screen."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.11/academik-0.3.11.apk",
-    "sha256": "138f281eedc0b5b99619b5d79df29c376059034fc94482d89d18a58ebb4fbb04",
-    "bytes": 10197028
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.12/academik-0.3.12.apk",
+    "sha256": "518355f87910fdaf510fa893dabd6e063e533fc8e59600f3b26fce9229ccc3fb",
+    "bytes": 10215708
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.11/academik-0.3.11-x86_64.AppImage",
-    "sha256": "6260a043a5807f92f2ac2edeafc83cce5717417e4a2470f258d167c7b2ffa232",
-    "bytes": 114711032
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.12/academik-0.3.12-x86_64.AppImage",
+    "sha256": "d644322c92664b7a08d0f42f5468818b6387db764f90d097aca08f2de212a25b",
+    "bytes": 114731512
    }
   }
  },
  "history": [
+  {
+   "build": 14,
+   "version": "0.3.11",
+   "notes": {
+    "fr": "Les repères de niveaux ne se chevauchent plus : chacun est bien visible et cliquable, même dans les quartiers serrés.",
+    "en": "Level markers no longer overlap: each one is clearly visible and tappable, even in crowded districts."
+   }
+  },
   {
    "build": 13,
    "version": "0.3.10",
