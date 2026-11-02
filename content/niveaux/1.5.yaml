@@ -1,0 +1,137 @@
+# Niveau 1.5 — Le terminal 5 : Git. Original academik ; notions vérifiées dans Pro Git, 2e éd. (chap. 2, bases de Git ; source citée, texte non repris).
+id: '1.5'
+module: 1
+duree_min: 17
+titre: { fr: 'Git', en: 'Git' }
+ia: { fr: 'Kintana garde l’historique de son travail : elle peut revenir en arrière et ne perd plus rien.', en: 'Kintana keeps the history of her work: she can go back and never loses anything again.' }
+sources:
+  - { titre: 'Pro Git, 2e éd. — chap. 2, Les bases de Git (S. Chacon, B. Straub)', url: 'https://git-scm.com/book/fr/v2/Les-bases-de-Git-Démarrer-un-dépôt-Git', licence: 'CC BY-NC-SA 3.0 (source citée, texte non repris)' }
+  - { titre: 'Documentation officielle de Git — gitignore', url: 'https://git-scm.com/docs/gitignore', licence: 'GPL-2.0 (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana vient de terminer une version de son projet et veut en **garder une trace** dans l’historique. Quelle commande fait cela ?'
+    en: 'Kintana has just finished a version of her project and wants to **keep a record** of it in the history. Which command does that?'
+    choix:
+      - { fr: '`git commit`', en: '`git commit`', juste: true }
+      - { fr: '`git status`', en: '`git status`' }
+      - { fr: '`git log`', en: '`git log`' }
+    explication: { fr: '`git commit` enregistre une version dans l’historique ; `status` et `log` ne font que regarder.', en: '`git commit` records a version in the history; `status` and `log` only look.' }
+  - id: c2
+    type: idee
+    fr: '**Git** garde l’historique d’un dossier : chaque version enregistrée s’appelle un **commit**. Un fichier passe par trois endroits : ton dossier de travail, la zone de préparation, puis l’historique.'
+    en: '**Git** keeps the history of a folder: each saved version is called a **commit**. A file goes through three places: your working folder, the staging area, then the history.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Le trajet d’un fichier', en: 'A file’s journey' }
+          noeuds: [{ fr: 'dossier de travail', en: 'working folder' }, { fr: '`git add` → zone de préparation', en: '`git add` → staging area' }, { fr: '`git commit` → historique', en: '`git commit` → history', ton: ok }]
+      legende: { fr: 'On choisit d’abord ce qu’on enregistre (`add`), puis on l’enregistre vraiment (`commit`).', en: 'First choose what to record (`add`), then actually record it (`commit`).' }
+  - id: d_premier
+    type: exemple
+    titre: { fr: 'Un premier commit', en: 'A first commit' }
+    lang: bash
+    etapes:
+      - { code: 'git init', fr: 'On crée l’historique dans le dossier courant. Git dit qu’il a initialisé un dépôt vide.', en: 'We create the history in the current folder. Git says it initialized an empty repository.' }
+      - { code: 'git add notes.txt', fr: 'On prépare le fichier `notes.txt` : il entre dans la zone de préparation.', en: 'We stage the file `notes.txt`: it enters the staging area.' }
+      - { code: 'git commit -m "première note"', fr: 'On enregistre. L’option `-m` donne le message qui décrit cette version.', en: 'We record it. The option `-m` gives the message that describes this version.' }
+      - { code: 'git log', fr: 'L’historique montre un commit, avec son message et sa date.', en: 'The history shows one commit, with its message and date.' }
+  - id: c3
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Écris la commande qui **prépare** le fichier `plan.md` avant un commit.'
+    en: 'Write the command that **stages** the file `plan.md` before a commit.'
+    reponses: ['git add plan.md']
+    verif: 'print("git add plan.md")'
+    indice: { fr: 'Le verbe qui ajoute à la zone de préparation est « add ».', en: 'The verb that adds to the staging area is “add”.' }
+    explication: { fr: '`git add plan.md` met `plan.md` dans la zone de préparation.', en: '`git add plan.md` puts `plan.md` in the staging area.' }
+  - id: d_status
+    type: idee
+    fr: '`git status` dit **où en sont tes fichiers**. Un fichier peut être non suivi, modifié, préparé ou déjà enregistré. Lance-le souvent : il dit aussi quelle commande taper ensuite.'
+    en: '`git status` tells you **where your files stand**. A file can be untracked, modified, staged or already recorded. Run it often: it also tells you which command to type next.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'État du fichier', en: 'File state' }, { fr: 'Ce que ça veut dire', en: 'What it means' }, { fr: 'Pour avancer', en: 'To move on' }]
+      cellules:
+        - [{ fr: 'non suivi', en: 'untracked' }, { fr: 'Git ne le connaît pas encore', en: 'Git does not know it yet' }, '`git add`']
+        - [{ fr: 'modifié', en: 'modified' }, { fr: 'changé depuis le dernier commit', en: 'changed since the last commit' }, '`git add`']
+        - [{ fr: 'préparé', en: 'staged' }, { fr: 'prêt à être enregistré', en: 'ready to be recorded' }, { fr: '`git commit`', en: '`git commit`', ton: ok }]
+      legende: { fr: 'Un fichier déjà enregistré et inchangé n’apparaît pas dans `git status`.', en: 'A file already recorded and unchanged does not appear in `git status`.' }
+  - id: d_p_add
+    type: piege
+    fr: '`git commit` n’enregistre **que ce qui a été préparé**. Un fichier modifié mais oublié par `git add` reste hors du commit : regarde `git status` avant.'
+    en: '`git commit` records **only what has been staged**. A modified file forgotten by `git add` stays out of the commit: check `git status` first.'
+  - id: c4
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Kintana modifie `main.py` puis tape directement `git commit -m "correction"`. Que contient le commit ?'
+    en: 'Kintana edits `main.py` and then types `git commit -m "fix"` right away. What does the commit contain?'
+    choix:
+      - { fr: 'La modification de `main.py`', en: 'The change to `main.py`' }
+      - { fr: 'Rien de nouveau : la modification n’a pas été préparée', en: 'Nothing new: the change was not staged', juste: true }
+      - { fr: 'Tout le dossier', en: 'The whole folder' }
+    explication: { fr: 'Sans `git add main.py`, la modification reste hors du commit.', en: 'Without `git add main.py`, the change stays out of the commit.' }
+  - id: d_message
+    type: idee
+    fr: 'Un bon message de commit dit **ce que change cette version**, en une courte phrase. Dans six mois, c’est ce qui te permettra de retrouver le bon moment dans l’historique.'
+    en: 'A good commit message says **what this version changes**, in one short sentence. In six months, it is what lets you find the right moment in the history.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Message', en: 'Message' }, { fr: 'Utile ?', en: 'Useful?' }]
+      cellules:
+        - ['`"truc"`', { fr: 'non : ne dit rien', en: 'no: says nothing', ton: bad }]
+        - ['`"modifs"`', { fr: 'non : trop vague', en: 'no: too vague', ton: bad }]
+        - ['`"corrige la boucle des notes"`', { fr: 'oui : précis', en: 'yes: precise', ton: ok }]
+      legende: { fr: 'Un message précis évite de rouvrir chaque commit pour comprendre.', en: 'A precise message avoids opening every commit to understand it.' }
+  - id: d_diff
+    type: idee
+    fr: '`git diff` montre **ce qui a changé** depuis le dernier commit : les lignes ajoutées commencent par `+`, les lignes retirées par `-`. On relit ses changements avant de les enregistrer.'
+    en: '`git diff` shows **what has changed** since the last commit: added lines start with `+`, removed lines with `-`. Read your changes before recording them.'
+    exemple: { fr: 'Si tu remplaces la ligne `note = 10` par `note = 12`, `git diff` affiche `-note = 10` puis `+note = 12`.', en: 'If you replace the line `note = 10` with `note = 12`, `git diff` shows `-note = 10` then `+note = 12`.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Écris la commande qui **affiche l’historique** des commits.'
+    en: 'Write the command that **shows the history** of commits.'
+    reponses: ['git log']
+    verif: 'print("git log")'
+    indice: { fr: 'Pense à un « journal » en anglais.', en: 'Think of a “log”.' }
+    explication: { fr: '`git log` liste les commits, du plus récent au plus ancien.', en: '`git log` lists the commits, from newest to oldest.' }
+  - id: d_ignore
+    type: idee
+    fr: 'Certains fichiers ne doivent **jamais** entrer dans l’historique : mots de passe, clés, fichiers générés. On les liste dans un fichier `.gitignore`, et Git les laisse de côté.'
+    en: 'Some files must **never** enter the history: passwords, keys, generated files. List them in a `.gitignore` file, and Git leaves them aside.'
+    exemple: { fr: 'Un `.gitignore` contenant `.env` et `*.log` : le fichier `.env` (qui cache une clé) et tous les `.log` ne sont plus proposés par `git status`.', en: 'A `.gitignore` containing `.env` and `*.log`: the `.env` file (which hides a key) and all `.log` files are no longer offered by `git status`.' }
+  - id: d_p_secret
+    type: piege
+    fr: 'Ignorer un fichier **après** l’avoir commité ne l’efface pas de l’historique : un secret publié est à considérer comme perdu. Mets-le dans `.gitignore` avant le premier commit.'
+    en: 'Ignoring a file **after** committing it does not erase it from the history: a published secret must be considered lost. Put it in `.gitignore` before the first commit.'
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel est l’**ordre** correct pour enregistrer une modification ?'
+    en: 'What is the correct **order** to record a change?'
+    choix:
+      - { fr: 'modifier le fichier → `git add` → `git commit`', en: 'edit the file → `git add` → `git commit`', juste: true }
+      - { fr: '`git commit` → `git add` → modifier le fichier', en: '`git commit` → `git add` → edit the file' }
+      - { fr: '`git add` → modifier le fichier → `git log`', en: '`git add` → edit the file → `git log`' }
+    explication: { fr: 'On modifie, on prépare, puis on enregistre.', en: 'We edit, stage, then record.' }
+  - id: c7
+    type: saisie
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Écris **la commande complète** qui enregistre les fichiers préparés avec le message `ajoute le plan`.'
+    en: 'Challenge. Write **the full command** that records the staged files with the message `ajoute le plan`.'
+    reponses: ['git commit -m "ajoute le plan"']
+    verif: 'print("git commit -m \"ajoute le plan\"")'
+    indice: { fr: '`git commit`, l’option du message, puis le message entre guillemets.', en: '`git commit`, the message option, then the message in quotes.' }
+    explication: { fr: '`-m` introduit le message, écrit entre guillemets.', en: '`-m` introduces the message, written in quotes.' }
+  - id: c8
+    type: retenir
+    fr: 'Modifier, `git add` (préparer), `git commit -m "message"` (enregistrer), `git log` (relire). `git status` dit où tu en es ; `.gitignore` écarte les secrets.'
+    en: 'Edit, `git add` (stage), `git commit -m "message"` (record), `git log` (read back). `git status` tells you where you are; `.gitignore` keeps secrets out.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Pro Git — Les bases de Git](https://git-scm.com/book/fr/v2/Les-bases-de-Git-Démarrer-un-dépôt-Git) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Pro Git — Git basics](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository); this optional reading needs a connection.

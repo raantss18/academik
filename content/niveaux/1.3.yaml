@@ -1,0 +1,162 @@
+# Niveau 1.3 — Le terminal 3 : droits. Original academik ; notions vérifiées dans le manuel GNU Coreutils (chmod, ls) et le manuel de Bash.
+id: '1.3'
+module: 1
+duree_min: 17
+titre: { fr: 'Droits', en: 'Permissions' }
+ia: { fr: 'Kintana protège ses fichiers : elle décide qui peut les lire, les modifier ou les lancer.', en: 'Kintana protects her files: she decides who may read, change or run them.' }
+sources:
+  - { titre: 'GNU Coreutils — chmod (modes de fichier)', url: 'https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+  - { titre: 'GNU Coreutils — ls -l', url: 'https://www.gnu.org/software/coreutils/manual/html_node/What-information-is-listed.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un fichier affiche `-rw-r--r--` dans `ls -l`. Qui peut le **modifier** ?'
+    en: 'A file shows `-rw-r--r--` in `ls -l`. Who can **change** it?'
+    choix:
+      - { fr: 'Tout le monde', en: 'Everyone' }
+      - { fr: 'Seulement son propriétaire', en: 'Only its owner', juste: true }
+      - { fr: 'Personne', en: 'No one' }
+    explication: { fr: 'Le `w` n’apparaît que dans le premier groupe, celui du propriétaire.', en: 'The `w` appears only in the first group, the owner’s.' }
+  - id: c2
+    type: idee
+    fr: 'Chaque fichier a trois **droits** : **r** (lire), **w** (écrire, donc modifier), **x** (exécuter, donc lancer). Ils sont donnés à trois groupes : le propriétaire, son groupe, et les autres.'
+    en: 'Each file has three **permissions**: **r** (read), **w** (write, so change), **x** (execute, so run). They are given to three groups: the owner, their group, and everyone else.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Pour `-rwxr-xr--`', en: 'For `-rwxr-xr--`' }, { fr: 'Lettres', en: 'Letters' }, { fr: 'Peut…', en: 'Can…' }]
+      cellules:
+        - [{ fr: 'propriétaire', en: 'owner' }, '`rwx`', { fr: 'lire, modifier, lancer', en: 'read, change, run', ton: ok }]
+        - [{ fr: 'son groupe', en: 'its group' }, '`r-x`', { fr: 'lire et lancer', en: 'read and run' }]
+        - [{ fr: 'les autres', en: 'others' }, '`r--`', { fr: 'seulement lire', en: 'read only', ton: bad }]
+      legende: { fr: 'Le premier caractère (`-` fichier, `d` dossier) vient avant les neuf lettres de droits.', en: 'The first character (`-` file, `d` folder) comes before the nine permission letters.' }
+  - id: d_lire
+    type: exemple
+    titre: { fr: 'Lire une ligne de `ls -l`', en: 'Reading a line of `ls -l`' }
+    lang: bash
+    etapes:
+      - { code: 'ls -l', fr: 'La commande liste les fichiers avec leurs droits. Une ligne ressemble à `-rw-r----- kintana 120 notes.txt`.', en: 'The command lists files with their permissions. A line looks like `-rw-r----- kintana 120 notes.txt`.' }
+      - { fr: 'Le `-` du début indique un fichier. Puis `rw-` : le propriétaire lit et modifie, sans lancer.', en: 'The leading `-` means a file. Then `rw-`: the owner reads and changes, without running.' }
+      - { fr: 'Ensuite `r--` : le groupe lit seulement. Enfin `---` : les autres n’ont aucun droit.', en: 'Then `r--`: the group only reads. Finally `---`: others have no permission at all.' }
+  - id: c3
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans `-rwxr-xr-x`, qui peut **lancer** le fichier ?'
+    en: 'In `-rwxr-xr-x`, who can **run** the file?'
+    choix:
+      - { fr: 'Seulement le propriétaire', en: 'Only the owner' }
+      - { fr: 'Le propriétaire, son groupe et les autres', en: 'The owner, its group and others', juste: true }
+      - { fr: 'Personne', en: 'No one' }
+    explication: { fr: 'Les trois groupes ont un `x` : `rwx`, `r-x` et `r-x`.', en: 'All three groups have an `x`: `rwx`, `r-x` and `r-x`.' }
+  - id: d_octal
+    type: idee
+    fr: 'On écrit aussi un droit par un chiffre : **r = 4**, **w = 2**, **x = 1**. On additionne les droits d’un groupe. Trois groupes, donc trois chiffres : `chmod 640 fichier`.'
+    en: 'A permission can also be written as a number: **r = 4**, **w = 2**, **x = 1**. Add up a group’s permissions. Three groups, so three digits: `chmod 640 file`.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Chiffre', en: 'Digit' }, { fr: 'Calcul', en: 'Sum' }, { fr: 'Lettres', en: 'Letters' }]
+      cellules:
+        - ['`7`', '$4+2+1$', '`rwx`']
+        - ['`6`', '$4+2$', '`rw-`']
+        - ['`5`', '$4+1$', '`r-x`']
+        - ['`4`', '$4$', '`r--`']
+        - ['`0`', '$0$', { fr: '`---`', en: '`---`', ton: bad }]
+      legende: { fr: '`640` = propriétaire `rw-`, groupe `r--`, autres `---`.', en: '`640` = owner `rw-`, group `r--`, others `---`.' }
+  - id: d_calc
+    type: exemple
+    titre: { fr: 'Du nombre aux lettres', en: 'From the number to the letters' }
+    etapes:
+      - { fr: 'On veut traduire `750`. On lit les trois chiffres un par un : `7`, `5`, `0`.', en: 'We want to translate `750`. Read the three digits one by one: `7`, `5`, `0`.' }
+      - { fr: '`7` vaut $4+2+1$ : `rwx`. `5` vaut $4+1$ : `r-x`. `0` : `---`.', en: '`7` is $4+2+1$: `rwx`. `5` is $4+1$: `r-x`. `0`: `---`.' }
+      - { fr: 'Donc `750` s’écrit `rwxr-x---` : le propriétaire fait tout, son groupe lit et lance, les autres n’ont rien.', en: 'So `750` is written `rwxr-x---`: the owner can do everything, their group reads and runs, others get nothing.' }
+  - id: c4
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quel nombre à trois chiffres correspond à `rw-r-----` ?'
+    en: 'Which three-digit number matches `rw-r-----`?'
+    reponses: ['640']
+    verif: 'print(4+2, 4, 0, sep="")'
+    indice: { fr: 'Additionne séparément `rw-`, `r--` et `---`.', en: 'Add `rw-`, `r--` and `---` separately.' }
+    explication: { fr: '`rw-` = 6, `r--` = 4, `---` = 0 : on obtient `640`.', en: '`rw-` = 6, `r--` = 4, `---` = 0: we get `640`.' }
+  - id: c5
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le fichier `secret.txt` est lisible par tous. **Rends-le privé** : lecture et écriture pour toi seul (`rw-------`).'
+    en: 'The file `secret.txt` is readable by everyone. **Make it private**: read and write for you alone (`rw-------`).'
+    fs:
+      home:
+        kintana:
+          docs: { 'secret.txt': "mot de passe de test\n" }
+    cwd: /home/kintana/docs
+    attendu: { modes: { '/home/kintana/docs/secret.txt': '600' } }
+    solution: ['chmod 600 secret.txt']
+    indice: { fr: 'Propriétaire `rw-` = 6 ; groupe et autres `---` = 0 chacun.', en: 'Owner `rw-` = 6; group and others `---` = 0 each.' }
+    explication: { fr: '`chmod 600` donne `rw-` au propriétaire et rien aux autres.', en: '`chmod 600` gives `rw-` to the owner and nothing to the others.' }
+  - id: d_sym
+    type: idee
+    fr: 'On peut aussi **modifier** un droit sans tout réécrire : `chmod u+x f` ajoute `x` au propriétaire (`u`). `g-w` retire `w` au groupe, `o-r` retire `r` aux autres.'
+    en: 'You can also **change** one permission without rewriting everything: `chmod u+x f` adds `x` for the owner (`u`). `g-w` removes `w` from the group, `o-r` removes `r` from others.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Lettre', en: 'Letter' }, { fr: 'Qui ?', en: 'Who?' }, { fr: 'Signe', en: 'Sign' }]
+      cellules:
+        - ['`u`', { fr: 'propriétaire (user)', en: 'owner (user)' }, { fr: '`+` ajoute', en: '`+` adds', ton: ok }]
+        - ['`g`', { fr: 'groupe', en: 'group' }, { fr: '`-` retire', en: '`-` removes', ton: bad }]
+        - ['`o`', { fr: 'autres (others)', en: 'others' }, { fr: '`a` : tout le monde', en: '`a`: everyone' }]
+      legende: { fr: '`chmod o-r notes.txt` : les autres ne lisent plus `notes.txt`.', en: '`chmod o-r notes.txt`: others no longer read `notes.txt`.' }
+  - id: c6
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le fichier `lance.sh` est en `rw-r--r--`. **Ajoute le droit de le lancer** au propriétaire, sans toucher aux autres droits.'
+    en: 'The file `lance.sh` is `rw-r--r--`. **Add the right to run it** for the owner, without touching the other permissions.'
+    fs:
+      home:
+        kintana:
+          docs: { 'lance.sh': "echo bonjour\n" }
+    cwd: /home/kintana/docs
+    attendu: { modes: { '/home/kintana/docs/lance.sh': '744' } }
+    solution: ['chmod u+x lance.sh']
+    indice: { fr: 'Le propriétaire s’écrit `u` ; on veut `+` puis la lettre du droit « lancer ».', en: 'The owner is `u`; we want `+` then the letter of the “run” permission.' }
+    explication: { fr: '`u+x` ajoute `x` au propriétaire : `rw-` devient `rwx`, d’où `744`.', en: '`u+x` adds `x` for the owner: `rw-` becomes `rwx`, hence `744`.' }
+  - id: d_p_777
+    type: piege
+    fr: '`chmod 777` donne **tous les droits à tout le monde** : n’importe qui peut modifier le fichier. Donne le minimum nécessaire, surtout pour un secret ou un script.'
+    en: '`chmod 777` gives **every permission to everyone**: anyone can change the file. Give the minimum necessary, especially for a secret or a script.'
+  - id: d_dossier
+    type: idee
+    fr: 'Pour un **dossier**, les lettres changent de sens. `r` permet de lister son contenu. `w` permet d’y créer ou supprimer des fichiers. `x` permet d’y entrer avec `cd`.'
+    en: 'For a **folder**, the letters change meaning. `r` lets you list its content. `w` lets you create or delete files in it. `x` lets you enter it with `cd`.'
+    exemple: { fr: 'Un dossier `drwxr-xr-x` (`755`) : tous peuvent y entrer et le lister, seul le propriétaire peut y ajouter ou retirer des fichiers.', en: 'A folder `drwxr-xr-x` (`755`): everyone can enter and list it, only the owner can add or remove files.' }
+  - id: c7
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Kintana veut qu’un script soit **lancé par tous mais modifié par elle seule**. Quel mode choisir ?'
+    en: 'Kintana wants a script **run by everyone but changed only by her**. Which mode should she choose?'
+    choix:
+      - { fr: '`777`', en: '`777`' }
+      - { fr: '`755`', en: '`755`', juste: true }
+      - { fr: '`600`', en: '`600`' }
+    explication: { fr: '`755` = `rwxr-xr-x` : tous lisent et lancent, seul le propriétaire écrit.', en: '`755` = `rwxr-xr-x`: everyone reads and runs, only the owner writes.' }
+  - id: c8
+    type: terminal
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. `cle.txt` est `rw-rw-rw-`. En **une seule commande**, mets-le en lecture seule pour toi et sans aucun droit pour les autres (`r--------`).'
+    en: 'Challenge. `cle.txt` is `rw-rw-rw-`. In **a single command**, make it read-only for you and with no permission for others (`r--------`).'
+    fs:
+      home:
+        kintana:
+          docs: { 'cle.txt': "cle de test\n" }
+    cwd: /home/kintana/docs
+    attendu: { modes: { '/home/kintana/docs/cle.txt': '400' } }
+    solution: ['chmod 400 cle.txt']
+    indice: { fr: 'Propriétaire : lecture seule = 4. Les deux autres groupes : 0.', en: 'Owner: read-only = 4. The other two groups: 0.' }
+    explication: { fr: '`400` = `r--------`.', en: '`400` = `r--------`.' }
+  - id: c9
+    type: retenir
+    fr: '`r` lit (4), `w` écrit (2), `x` lance (1), pour le propriétaire, son groupe, puis les autres. `chmod 600` pour un secret, `755` pour un script partagé.'
+    en: '`r` reads (4), `w` writes (2), `x` runs (1), for the owner, its group, then others. `chmod 600` for a secret, `755` for a shared script.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [GNU Coreutils — chmod](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [GNU Coreutils — chmod](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html); this optional reading needs a connection.

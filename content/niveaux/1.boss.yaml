@@ -1,0 +1,156 @@
+# Niveau 1.boss — Le fichier caché (mission cyber défensive, flag local). Original academik ; notions vérifiées dans les manuels GNU Coreutils (ls -a, chmod, cat), GNU grep et GNU Bash (pipelines).
+id: '1.boss'
+module: 1
+duree_min: 18
+titre: { fr: 'Le fichier caché', en: 'The hidden file' }
+ia: { fr: 'Kintana mène une petite enquête dans un dossier : elle retrouve un fichier caché, le protège et compte les erreurs d’un journal.', en: 'Kintana runs a small investigation in a folder: she finds a hidden file, protects it and counts the errors of a log.' }
+sources:
+  - { titre: 'GNU Coreutils — ls, cat, chmod, wc, sort, uniq', url: 'https://www.gnu.org/software/coreutils/manual/html_node/index.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+  - { titre: 'GNU grep manual', url: 'https://www.gnu.org/software/grep/manual/grep.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un fichier dont le nom commence par un point, comme `.cle`, n’apparaît pas avec un simple `ls`. Quelle option le montre ?'
+    en: 'A file whose name starts with a dot, like `.cle`, does not show with a plain `ls`. Which option shows it?'
+    choix:
+      - { fr: '`ls -a`', en: '`ls -a`', juste: true }
+      - { fr: '`ls -r`', en: '`ls -r`' }
+      - { fr: '`ls -n`', en: '`ls -n`' }
+    explication: { fr: '`-a` (« all ») affiche aussi les fichiers cachés, dont le nom commence par un point.', en: '`-a` (“all”) also shows hidden files, whose name starts with a dot.' }
+  - id: c2
+    type: idee
+    fr: 'Mission : un dossier d’enquête contient un fichier **caché** avec une clé de test. Il faut le trouver, le lire, puis le **protéger**. Tu as déjà tous les outils des niveaux 1.1 à 1.4.'
+    en: 'Mission: an investigation folder contains a **hidden** file with a test key. You must find it, read it, then **protect** it. You already have every tool from levels 1.1 to 1.4.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Plan de la mission', en: 'Mission plan' }
+          noeuds: [{ fr: '`ls -a` : trouver', en: '`ls -a`: find' }, { fr: '`cat` : lire', en: '`cat`: read' }, { fr: '`chmod 600` : protéger', en: '`chmod 600`: protect' }, { fr: '`grep`, `wc` : analyser', en: '`grep`, `wc`: analyse', ton: ok }]
+      legende: { fr: 'Une enquête suit toujours le même fil : observer, lire, sécuriser, mesurer.', en: 'An investigation always follows the same thread: observe, read, secure, measure.' }
+  - id: d_cache
+    type: exemple
+    titre: { fr: 'Voir ce qui est caché', en: 'Seeing what is hidden' }
+    lang: bash
+    etapes:
+      - { code: 'ls', fr: 'Dans `enquete`, `ls` montre `journal.log` et `rapport.txt`. Rien d’autre ne semble là.', en: 'In `enquete`, `ls` shows `journal.log` and `rapport.txt`. Nothing else seems to be there.' }
+      - { code: 'ls -a', fr: 'Avec `-a`, un troisième nom apparaît : `.indice`. Les noms qui commencent par un point sont cachés par défaut.', en: 'With `-a`, a third name appears: `.indice`. Names that start with a dot are hidden by default.' }
+      - { code: 'cat .indice', fr: '`cat` affiche son contenu. Un fichier caché n’est pas secret : il est seulement discret.', en: '`cat` shows its content. A hidden file is not secret: it is merely discreet.' }
+  - id: d_nom
+    type: idee
+    fr: 'Le point fait **partie du nom** : le fichier caché s’appelle `.cle`, pas `cle`. Il faut donc l’écrire avec son point dans `cat`, `cp`, `chmod`.'
+    en: 'The dot is **part of the name**: the hidden file is called `.cle`, not `cle`. So write it with its dot in `cat`, `cp`, `chmod`.'
+    exemple: { fr: '`cat cle` répond « Aucun fichier ou dossier de ce type » ; `cat .cle` affiche la clé.', en: '`cat cle` answers “No such file or directory”; `cat .cle` shows the key.' }
+  - id: d_ordre
+    type: idee
+    fr: 'Dans une mission, l’**ordre** des gestes compte : on observe avant d’agir, on copie avant de verrouiller, on vérifie à la fin. Un `chmod 000` posé trop tôt te bloque toi-même.'
+    en: 'In a mission, the **order** of moves matters: observe before acting, copy before locking, check at the end. A `chmod 000` applied too early locks you out.'
+    exemple: { fr: 'Si tu tapes d’abord `chmod 000 .cle`, le `cat .cle` suivant répond « Permission non accordée » ; il fallait lire avant.', en: 'If you type `chmod 000 .cle` first, the following `cat .cle` answers “Permission denied”; you should have read first.' }
+  - id: c1b
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Écris la commande qui **liste tous les fichiers**, cachés compris.'
+    en: 'Write the command that **lists all files**, hidden ones included.'
+    reponses: ['ls -a']
+    verif: 'print("ls -a")'
+    indice: { fr: 'C’est `ls` avec l’option qui veut dire « all ».', en: 'It is `ls` with the option that means “all”.' }
+    explication: { fr: '`ls -a` affiche aussi les noms qui commencent par un point.', en: '`ls -a` also shows names that start with a dot.' }
+  - id: c3
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Dans `~/enquete`, trouve le fichier caché et **copie son contenu** dans `trouve.txt`.'
+    en: 'In `~/enquete`, find the hidden file and **copy its content** into `trouve.txt`.'
+    fs:
+      home:
+        kintana:
+          enquete: { 'journal.log': "ok\n", 'rapport.txt': "rien à signaler\n", '.cle': "FLAG{kintana-terminal}\n" }
+    cwd: /home/kintana/enquete
+    attendu: { fichiers: { '/home/kintana/enquete/trouve.txt': 'FLAG{kintana-terminal}' } }
+    solution: ['ls -a', 'cat .cle > trouve.txt']
+    indice: { fr: 'Commence par `ls -a` pour voir le nom caché, puis `cat` suivi du nom et `>`.', en: 'Start with `ls -a` to see the hidden name, then `cat` followed by the name and `>`.' }
+    explication: { fr: '`ls -a` révèle `.cle` ; `cat .cle > trouve.txt` en copie le contenu.', en: '`ls -a` reveals `.cle`; `cat .cle > trouve.txt` copies its content.' }
+  - id: d_droits
+    type: idee
+    fr: 'Un secret doit être lisible **par toi seul**. Tu l’as vu au niveau 1.3 : `chmod 600` donne lecture et écriture au propriétaire, rien aux autres. C’est le réflexe de base pour une clé.'
+    en: 'A secret must be readable **by you alone**. You saw it in level 1.3: `chmod 600` gives read and write to the owner, nothing to others. It is the basic reflex for a key.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Fichier', en: 'File' }, { fr: 'Mode', en: 'Mode' }, { fr: 'Verdict', en: 'Verdict' }]
+      cellules:
+        - ['`.cle`', '`rw-r--r--` (644)', { fr: 'lisible par tous : à corriger', en: 'readable by all: to fix', ton: bad }]
+        - ['`.cle`', '`rw-------` (600)', { fr: 'privé : correct', en: 'private: correct', ton: ok }]
+        - ['`rapport.txt`', '`rw-r--r--` (644)', { fr: 'public : acceptable', en: 'public: acceptable' }]
+      legende: { fr: 'Le bon mode dépend du contenu : une clé est privée, un rapport peut être partagé.', en: 'The right mode depends on the content: a key is private, a report may be shared.' }
+  - id: c4
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le fichier `.cle` est lisible par tous. **Rends-le privé** (lecture et écriture pour toi seul).'
+    en: 'The file `.cle` is readable by everyone. **Make it private** (read and write for you alone).'
+    fs:
+      home:
+        kintana:
+          enquete: { 'journal.log': "ok\n", '.cle': "FLAG{kintana-terminal}\n" }
+    cwd: /home/kintana/enquete
+    attendu: { modes: { '/home/kintana/enquete/.cle': '600' } }
+    solution: ['chmod 600 .cle']
+    indice: { fr: '`chmod`, le nombre à trois chiffres du mode privé, puis le nom du fichier avec son point.', en: '`chmod`, the three-digit number of the private mode, then the file name with its dot.' }
+    explication: { fr: '`chmod 600 .cle` : `rw-` pour toi, `---` pour le groupe et les autres.', en: '`chmod 600 .cle`: `rw-` for you, `---` for the group and others.' }
+  - id: d_journal
+    type: exemple
+    titre: { fr: 'Analyser un journal', en: 'Analysing a log' }
+    lang: bash
+    etapes:
+      - { fr: 'Le fichier `serveur.log` contient une ligne par événement : `OK`, `ERREUR`, `OK`, `ERREUR`, `ERREUR`, `OK`, `OK`.', en: 'The file `serveur.log` contains one line per event: `OK`, `ERREUR`, `OK`, `ERREUR`, `ERREUR`, `OK`, `OK`.' }
+      - { code: 'grep ERREUR serveur.log', fr: '`grep` garde les trois lignes `ERREUR`.', en: '`grep` keeps the three `ERREUR` lines.' }
+      - { code: 'grep ERREUR serveur.log | wc -l', fr: 'Avec le tuyau, `wc -l` les compte : `3`. C’est la combinaison du niveau 1.4.', en: 'With the pipe, `wc -l` counts them: `3`. This is the combination from level 1.4.' }
+  - id: c5
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Compte les lignes `ERREUR` de `journal.log` et **écris le nombre** dans `erreurs.txt`.'
+    en: 'Count the `ERREUR` lines of `journal.log` and **write the number** into `erreurs.txt`.'
+    fs:
+      home:
+        kintana:
+          enquete: { 'journal.log': "OK\nERREUR\nOK\nERREUR\nERREUR\nOK\nERREUR\nOK\n", '.cle': "FLAG{kintana-terminal}\n" }
+    cwd: /home/kintana/enquete
+    attendu: { fichiers: { '/home/kintana/enquete/erreurs.txt': '4' } }
+    solution: ['grep ERREUR journal.log | wc -l > erreurs.txt']
+    indice: { fr: 'Filtre, tuyau, compte, redirection : les quatre outils du niveau 1.4.', en: 'Filter, pipe, count, redirect: the four tools of level 1.4.' }
+    explication: { fr: 'Quatre lignes contiennent `ERREUR`.', en: 'Four lines contain `ERREUR`.' }
+  - id: d_p_cache
+    type: piege
+    fr: 'Cacher un fichier **ne le protège pas** : n’importe qui tape `ls -a`. Seuls les droits (`chmod`) et le fait de ne pas le publier protègent vraiment un secret.'
+    en: 'Hiding a file **does not protect it**: anyone types `ls -a`. Only permissions (`chmod`) and not publishing it really protect a secret.'
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Quelle commande **compte les visiteurs distincts** d’un fichier `acces.log` ?'
+    en: 'Which command **counts the distinct visitors** of a file `acces.log`?'
+    choix:
+      - { fr: '`sort acces.log | uniq | wc -l`', en: '`sort acces.log | uniq | wc -l`', juste: true }
+      - { fr: '`uniq acces.log | sort`', en: '`uniq acces.log | sort`' }
+      - { fr: '`wc -l acces.log | sort`', en: '`wc -l acces.log | sort`' }
+    explication: { fr: 'Il faut trier, retirer les doublons côte à côte, puis compter.', en: 'You must sort, remove adjacent duplicates, then count.' }
+  - id: c7
+    type: terminal
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi final. Dans `~/enquete` : copie le contenu de `.cle` dans `rapport.txt`, **puis** rends `.cle` privé. Deux gestes, dans cet ordre.'
+    en: 'Final challenge. In `~/enquete`: copy the content of `.cle` into `rapport.txt`, **then** make `.cle` private. Two moves, in this order.'
+    fs:
+      home:
+        kintana:
+          enquete: { 'journal.log': "ok\n", 'rapport.txt': "vide\n", '.cle': "FLAG{kintana-terminal}\n" }
+    cwd: /home/kintana/enquete
+    attendu: { fichiers: { '/home/kintana/enquete/rapport.txt': 'FLAG{kintana-terminal}' }, modes: { '/home/kintana/enquete/.cle': '600' } }
+    solution: ['cat .cle > rapport.txt', 'chmod 600 .cle']
+    indice: { fr: 'Une redirection `>` pour copier le contenu, puis `chmod` pour fermer l’accès.', en: 'A `>` redirection to copy the content, then `chmod` to close access.' }
+    explication: { fr: 'D’abord on lit et on copie, ensuite on verrouille : l’ordre évite de se couper l’accès.', en: 'First read and copy, then lock: this order avoids cutting off your own access.' }
+  - id: c8
+    type: retenir
+    fr: '`ls -a` montre les fichiers cachés, `cat` lit, `chmod 600` protège un secret, `grep | wc -l` compte. Cacher n’est pas protéger : ce sont les droits qui protègent.'
+    en: '`ls -a` shows hidden files, `cat` reads, `chmod 600` protects a secret, `grep | wc -l` counts. Hiding is not protecting: permissions protect.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [GNU Coreutils — ls, chmod](https://www.gnu.org/software/coreutils/manual/html_node/index.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [GNU Coreutils — ls, chmod](https://www.gnu.org/software/coreutils/manual/html_node/index.html); this optional reading needs a connection.

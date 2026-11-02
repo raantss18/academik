@@ -1,0 +1,157 @@
+# Niveau 1.4 — Le terminal 4 : tuyaux. Original academik ; notions vérifiées dans le manuel GNU Coreutils (wc, sort, uniq, head, tail), le manuel de grep et le manuel de Bash (pipelines).
+id: '1.4'
+module: 1
+duree_min: 17
+titre: { fr: 'Tuyaux', en: 'Pipes' }
+ia: { fr: 'Kintana enchaîne de petites commandes pour trier, compter et filtrer ses fichiers.', en: 'Kintana chains small commands to sort, count and filter her files.' }
+sources:
+  - { titre: 'GNU Coreutils — wc, sort, uniq, head, tail', url: 'https://www.gnu.org/software/coreutils/manual/html_node/index.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+  - { titre: 'GNU grep manual', url: 'https://www.gnu.org/software/grep/manual/grep.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+  - { titre: 'GNU Bash Reference Manual — Pipelines', url: 'https://www.gnu.org/software/bash/manual/bash.html#Pipelines', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un fichier contient `a`, `b`, `a` (une valeur par ligne). Combien de lignes `wc -l` compte-t-il ?'
+    en: 'A file contains `a`, `b`, `a` (one value per line). How many lines does `wc -l` count?'
+    choix:
+      - { fr: '`2`', en: '`2`' }
+      - { fr: '`3`', en: '`3`', juste: true }
+      - { fr: '`1`', en: '`1`' }
+    explication: { fr: '`wc -l` compte les lignes, doublons compris : ici trois.', en: '`wc -l` counts lines, duplicates included: three here.' }
+  - id: c2
+    type: idee
+    fr: 'Chaque commande du terminal fait **une petite chose** : compter, trier, filtrer. Ensemble, elles font de grandes choses. Voici cinq outils de lecture.'
+    en: 'Each terminal command does **one small thing**: count, sort, filter. Together, they do big things. Here are five reading tools.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Commande', en: 'Command' }, { fr: 'Elle fait…', en: 'It does…' }]
+      cellules:
+        - ['`cat f`', { fr: 'affiche tout le fichier', en: 'shows the whole file' }]
+        - ['`head -n 2 f`', { fr: 'affiche les 2 premières lignes', en: 'shows the first 2 lines' }]
+        - ['`tail -n 2 f`', { fr: 'affiche les 2 dernières lignes', en: 'shows the last 2 lines' }]
+        - ['`wc -l f`', { fr: 'compte les lignes', en: 'counts the lines' }]
+        - ['`grep mot f`', { fr: 'garde les lignes qui contiennent « mot »', en: 'keeps the lines that contain “word”' }]
+      legende: { fr: '`grep -c mot f` compte ces lignes ; `grep -v mot f` garde les autres.', en: '`grep -c word f` counts those lines; `grep -v word f` keeps the others.' }
+  - id: d_pipe
+    type: idee
+    fr: 'Le **tuyau** `|` envoie la sortie d’une commande à l’entrée de la suivante. On lit de gauche à droite : `grep pomme f | wc -l` filtre d’abord, puis compte.'
+    en: 'The **pipe** `|` sends the output of one command to the input of the next. Read from left to right: `grep pomme f | wc -l` filters first, then counts.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: '`grep pomme f \| wc -l`', en: '`grep pomme f \| wc -l`' }
+          noeuds: [{ fr: 'fichier `f`', en: 'file `f`' }, { fr: '`grep` garde les lignes « pomme »', en: '`grep` keeps the “pomme” lines' }, { fr: '`wc -l` les compte', en: '`wc -l` counts them' }, { fr: 'un nombre', en: 'a number', ton: ok }]
+      legende: { fr: 'Aucun fichier intermédiaire : la sortie de `grep` passe directement à `wc`.', en: 'No intermediate file: the output of `grep` goes straight to `wc`.' }
+  - id: d_ex1
+    type: exemple
+    titre: { fr: 'Compter les lignes qui contiennent un mot', en: 'Counting the lines that contain a word' }
+    lang: bash
+    etapes:
+      - { fr: 'Le fichier `fruits.txt` contient six lignes : `pomme`, `banane`, `pomme`, `cerise`, `banane`, `pomme`.', en: 'The file `fruits.txt` contains six lines: `pomme`, `banane`, `pomme`, `cerise`, `banane`, `pomme`.' }
+      - { code: 'grep banane fruits.txt', fr: '`grep` garde seulement les deux lignes `banane`.', en: '`grep` keeps only the two `banane` lines.' }
+      - { code: 'grep banane fruits.txt | wc -l', fr: 'Avec le tuyau, `wc -l` compte ces lignes : la réponse est `2`.', en: 'With the pipe, `wc -l` counts those lines: the answer is `2`.' }
+  - id: c3
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Compte les lignes du fichier `fruits.txt` et **écris le résultat** dans `nb.txt` (avec `>`).'
+    en: 'Count the lines of the file `fruits.txt` and **write the result** into `nb.txt` (with `>`).'
+    fs:
+      home:
+        kintana:
+          docs: { 'fruits.txt': "pomme\nbanane\npomme\ncerise\nbanane\npomme\n" }
+    cwd: /home/kintana/docs
+    attendu: { fichiers: { '/home/kintana/docs/nb.txt': '6 fruits.txt' } }
+    solution: ['wc -l fruits.txt > nb.txt']
+    indice: { fr: '`wc -l` suivi du nom du fichier, puis `>` et le nom du fichier de sortie.', en: '`wc -l` followed by the file name, then `>` and the output file name.' }
+    explication: { fr: '`wc -l fruits.txt` affiche `6 fruits.txt`, que `>` range dans `nb.txt`.', en: '`wc -l fruits.txt` prints `6 fruits.txt`, which `>` stores in `nb.txt`.' }
+  - id: c4
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Avec **un tuyau**, compte les lignes `pomme` de `fruits.txt` et range le nombre dans `pommes.txt`.'
+    en: 'With **a pipe**, count the `pomme` lines of `fruits.txt` and store the number in `pommes.txt`.'
+    fs:
+      home:
+        kintana:
+          docs: { 'fruits.txt': "pomme\nbanane\npomme\ncerise\nbanane\npomme\n" }
+    cwd: /home/kintana/docs
+    attendu: { fichiers: { '/home/kintana/docs/pommes.txt': '3' } }
+    solution: ['grep pomme fruits.txt | wc -l > pommes.txt']
+    indice: { fr: 'Filtre avec `grep`, tuyau `|`, compte avec `wc -l`, puis `>`.', en: 'Filter with `grep`, pipe `|`, count with `wc -l`, then `>`.' }
+    explication: { fr: '`grep` garde les trois lignes `pomme`, `wc -l` les compte : `3`.', en: '`grep` keeps the three `pomme` lines, `wc -l` counts them: `3`.' }
+  - id: d_sort
+    type: idee
+    fr: '`sort` range les lignes par ordre alphabétique. `uniq` supprime les lignes **identiques qui se suivent**. Donc `sort f | uniq` donne la liste sans doublons.'
+    en: '`sort` arranges lines in alphabetical order. `uniq` removes **identical lines that follow each other**. So `sort f | uniq` gives the list without duplicates.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Lignes de départ', en: 'Starting lines' }, { fr: 'Après `sort`', en: 'After `sort`' }, { fr: 'Après `uniq`', en: 'After `uniq`' }]
+      cellules:
+        - ['`pomme`', '`banane`', '`banane`']
+        - ['`banane`', '`banane`', '`pomme`']
+        - ['`pomme`', '`pomme`', { fr: '(supprimée)', en: '(removed)', ton: bad }]
+        - ['`banane`', '`pomme`', { fr: '(supprimée)', en: '(removed)', ton: bad }]
+      legende: { fr: 'Les doublons se retrouvent côte à côte après `sort` : `uniq` peut alors les retirer.', en: 'Duplicates end up side by side after `sort`: `uniq` can then remove them.' }
+  - id: d_p_uniq
+    type: piege
+    fr: '`uniq` seul ne retire pas les doublons éloignés : `pomme`, `banane`, `pomme` reste inchangé. Trie d’abord avec `sort`, puis passe par `uniq`.'
+    en: '`uniq` alone does not remove distant duplicates: `pomme`, `banane`, `pomme` stays unchanged. Sort first with `sort`, then pass through `uniq`.'
+  - id: c5
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Écris dans `distincts.txt` la liste **triée et sans doublon** des fruits de `fruits.txt`.'
+    en: 'Write into `distincts.txt` the **sorted, duplicate-free** list of the fruits in `fruits.txt`.'
+    fs:
+      home:
+        kintana:
+          docs: { 'fruits.txt': "pomme\nbanane\npomme\ncerise\nbanane\npomme\n" }
+    cwd: /home/kintana/docs
+    attendu: { fichiers: { '/home/kintana/docs/distincts.txt': "banane\ncerise\npomme" } }
+    solution: ['sort fruits.txt | uniq > distincts.txt']
+    indice: { fr: '`sort` d’abord, puis `uniq`, reliés par un tuyau ; termine par `>`.', en: '`sort` first, then `uniq`, joined by a pipe; end with `>`.' }
+    explication: { fr: '`sort` met les doublons côte à côte, `uniq` les fusionne, `>` enregistre.', en: '`sort` puts duplicates side by side, `uniq` merges them, `>` saves.' }
+  - id: d_ex2
+    type: exemple
+    titre: { fr: 'Un journal de connexions', en: 'A connection log' }
+    lang: bash
+    etapes:
+      - { fr: 'Le fichier `acces.log` contient une ligne par visite, avec le nom du visiteur : `ana`, `rado`, `ana`, `ana`, `rado`, `soa`.', en: 'The file `acces.log` contains one line per visit, with the visitor’s name: `ana`, `rado`, `ana`, `ana`, `rado`, `soa`.' }
+      - { code: 'sort acces.log | uniq', fr: 'On obtient `ana`, `rado`, `soa` : trois visiteurs différents.', en: 'We get `ana`, `rado`, `soa`: three different visitors.' }
+      - { code: 'sort acces.log | uniq | wc -l', fr: 'En ajoutant `wc -l`, on compte les visiteurs distincts : `3`.', en: 'Adding `wc -l` counts the distinct visitors: `3`.' }
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Combien de lignes affiche `sort acces.log | uniq` si `acces.log` contient `x`, `y`, `x`, `x`, `z`, `y` ?'
+    en: 'How many lines does `sort acces.log | uniq` print if `acces.log` contains `x`, `y`, `x`, `x`, `z`, `y`?'
+    reponses: ['3']
+    verif: 'print(len(set(["x","y","x","x","z","y"])))'
+    indice: { fr: 'Compte les valeurs différentes.', en: 'Count the different values.' }
+    explication: { fr: 'Il y a trois valeurs distinctes : `x`, `y` et `z`.', en: 'There are three distinct values: `x`, `y` and `z`.' }
+  - id: d_redirige
+    type: idee
+    fr: 'On peut mélanger `|` et `>` : le tuyau relie des commandes entre elles, la redirection `>` enregistre le **résultat final** dans un fichier.'
+    en: 'You can mix `|` and `>`: the pipe joins commands together, the redirection `>` saves the **final result** in a file.'
+    exemple: { fr: '`sort acces.log | uniq | wc -l > nb-visiteurs.txt` : trie, retire les doublons, compte, puis range le nombre.', en: '`sort acces.log | uniq | wc -l > nb-visiteurs.txt`: sort, remove duplicates, count, then store the number.' }
+  - id: c7
+    type: terminal
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Le fichier `acces.log` liste des visiteurs. Écris dans `nb.txt` **le nombre de visiteurs différents**.'
+    en: 'Challenge. The file `acces.log` lists visitors. Write into `nb.txt` **the number of different visitors**.'
+    fs:
+      home:
+        kintana:
+          docs: { 'acces.log': "ana\nrado\nana\nana\nrado\nsoa\nsoa\nmiora\n" }
+    cwd: /home/kintana/docs
+    attendu: { fichiers: { '/home/kintana/docs/nb.txt': '4' } }
+    solution: ['sort acces.log | uniq | wc -l > nb.txt']
+    indice: { fr: 'Trie, retire les doublons, compte les lignes, puis redirige vers `nb.txt`.', en: 'Sort, remove duplicates, count the lines, then redirect to `nb.txt`.' }
+    explication: { fr: 'Quatre visiteurs distincts : `ana`, `miora`, `rado`, `soa`.', en: 'Four distinct visitors: `ana`, `miora`, `rado`, `soa`.' }
+  - id: c8
+    type: retenir
+    fr: '`|` relie deux commandes : la sortie de l’une devient l’entrée de l’autre. `sort | uniq` supprime les doublons, `grep` filtre, `wc -l` compte.'
+    en: '`|` joins two commands: the output of one becomes the input of the other. `sort | uniq` removes duplicates, `grep` filters, `wc -l` counts.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Le manuel de GNU grep](https://www.gnu.org/software/grep/manual/grep.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [the GNU grep manual](https://www.gnu.org/software/grep/manual/grep.html); this optional reading needs a connection.
