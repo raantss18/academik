@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 17,
-  "version": "0.3.14",
+  "build": 18,
+  "version": "0.3.15",
   "notes": {
-   "fr": "Le cours s'agrandit : le module 1 (le terminal) et le module 2 (Python) sont complets, et un nouveau quartier, « Données », t'apprend à lire, nettoyer, résumer et tester des données sans te laisser piéger par une fuite d'information.",
-   "en": "The course grows: module 1 (the terminal) and module 2 (Python) are complete, and a new district, “Data”, teaches you to read, clean, summarise and test data without falling for an information leak."
+   "fr": "Les messages de mise à jour sont de nouveau lisibles sur la carte : une petite fiche claire, qui ne cache plus la ville ni les boutons.",
+   "en": "Update messages are readable again on the map: a small, clear card that no longer hides the city or the buttons."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.14/academik-0.3.14.apk",
-    "sha256": "a28a3d955062099a1878926c6c612a302d723740dfc0730ca8e2052cabf867c1",
-    "bytes": 10434260
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.15/academik-0.3.15.apk",
+    "sha256": "5e74f38cd8ae1f435ee54a7a702ee2edbc2d08b8adb65eeb4de288e2b901867b",
+    "bytes": 10434680
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.14/academik-0.3.14-x86_64.AppImage",
-    "sha256": "e5610a92c8bd42dcb9bb05ba71da1aae45573af9f04d553718342b558fcd28cf",
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.15/academik-0.3.15-x86_64.AppImage",
+    "sha256": "113f2fe6cb944a06b6191d7f4ded7ce0830e0315eddbd45d357010cb3ff791e4",
     "bytes": 114936312
    }
   }
  },
  "history": [
+  {
+   "build": 17,
+   "version": "0.3.14",
+   "notes": {
+    "fr": "Le cours s'agrandit : le module 1 (le terminal) et le module 2 (Python) sont complets, et un nouveau quartier, « Données », t'apprend à lire, nettoyer, résumer et tester des données sans te laisser piéger par une fuite d'information.",
+    "en": "The course grows: module 1 (the terminal) and module 2 (Python) are complete, and a new district, “Data”, teaches you to read, clean, summarise and test data without falling for an information leak."
+   }
+  },
   {
    "build": 16,
    "version": "0.3.13",
