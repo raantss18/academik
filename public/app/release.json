@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 28,
-  "version": "0.3.25",
+  "build": 29,
+  "version": "0.3.26",
   "notes": {
-   "fr": "Deux nouveaux modules : « RAG » pour construire un assistant qui répond avec ses sources ou dit qu'il ne sait pas, et « Agents et MCP » pour écrire un agent local qui utilise des outils sous la garde de permissions strictes.",
-   "en": "Two new modules: “RAG” to build an assistant that answers with its sources or says it does not know, and “Agents and MCP” to write a local agent that uses tools under the guard of strict permissions."
+   "fr": "Cinq nouveaux modules pour finir le parcours : processus stochastiques, recherche quantitative (avec un rapport qui sait rejeter un faux résultat), performance, sécurité (avec un lab d'injection de prompt) et évaluation jusqu'à la livraison responsable.",
+   "en": "Five new modules to complete the path: stochastic processes, quantitative research (with a report that knows how to reject a false result), performance, security (with a prompt-injection lab) and evaluation through to responsible delivery."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.25/academik-0.3.25.apk",
-    "sha256": "e608e2268a73fb951d2dbdb49ca5666cf132800a38b269670fccdc236326b628",
-    "bytes": 10985576
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.26/academik-0.3.26.apk",
+    "sha256": "db35894baf99a29707ddfe49491ee3432f8be476d0144492a3de6d2322449c4a",
+    "bytes": 11311655
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.25/academik-0.3.25-x86_64.AppImage",
-    "sha256": "2adbaff13df0d4303714bf60b6a666549c9c38db63715c6222e01e3429c3d3aa",
-    "bytes": 115436024
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.26/academik-0.3.26-x86_64.AppImage",
+    "sha256": "195e8ef71fe5ff979f178df02b0e27773abb4ca8915875e9b27ea2c2a6a39415",
+    "bytes": 115730936
    }
   }
  },
  "history": [
+  {
+   "build": 28,
+   "version": "0.3.25",
+   "notes": {
+    "fr": "Deux nouveaux modules : « RAG » pour construire un assistant qui répond avec ses sources ou dit qu'il ne sait pas, et « Agents et MCP » pour écrire un agent local qui utilise des outils sous la garde de permissions strictes.",
+    "en": "Two new modules: “RAG” to build an assistant that answers with its sources or says it does not know, and “Agents and MCP” to write a local agent that uses tools under the guard of strict permissions."
+   }
+  },
   {
    "build": 27,
    "version": "0.3.24",
