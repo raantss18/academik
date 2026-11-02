@@ -34,7 +34,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **2.2** Décider | Kintana sait choisir entre plusieurs réponses selon une condition. | — | — |
 | **2.3** Répéter | Kintana sait refaire la même chose plusieurs fois sans copier ses lignes. | — | 2.4, 2.5, 8.1, 10.2 |
 | **2.4** Fonctions | Kintana range ses gestes dans des fonctions qu’elle peut réutiliser. | 2.3 | 2.boss |
-| **2.5** Listes et dictionnaires | Kintana range plusieurs valeurs ensemble : une liste de notes, un dictionnaire de mots comptés. | 2.3 | 8.4, 8.5, 9.3 |
+| **2.5** Listes et dictionnaires | Kintana range plusieurs valeurs ensemble : une liste de notes, un dictionnaire de mots comptés. | 2.3 | 8.4, 8.5, 9.3, 16.1 |
 | **2.boss** Le chatbot à règles | Kintana répond à des messages simples grâce à un dictionnaire de règles, et refuse les entrées mal formées. | 2.1, 2.4 | 9.boss |
 
 ## 3 · Algorithmes
@@ -68,7 +68,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
-| **5.1** Limites | Kintana distingue une valeur approchée de la limite de ses calculs. | — | 5.boss |
+| **5.1** Limites | Kintana distingue une valeur approchée de la limite de ses calculs. | — | 5.boss, 16.1 |
 | **5.2** Dérivées | Kintana mesure comment son erreur varie quand un paramètre change. | — | 5.8 |
 | **5.3** Gradient | Kintana mesure la sensibilité de son erreur à plusieurs paramètres. | — | 9.1 |
 | **5.4** Convexité | Kintana reconnaît les erreurs convexes, pour lesquelles un point stationnaire est un minimum global. | — | — |
@@ -85,8 +85,8 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **6.1** Hasard | Kintana compte les cas possibles pour savoir si un événement est probable. | — | — |
 | **6.2** Bayes | Kintana met à jour ce qu’elle croit quand elle apprend un nouvel indice (conditionnement, Bayes). | — | — |
 | **6.3** Lois | Kintana décrit un résultat incertain par une loi : Bernoulli, binomiale, uniforme. | 5.8 | — |
-| **6.4** Espérance | Kintana résume une loi par sa moyenne attendue et sa dispersion. | — | 8.3 |
-| **6.5** Entropie | Kintana mesure à quel point elle hésite sur le mot suivant (entropie). | 5.6 | — |
+| **6.4** Espérance | Kintana résume une loi par sa moyenne attendue et sa dispersion. | — | 8.3, 17.boss |
+| **6.5** Entropie | Kintana mesure à quel point elle hésite sur le mot suivant (entropie). | 5.6 | 16.2 |
 | **6.boss** Le modèle bigramme | Kintana sait prédire le mot suivant : un modèle bigramme construit à la main. | — | — |
 
 ## 7 · Statistique
@@ -94,10 +94,10 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
 | **7.1** Estimer | Kintana estime une valeur inconnue à partir d’un échantillon, et sait ce qu’est une vraisemblance. | — | — |
-| **7.2** Intervalles | Kintana encadre son estimation par un intervalle de confiance honnête. | — | 7.4, 9.4, 10.3 |
+| **7.2** Intervalles | Kintana encadre son estimation par un intervalle de confiance honnête. | — | 7.4, 9.4, 10.3, 16.boss |
 | **7.3** Tester | Kintana teste si un résultat peut s’expliquer par le hasard (p-valeur). | — | — |
 | **7.4** Bootstrap | Kintana mesure la variabilité de son estimation en rééchantillonnant ses données (bootstrap). | 7.2 | — |
-| **7.5** Tests multiples | Kintana corrige ses seuils quand elle teste beaucoup d’idées à la fois. | — | — |
+| **7.5** Tests multiples | Kintana corrige ses seuils quand elle teste beaucoup d’idées à la fois. | — | 17.3 |
 | **7.boss** Le faux signal | Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs. | — | — |
 
 ## 8 · Données
@@ -132,7 +132,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **10.3** Autocorrélation | Kintana mesure à quel point une série ressemble à elle-même quelques pas plus tôt : sa mémoire. | 7.2, 10.2 | 10.4, 10.5 |
 | **10.4** Prévoir : le modèle AR(1) | Kintana prévoit la valeur suivante d’une série stable en s’appuyant sur la valeur actuelle. | 8.5, 9.1, 10.3 | 10.boss |
 | **10.5** Volatilité | Kintana mesure l’agitation d’une série, c’est-à-dire le risque, même quand elle ne sait pas prévoir son sens. | 8.3, 10.1, 10.3 | — |
-| **10.boss** Prévoir sans tricher | Kintana évalue ses prévisions comme dans la vraie vie : au fil du temps, sans jamais regarder le futur. | 8.5, 8.boss, 9.4, 9.5, 10.4 | — |
+| **10.boss** Prévoir sans tricher | Kintana évalue ses prévisions comme dans la vraie vie : au fil du temps, sans jamais regarder le futur. | 8.5, 8.boss, 9.4, 9.5, 10.4 | 17.5 |
 
 ## 11 · Réseaux de neurones
 
@@ -188,3 +188,25 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **15.4** La boucle d’agent | Kintana enchaîne réflexion, action et observation, avec des garde-fous pour ne pas tourner en rond. | — | 15.boss |
 | **15.5** Le protocole MCP | Kintana parle aux outils par un protocole standard, en gardant ses garde-fous. | 15.1 | — |
 | **15.boss** Ton agent local | Kintana agit avec des outils, sous la garde de ton programme, et sait refuser. | 15.2, 15.4 | — |
+
+## 16 · Processus stochastiques
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **16.1** Équations différentielles et Euler | Kintana approche une courbe en suivant sa pente pas à pas. | 2.5, 5.1 | 16.5 |
+| **16.2** Marches aléatoires | Kintana simule un pas au hasard, puis des milliers, et mesure comment elle s’éloigne. | 6.5 | 16.5, 17.1 |
+| **16.3** Chaînes de Markov | Kintana suit un système sans mémoire et prévoit où il passera son temps à long terme. | — | — |
+| **16.4** Martingales | Kintana comprend pourquoi un jeu équitable ne se bat pas, et ce que vaut une prévision. | — | 17.4 |
+| **16.5** Mouvement brownien et EDS | Kintana simule le hasard continu d’un prix, un pas après l’autre. | 16.1, 16.2 | — |
+| **16.boss** Simuler des prix | Kintana estime un prix moyen et une probabilité, et annonce toujours l’incertitude. | 7.2 | — |
+
+## 17 · Recherche quantitative
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **17.1** Rendements et risque | Kintana mesure ce qu’un prix rapporte, et ce qu’il peut faire perdre. | 16.2 | — |
+| **17.2** Portefeuilles et Markowitz | Kintana combine plusieurs actifs et mesure ce que la diversification apporte. | — | — |
+| **17.3** Facteurs et bêta | Kintana sépare ce qui vient du marché de ce qui est propre à l’actif. | 7.5 | — |
+| **17.4** Options et absence d’arbitrage | Kintana tarife un droit d’achat sans prédire l’avenir, par réplication. | 16.4 | — |
+| **17.5** Un backtest honnête | Kintana teste une idée sur le passé sans tricher, et compte ses essais. | 10.boss | — |
+| **17.boss** Le rapport qui rejette | Kintana distingue une vraie découverte d’un hasard heureux, et le dit dans son rapport. | 6.4 | — |

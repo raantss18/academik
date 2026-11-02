@@ -1,0 +1,371 @@
+# Niveau 17.boss — Le rapport qui rejette (mission : verdict corrigé pour les essais multiples). Original academik ; notions des niveaux 17.1 à 17.5, vérifiées dans Bailey et López de Prado 2014 (lien) et le cours 18.642 du MIT (lien). Cadre strictement pédagogique.
+id: 17.boss
+module: 17
+duree_min: 14
+titre:
+  fr: Le rapport qui rejette
+  en: The report that rejects
+ia:
+  fr: Kintana distingue une vraie découverte d’un hasard heureux, et le dit dans son rapport.
+  en: Kintana tells a real discovery from a lucky chance, and says so in her report.
+sources:
+- titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
+  url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551
+  licence: Lien seulement ; texte non repris
+- titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
+  url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Un collègue te montre sa meilleure stratégie parmi 200 testées : « p-valeur de 0,003, c’est significatif ! ». Que lui réponds-tu ?'
+  en: 'A colleague shows you their best strategy among 200 tested: “p-value of 0.003, it’s significant!”. What do you answer?'
+  choix:
+  - fr: 'Avec 200 essais, une p-valeur de 0,003 est attendue par hasard : il faut corriger pour les essais multiples'
+    en: 'With 200 trials, a p-value of 0.003 is expected by chance: we must correct for multiple trials'
+    juste: true
+  - fr: Bravo, c’est très significatif
+    en: Congratulations, it is very significant
+  - fr: Il faut juste essayer plus de stratégies
+    en: He should just try more strategies
+  indice:
+    fr: Sur 200 essais sans aucun avantage, combien auront une p-valeur sous 0,05 ? Et sous 0,003 ?
+    en: Out of 200 trials with no edge at all, how many will have a p-value below 0.05? And below 0.003?
+  explication:
+    fr: 'Sans avantage, environ $200\times0{,}003=0{,}6$ essai passe sous $0{,}003$ : tout à fait courant. Le seuil doit devenir $0{,}05/200=0{,}00025$.'
+    en: 'Without any edge, about $200\times0.003=0.6$ trial falls below $0.003$: quite common. The threshold must become $0.05/200=0.00025$.'
+- id: c2
+  type: idee
+  fr: 'Mission finale : écrire le **verdict** d’un rapport de recherche. Pour chacune des $N$ stratégies, tu calcules la statistique $t$ puis la p-valeur. Tu prends la meilleure et la compares au seuil **corrigé** $\alpha/N$. Le rapport **rejette** ce qui ne tient pas.'
+  en: 'Final mission of the module: write the **verdict** of a research report. You are given $N$ strategies. For each, you compute the $t$ statistic of the mean of its returns, then the p-value; you take the best; and compare it with the **corrected** threshold $\alpha/N$. The report must **reject** what does not hold.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Du bruit au verdict
+        en: From noise to verdict
+      noeuds:
+      - fr: $N$ stratégies
+        en: $N$ strategies
+      - fr: $t$ et p-valeur
+        en: $t$ and p-value
+      - fr: meilleure vs seuil $\alpha/N$
+        en: best vs threshold $\alpha/N$
+      - fr: retenir ou rejeter
+        en: retain or reject
+        ton: ok
+    legende:
+      fr: Le rejet est un résultat valable, pas un échec.
+      en: Rejection is a valid result, not a failure.
+- id: c3
+  type: idee
+  fr: 'La statistique $t$ de la moyenne : $t=\bar r\big/(s/\sqrt n)$, où $\bar r$ est la moyenne des $n$ rendements et $s$ leur écart type. Plus $|t|$ est grand, moins la moyenne observée est compatible avec une moyenne vraie nulle. La p-valeur bilatérale (loi normale) est $\text{erfc}(|t|/\sqrt2)$.'
+  en: 'The $t$ statistic of the mean: $t=\bar r\big/(s/\sqrt n)$, where $\bar r$ is the mean of the $n$ returns and $s$ their standard deviation. The larger $|t|$, the less compatible the observed mean is with a true mean of zero. The two-sided p-value (normal law) is $\text{erfc}(|t|/\sqrt2)$.'
+  exemple:
+    fr: Pour $|t|=1{,}96$, la p-valeur vaut $0{,}05$ ; pour $|t|=3$, $0{,}0027$ ; pour $|t|=4{,}5$, $0{,}000007$.
+    en: For $|t|=1.96$, the p-value is $0.05$; for $|t|=3$, $0.0027$; for $|t|=4.5$, $0.000007$.
+  figure:
+    kind: tableau
+    entetes:
+    - $|t|$
+    - fr: p-valeur bilatérale
+      en: Two-sided p-value
+    cellules:
+    - - 1,96
+      - 0,05
+    - - '3'
+      - 0,0027
+    - - fr: 4,5
+        en: '4.5'
+        ton: ok
+      - fr: 0,000007
+        en: '0.000007'
+        ton: ok
+    legende:
+      fr: Plus $|t|$ monte, plus la p-valeur s’effondre.
+      en: As $|t|$ grows, the p-value collapses.
+- id: c3b
+  type: idee
+  fr: 'Pourquoi la loi normale pour la p-valeur ? Avec beaucoup de rendements indépendants, la moyenne est presque normale (théorème central limite, niveau 6.4). Pour de petits échantillons ou des queues épaisses, la p-valeur normale est trop optimiste : on reste prudent.'
+  en: 'Why the normal law for the p-value? With many independent returns, the mean is nearly normal (central limit theorem, level 6.4). For small samples or fat tails, the normal p-value is too optimistic: we stay cautious.'
+  exemple:
+    fr: Avec 250 rendements quotidiens, l’approximation normale est correcte ; avec 12 rendements mensuels, elle l’est beaucoup moins.
+    en: With 250 daily returns, the normal approximation is fine; with 12 monthly returns, much less so.
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `t_stat(r)`** : `n = len(r)`, la moyenne `m`, l’écart type `s` (division par `n - 1`), et renvoie `m / (s / math.sqrt(n))`. Puis **`p_valeur(t)`** : `math.erfc(abs(t) / math.sqrt(2))`.'
+  en: 'Your turn. **Write `t_stat(r)`**: `n = len(r)`, the mean `m`, the standard deviation `s` (division by `n - 1`), and return `m / (s / math.sqrt(n))`. Then **`p_valeur(t)`**: `math.erfc(abs(t) / math.sqrt(2))`.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def strategies_bruit(N, n, graine):
+        u = generateur(graine)
+        return [[0.01 * gauss(u) for _ in range(n)] for _ in range(N)]
+
+    # écris tes fonctions t_stat et p_valeur ici
+  tests: |-
+    assert abs(p_valeur(1.96) - 0.05) < 1e-3
+    assert abs(p_valeur(-1.96) - p_valeur(1.96)) < 1e-12
+    assert p_valeur(0) == 1.0
+    r = [0.01, 0.03, 0.02, 0.0, 0.04]
+    assert abs(t_stat(r) - 0.02 / ((0.0158113883 ** 1) / 5 ** 0.5)) < 1e-6
+    assert t_stat([-x for x in r]) == -t_stat(r)
+  solutionCode: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def strategies_bruit(N, n, graine):
+        u = generateur(graine)
+        return [[0.01 * gauss(u) for _ in range(n)] for _ in range(N)]
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def p_valeur(t):
+        return math.erfc(abs(t) / math.sqrt(2))
+  indice:
+    fr: '`t_stat` : même calcul que `volatilite` plus une division. `p_valeur` : une ligne avec `math.erfc`.'
+    en: '`t_stat`: same computation as `volatilite` plus a division. `p_valeur`: one line with `math.erfc`.'
+  explication:
+    fr: 'Un $t$ proche de $0$ donne une p-valeur proche de $1$ : aucun indice contre l’hypothèse « avantage nul ».'
+    en: 'A $t$ near $0$ gives a p-value near $1$: no evidence against the “no edge” hypothesis.'
+- id: c5
+  type: exemple
+  titre:
+    fr: Du bruit qui paraît bon
+    en: Noise that looks good
+  lang: python
+  etapes:
+  - code: |-
+      import math
+
+      def generateur(graine):
+          etat = [graine]
+          def u():
+              etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+              return (etat[0] + 0.5) / 2147483648
+          return u
+
+      def gauss(u):
+          return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+      def t_stat(r):
+          n = len(r)
+          m = sum(r) / n
+          s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+          return m / (s / math.sqrt(n))
+
+      def strategies_bruit(N, n, graine):
+          u = generateur(graine)
+          return [[0.01 * gauss(u) for _ in range(n)] for _ in range(N)]
+    fr: On dispose d’un générateur de stratégies sans aucun avantage.
+    en: We have a generator of strategies with no edge at all.
+  - code: |-
+      S = strategies_bruit(200, 250, 1)
+      ts = [t_stat(r) for r in S]
+    fr: On calcule le $t$ de 200 stratégies de pur bruit.
+    en: We compute the $t$ of 200 pure-noise strategies.
+  - code: print(round(max(abs(t) for t in ts), 2))
+    fr: 'On affiche `3.04` : la « meilleure » paraît très significative alors qu’aucune ne vaut rien.'
+    en: 'We display `3.04`: the “best” looks highly significant although none is worth anything.'
+  verif: |-
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def strategies_bruit(N, n, graine):
+        u = generateur(graine)
+        return [[0.01 * gauss(u) for _ in range(n)] for _ in range(N)]
+    S = strategies_bruit(200, 250, 1)
+    ts = [t_stat(r) for r in S]
+    print(round(max(abs(t) for t in ts), 2))
+  sortie: '3.04'
+- id: c6
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Avec $N=200$ stratégies et $\alpha=0{,}05$, quel est le seuil corrigé de Bonferroni pour la p-valeur de la meilleure ?
+  en: With $N=200$ strategies and $\alpha=0.05$, what is the Bonferroni-corrected threshold for the best one’s p-value?
+  reponses:
+  - '0.00025'
+  - 0,00025
+  verif: print(0.05 / 200)
+  indice:
+    fr: Divise $\alpha$ par le nombre de stratégies testées.
+    en: Divide $\alpha$ by the number of strategies tested.
+  explication:
+    fr: $0{,}05/200=0{,}00025$.
+    en: $0.05/200=0.00025$.
+- id: c7
+  type: piege
+  fr: 'Un rapport qui ne dit pas combien d’idées ont été essayées est trompeur, même si chaque chiffre est exact. Rapporte toujours : le nombre d’essais, le seuil corrigé, le nombre de résultats « significatifs » avant correction, et ce que devient la meilleure après correction.'
+  en: 'A report that does not say how many ideas were tried is misleading, even if every figure is exact. Always report: the number of trials, the corrected threshold, the number of “significant” results before correction, and what the best becomes after correction.'
+- id: c8
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 2
+  fr: 'Défi final. **Écris `verdict(strategies, alpha)`** : avec `N = len(strategies)`, calcule le `t_stat` de chaque stratégie. Retiens la **meilleure** (plus grand `abs(t)`), sa p-valeur `p`, le seuil `alpha / N` et le nombre `brut` de p-valeurs `< alpha` **sans correction**. Renvoie `{"meilleure": indice, "t": t, "p": p, "seuil": seuil, "brut": brut, "retient": p < seuil}`. `t_stat` et `p_valeur` sont fournies.'
+  en: 'Final challenge. **Write `verdict(strategies, alpha)`**: with `N = len(strategies)`, compute each strategy’s `t_stat`, keep the **best** (largest `abs(t)`), its p-value `p`, the threshold `alpha / N`, the number `brut` of strategies whose p-value is `< alpha` **without correction**, and return the dictionary `{"meilleure": index, "t": t, "p": p, "seuil": seuil, "brut": brut, "retient": p < seuil}`. `t_stat` and `p_valeur` are provided.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def strategies_bruit(N, n, graine):
+        u = generateur(graine)
+        return [[0.01 * gauss(u) for _ in range(n)] for _ in range(N)]
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def p_valeur(t):
+        return math.erfc(abs(t) / math.sqrt(2))
+
+    # écris ta fonction verdict ici
+  tests: |-
+    S = strategies_bruit(200, 250, 1)
+    v = verdict(S, 0.05)
+    assert v["retient"] is False and v["brut"] >= 5 and abs(v["seuil"] - 0.00025) < 1e-12
+    assert v["p"] > v["seuil"] and 0 <= v["meilleure"] < 200
+    u = generateur(11)
+    reel = [0.002 + 0.01 * gauss(u) for _ in range(250)]
+    u2 = generateur(3)
+    bruit = [[0.01 * gauss(u2) for _ in range(250)] for _ in range(199)]
+    v2 = verdict(bruit + [reel], 0.05)
+    assert v2["retient"] is True and v2["meilleure"] == 199 and v2["p"] < v2["seuil"]
+    v3 = verdict(bruit, 0.05)
+    assert v3["retient"] is False
+  solutionCode: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def strategies_bruit(N, n, graine):
+        u = generateur(graine)
+        return [[0.01 * gauss(u) for _ in range(n)] for _ in range(N)]
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def p_valeur(t):
+        return math.erfc(abs(t) / math.sqrt(2))
+
+    def verdict(strategies, alpha):
+        N = len(strategies)
+        ts = [t_stat(r) for r in strategies]
+        meilleure = max(range(N), key=lambda i: abs(ts[i]))
+        p = p_valeur(ts[meilleure])
+        seuil = alpha / N
+        brut = sum(1 for t in ts if p_valeur(t) < alpha)
+        return {"meilleure": meilleure, "t": ts[meilleure], "p": p, "seuil": seuil, "brut": brut, "retient": p < seuil}
+  indice:
+    fr: 'Liste des `t`, `meilleure = max(range(N), key=lambda i: abs(ts[i]))`, puis `p`, `seuil`, `brut` et le dictionnaire.'
+    en: 'List of `t`, `meilleure = max(range(N), key=lambda i: abs(ts[i]))`, then `p`, `seuil`, `brut` and the dictionary.'
+  explication:
+    fr: 'Sur du bruit, le verdict est « rejeté » malgré une p-valeur brute impressionnante : ton rapport a protégé le lecteur d’une fausse découverte.'
+    en: 'On noise, the verdict is “rejected” despite an impressive raw p-value: your report protected the reader from a false discovery.'
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Sur 200 stratégies de pur bruit, environ 5 % ont une p-valeur sous $0{,}05$ sans correction. À peu près combien de stratégies « significatives » trouve-t-on alors ?
+  en: Among 200 strategies of pure noise, about 5% have a p-value below $0.05$ without correction. Roughly how many “significant” strategies do we find then?
+  reponses:
+  - '10'
+  verif: print(int(200 * 0.05))
+  indice:
+    fr: Multiplie le nombre de stratégies par la proportion attendue.
+    en: Multiply the number of strategies by the expected proportion.
+  explication:
+    fr: $200\times0{,}05=10$ stratégies « significatives » par pur hasard.
+    en: $200\times0.05=10$ “significant” strategies by pure chance.
+- id: c10
+  type: idee
+  fr: 'Tu sais ce qui distingue un résultat solide d’un mirage : hypothèse écrite avant, information passée seulement, coûts et essais comptés, correction appliquée. Le **boss final** du cursus réunira tout cela, avec un agent local qui rend un rapport sourcé.'
+  en: 'You now know what distinguishes a solid result from a mirage: hypothesis written beforehand, past information only, costs counted, trials counted, correction applied. The curriculum’s **final boss** will bring all this together, with a local agent testing a hypothesis offline and returning a sourced report.'
+  exemple:
+    fr: 'Ce cadre reste strictement pédagogique : aucune recommandation d’investissement personnalisée.'
+    en: 'This framework remains strictly educational: no personalised investment recommendation.'
+- id: c11
+  type: idee
+  fr: 'Dernière habitude : **publier ses rejets**. Un chercheur qui ne publie que ses succès fausse la littérature. Garde un journal : idées testées, résultats, décision. Un résultat rejeté est une information utile.'
+  en: 'One last habit: **publish your rejections**. A researcher who publishes only successes distorts the literature. Keep a log: ideas tested, results, decision. When a result is rejected, it is information: the lead was bad, which is useful to know.'
+  exemple:
+    fr: Dans ton rapport, une ligne « 200 essais, 10 significatifs avant correction, 0 après » est un résultat honnête.
+    en: In your report, a line “200 trials, 10 significant before correction, 0 after” is an honest result.
+- id: c12
+  type: retenir
+  fr: '$t=\bar r/(s/\sqrt n)$, p-valeur $=\text{erfc}(|t|/\sqrt2)$. Meilleur de $N$ : seuil $\alpha/N$. Rapporter les essais, le brut, le corrigé. Le rejet est un résultat. Cadre strictement pédagogique.'
+  en: '$t=\bar r/(s/\sqrt n)$, p-value $=\text{erfc}(|t|/\sqrt2)$. Best of $N$: threshold $\alpha/N$. Report the trials, the raw, the corrected. Rejection is a result. Strictly educational framework.'
+- id: c13
+  type: plus
+  fr: Pour aller plus loin, consulte [The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) ; cet article demande une connexion.
+  en: To go further, see [The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551); this paper needs a connection.

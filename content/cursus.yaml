@@ -154,3 +154,21 @@ modules:
       - { id: "15.4", titre: { fr: "La boucle d’agent" } }
       - { id: "15.5", titre: { fr: "Le protocole MCP" } }
       - { id: "15.boss", boss: true, titre: { fr: "Ton agent local" } }
+  - id: 16
+    titre: { fr: "Processus stochastiques", en: "Stochastic processes" }
+    niveaux:
+      - { id: "16.1", titre: { fr: "Équations différentielles et Euler" } }
+      - { id: "16.2", titre: { fr: "Marches aléatoires" } }
+      - { id: "16.3", titre: { fr: "Chaînes de Markov" } }
+      - { id: "16.4", titre: { fr: "Martingales" } }
+      - { id: "16.5", titre: { fr: "Mouvement brownien et EDS" } }
+      - { id: "16.boss", boss: true, titre: { fr: "Simuler des prix" } }
+  - id: 17
+    titre: { fr: "Recherche quantitative", en: "Quantitative research" }
+    niveaux:
+      - { id: "17.1", titre: { fr: "Rendements et risque" } }
+      - { id: "17.2", titre: { fr: "Portefeuilles et Markowitz" } }
+      - { id: "17.3", titre: { fr: "Facteurs et bêta" } }
+      - { id: "17.4", titre: { fr: "Options et absence d’arbitrage" } }
+      - { id: "17.5", titre: { fr: "Un backtest honnête" } }
+      - { id: "17.boss", boss: true, titre: { fr: "Le rapport qui rejette" } }

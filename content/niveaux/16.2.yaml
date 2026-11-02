@@ -1,0 +1,287 @@
+# Niveau 16.2 — Processus stochastiques 2 : marches aléatoires. Original academik ; notions vérifiées dans le cours 18.642 du MIT (lien) et Grinstead et Snell (cité).
+id: '16.2'
+module: 16
+duree_min: 12
+titre:
+  fr: Marches aléatoires
+  en: Random walks
+ia:
+  fr: Kintana simule un pas au hasard, puis des milliers, et mesure comment elle s’éloigne.
+  en: Kintana simulates one random step, then thousands, and measures how she drifts away.
+sources:
+- titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
+  url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: Grinstead, Snell — Introduction to Probability (chap. 12, marches aléatoires)
+  url: https://math.dartmouth.edu/~prob/prob/prob.pdf
+  licence: Licence GFDL ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un ivrogne part du point 0 sur une ligne. À chaque seconde, il fait un pas à droite ou à gauche, avec la même probabilité. Où se trouve-t-il, **en moyenne**, après 100 pas ?
+  en: A drunk starts at point 0 on a line. Every second, he takes a step right or left, with equal probability. Where is he, **on average**, after 100 steps?
+  choix:
+  - fr: 'En 0 : les pas à droite et à gauche se compensent en moyenne'
+    en: 'At 0: right and left steps cancel out on average'
+    juste: true
+  - fr: À 100, car il avance toujours
+    en: At 100, because he always advances
+  - fr: À 50
+    en: At 50
+  indice:
+    fr: Chaque pas vaut $+1$ ou $-1$ avec la même probabilité. Quelle est l’espérance d’un pas ?
+    en: Each step is $+1$ or $-1$ with equal probability. What is the expectation of one step?
+  explication:
+    fr: 'Chaque pas a pour espérance $0$, donc la position a pour espérance $0$. Mais il s’éloigne quand même de 0 en général : c’est la **variance** qui croît.'
+    en: 'Each step has expectation $0$, so the position has expectation $0$. But he generally moves away from 0 anyway: it is the **variance** that grows.'
+- id: c2
+  type: idee
+  fr: 'La **marche aléatoire simple** : $S_0=0$ et $S_{n+1}=S_n+X_{n+1}$, où chaque $X_i$ vaut $+1$ ou $-1$ avec probabilité $1/2$, indépendamment des autres. C’est le plus simple des processus stochastiques.'
+  en: 'The **simple random walk**: $S_0=0$ and $S_{n+1}=S_n+X_{n+1}$, where each $X_i$ is $+1$ or $-1$ with probability $1/2$, independent of the others. It is the simplest stochastic process.'
+  exemple:
+    fr: 'Une trajectoire possible sur 5 pas : $0,\,1,\,0,\,1,\,2,\,1$. Une autre : $0,\,-1,\,-2,\,-1,\,-2,\,-3$.'
+    en: 'One possible trajectory over 5 steps: $0,\,1,\,0,\,1,\,2,\,1$. Another: $0,\,-1,\,-2,\,-1,\,-2,\,-3$.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Pas $i$
+      en: Step $i$
+    - fr: $X_i$
+      en: $X_i$
+    - fr: Position $S_i$
+      en: Position $S_i$
+    cellules:
+    - - '1'
+      - $+1$
+      - $1$
+    - - '2'
+      - $-1$
+      - $0$
+    - - fr: '3'
+        en: '3'
+        ton: ok
+      - fr: $+1$
+        en: $+1$
+        ton: ok
+      - fr: $1$
+        en: $1$
+        ton: ok
+    legende:
+      fr: Chaque position est la somme des pas précédents.
+      en: Each position is the sum of the previous steps.
+- id: c3
+  type: idee
+  fr: 'Comme les pas sont indépendants, $E[S_n]=0$ et $\text{Var}(S_n)=n$ (niveau 6.5 : les variances s’additionnent). L’écart typique après $n$ pas est donc $\sqrt n$ : après 100 pas, on est typiquement à une distance de l’ordre de 10, pas de 100.'
+  en: 'Since the steps are independent, $E[S_n]=0$ and $\text{Var}(S_n)=n$ (level 6.5: variances add). The typical deviation after $n$ steps is therefore $\sqrt n$: after 100 steps, we are typically at a distance of about 10, not 100.'
+  exemple:
+    fr: 'Chaque pas a pour variance $E[X^2]-E[X]^2=1-0=1$. Pour $n$ pas : $n\times1=n$.'
+    en: 'Each step has variance $E[X^2]-E[X]^2=1-0=1$. For $n$ steps: $n\times1=n$.'
+- id: c3b
+  type: idee
+  fr: 'La **loi des grands nombres** dit que la moyenne de nombreux pas tend vers l’espérance : $S_n/n\to0$. Mais $S_n$ lui-même, de l’ordre de $\sqrt n$, ne revient pas forcément vers $0$. Les deux résultats ne se contredisent pas : $\sqrt n/n\to0$.'
+  en: 'The **law of large numbers** says the average of many steps tends to the expectation: $S_n/n\to0$. But $S_n$ itself, of order $\sqrt n$, does not necessarily return to $0$. The two results do not contradict each other: $\sqrt n/n\to0$.'
+  exemple:
+    fr: Après 10 000 pas, $S_n$ vaut typiquement 100, mais $S_n/n$ vaut seulement $0{,}01$.
+    en: After 10,000 steps, $S_n$ is typically 100, but $S_n/n$ is only $0.01$.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Pas $n$
+      en: Steps $n$
+    - fr: $\sqrt n$
+      en: $\sqrt n$
+    - fr: $\sqrt n/n$
+      en: $\sqrt n/n$
+    cellules:
+    - - '100'
+      - '10'
+      - 0,1
+    - - 10 000
+      - '100'
+      - 0,01
+    - - fr: 1 000 000
+        en: 1,000,000
+        ton: ok
+      - fr: 1 000
+        en: 1,000
+        ton: ok
+      - fr: 0,001
+        en: '0.001'
+        ton: ok
+    legende:
+      fr: La position typique s’éloigne, mais son rapport à $n$ tend vers 0.
+      en: The typical position drifts away, but its ratio to $n$ tends to 0.
+- id: c4
+  type: exemple
+  titre:
+    fr: Une marche à la main
+    en: A walk by hand
+  lang: python
+  etapes:
+  - code: |-
+      pas = [1, -1, 1, 1, -1]
+      pos = [0]
+    fr: Cinq pas déjà tirés ; on part de $0$.
+    en: Five steps already drawn; we start from $0$.
+  - code: |-
+      for p in pas:
+          pos.append(pos[-1] + p)
+    fr: On ajoute chaque pas à la dernière position.
+    en: We add each step to the last position.
+  - code: print(pos)
+    fr: On affiche `[0, 1, 0, 1, 2, 1]`.
+    en: We display `[0, 1, 0, 1, 2, 1]`.
+  verif: |-
+    pas = [1, -1, 1, 1, -1]
+    pos = [0]
+    for p in pas:
+        pos.append(pos[-1] + p)
+    print(pos)
+  sortie: '[0, 1, 0, 1, 2, 1]'
+- id: c5
+  type: idee
+  fr: Pour simuler, on a besoin de nombres au hasard. Ici, un petit générateur congruentiel est fourni. `generateur(graine)` renvoie une fonction `u()` qui donne un nombre dans $]0;1[$, de façon reproductible.
+  en: 'To simulate, we need random numbers. Here we use a small linear congruential generator (as in level 11.4) provided by the level: `generateur(graine)` returns a function `u()` that gives a number in $]0;1[$, reproducibly.'
+  exemple:
+    fr: 'Avec la même graine, on obtient la même suite de nombres : pratique pour tester et déboguer une simulation.'
+    en: 'With the same seed, we get the same sequence of numbers: handy for testing and debugging a simulation.'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `marche(n, u)`** : `u()` donne un nombre entre 0 et 1. Pars de `positions = [0]` ; `n` fois, un pas vaut `+1` si `u() < 0.5`, sinon `-1`, et on ajoute à la liste la dernière position plus ce pas. Renvoie la liste des `n + 1` positions. `generateur` est fournie.'
+  en: 'Your turn. **Write `marche(n, u)`**: `u()` gives a number between 0 and 1. Start from `positions = [0]`; `n` times, a step is `+1` if `u() < 0.5`, otherwise `-1`, and append the last position plus this step. Return the list of the `n + 1` positions. `generateur` is provided.'
+  depart: |
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    # écris ta fonction marche ici
+  tests: |-
+    m = marche(10, generateur(1))
+    assert len(m) == 11 and m[0] == 0
+    assert all(abs(m[i + 1] - m[i]) == 1 for i in range(10))
+    assert marche(0, generateur(1)) == [0]
+    assert marche(5, lambda: 0.1) == [0, 1, 2, 3, 4, 5]
+    assert marche(5, lambda: 0.9) == [0, -1, -2, -3, -4, -5]
+    assert marche(20, generateur(7)) == marche(20, generateur(7))
+  solutionCode: |
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def marche(n, u):
+        positions = [0]
+        for _ in range(n):
+            pas = 1 if u() < 0.5 else -1
+            positions.append(positions[-1] + pas)
+        return positions
+  indice:
+    fr: '`pas = 1 if u() < 0.5 else -1`, puis `positions.append(positions[-1] + pas)` dans une boucle de `n` tours.'
+    en: '`pas = 1 if u() < 0.5 else -1`, then `positions.append(positions[-1] + pas)` in a loop of `n` turns.'
+  explication:
+    fr: 'Appeler `u()` une seule fois par pas est essentiel : l’appeler deux fois fausserait la suite aléatoire.'
+    en: 'Calling `u()` exactly once per step is essential: calling it twice would distort the random sequence.'
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Une marche de 100 pas a une variance de 100. Quel est son écart type ?
+  en: A 100-step walk has a variance of 100. What is its standard deviation?
+  reponses:
+  - '10.0'
+  - '10'
+  verif: print(100 ** 0.5)
+  indice:
+    fr: L’écart type est la racine carrée de la variance (niveau 6.5).
+    en: The standard deviation is the square root of the variance (level 6.5).
+  explication:
+    fr: '$\sqrt{100}=10$ : après 100 pas, on est typiquement à environ 10 de l’origine.'
+    en: '$\sqrt{100}=10$: after 100 steps, we are typically about 10 away from the origin.'
+- id: c8
+  type: piege
+  fr: '« Revenir en moyenne à 0 » ne veut pas dire « revenir à 0 ». Une position typique est de l’ordre de $\sqrt n$, donc elle s’éloigne. Et la moyenne de plusieurs trajectoires n’est pas une trajectoire : une seule marche réelle ressemble très peu à la courbe plate $E[S_n]=0$.'
+  en: '“Returning to 0 on average” does not mean “returning to 0”. A typical position is of order $\sqrt n$, so it drifts away. And the average of several trajectories is not a trajectory: a single real walk looks very little like the flat curve $E[S_n]=0$.'
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `variance_finale(n, essais, graine)`** : crée `u = generateur(graine)` et lance `essais` marches de `n` pas. Garde la position finale de chacune (`marche(n, u)[-1]`), puis renvoie leur variance empirique. `generateur` et `marche` sont fournies.'
+  en: 'Challenge. **Write `variance_finale(n, essais, graine)`**: create `u = generateur(graine)`, run `essais` walks of `n` steps, keep the final position of each (`marche(n, u)[-1]`), then return the empirical variance of these positions (mean of squared deviations from the mean). `generateur` and `marche` are provided.'
+  depart: |
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def marche(n, u):
+        positions = [0]
+        for _ in range(n):
+            pas = 1 if u() < 0.5 else -1
+            positions.append(positions[-1] + pas)
+        return positions
+
+    # écris ta fonction variance_finale ici
+  tests: |-
+    v = variance_finale(20, 3000, 1)
+    assert 16 < v < 24
+    v2 = variance_finale(40, 3000, 1)
+    assert v2 > 1.5 * v
+    assert variance_finale(10, 500, 3) == variance_finale(10, 500, 3)
+    assert variance_finale(0, 10, 1) == 0
+  solutionCode: |
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def marche(n, u):
+        positions = [0]
+        for _ in range(n):
+            pas = 1 if u() < 0.5 else -1
+            positions.append(positions[-1] + pas)
+        return positions
+
+    def variance_finale(n, essais, graine):
+        u = generateur(graine)
+        finales = [marche(n, u)[-1] for _ in range(essais)]
+        m = sum(finales) / essais
+        return sum((x - m) ** 2 for x in finales) / essais
+  indice:
+    fr: Liste des positions finales, moyenne `m`, puis `sum((x - m) ** 2 for x in finales) / essais`. Garde le même `u` pour toutes les marches.
+    en: List of final positions, mean `m`, then `sum((x - m) ** 2 for x in finales) / essais`. Keep the same `u` for all walks.
+  explication:
+    fr: 'Tu vérifies par simulation un résultat de théorie : la variance croît comme $n$. C’est la méthode de **Monte-Carlo**.'
+    en: 'You check a theoretical result by simulation: the variance grows as $n$. This is the **Monte Carlo** method.'
+- id: c10
+  type: idee
+  fr: 'Avec des pas de plus en plus petits, une marche remise à l’échelle tend vers le **mouvement brownien**, modèle de base des prix. On le verra au niveau 16.5 : c’est le théorème de Donsker.'
+  en: When we take smaller and smaller, more and more numerous steps, a random walk, rescaled, tends towards **Brownian motion** (level 16.5), the basic model of prices in finance. This limit is called Donsker’s theorem.
+  exemple:
+    fr: Un prix qui bouge toutes les secondes de $\pm1$ centime ressemble, de loin, à un mouvement brownien.
+    en: A price that moves by $\pm1$ cent every second looks, from afar, like a Brownian motion.
+- id: c11
+  type: retenir
+  fr: 'Marche aléatoire : $S_{n+1}=S_n+X_{n+1}$, pas $\pm1$. $E[S_n]=0$, $\text{Var}(S_n)=n$, écart typique $\sqrt n$. On simule avec un générateur reproductible, on vérifie par Monte-Carlo.'
+  en: 'Random walk: $S_{n+1}=S_n+X_{n+1}$, steps $\pm1$. $E[S_n]=0$, $\text{Var}(S_n)=n$, typical deviation $\sqrt n$. We simulate with a reproducible generator, and check by Monte Carlo.'
+- id: c12
+  type: plus
+  fr: Pour approfondir, consulte [le cours 18.642 du MIT](https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/) ; ce site demande une connexion.
+  en: For further study, see [MIT’s 18.642 course](https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/); this site needs a connection.

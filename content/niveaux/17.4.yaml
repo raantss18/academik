@@ -1,0 +1,304 @@
+# Niveau 17.4 — Recherche quantitative 4 : options, parité, modèle binomial et Black-Scholes. Original academik ; notions vérifiées dans le cours 15.401 du MIT (lien) et Black et Scholes 1973 (lien). Cadre strictement pédagogique.
+id: '17.4'
+module: 17
+duree_min: 20
+titre:
+  fr: Options et absence d’arbitrage
+  en: Options and no arbitrage
+ia:
+  fr: Kintana tarife un droit d’achat sans prédire l’avenir, par réplication.
+  en: Kintana prices a right to buy without predicting the future, by replication.
+sources:
+- titre: MIT OpenCourseWare — 15.401 Finance Theory I (options et arbitrage)
+  url: https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: Black, Scholes — The Pricing of Options and Corporate Liabilities (1973)
+  url: https://www.jstor.org/stable/1831029
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Une **option d’achat** (call) te donne le droit, mais pas l’obligation, d’acheter un actif au prix $K$ à une date future. À cette date, l’actif vaut $S_T$. Quand cette option vaut-elle quelque chose ?
+  en: A **call option** gives you the right, but not the obligation, to buy an asset at price $K$ on a future date. On that date, the asset is worth $S_T$. When is this option worth something?
+  choix:
+  - fr: 'Quand $S_T>K$ : on achète à $K$ ce qui vaut plus'
+    en: 'When $S_T>K$: we buy at $K$ what is worth more'
+    juste: true
+  - fr: Quand $S_T<K$
+    en: When $S_T<K$
+  - fr: Toujours la même chose
+    en: Always the same thing
+  indice:
+    fr: 'On n’exerce le droit que s’il rapporte quelque chose : acheter à $K$ moins cher que sur le marché.'
+    en: 'We exercise the right only if it earns something: buying at $K$ cheaper than on the market.'
+  explication:
+    fr: 'Le **gain** à l’échéance est $\max(S_T-K,0)$ : positif si $S_T>K$, nul sinon (on n’exerce pas).'
+    en: 'The **payoff** at maturity is $\max(S_T-K,0)$: positive if $S_T>K$, zero otherwise (we do not exercise).'
+- id: c2
+  type: idee
+  fr: 'Un **call** de prix d’exercice $K$ rapporte $\max(S_T-K,0)$ à l’échéance. Un **put** (option de vente) rapporte $\max(K-S_T,0)$. Ces gains ne sont jamais négatifs : le risque de l’acheteur se limite au prix payé pour l’option, la **prime**.'
+  en: 'A **call** with strike $K$ pays $\max(S_T-K,0)$ at maturity. A **put** (option to sell) pays $\max(K-S_T,0)$. These payoffs are never negative: the buyer’s risk is limited to the price paid for the option, the **premium**.'
+  exemple:
+    fr: 'Pour $K=100$ : si $S_T=120$, le call rapporte $20$ et le put $0$ ; si $S_T=80$, le call $0$ et le put $20$.'
+    en: 'For $K=100$: if $S_T=120$, the call pays $20$ and the put $0$; if $S_T=80$, the call $0$ and the put $20$.'
+  figure:
+    kind: tableau
+    entetes:
+    - $S_T$
+    - fr: Call $K=100$
+      en: Call $K=100$
+    - fr: Put $K=100$
+      en: Put $K=100$
+    cellules:
+    - - '80'
+      - '0'
+      - '20'
+    - - '100'
+      - '0'
+      - '0'
+    - - fr: '120'
+        en: '120'
+        ton: ok
+      - fr: '20'
+        en: '20'
+        ton: ok
+      - fr: '0'
+        en: '0'
+        ton: ok
+    legende:
+      fr: Le call profite de la hausse, le put de la baisse.
+      en: The call benefits from a rise, the put from a fall.
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: À toi. **Écris `payoff_call(S, K)`** (`max(S - K, 0.0)`) et **`payoff_put(S, K)`** (`max(K - S, 0.0)`).
+  en: Your turn. **Write `payoff_call(S, K)`** (`max(S - K, 0.0)`) and **`payoff_put(S, K)`** (`max(K - S, 0.0)`).
+  depart: |
+    # écris tes fonctions payoff_call et payoff_put ici
+  tests: |-
+    assert payoff_call(120, 100) == 20
+    assert payoff_call(80, 100) == 0
+    assert payoff_put(80, 100) == 20
+    assert payoff_put(120, 100) == 0
+    assert payoff_call(100, 100) == 0.0 == payoff_put(100, 100)
+  solutionCode: |
+    def payoff_call(S, K):
+        return max(S - K, 0.0)
+
+    def payoff_put(S, K):
+        return max(K - S, 0.0)
+  indice:
+    fr: Chaque fonction est une ligne avec `max(..., 0.0)`.
+    en: Each function is one line with `max(..., 0.0)`.
+  explication:
+    fr: 'Le `max(…, 0)` traduit le droit de ne pas exercer : une option ne peut pas faire perdre à son détenteur plus que la prime.'
+    en: 'The `max(…, 0)` expresses the right not to exercise: an option cannot make its holder lose more than the premium.'
+- id: c4
+  type: idee
+  fr: Quel est le **juste prix** d’une option aujourd’hui ? On ne le trouve pas en prévoyant la hausse ou la baisse, mais par l’**absence d’arbitrage**. Si l’actif et un prêt reproduisent exactement l’option, elle doit coûter le prix de cette réplication.
+  en: 'What is an option’s **fair price** today? It is found not by predicting the rise or the fall, but by **no arbitrage**: if the option can be exactly replicated with the asset and a loan, the option must cost the price of that replication, otherwise someone earns without risk.'
+  exemple:
+    fr: 'Un actif et un prêt qui rapportent exactement ce que rapporte le call dans tous les cas : leur coût est le prix du call.'
+    en: 'An asset and a loan that pay exactly what the call pays in every case: their cost is the call’s price.'
+- id: c5
+  type: exemple
+  titre:
+    fr: La parité call-put
+    en: Put-call parity
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      S, K, r, T = 100.0, 100.0, 0.05, 1.0
+    fr: Un actif de 100, prix d’exercice 100, taux 5 %, un an.
+    en: An asset at 100, strike 100, rate 5%, one year.
+  - code: C, P = 10.4506, 5.5735
+    fr: Les prix d’un call et d’un put de même caractéristique (Black-Scholes).
+    en: The prices of a call and a put with the same features (Black-Scholes).
+  - code: print(round(C - P, 4), round(S - K * math.exp(-r * T), 4))
+    fr: 'On affiche `4.8771 4.8771` : $C-P=S-Ke^{-rT}$.'
+    en: 'We display `4.8771 4.8771`: $C-P=S-Ke^{-rT}$.'
+  verif: |-
+    import math
+    S, K, r, T = 100.0, 100.0, 0.05, 1.0
+    C, P = 10.4506, 5.5735
+    print(round(C - P, 4), round(S - K * math.exp(-r * T), 4))
+  sortie: 4.8771 4.8771
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `call_par_parite(P, S, K, r, T)`** : d’après la parité, $C=P+S-Ke^{-rT}$. Renvoie `P + S - K * math.exp(-r * T)`.'
+  en: '**Write `call_par_parite(P, S, K, r, T)`**: from the parity, $C=P+S-Ke^{-rT}$. Return `P + S - K * math.exp(-r * T)`.'
+  depart: |
+    import math
+
+    # écris ta fonction call_par_parite ici
+  tests: |-
+    assert abs(call_par_parite(5.5735, 100, 100, 0.05, 1) - 10.4506) < 1e-3
+    assert abs(call_par_parite(0.0, 100, 100, 0.0, 1) - 0.0) < 1e-12
+    assert call_par_parite(3.0, 110, 100, 0.03, 0.5) > 13
+  solutionCode: |
+    import math
+
+    def call_par_parite(P, S, K, r, T):
+        return P + S - K * math.exp(-r * T)
+  indice:
+    fr: 'Une ligne : le put plus l’actif moins la valeur actualisée du prix d’exercice.'
+    en: 'A single line: the put plus the asset minus the discounted value of the strike.'
+  explication:
+    fr: 'Si un marché viole cette égalité, on achète le côté bon marché et on vend l’autre : un arbitrage.'
+    en: 'If a market violates this equality, we buy the cheap side and sell the other: an arbitrage.'
+- id: c7
+  type: idee
+  fr: '**Modèle binomial à une période** : le prix passe de $S_0$ à $S_0u$ (hausse) ou $S_0d$ (baisse). La probabilité **risque-neutre** $q=(e^{rT}-d)/(u-d)$ rend le prix actualisé de l’actif espéré constant (c’est une martingale, niveau 16.4). Le prix de l’option est l’espérance actualisée de son gain sous $q$.'
+  en: '**One-period binomial model**: the price moves from $S_0$ to $S_0u$ (rise) or $S_0d$ (fall). The **risk-neutral** probability $q=(e^{rT}-d)/(u-d)$ makes the expected discounted price of the asset constant (it is a martingale, level 16.4). The option’s price is the discounted expectation of its payoff under $q$.'
+  exemple:
+    fr: 'Pour $S_0=100$, $K=100$, $u=1{,}2$, $d=0{,}8$, $r=0$ : $q=0{,}5$, gains $20$ et $0$, prix $=0{,}5\times20=10$.'
+    en: 'For $S_0=100$, $K=100$, $u=1.2$, $d=0.8$, $r=0$: $q=0.5$, payoffs $20$ and $0$, price $=0.5\times20=10$.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Prix par arbre binomial
+        en: Price by binomial tree
+      noeuds:
+      - fr: gains aux deux nœuds
+        en: payoffs at the two nodes
+      - fr: probabilité $q$
+        en: probability $q$
+      - fr: espérance sous $q$
+        en: expectation under $q$
+      - fr: actualisation
+        en: discounting
+        ton: ok
+    legende:
+      fr: La vraie probabilité de hausse n’intervient pas.
+      en: The real probability of a rise does not appear.
+- id: c8
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `proba_risque_neutre(u, d, r, T)`** (`(math.exp(r * T) - d) / (u - d)`) et **`prix_binomial_call(S0, K, u, d, r, T)`** : `math.exp(-r * T) * (q * cu + (1 - q) * cd)`, avec `cu = max(S0 * u - K, 0)` et `cd = max(S0 * d - K, 0)`.'
+  en: 'Challenge. **Write `proba_risque_neutre(u, d, r, T)`** (`(math.exp(r * T) - d) / (u - d)`) and **`prix_binomial_call(S0, K, u, d, r, T)`**: `math.exp(-r * T) * (q * cu + (1 - q) * cd)`, with `cu = max(S0 * u - K, 0)` and `cd = max(S0 * d - K, 0)`.'
+  depart: |
+    import math
+
+    # écris tes fonctions proba_risque_neutre et prix_binomial_call ici
+  tests: |-
+    assert abs(proba_risque_neutre(1.2, 0.8, 0.0, 1.0) - 0.5) < 1e-12
+    assert abs(prix_binomial_call(100, 100, 1.2, 0.8, 0.0, 1.0) - 10.0) < 1e-12
+    assert 0 < proba_risque_neutre(1.2, 0.8, 0.05, 1.0) < 1
+    assert prix_binomial_call(100, 150, 1.2, 0.8, 0.0, 1.0) == 0.0
+    assert prix_binomial_call(100, 90, 1.2, 0.8, 0.0, 1.0) > prix_binomial_call(100, 100, 1.2, 0.8, 0.0, 1.0)
+  solutionCode: |
+    import math
+
+    def proba_risque_neutre(u, d, r, T):
+        return (math.exp(r * T) - d) / (u - d)
+
+    def prix_binomial_call(S0, K, u, d, r, T):
+        q = proba_risque_neutre(u, d, r, T)
+        cu = max(S0 * u - K, 0.0)
+        cd = max(S0 * d - K, 0.0)
+        return math.exp(-r * T) * (q * cu + (1 - q) * cd)
+  indice:
+    fr: Calcule `q`, les deux gains, puis `math.exp(-r * T) * (q * cu + (1 - q) * cd)`.
+    en: Compute `q`, the two payoffs, then `math.exp(-r * T) * (q * cu + (1 - q) * cd)`.
+  explication:
+    fr: 'Aucun avis sur la hausse ou la baisse réelle n’intervient : seul compte le fait de pouvoir répliquer l’option.'
+    en: 'No view on the real rise or fall appears: only the ability to replicate the option matters.'
+- id: c9
+  type: idee
+  fr: 'La **réplication** précise comment couvrir l’option : on détient $\Delta$ unités de l’actif, avec $\Delta=(C_u-C_d)/(S_0u-S_0d)$, et un prêt pour le reste. Le **delta** dit de combien l’option varie quand l’actif varie d’une unité. C’est la base de la **couverture** d’une option vendue.'
+  en: '**Replication** specifies how to hedge the option: we hold $\Delta$ units of the asset, with $\Delta=(C_u-C_d)/(S_0u-S_0d)$, and a loan for the rest. The **delta** says by how much the option changes when the asset changes by one unit. It is the basis of **hedging** a sold option.'
+  exemple:
+    fr: 'Pour l’exemple ($C_u=20$, $C_d=0$) : $\Delta=20/40=0{,}5$ : on détient une demi-unité d’actif.'
+    en: 'For the example ($C_u=20$, $C_d=0$): $\Delta=20/40=0.5$: we hold half a unit of the asset.'
+- id: c10
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Dans l’exemple binomial ($S_0=100$, $K=100$, $u=1{,}2$, $d=0{,}8$), combien d’unités d’actif détient-on pour répliquer le call (le delta) ?
+  en: In the binomial example ($S_0=100$, $K=100$, $u=1.2$, $d=0.8$), how many units of the asset do we hold to replicate the call (the delta)?
+  reponses:
+  - '0.5'
+  - 0,5
+  verif: print((20-0)/(120-80))
+  indice:
+    fr: Applique $\Delta=(C_u-C_d)/(S_0u-S_0d)$ avec $C_u=20$ et $C_d=0$.
+    en: Apply $\Delta=(C_u-C_d)/(S_0u-S_0d)$ with $C_u=20$ and $C_d=0$.
+  explication:
+    fr: $20/40=0{,}5$ unité.
+    en: $20/40=0.5$ unit.
+- id: c11
+  type: idee
+  fr: 'Avec beaucoup de petits pas binomiaux, le prix converge vers la formule de **Black-Scholes** : $C=S\,N(d_1)-Ke^{-rT}N(d_2)$, avec $d_1=\dfrac{\ln(S/K)+(r+\sigma^2/2)T}{\sigma\sqrt T}$ et $d_2=d_1-\sigma\sqrt T$. $N$ est la fonction de répartition de la loi normale. Seule la volatilité $\sigma$ est une inconnue.'
+  en: 'With many small binomial steps, the price converges to the **Black-Scholes** formula: $C=S\,N(d_1)-Ke^{-rT}N(d_2)$, with $d_1=\dfrac{\ln(S/K)+(r+\sigma^2/2)T}{\sigma\sqrt T}$ and $d_2=d_1-\sigma\sqrt T$. $N$ is the cumulative distribution of the normal law. Only the volatility $\sigma$ is unknown.'
+  exemple:
+    fr: 'Pour $S=K=100$, $r=5\,\%$, $\sigma=20\,\%$, $T=1$ : $d_1=0{,}35$, $d_2=0{,}15$, prix $\approx10{,}45$.'
+    en: 'For $S=K=100$, $r=5\%$, $\sigma=20\%$, $T=1$: $d_1=0.35$, $d_2=0.15$, price $\approx10.45$.'
+- id: c12
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: Défi. **Écris `bs_call(S, K, r, sigma, T)`** avec la formule de Black-Scholes. La fonction `phi(x)` (répartition normale, `0.5 * (1 + math.erf(x / math.sqrt(2)))`) est fournie.
+  en: Challenge. **Write `bs_call(S, K, r, sigma, T)`** with the Black-Scholes formula. The function `phi(x)` (normal distribution, `0.5 * (1 + math.erf(x / math.sqrt(2)))`) is provided.
+  depart: |
+    import math
+
+    def phi(x):
+        return 0.5 * (1 + math.erf(x / math.sqrt(2)))
+
+    # écris ta fonction bs_call ici
+  tests: |-
+    assert abs(bs_call(100, 100, 0.05, 0.2, 1.0) - 10.4506) < 1e-3
+    assert bs_call(100, 100, 0.05, 0.4, 1.0) > bs_call(100, 100, 0.05, 0.2, 1.0)
+    assert bs_call(100, 150, 0.05, 0.2, 1.0) < 1.0
+    assert bs_call(200, 100, 0.05, 0.2, 1.0) > 100
+  solutionCode: |
+    import math
+
+    def phi(x):
+        return 0.5 * (1 + math.erf(x / math.sqrt(2)))
+
+    def bs_call(S, K, r, sigma, T):
+        d1 = (math.log(S / K) + (r + sigma ** 2 / 2) * T) / (sigma * math.sqrt(T))
+        d2 = d1 - sigma * math.sqrt(T)
+        return S * phi(d1) - K * math.exp(-r * T) * phi(d2)
+  indice:
+    fr: Calcule `d1`, puis `d2 = d1 - sigma * math.sqrt(T)`, puis `S * phi(d1) - K * math.exp(-r * T) * phi(d2)`.
+    en: Compute `d1`, then `d2 = d1 - sigma * math.sqrt(T)`, then `S * phi(d1) - K * math.exp(-r * T) * phi(d2)`.
+  explication:
+    fr: 'Plus la volatilité est haute, plus l’option vaut cher : l’incertitude profite au détenteur d’un droit sans obligation.'
+    en: 'The higher the volatility, the more expensive the option: uncertainty benefits the holder of a right without an obligation.'
+- id: c13
+  type: piege
+  fr: La probabilité risque-neutre n’est **pas** la vraie probabilité de hausse. C’est un outil de calcul qui rend le prix cohérent avec l’absence d’arbitrage. De plus, Black-Scholes suppose une volatilité constante. En réalité, des strikes différents impliquent des volatilités différentes (le « sourire de volatilité »).
+  en: 'The risk-neutral probability is **not** the real probability of a rise. It is a computational tool that makes the price consistent with no arbitrage. And Black-Scholes assumes constant volatility and continuous prices: in reality, options on different strikes imply different volatilities (the “volatility smile”).'
+- id: c14
+  type: idee
+  fr: 'Un mot sur la **microstructure** : les prix réels s’échangent dans un carnet d’ordres, avec un prix d’achat (bid) et un prix de vente (ask) différents. Cet écart, le **spread**, est un coût à chaque aller-retour.'
+  en: 'Before the backtest, a word on **microstructure**: real prices trade in an order book, with a different buying price (bid) and selling price (ask). This gap (the **spread**) is a cost at each round trip. The next level includes costs, essential to an honest backtest.'
+  exemple:
+    fr: 'Avec un spread de $0{,}1\,\%$, un aller-retour coûte déjà $0{,}1\,\%$ : une stratégie qui rapporte $0{,}05\,\%$ par trade perd de l’argent.'
+    en: 'With a spread of $0.1\%$, a round trip already costs $0.1\%$: a strategy earning $0.05\%$ per trade loses money.'
+- id: c15
+  type: retenir
+  fr: 'Call : $\max(S_T-K,0)$ ; put : $\max(K-S_T,0)$. Prix par absence d’arbitrage : réplication. Parité $C-P=S-Ke^{-rT}$. Binomial : probabilité risque-neutre $q$, delta. Black-Scholes : $S\,N(d_1)-Ke^{-rT}N(d_2)$. Le spread est un coût.'
+  en: 'Call: $\max(S_T-K,0)$; put: $\max(K-S_T,0)$. Price through no arbitrage: replication. Parity $C-P=S-Ke^{-rT}$. Binomial: risk-neutral probability $q$, delta. Black-Scholes: $S\,N(d_1)-Ke^{-rT}N(d_2)$. The spread is a cost.'
+- id: c16
+  type: plus
+  fr: Pour approfondir, consulte [l’article de Black et Scholes](https://www.jstor.org/stable/1831029) ; cet article demande une connexion.
+  en: For further study, see [Black and Scholes’ paper](https://www.jstor.org/stable/1831029); this paper needs a connection.

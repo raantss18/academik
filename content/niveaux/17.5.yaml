@@ -1,0 +1,315 @@
+# Niveau 17.5 — Recherche quantitative 5 : backtest honnête, coûts, anticipation, tests multiples. Original academik ; notions vérifiées dans Bailey et López de Prado 2014 (lien) et Harvey, Liu, Zhu 2016 (lien). Cadre strictement pédagogique.
+id: '17.5'
+module: 17
+duree_min: 21
+titre:
+  fr: Un backtest honnête
+  en: An honest backtest
+ia:
+  fr: Kintana teste une idée sur le passé sans tricher, et compte ses essais.
+  en: Kintana tests an idea on the past without cheating, and counts her trials.
+sources:
+- titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
+  url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551
+  licence: Lien seulement ; texte non repris
+- titre: Harvey, Liu, Zhu — … and the Cross-Section of Expected Returns (2016)
+  url: https://doi.org/10.1093/rfs/hhv059
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Tu testes 100 stratégies de trading aléatoires, qui n’ont en réalité **aucun** avantage. Tu gardes la meilleure : son rendement passé est magnifique. Peut-on lui faire confiance pour l’avenir ?'
+  en: 'You test 100 random trading strategies, which in reality have **no** edge. You keep the best one: its past return is magnificent. Can it be trusted for the future?'
+  choix:
+  - fr: 'Non : parmi 100 essais de hasard, l’un d’eux paraît forcément bon'
+    en: 'No: among 100 chance trials, one of them is bound to look good'
+    juste: true
+  - fr: 'Oui : un bon résultat passé garantit l’avenir'
+    en: 'Yes: a good past result guarantees the future'
+  - fr: Oui, si le graphique est joli
+    en: Yes, if the chart looks nice
+  indice:
+    fr: Si l’on tire 100 fois au hasard, le meilleur tirage est-il représentatif d’un tirage ordinaire ?
+    en: If we draw 100 times at random, is the best draw representative of an ordinary draw?
+  explication:
+    fr: 'Le meilleur de $N$ essais de pur hasard paraît bon par construction. C’est le **sur-apprentissage du backtest** : on a sélectionné du bruit.'
+    en: 'The best of $N$ pure-chance trials looks good by construction. This is **backtest overfitting**: we selected noise.'
+- id: c2
+  type: idee
+  fr: 'Un **backtest** simule une stratégie sur des données passées. Pour qu’il soit honnête : l’**hypothèse avant** les données, l’information **alors connue** seulement, les **coûts**, un **test** séparé de l’apprentissage, et le **nombre d’essais**.'
+  en: 'A **backtest** simulates a strategy on past data. For it to be honest: (1) state the **hypothesis before** looking at the data; (2) use at each date only the information **then known**; (3) count the **costs**; (4) separate **training** and **test** data; (5) account for the **number of trials**.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Règle
+      en: Rule
+    - fr: Évite
+      en: Prevents
+    cellules:
+    - - fr: hypothèse d’abord
+        en: hypothesis first
+      - fr: fouille de données
+        en: data dredging
+    - - fr: information passée seulement
+        en: past information only
+      - fr: biais d’anticipation
+        en: look-ahead bias
+    - - fr: coûts inclus
+        en: costs included
+        ton: ok
+      - fr: gains imaginaires
+        en: imaginary gains
+        ton: ok
+    legende:
+      fr: Chaque règle bouche une porte d’entrée du faux positif.
+      en: Each rule closes a door to false positives.
+- id: c3
+  type: idee
+  fr: 'Exemple de stratégie : le **croisement de moyennes mobiles**. On est investi (position $1$) quand la moyenne courte dépasse la longue, sinon hors marché ($0$). Le piège : la position de $t$ ne doit utiliser que les prix **jusqu’à $t-1$**.'
+  en: 'An example strategy: the **moving-average crossover**. We are invested (position $1$) when the short average of prices exceeds the long average, otherwise out of the market (position $0$). The trap: at date $t$, the price $P_t$ is not known at the time of deciding, so the position of $t$ must use only prices **up to $t-1$**.'
+  exemple:
+    fr: Pour décider la position du lundi, on regarde les prix jusqu’au vendredi, pas le prix du lundi.
+    en: To decide Monday’s position, we look at prices up to Friday, not Monday’s price.
+- id: c3b
+  type: exemple
+  titre:
+    fr: Un signal sans anticipation
+    en: A signal without look-ahead
+  lang: python
+  etapes:
+  - code: |-
+      prix = [10, 10, 10, 11, 12, 13]
+      t = 4
+    fr: Six prix ; on décide la position du temps `t = 4`.
+    en: Six prices; we decide the position at time `t = 4`.
+  - code: |-
+      courte = sum(prix[t - 2:t]) / 2
+      longue = sum(prix[t - 3:t]) / 3
+    fr: 'Les moyennes s’arrêtent à `t - 1` : le prix du jour est exclu.'
+    en: 'The averages stop at `t - 1`: the day’s price is excluded.'
+  - code: print(round(courte, 2), round(longue, 2), 1 if courte > longue else 0)
+    fr: 'On affiche `10.5 10.33 1` : la moyenne courte dépasse la longue, position `1`.'
+    en: 'We display `10.5 10.33 1`: the short average exceeds the long, position `1`.'
+  verif: |-
+    prix = [10, 10, 10, 11, 12, 13]
+    t = 4
+    courte = sum(prix[t - 2:t]) / 2
+    longue = sum(prix[t - 3:t]) / 3
+    print(round(courte, 2), round(longue, 2), 1 if courte > longue else 0)
+  sortie: 10.5 10.33 1
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `positions(prix, courte, longue)`** : liste de la taille de `prix`, remplie de `0`. Pour `t` de `1` à la fin, si `t >= longue` : `mc` est la moyenne de `prix[t - courte:t]` et `ml` celle de `prix[t - longue:t]` (donc **sans** `prix[t]`). La position de `t` vaut `1` si `mc > ml`, sinon `0`.'
+  en: 'Your turn. **Write `positions(prix, courte, longue)`**: a list the size of `prix`, filled with `0`. For `t` from `1` to the end, if `t >= longue`, compute `mc` = mean of the `courte` prices `prix[t - courte:t]` and `ml` = mean of the `longue` prices `prix[t - longue:t]` (so **without** `prix[t]`); the position of `t` is `1` if `mc > ml`, otherwise `0`.'
+  depart: |
+    # écris ta fonction positions ici
+  tests: |-
+    p = [10, 10, 10, 11, 12, 13, 14, 13, 12, 11]
+    pos = positions(p, 2, 3)
+    assert len(pos) == 10 and pos[:3] == [0, 0, 0]
+    assert pos[3] == 0 and pos[5] == 1
+    q = p[:5] + [999] + p[6:]
+    assert positions(q, 2, 3)[:6] == positions(p, 2, 3)[:6]
+    assert positions([1, 2, 3], 1, 2) == [0, 0, 1]
+  solutionCode: |
+    def positions(prix, courte, longue):
+        pos = [0] * len(prix)
+        for t in range(1, len(prix)):
+            if t - 1 + 1 >= longue:
+                mc = sum(prix[t - courte:t]) / courte
+                ml = sum(prix[t - longue:t]) / longue
+                pos[t] = 1 if mc > ml else 0
+        return pos
+  indice:
+    fr: '`prix[t - courte:t]` s’arrête à `t - 1`. C’est ce qui garantit qu’on n’utilise pas le prix du jour.'
+    en: '`prix[t - courte:t]` stops at `t - 1`. That is what guarantees the day’s price is not used.'
+  explication:
+    fr: 'Le test avec `999` vérifie qu’un prix futur ne change pas les positions passées : la propriété qui exclut l’anticipation.'
+    en: 'The test with `999` checks that a future price does not change past positions: the property that rules out look-ahead.'
+- id: c5
+  type: idee
+  fr: 'Le rendement de la stratégie à la date $t$ est $\text{pos}_t\times r_t$ moins les **coûts** : un coût par unité de position échangée, soit $c\times|\text{pos}_t-\text{pos}_{t-1}|$. Une stratégie qui change souvent de position paie beaucoup de frais, même si chacun est petit.'
+  en: 'The strategy’s return at date $t$ is $\text{pos}_t\times r_t$ minus the **costs**: a cost per unit of position traded, that is $c\times|\text{pos}_t-\text{pos}_{t-1}|$. A strategy that often changes position pays a lot of fees, even if each is small.'
+  exemple:
+    fr: Pour un coût de $0{,}1\,\%$ par échange et 100 échanges par an, les frais pèsent $10\,\%$ par an.
+    en: For a cost of $0.1\%$ per trade and 100 trades per year, fees weigh $10\%$ per year.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Du signal au rendement net
+        en: From signal to net return
+      noeuds:
+      - fr: position du jour
+        en: day’s position
+      - fr: × rendement du marché
+        en: × market return
+      - fr: − coût des échanges
+        en: − cost of trades
+      - fr: rendement net
+        en: net return
+        ton: ok
+    legende:
+      fr: Le rendement net est ce qu’un investisseur touche vraiment.
+      en: The net return is what an investor really receives.
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `rendements_strategie(prix, pos, cout)`** : pour `t` de `1` à la fin, `brut = pos[t] * (prix[t] / prix[t - 1] - 1)`, `frais = cout * abs(pos[t] - pos[t - 1])`, et on ajoute `brut - frais`. Renvoie la liste.'
+  en: '**Write `rendements_strategie(prix, pos, cout)`**: for `t` from `1` to the end, `brut = pos[t] * (prix[t] / prix[t - 1] - 1)`, `frais = cout * abs(pos[t] - pos[t - 1])`, and append `brut - frais`. Return the list.'
+  depart: |
+    # écris ta fonction rendements_strategie ici
+  tests: |-
+    p = [100.0, 110.0, 99.0, 99.0]
+    r = rendements_strategie(p, [0, 1, 1, 0], 0.01)
+    assert len(r) == 3
+    assert abs(r[0] - (0.1 - 0.01)) < 1e-12
+    assert abs(r[1] - (99 / 110 - 1)) < 1e-12
+    assert abs(r[2] - (0 - 0.01)) < 1e-12
+    assert rendements_strategie(p, [0, 0, 0, 0], 0.5) == [0.0, 0.0, 0.0]
+  solutionCode: |
+    def rendements_strategie(prix, pos, cout):
+        r = []
+        for t in range(1, len(prix)):
+            brut = pos[t] * (prix[t] / prix[t - 1] - 1)
+            frais = cout * abs(pos[t] - pos[t - 1])
+            r.append(brut - frais)
+        return r
+  indice:
+    fr: Une boucle sur `t` de `1` à `len(prix) - 1`, avec le rendement du marché de `t-1` à `t` et le changement de position entre `t-1` et `t`.
+    en: A loop over `t` from `1` to `len(prix) - 1`, with the market return from `t-1` to `t` and the position change between `t-1` and `t`.
+  explication:
+    fr: Le coût s’applique à chaque changement de position, qu’on entre ou qu’on sorte du marché.
+    en: The cost applies to each position change, whether we enter or leave the market.
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Une stratégie change de position 50 fois par an, avec un coût de $0{,}2\,\%$ par changement. Quel est le coût annuel total, en pourcentage ?
+  en: A strategy changes position 50 times a year, with a cost of $0.2\%$ per change. What is the total annual cost, in percent?
+  reponses:
+  - '10'
+  - '10.0'
+  verif: print(round(50 * 0.2, 1))
+  indice:
+    fr: Multiplie le nombre de changements par le coût de chacun.
+    en: Multiply the number of changes by the cost of each.
+  explication:
+    fr: '$50\times0{,}2\,\%=10\,\%$ par an : de quoi effacer bien des profits apparents.'
+    en: '$50\times0.2\%=10\%$ per year: enough to wipe out many apparent profits.'
+- id: c8
+  type: idee
+  fr: On sépare les données **dans l’ordre du temps**. On règle la stratégie sur une période, puis on la juge **une seule fois** plus tard. Mélanger au hasard ferait fuiter le futur (niveau 10.boss). Le « walk-forward » répète ce schéma.
+  en: 'We always split the data **in time order**: we tune the strategy on one period (training), then judge it **only once** on a later period (test). Shuffling at random would leak the future (level 10.boss). “Walk-forward” validation repeats this scheme while moving forward in time.'
+  exemple:
+    fr: Réglage sur 2015–2019, test sur 2020–2022. Si le résultat déçoit, on n’a pas le droit de re-régler puis de re-tester sur 2020–2022.
+    en: Tuning on 2015–2019, test on 2020–2022. If the result disappoints, we are not allowed to re-tune and re-test on 2020–2022.
+- id: c9
+  type: idee
+  fr: Combien de fois a-t-on **essayé** ? Si l’on teste $N$ stratégies sans avantage, la meilleure est en moyenne à environ $\sqrt{2\ln N}$ écarts types au-dessus de 0. Avec $N=1000$, on trouve « par hasard » une stratégie à $\approx3{,}7$ écarts types.
+  en: How many times have we **tried**? If we test $N$ strategies without an edge, the best annualised Sharpe ratio is about $\sqrt{2\ln N}$ times the Sharpe’s standard deviation (for a one-year history). With $N=1000$, we expect to find “by chance” a strategy $\approx3.7$ standard deviations above 0.
+  exemple:
+    fr: $\sqrt{2\ln10}\approx2{,}15$, $\sqrt{2\ln100}\approx3{,}03$, $\sqrt{2\ln1000}\approx3{,}72$.
+    en: $\sqrt{2\ln10}\approx2.15$, $\sqrt{2\ln100}\approx3.03$, $\sqrt{2\ln1000}\approx3.72$.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Essais $N$
+      en: Trials $N$
+    - fr: Meilleur écart attendu
+      en: Expected best deviation
+    cellules:
+    - - '10'
+      - 2,15
+    - - '100'
+      - 3,03
+    - - fr: '1000'
+        en: '1000'
+        ton: ok
+      - fr: 3,72
+        en: '3.72'
+        ton: ok
+    legende:
+      fr: Plus on essaie, plus le meilleur bruit paraît impressionnant.
+      en: The more we try, the more impressive the best noise looks.
+- id: c10
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `sharpe_max_attendu(N)`** : `math.sqrt(2 * math.log(N))`, l’ordre de grandeur du meilleur écart obtenu par pur hasard parmi `N` essais.'
+  en: '**Write `sharpe_max_attendu(N)`**: `math.sqrt(2 * math.log(N))`, the order of magnitude of the best deviation obtained by pure chance among `N` trials.'
+  depart: |
+    import math
+
+    # écris ta fonction sharpe_max_attendu ici
+  tests: |-
+    assert abs(sharpe_max_attendu(10) - 2.1460) < 1e-3
+    assert abs(sharpe_max_attendu(100) - 3.0349) < 1e-3
+    assert abs(sharpe_max_attendu(1000) - 3.7169) < 1e-3
+    assert sharpe_max_attendu(2) < sharpe_max_attendu(3)
+  solutionCode: |
+    import math
+
+    def sharpe_max_attendu(N):
+        return math.sqrt(2 * math.log(N))
+  indice:
+    fr: 'Une ligne : racine carrée de deux fois le logarithme népérien de `N`.'
+    en: 'A single line: square root of two times the natural logarithm of `N`.'
+  explication:
+    fr: 'La croissance est lente : il faut multiplier les essais par 10 pour gagner moins d’un écart type de « chance ».'
+    en: 'Growth is slow: trials must be multiplied by 10 to gain less than one standard deviation of “luck”.'
+- id: c11
+  type: piege
+  fr: 'Ne pas compter les essais est la faute la plus courante : essayer des paramètres, des actifs, des périodes, puis ne présenter que le meilleur. Chaque essai « pour voir » compte. Un résultat n’a de sens que s’il est rapporté **avec le nombre total d’essais** qui l’ont produit.'
+  en: 'Not counting the trials is the most common fault: trying parameters, assets, periods, then presenting only the best. Each trial “just to see” counts. A result only has meaning if it is reported **with the total number of trials** that produced it.'
+- id: c12
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `bonferroni(pvaleurs, alpha)`** : avec `N = len(pvaleurs)`, le seuil corrigé vaut `alpha / N`. Renvoie la liste des indices `i` dont la p-valeur est **strictement inférieure** à ce seuil.'
+  en: 'Challenge. **Write `bonferroni(pvaleurs, alpha)`**: with `N = len(pvaleurs)`, the corrected threshold is `alpha / N`. Return the list of indices `i` whose p-value is **strictly below** that threshold.'
+  depart: |
+    # écris ta fonction bonferroni ici
+  tests: |-
+    assert bonferroni([0.04, 0.2, 0.02, 0.6], 0.05) == []
+    assert bonferroni([0.04, 0.2, 0.02, 0.0001], 0.05) == [3]
+    assert bonferroni([0.01], 0.05) == [0]
+    assert bonferroni([0.05, 0.05], 0.05) == []
+    assert bonferroni([0.0001, 0.0002, 0.5], 0.05) == [0, 1]
+  solutionCode: |
+    def bonferroni(pvaleurs, alpha):
+        seuil = alpha / len(pvaleurs)
+        return [i for i, p in enumerate(pvaleurs) if p < seuil]
+  indice:
+    fr: Calcule `seuil = alpha / len(pvaleurs)`, puis `[i for i, p in enumerate(pvaleurs) if p < seuil]`.
+    en: Compute `seuil = alpha / len(pvaleurs)`, then `[i for i, p in enumerate(pvaleurs) if p < seuil]`.
+  explication:
+    fr: 'C’est la correction du module 7 : plus on teste, plus il faut des preuves fortes pour qu’un résultat compte.'
+    en: 'This is module 7’s correction: the more we test, the stronger the evidence must be for a result to count.'
+- id: c13
+  type: idee
+  fr: 'Même avec toutes ces précautions, un bon backtest ne prouve pas qu’une stratégie marchera. Le marché change, les coûts réels dépassent les estimations, et les autres acteurs s’adaptent. Un backtest honnête **rend le doute explicite** : combien d’essais, quels coûts, quel intervalle d’incertitude.'
+  en: 'Even with all these precautions, a good backtest does not prove that a strategy will work. The market changes, real costs exceed estimates, and other participants adapt. An honest backtest **makes the doubt explicit**: how many trials, what costs, what uncertainty interval.'
+  exemple:
+    fr: Le boss te demande un rapport qui **rejette** une fausse découverte et retient seulement ce qui résiste.
+    en: The boss asks you for a report that **rejects** a false discovery and retains only what holds up.
+- id: c14
+  type: retenir
+  fr: 'Backtest honnête : hypothèse d’abord, information passée seulement, coûts, séparation chronologique, comptage des essais. Meilleur de $N$ bruits $\approx\sqrt{2\ln N}$. Correction de Bonferroni : seuil $\alpha/N$. Le doute fait partie du résultat.'
+  en: 'Honest backtest: hypothesis first, past information only, costs, chronological split, counting of trials. Best of $N$ noises $\approx\sqrt{2\ln N}$. Bonferroni correction: threshold $\alpha/N$. Doubt is part of the result.'
+- id: c15
+  type: plus
+  fr: Pour approfondir, consulte [The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) ; cet article demande une connexion.
+  en: For further study, see [The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551); this paper needs a connection.

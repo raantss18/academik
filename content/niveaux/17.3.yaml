@@ -1,0 +1,317 @@
+# Niveau 17.3 — Recherche quantitative 3 : bêta, alpha, CAPM et facteurs. Original academik ; notions vérifiées dans le cours 15.401 du MIT (lien) et Fama et French 1992 (lien). Cadre strictement pédagogique.
+id: '17.3'
+module: 17
+duree_min: 20
+titre:
+  fr: Facteurs et bêta
+  en: Factors and beta
+ia:
+  fr: Kintana sépare ce qui vient du marché de ce qui est propre à l’actif.
+  en: Kintana separates what comes from the market from what is specific to the asset.
+sources:
+- titre: MIT OpenCourseWare — 15.401 Finance Theory I (CAPM)
+  url: https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/
+  licence: Lien seulement (CC BY-NC-SA) ; texte non repris
+- titre: Fama, French — The Cross-Section of Expected Stock Returns (1992)
+  url: https://doi.org/10.1111/j.1540-6261.1992.tb04398.x
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un actif monte de 1,5 % les jours où le marché monte de 1 %, et baisse de 1,5 % quand le marché baisse de 1 %. Il amplifie les mouvements du marché. Comment appelle-t-on ce coefficient d’amplification ?
+  en: An asset rises by 1.5% on days when the market rises by 1%, and falls by 1.5% when the market falls by 1%. It amplifies the market’s moves. What is this amplification coefficient called?
+  choix:
+  - fr: Le bêta
+    en: The beta
+    juste: true
+  - fr: L’alpha
+    en: The alpha
+  - fr: Le rendement log
+    en: The log return
+  indice:
+    fr: C’est la pente de la droite qui relie les rendements de l’actif à ceux du marché (niveau 7.5).
+    en: It is the slope of the line linking the asset’s returns to the market’s (level 7.5).
+  explication:
+    fr: 'Le **bêta** mesure la sensibilité d’un actif au marché : ici $\beta=1{,}5$. C’est la pente d’une régression.'
+    en: 'The **beta** measures an asset’s sensitivity to the market: here $\beta=1.5$. It is the slope of a regression.'
+- id: c2
+  type: idee
+  fr: Le **modèle de marché** écrit $r_a=\alpha+\beta\,r_m+\varepsilon$. Il y a une part due au marché ($\beta\,r_m$), une part propre à l’actif ($\alpha$) et du bruit ($\varepsilon$). Le bêta est la pente de la régression de $r_a$ sur $r_m$.
+  en: 'The **market model** writes an asset’s return as $r_a=\alpha+\beta\,r_m+\varepsilon$: a part due to the market ($\beta\,r_m$), a part specific to the asset ($\alpha$ on average), and noise ($\varepsilon$). The beta is the slope of the regression of $r_a$ on $r_m$.'
+  exemple:
+    fr: Un bêta de $1$ suit le marché ; de $0{,}5$ amortit ; de $2$ amplifie ; négatif va à contre-courant.
+    en: A beta of $1$ follows the market; $0.5$ dampens; $2$ amplifies; negative goes against the current.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Bêta
+      en: Beta
+    - fr: Comportement
+      en: Behaviour
+    cellules:
+    - - 0,5
+      - fr: amortit le marché
+        en: dampens the market
+    - - '1'
+      - fr: suit le marché
+        en: follows the market
+    - - fr: '2'
+        en: '2'
+        ton: ok
+      - fr: double les mouvements
+        en: doubles the moves
+        ton: ok
+    legende:
+      fr: Le bêta décrit le risque de marché, celui qu’on ne peut pas diversifier.
+      en: Beta describes market risk, the kind that cannot be diversified.
+- id: c3
+  type: idee
+  fr: 'Le bêta s’obtient par la formule des moindres carrés (niveau 7.5) : $\beta=\text{Cov}(r_a,r_m)/\text{Var}(r_m)$. L’**alpha** est l’ordonnée à l’origine : $\alpha=\bar r_a-\beta\,\bar r_m$. C’est le rendement moyen **non expliqué** par le marché.'
+  en: 'The beta is obtained by the least-squares formula (level 7.5): $\beta=\text{Cov}(r_a,r_m)/\text{Var}(r_m)$. The **alpha** is the intercept: $\alpha=\bar r_a-\beta\,\bar r_m$. It is the average return **not explained** by the market.'
+  exemple:
+    fr: 'Si $r_a=1{,}5\,r_m$ exactement, la covariance vaut $1{,}5\times\text{Var}(r_m)$ : le bêta vaut $1{,}5$ et l’alpha $0$.'
+    en: 'If $r_a=1.5\,r_m$ exactly, the covariance is $1.5\times\text{Var}(r_m)$: the beta is $1.5$ and the alpha $0$.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Un bêta à la main
+    en: A beta by hand
+  lang: python
+  etapes:
+  - code: |-
+      rm = [0.01, -0.01, 0.02, -0.02]
+      ra = [1.5 * x for x in rm]
+    fr: L’actif amplifie le marché par 1,5, sans bruit.
+    en: The asset amplifies the market by 1.5, with no noise.
+  - code: |-
+      mm, ma = sum(rm) / 4, sum(ra) / 4
+      cov = sum((a - ma) * (m - mm) for a, m in zip(ra, rm)) / 3
+      var = sum((m - mm) ** 2 for m in rm) / 3
+    fr: Covariance et variance, avec `n - 1`.
+    en: Covariance and variance, with `n - 1`.
+  - code: print(round(cov / var, 2))
+    fr: On affiche `1.5`.
+    en: We display `1.5`.
+  verif: |-
+    rm = [0.01, -0.01, 0.02, -0.02]
+    ra = [1.5 * x for x in rm]
+    mm, ma = sum(rm) / 4, sum(ra) / 4
+    cov = sum((a - ma) * (m - mm) for a, m in zip(ra, rm)) / 3
+    var = sum((m - mm) ** 2 for m in rm) / 3
+    print(round(cov / var, 2))
+  sortie: '1.5'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `beta(r_actif, r_marche)`** : covariance des deux séries divisée par la variance de `r_marche`, avec une division par `n - 1` dans les deux.'
+  en: 'Your turn. **Write `beta(r_actif, r_marche)`**: covariance of the two series divided by the variance of `r_marche`, with a division by `n - 1` in both.'
+  depart: |
+    # écris ta fonction beta ici
+  tests: |-
+    rm = [0.01, -0.01, 0.02, -0.02]
+    assert abs(beta([1.5 * x for x in rm], rm) - 1.5) < 1e-12
+    assert abs(beta([-x for x in rm], rm) + 1.0) < 1e-12
+    assert abs(beta([0.003 + 2 * x for x in rm], rm) - 2.0) < 1e-12
+    assert abs(beta(rm, rm) - 1.0) < 1e-12
+  solutionCode: |
+    def beta(r_actif, r_marche):
+        n = len(r_actif)
+        ma = sum(r_actif) / n
+        mm = sum(r_marche) / n
+        cov = sum((a - ma) * (m - mm) for a, m in zip(r_actif, r_marche)) / (n - 1)
+        var = sum((m - mm) ** 2 for m in r_marche) / (n - 1)
+        return cov / var
+  indice:
+    fr: 'Moyennes `ma` et `mm`, puis deux sommes : `(a - ma) * (m - mm)` pour la covariance et `(m - mm) ** 2` pour la variance.'
+    en: 'Means `ma` and `mm`, then two sums: `(a - ma) * (m - mm)` for the covariance and `(m - mm) ** 2` for the variance.'
+  explication:
+    fr: 'Un décalage constant (comme `0.003`) n’influence pas le bêta : il se retrouvera dans l’alpha.'
+    en: 'A constant offset (like `0.003`) does not affect the beta: it will show up in the alpha.'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `alpha(r_actif, r_marche)`** : `moyenne(r_actif) - beta * moyenne(r_marche)`, en utilisant la fonction `beta` fournie.'
+  en: '**Write `alpha(r_actif, r_marche)`**: `mean(r_actif) - beta * mean(r_marche)`, using the provided `beta` function.'
+  depart: |
+    def beta(r_actif, r_marche):
+        n = len(r_actif)
+        ma = sum(r_actif) / n
+        mm = sum(r_marche) / n
+        cov = sum((a - ma) * (m - mm) for a, m in zip(r_actif, r_marche)) / (n - 1)
+        var = sum((m - mm) ** 2 for m in r_marche) / (n - 1)
+        return cov / var
+
+    # écris ta fonction alpha ici
+  tests: |-
+    rm = [0.01, -0.01, 0.02, -0.02]
+    assert abs(alpha([0.003 + 2 * x for x in rm], rm) - 0.003) < 1e-12
+    assert abs(alpha([1.5 * x for x in rm], rm)) < 1e-12
+    assert abs(alpha([0.01 for _ in rm], rm) - 0.01) < 1e-12
+  solutionCode: |
+    def beta(r_actif, r_marche):
+        n = len(r_actif)
+        ma = sum(r_actif) / n
+        mm = sum(r_marche) / n
+        cov = sum((a - ma) * (m - mm) for a, m in zip(r_actif, r_marche)) / (n - 1)
+        var = sum((m - mm) ** 2 for m in r_marche) / (n - 1)
+        return cov / var
+
+    def alpha(r_actif, r_marche):
+        b = beta(r_actif, r_marche)
+        return sum(r_actif) / len(r_actif) - b * sum(r_marche) / len(r_marche)
+  indice:
+    fr: Calcule `b = beta(...)`, puis la moyenne de l’actif moins `b` fois la moyenne du marché.
+    en: Compute `b = beta(...)`, then the asset’s mean minus `b` times the market’s mean.
+  explication:
+    fr: 'Un alpha positif durable serait un rendement « gratuit » : très rare, à vérifier avec méfiance, comme on le verra au niveau 17.5.'
+    en: 'A lasting positive alpha would be a “free” return: very rare, and to be checked with suspicion (level 17.5).'
+- id: c7
+  type: idee
+  fr: 'Le **CAPM** affirme que le rendement espéré d’un actif ne dépend que de son bêta : $E[r]=r_f+\beta\,(E[r_m]-r_f)$. Ici $r_f$ est le taux sans risque et $E[r_m]-r_f$ la **prime de risque**. Seul le risque de marché est rémunéré.'
+  en: 'The **CAPM** (equilibrium model) states that an asset’s expected return depends only on its beta: $E[r]=r_f+\beta\,(E[r_m]-r_f)$, where $r_f$ is the risk-free rate and $E[r_m]-r_f$ the market **risk premium**. Only market risk is rewarded.'
+  exemple:
+    fr: 'Avec $r_f=2\,\%$, une prime de $5\,\%$ et $\beta=1{,}2$ : $E[r]=2+1{,}2\times5=8\,\%$.'
+    en: 'With $r_f=2\%$, a premium of $5\%$ and $\beta=1.2$: $E[r]=2+1.2\times5=8\%$.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: La logique du CAPM
+        en: The CAPM logic
+      noeuds:
+      - fr: risque diversifiable
+        en: diversifiable risk
+      - fr: non rémunéré
+        en: not rewarded
+      - fr: risque de marché (bêta)
+        en: market risk (beta)
+      - fr: rémunéré par la prime
+        en: rewarded by the premium
+        ton: ok
+    legende:
+      fr: Ce qu’on peut éliminer en diversifiant ne rapporte rien en plus.
+      en: What can be eliminated by diversifying earns nothing extra.
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `rendement_capm(sans_risque, beta, prime_marche)`** : `sans_risque + beta * prime_marche`.'
+  en: '**Write `rendement_capm(sans_risque, beta, prime_marche)`**: `sans_risque + beta * prime_marche`.'
+  depart: |
+    # écris ta fonction rendement_capm ici
+  tests: |-
+    assert abs(rendement_capm(0.02, 1.2, 0.05) - 0.08) < 1e-12
+    assert rendement_capm(0.03, 0.0, 0.06) == 0.03
+    assert abs(rendement_capm(0.02, 1.0, 0.05) - 0.07) < 1e-12
+    assert rendement_capm(0.02, -1.0, 0.05) < 0.02
+  solutionCode: |
+    def rendement_capm(sans_risque, beta, prime_marche):
+        return sans_risque + beta * prime_marche
+  indice:
+    fr: 'Une seule ligne : la somme du taux sans risque et du bêta fois la prime.'
+    en: 'A single line: the sum of the risk-free rate and the beta times the premium.'
+  explication:
+    fr: 'Un bêta nul rapporte le taux sans risque ; un bêta négatif rapporte moins : il sert d’assurance.'
+    en: 'A zero beta earns the risk-free rate; a negative beta earns less: it acts as insurance.'
+- id: c9
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un actif a pour bêta $0{,}8$. Le marché perd $10\,\%$ sur une période. Quelle perte de l’actif prédit le modèle de marché (en pourcentage, en négligeant l’alpha) ?
+  en: An asset has a beta of $0.8$. The market loses $10\%$ over a period. What loss of the asset does the market model predict (in percent, ignoring alpha)?
+  reponses:
+  - '8'
+  - '8.0'
+  verif: print(0.8 * 10)
+  indice:
+    fr: Multiplie la variation du marché par le bêta.
+    en: Multiply the market’s change by the beta.
+  explication:
+    fr: '$0{,}8\times10=8$ : l’actif perd environ $8\,\%$.'
+    en: '$0.8\times10=8$: the asset loses about $8\%$.'
+- id: c10
+  type: idee
+  fr: 'Les **modèles à facteurs** généralisent le bêta : le rendement dépend de plusieurs expositions (marché, taille, valeur, momentum…). Fama et French en ont popularisé trois. Un « facteur » est une source de risque commune à de nombreux actifs, qui explique une part du rendement.'
+  en: '**Factor models** generalise the beta: the return depends on several exposures (market, size, value, momentum…). Fama and French popularised three. A “factor” is a source of risk common to many assets, which explains part of the return.'
+  exemple:
+    fr: Une stratégie qui paraît avoir un alpha peut n’être qu’une exposition à un facteur connu, déguisée.
+    en: A strategy that appears to have an alpha may be only an exposure to a known factor, in disguise.
+- id: c11
+  type: piege
+  fr: 'Le bêta n’est pas stable : il varie avec la période, la fréquence des données et le marché de référence. Un bêta estimé sur trop peu de points est très bruité. Un alpha « significatif » trouvé en testant beaucoup d’actifs est souvent un faux positif, on le verra au niveau 17.5.'
+  en: 'Beta is not stable: it varies with the period, the data frequency and the reference market. A beta estimated on too few points is very noisy. And a “significant” alpha found by testing many assets is often a false positive (level 17.5).'
+- id: c12
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `residus(r_actif, r_marche)`** : la liste des écarts `x - (alpha + beta * m)` entre le rendement observé de l’actif et celui prédit par le modèle de marché. `alpha` et `beta` sont fournies.'
+  en: 'Challenge. **Write `residus(r_actif, r_marche)`**: the list of gaps `x - (alpha + beta * m)` between the asset’s observed return and the one predicted by the market model. `alpha` and `beta` are provided.'
+  depart: |
+    def beta(r_actif, r_marche):
+        n = len(r_actif)
+        ma = sum(r_actif) / n
+        mm = sum(r_marche) / n
+        cov = sum((a - ma) * (m - mm) for a, m in zip(r_actif, r_marche)) / (n - 1)
+        var = sum((m - mm) ** 2 for m in r_marche) / (n - 1)
+        return cov / var
+
+    def alpha(r_actif, r_marche):
+        b = beta(r_actif, r_marche)
+        return sum(r_actif) / len(r_actif) - b * sum(r_marche) / len(r_marche)
+
+    # écris ta fonction residus ici
+  tests: |-
+    rm = [0.01, -0.01, 0.02, -0.02]
+    ra = [0.003 + 2 * x + e for x, e in zip(rm, [0.001, -0.001, -0.001, 0.001])]
+    r = residus(ra, rm)
+    assert len(r) == 4 and abs(sum(r)) < 1e-12
+    assert all(abs(x) < 0.003 for x in r)
+    assert all(abs(x) < 1e-12 for x in residus([1.5 * x for x in rm], rm))
+  solutionCode: |
+    def beta(r_actif, r_marche):
+        n = len(r_actif)
+        ma = sum(r_actif) / n
+        mm = sum(r_marche) / n
+        cov = sum((a - ma) * (m - mm) for a, m in zip(r_actif, r_marche)) / (n - 1)
+        var = sum((m - mm) ** 2 for m in r_marche) / (n - 1)
+        return cov / var
+
+    def alpha(r_actif, r_marche):
+        b = beta(r_actif, r_marche)
+        return sum(r_actif) / len(r_actif) - b * sum(r_marche) / len(r_marche)
+
+    def residus(r_actif, r_marche):
+        a, b = alpha(r_actif, r_marche), beta(r_actif, r_marche)
+        return [x - (a + b * m) for x, m in zip(r_actif, r_marche)]
+  indice:
+    fr: Calcule `a` et `b` une fois, puis une compréhension de liste sur `zip(r_actif, r_marche)`.
+    en: Compute `a` and `b` once, then a list comprehension over `zip(r_actif, r_marche)`.
+  explication:
+    fr: 'Les résidus de la régression ont une moyenne nulle : ce qu’il en reste est la part que le marché n’explique pas.'
+    en: 'The regression residuals have a zero mean: what remains is the part the market does not explain.'
+- id: c13
+  type: idee
+  fr: 'Le niveau suivant tarifie un autre objet : l’**option**. Son prix repose sur l’idée d’**absence d’arbitrage** : aucun moyen de gagner à coup sûr sans risque. De cette seule idée découle une formule de prix.'
+  en: 'The next level prices another object: the **option**. Its price rests on the idea of **no arbitrage**: no way to win surely without risk. From this single idea follows a pricing formula.'
+  exemple:
+    fr: Deux actifs qui rapportent exactement la même chose demain doivent coûter le même prix aujourd’hui.
+    en: Two assets that pay exactly the same thing tomorrow must cost the same price today.
+- id: c14
+  type: retenir
+  fr: 'Bêta $=\text{Cov}(r_a,r_m)/\text{Var}(r_m)$ : sensibilité au marché. Alpha : rendement non expliqué. CAPM : $E[r]=r_f+\beta\times\text{prime}$. Facteurs : sources de risque communes. Bêtas instables, alphas à vérifier avec méfiance.'
+  en: 'Beta $=\text{Cov}(r_a,r_m)/\text{Var}(r_m)$: sensitivity to the market. Alpha: unexplained return. CAPM: $E[r]=r_f+\beta\times\text{premium}$. Factors: common sources of risk. Unstable betas, alphas to be checked with suspicion.'
+- id: c15
+  type: plus
+  fr: Pour approfondir, consulte [l’article de Fama et French sur les rendements](https://doi.org/10.1111/j.1540-6261.1992.tb04398.x) ; cet article demande une connexion.
+  en: For further study, see [Fama and French’s paper on returns](https://doi.org/10.1111/j.1540-6261.1992.tb04398.x); this paper needs a connection.
