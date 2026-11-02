@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.26] — 2026-11-02
+
+### Message fr
+Cinq nouveaux modules pour finir le parcours : processus stochastiques, recherche quantitative (avec un rapport qui sait rejeter un faux résultat), performance, sécurité (avec un lab d'injection de prompt) et évaluation jusqu'à la livraison responsable.
+
+### Message en
+Five new modules to complete the path: stochastic processes, quantitative research (with a report that knows how to reject a false result), performance, security (with a prompt-injection lab) and evaluation through to responsible delivery.
+
 ## [0.3.25] — 2026-11-02
 
 ### Message fr

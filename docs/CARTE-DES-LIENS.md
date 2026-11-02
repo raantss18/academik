@@ -94,7 +94,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
 | **7.1** Estimer | Kintana estime une valeur inconnue à partir d’un échantillon, et sait ce qu’est une vraisemblance. | — | — |
-| **7.2** Intervalles | Kintana encadre son estimation par un intervalle de confiance honnête. | — | 7.4, 9.4, 10.3, 16.boss |
+| **7.2** Intervalles | Kintana encadre son estimation par un intervalle de confiance honnête. | — | 7.4, 9.4, 10.3, 16.boss, 20.2 |
 | **7.3** Tester | Kintana teste si un résultat peut s’expliquer par le hasard (p-valeur). | — | — |
 | **7.4** Bootstrap | Kintana mesure la variabilité de son estimation en rééchantillonnant ses données (bootstrap). | 7.2 | — |
 | **7.5** Tests multiples | Kintana corrige ses seuils quand elle teste beaucoup d’idées à la fois. | — | 17.3 |
@@ -208,7 +208,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **17.2** Portefeuilles et Markowitz | Kintana combine plusieurs actifs et mesure ce que la diversification apporte. | — | — |
 | **17.3** Facteurs et bêta | Kintana sépare ce qui vient du marché de ce qui est propre à l’actif. | 7.5 | — |
 | **17.4** Options et absence d’arbitrage | Kintana tarife un droit d’achat sans prédire l’avenir, par réplication. | 16.4 | — |
-| **17.5** Un backtest honnête | Kintana teste une idée sur le passé sans tricher, et compte ses essais. | 10.boss | — |
+| **17.5** Un backtest honnête | Kintana teste une idée sur le passé sans tricher, et compte ses essais. | 10.boss | 20.2 |
 | **17.boss** Le rapport qui rejette | Kintana distingue une vraie découverte d’un hasard heureux, et le dit dans son rapport. | 6.4 | — |
 
 ## 18 · Performance
@@ -227,8 +227,19 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
 | **19.1** Réseaux et TLS | Kintana comprend ce qui voyage sur le réseau, et comment TLS le protège. | — | — |
-| **19.2** Cryptographie par bibliothèques | Kintana protège ses secrets avec des briques standard, jamais avec des inventions maison. | — | — |
+| **19.2** Cryptographie par bibliothèques | Kintana protège ses secrets avec des briques standard, jamais avec des inventions maison. | — | 20.4 |
 | **19.3** Programmer sans faille | Kintana ne mélange jamais les données et le code, et protège ses secrets. | 15.2 | — |
 | **19.4** Les risques des applications LLM | Kintana connaît les dix risques des applications LLM, et la combinaison qu’il ne faut jamais réunir. | — | — |
 | **19.5** Le lab d’injection de prompt | Kintana subit des attaques simulées, mesure leur succès et empile des défenses. | — | — |
 | **19.boss** Défends ton agent | Kintana résiste à une série d’attaques et rend un rapport qui dit ce qui passe encore. | — | — |
+
+## 20 · Évaluer et produire
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **20.1** Évaluer un modèle | Kintana mesure ses erreurs de la bonne façon, au-delà de la simple exactitude. | — | — |
+| **20.2** Des mesures honnêtes | Kintana annonce un score avec son incertitude et sait quand une différence est réelle. | 7.2, 17.5 | — |
+| **20.3** Observer en production | Kintana regarde son propre fonctionnement avec des journaux, des métriques et des percentiles. | — | 20.boss |
+| **20.4** Reproduire une expérience | Kintana fixe tout ce qui varie pour qu’un résultat puisse être refait par un autre. | 19.2 | — |
+| **20.5** Livrer avec éthique | Kintana met en service une version par étapes, mesure son équité et dit honnêtement ses limites. | — | — |
+| **20.boss** Livre ton assistant | Kintana ne livre que ce qu’elle peut prouver, mesuré, expliqué et reproductible. | 20.3 | — |

@@ -190,3 +190,12 @@ modules:
       - { id: "19.4", titre: { fr: "Les risques des applications LLM" } }
       - { id: "19.5", titre: { fr: "Le lab d’injection de prompt" } }
       - { id: "19.boss", boss: true, titre: { fr: "Défends ton agent" } }
+  - id: 20
+    titre: { fr: "Évaluer et produire", en: "Evaluate and ship" }
+    niveaux:
+      - { id: "20.1", titre: { fr: "Évaluer un modèle" } }
+      - { id: "20.2", titre: { fr: "Des mesures honnêtes" } }
+      - { id: "20.3", titre: { fr: "Observer en production" } }
+      - { id: "20.4", titre: { fr: "Reproduire une expérience" } }
+      - { id: "20.5", titre: { fr: "Livrer avec éthique" } }
+      - { id: "20.boss", boss: true, titre: { fr: "Livre ton assistant" } }

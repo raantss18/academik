@@ -185,6 +185,15 @@ const THEMES = [
     kinds: { tower: 4, hall: 2, house: 1, shop: 0 }, count: 24, align: .9,
     props: { lamp: 8, person: 4, car: 2, crate: 2 },
     lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
+  { place: 'Le Port de Livraison', blurb: 'Quais de chargement, balances et feux tricolores : rien ne part sans feu vert.', path: 3, smooth: true,
+    top: '#3a4a40', cliff: '#44584b', lip: '#5c8a56', road: '#232e28', roadHi: '#d8f2a0', dash: true, night: '#0a1510',
+    patches: ['#44584b', '#3a4a40', '#5c8a56'],
+    walls: ['#d5e3d9', '#b9cfbf', '#9fb8a6', '#e7f2ea', '#86a08d'], roofs: ['#3f6a4c', '#305540', '#4d8060'],
+    roofW: { flat: 2, hip: 2, gable: 2 }, win: ['#ffe9a8', '#ffd36b', '#ffcf80'], leaf: ['#3f7a48', '#52965a', '#6aae6a'],
+    trees: { round: 1, conifer: 1, bush: 1 }, nTrees: 10,
+    kinds: { hall: 3, shop: 2, tower: 1, house: 1 }, count: 24, align: .9,
+    props: { lamp: 8, person: 4, car: 2, crate: 2 },
+    lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

@@ -1,0 +1,290 @@
+# Niveau 20.1 — Évaluer et produire 1 : matrice de confusion, précision, rappel, évaluation de LLM. Original academik ; notions vérifiées dans le cours LLM de Hugging Face (cité) et le Machine Learning Crash Course de Google (lien).
+id: '20.1'
+module: 20
+duree_min: 16
+titre:
+  fr: Évaluer un modèle
+  en: Evaluating a model
+ia:
+  fr: Kintana mesure ses erreurs de la bonne façon, au-delà de la simple exactitude.
+  en: Kintana measures her errors the right way, beyond mere accuracy.
+sources:
+- titre: Hugging Face — LLM Course (évaluation)
+  url: https://huggingface.co/learn/llm-course
+  licence: Cours en ligne ; contenu cité, texte non repris
+- titre: 'Google — Machine Learning Crash Course : classification (précision, rappel)'
+  url: https://developers.google.com/machine-learning/crash-course/classification
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un détecteur de fraude déclare « pas de fraude » pour toutes les transactions. Sur un jeu où 1 % seulement sont des fraudes, il a 99 % de réponses justes. Est-il bon ?
+  en: A fraud detector says “no fraud” for all transactions. On a set where only 1% are frauds, it gets 99% right answers. Is it good?
+  choix:
+  - fr: 'Non : il ne détecte aucune fraude, l’exactitude seule trompe quand les classes sont déséquilibrées'
+    en: 'No: it detects no fraud, accuracy alone misleads when classes are imbalanced'
+    juste: true
+  - fr: 'Oui : 99 % est excellent'
+    en: 'Yes: 99% is excellent'
+  - fr: On ne peut pas savoir
+    en: We cannot know
+  indice:
+    fr: Combien de fraudes sont trouvées ? Sur 100 fraudes, combien le détecteur en repère-t-il ?
+    en: How many frauds are found? Out of 100 frauds, how many does the detector spot?
+  explication:
+    fr: 'L’**exactitude** masque l’essentiel. Il faut des mesures qui regardent la classe rare : **précision** et **rappel**.'
+    en: '**Accuracy** hides the essential. We need measures that look at the rare class: **precision** and **recall**.'
+- id: c2
+  type: idee
+  fr: 'La **matrice de confusion** compte quatre cas pour une classe « positive » : **vrais positifs** (bien détectés), **faux positifs** (fausse alerte), **faux négatifs** (ratés), **vrais négatifs**. Toutes les mesures s’en déduisent.'
+  en: 'The **confusion matrix** counts four cases for a “positive” class: **true positives** (rightly detected), **false positives** (false alarm), **false negatives** (missed), **true negatives**. All the measures derive from it.'
+  exemple:
+    fr: 'Sur 100 fraudes et 9 900 transactions saines : le détecteur « tout est sain » a 0 vrai positif et 100 faux négatifs.'
+    en: 'On 100 frauds and 9,900 healthy transactions: the “all healthy” detector has 0 true positives and 100 false negatives.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Réalité
+      en: Reality
+    - fr: Détecté
+      en: Detected
+    - fr: Non détecté
+      en: Not detected
+    cellules:
+    - - fr: positif
+        en: positive
+      - fr: VP
+        en: TP
+        ton: ok
+      - fr: FN
+        en: FN
+        ton: bad
+    - - fr: négatif
+        en: negative
+      - fr: FP
+        en: FP
+        ton: bad
+      - fr: VN
+        en: TN
+        ton: ok
+    legende:
+      fr: 'FP : fausse alerte. FN : cas raté.'
+      en: 'FP: false alarm. FN: missed case.'
+- id: c3
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `confusion(pred, ref, positif)`** : parcours les couples `(p, r)` des listes `pred` et `ref`. Renvoie le tuple `(tp, fp, fn, tn)` : `tp` si `p` et `r` valent `positif` ; `fp` si seul `p` vaut `positif` ; `fn` si seul `r` vaut `positif` ; sinon `tn`.'
+  en: 'Your turn. **Write `confusion(pred, ref, positif)`**: walk through the pairs `(p, r)` of the lists `pred` and `ref`. Return the tuple `(tp, fp, fn, tn)`: `tp` if `p` and `r` both equal `positif`; `fp` if only `p` equals `positif`; `fn` if only `r` equals `positif`; otherwise `tn`.'
+  depart: |
+    # écris ta fonction confusion ici
+  tests: |-
+    assert confusion(["f", "f", "s", "s"], ["f", "s", "f", "s"], "f") == (1, 1, 1, 1)
+    assert confusion(["s"] * 5, ["f"] * 5, "f") == (0, 0, 5, 0)
+    assert confusion([], [], "f") == (0, 0, 0, 0)
+    assert confusion(["f", "f"], ["f", "f"], "f") == (2, 0, 0, 0)
+  solutionCode: |
+    def confusion(pred, ref, positif):
+        tp = fp = fn = tn = 0
+        for p, r in zip(pred, ref):
+            if p == positif and r == positif:
+                tp += 1
+            elif p == positif:
+                fp += 1
+            elif r == positif:
+                fn += 1
+            else:
+                tn += 1
+        return tp, fp, fn, tn
+  indice:
+    fr: Quatre compteurs à zéro et une chaîne `if` / `elif` / `elif` / `else` dans la boucle.
+    en: Four counters at zero and an `if` / `elif` / `elif` / `else` chain in the loop.
+  explication:
+    fr: 'Les quatre nombres somment toujours au nombre d’exemples : un bon réflexe de vérification.'
+    en: 'The four numbers always sum to the number of examples: a good habit of checking.'
+- id: c4
+  type: idee
+  fr: '**Précision** $=\dfrac{VP}{VP+FP}$ : parmi les alertes, combien sont justes. **Rappel** $=\dfrac{VP}{VP+FN}$ : parmi les vrais cas, combien sont trouvés. Le **score F1** est leur moyenne harmonique $2PR/(P+R)$ : élevé seulement si les deux le sont.'
+  en: '**Precision** $=\dfrac{TP}{TP+FP}$: among the alerts, how many are right. **Recall** $=\dfrac{TP}{TP+FN}$: among the true cases, how many are found. The **F1 score** is their harmonic mean $2PR/(P+R)$: high only if both are.'
+  exemple:
+    fr: 'VP = 8, FP = 2, FN = 4 : précision $0{,}8$, rappel $0{,}667$, F1 $0{,}727$.'
+    en: 'TP = 8, FP = 2, FN = 4: precision $0.8$, recall $0.667$, F1 $0.727$.'
+- id: c4b
+  type: idee
+  fr: 'L’**exactitude** $=(VP+VN)/n$ est simple mais trompeuse si les classes sont déséquilibrées. Pour une classe rare, regarde précision et rappel. Pour plusieurs classes, calcule-les **par classe**, puis moyenne : la moyenne « macro » traite chaque classe à égalité.'
+  en: '**Accuracy** $=(TP+TN)/n$ is simple but misleading if the classes are imbalanced. For a rare class, look at precision and recall. For several classes, compute them **per class**, then average: the “macro” average treats each class equally.'
+  exemple:
+    fr: Un modèle à 99 % d’exactitude peut avoir un rappel de 0 % sur la classe qui compte.
+    en: A 99% accuracy model can have 0% recall on the class that matters.
+- id: c5
+  type: exemple
+  titre:
+    fr: Calculer précision et rappel
+    en: Computing precision and recall
+  lang: python
+  etapes:
+  - code: vp, fp, fn = 8, 2, 4
+    fr: Huit cas bien détectés, deux fausses alertes, quatre ratés.
+    en: Eight cases rightly detected, two false alarms, four missed.
+  - code: |-
+      precision = vp / (vp + fp)
+      rappel = vp / (vp + fn)
+    fr: Deux rapports qui regardent des erreurs différentes.
+    en: Two ratios that look at different errors.
+  - code: |-
+      f1 = 2 * precision * rappel / (precision + rappel)
+      print(round(precision, 3), round(rappel, 3), round(f1, 3))
+    fr: On affiche `0.8 0.667 0.727`.
+    en: We display `0.8 0.667 0.727`.
+  verif: |-
+    vp, fp, fn = 8, 2, 4
+    precision = vp / (vp + fp)
+    rappel = vp / (vp + fn)
+    f1 = 2 * precision * rappel / (precision + rappel)
+    print(round(precision, 3), round(rappel, 3), round(f1, 3))
+  sortie: 0.8 0.667 0.727
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `metriques(pred, ref, positif)`** : avec `confusion`, renvoie `{"precision": ..., "rappel": ..., "f1": ...}`. Une division par zéro (aucune alerte, ou aucun vrai cas) donne `0.0`. `confusion` est fournie.'
+  en: '**Write `metriques(pred, ref, positif)`**: with `confusion`, return `{"precision": ..., "rappel": ..., "f1": ...}`. A division by zero (no alert, or no true case) gives `0.0`. `confusion` is provided.'
+  depart: |
+    def confusion(pred, ref, positif):
+        tp = fp = fn = tn = 0
+        for p, r in zip(pred, ref):
+            if p == positif and r == positif:
+                tp += 1
+            elif p == positif:
+                fp += 1
+            elif r == positif:
+                fn += 1
+            else:
+                tn += 1
+        return tp, fp, fn, tn
+
+    # écris ta fonction metriques ici
+  tests: |-
+    m = metriques(["f"] * 10 + ["s"] * 2, ["f"] * 8 + ["s"] * 2 + ["f"] * 2, "f")
+    assert abs(m["precision"] - 0.8) < 1e-9 and abs(m["rappel"] - 0.8) < 1e-9
+    m = metriques(["s"] * 5, ["f"] * 5, "f")
+    assert m == {"precision": 0.0, "rappel": 0.0, "f1": 0.0}
+    m = metriques(["f", "s", "f", "s"], ["f", "f", "s", "s"], "f")
+    assert abs(m["f1"] - 0.5) < 1e-9
+  solutionCode: |
+    def confusion(pred, ref, positif):
+        tp = fp = fn = tn = 0
+        for p, r in zip(pred, ref):
+            if p == positif and r == positif:
+                tp += 1
+            elif p == positif:
+                fp += 1
+            elif r == positif:
+                fn += 1
+            else:
+                tn += 1
+        return tp, fp, fn, tn
+
+    def metriques(pred, ref, positif):
+        tp, fp, fn, tn = confusion(pred, ref, positif)
+        precision = tp / (tp + fp) if tp + fp else 0.0
+        rappel = tp / (tp + fn) if tp + fn else 0.0
+        f1 = 2 * precision * rappel / (precision + rappel) if precision + rappel else 0.0
+        return {"precision": precision, "rappel": rappel, "f1": f1}
+  indice:
+    fr: Appelle `confusion`, puis trois divisions protégées par `if` contre un dénominateur nul.
+    en: Call `confusion`, then three divisions protected by `if` against a zero denominator.
+  explication:
+    fr: 'Le détecteur « tout est sain » a une précision et un rappel de `0.0` : les mesures disent enfin la vérité.'
+    en: 'The “all healthy” detector has a precision and recall of `0.0`: the measures finally tell the truth.'
+- id: c7
+  type: idee
+  fr: 'Le **compromis** : abaisser le seuil de décision trouve plus de vrais cas (rappel ↑) mais crée plus de fausses alertes (précision ↓). Le bon réglage dépend du coût des erreurs : manquer un cancer est plus grave qu’une fausse alerte ; bloquer un client honnête par erreur coûte aussi.'
+  en: 'The **trade-off**: lowering the decision threshold finds more true cases (recall ↑) but creates more false alarms (precision ↓). The right setting depends on the cost of errors: missing a cancer is worse than a false alarm; wrongly blocking an honest customer also costs.'
+  exemple:
+    fr: 'Pour un filtre anti-spam, on privilégie la précision : un mail légitime perdu coûte plus qu’un spam qui passe.'
+    en: 'For a spam filter, precision is favoured: a lost legitimate email costs more than a spam that gets through.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Seuil de décision
+        en: Decision threshold
+      noeuds:
+      - fr: seuil bas
+        en: low threshold
+      - fr: rappel ↑, précision ↓
+        en: recall ↑, precision ↓
+      - fr: seuil haut
+        en: high threshold
+      - fr: précision ↑, rappel ↓
+        en: precision ↑, recall ↓
+        ton: ok
+    legende:
+      fr: On choisit selon le coût de chaque type d’erreur.
+      en: We choose according to the cost of each kind of error.
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un détecteur donne VP = 30, FP = 10, FN = 20. Quelle est sa précision, en pourcentage ?
+  en: A detector gives TP = 30, FP = 10, FN = 20. What is its precision, in percent?
+  reponses:
+  - '75'
+  verif: print(int(30 / (30 + 10) * 100))
+  indice:
+    fr: 'Précision $=VP/(VP+FP)$ : la part d’alertes justes.'
+    en: 'Precision $=TP/(TP+FP)$: the share of right alerts.'
+  explication:
+    fr: $30/40=75\,\%$ des alertes sont justes ; son rappel vaut $30/50=60\,\%$.
+    en: $30/40=75\%$ of alerts are right; its recall is $30/50=60\%$.
+- id: c9
+  type: idee
+  fr: 'Pour un modèle de **langage**, on évalue par jeux de questions à réponse attendue, tests de **code**, **comparaisons** humaines, ou un autre modèle **juge**. Chaque méthode a ses biais : un modèle juge préfère souvent les réponses longues.'
+  en: 'For a **language** model, we evaluate with sets of questions with expected answers, **code** tests, human **comparisons**, or another **judge** model. Each method has its biases: a judge model often prefers long answers.'
+  exemple:
+    fr: Un banc d’essai de 1 000 questions à réponse unique se corrige automatiquement ; une rédaction libre demande un jugement.
+    en: A benchmark of 1,000 single-answer questions is graded automatically; a free essay requires judgement.
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `evaluer(modele, jeu)`** : `jeu` est une liste de dictionnaires `{"entree": ..., "attendu": ...}`. Appelle `modele(ex["entree"])` pour chaque exemple et renvoie la part de réponses égales à `ex["attendu"]`.'
+  en: 'Challenge. **Write `evaluer(modele, jeu)`**: `jeu` is a list of dictionaries `{"entree": ..., "attendu": ...}`. Call `modele(ex["entree"])` for each example and return the share of answers equal to `ex["attendu"]`.'
+  depart: |
+    # écris ta fonction evaluer ici
+  tests: |-
+    jeu = [{"entree": 2, "attendu": 4}, {"entree": 3, "attendu": 9}, {"entree": 4, "attendu": 16}, {"entree": 5, "attendu": 26}]
+    assert evaluer(lambda x: x * x, jeu) == 0.75
+    assert evaluer(lambda x: 0, jeu) == 0.0
+    assert evaluer(lambda x: x * x, jeu[:3]) == 1.0
+  solutionCode: |
+    def evaluer(modele, jeu):
+        bons = sum(1 for ex in jeu if modele(ex["entree"]) == ex["attendu"])
+        return bons / len(jeu)
+  indice:
+    fr: Compte avec `sum(1 for ex in jeu if modele(ex["entree"]) == ex["attendu"])` puis divise par `len(jeu)`.
+    en: Count with `sum(1 for ex in jeu if modele(ex["entree"]) == ex["attendu"])` then divide by `len(jeu)`.
+  explication:
+    fr: 'Cette fonction est le cœur de tout banc d’essai : un jeu figé, un modèle, un score reproductible.'
+    en: 'This function is the heart of every benchmark: a frozen set, a model, a reproducible score.'
+- id: c11
+  type: piege
+  fr: Un banc d’essai public perd de sa valeur. Si ses questions sont dans les données d’entraînement (**contamination**), le score mesure la mémoire, pas la compétence. Garde un **jeu de test privé** et renouvelle-le.
+  en: A public benchmark loses value. If its questions are in the training data (**contamination**), the score measures memory, not skill. Keep a **private test set** and renew it.
+- id: c12
+  type: retenir
+  fr: 'Matrice de confusion : VP, FP, FN, VN. Précision $VP/(VP+FP)$, rappel $VP/(VP+FN)$, F1 harmonique. Compromis de seuil selon le coût des erreurs. Évaluer un LLM : exactitude, tests de code, humains, juge avec ses biais. Jeu de test privé.'
+  en: 'Confusion matrix: TP, FP, FN, TN. Precision $TP/(TP+FP)$, recall $TP/(TP+FN)$, harmonic F1. Threshold trade-off according to the cost of errors. Evaluating an LLM: accuracy, code tests, humans, judge with its biases. Private test set.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [le cours sur la classification de Google](https://developers.google.com/machine-learning/crash-course/classification) ; cette page demande une connexion.
+  en: For further study, see [Google’s classification course](https://developers.google.com/machine-learning/crash-course/classification); this page needs a connection.
