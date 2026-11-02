@@ -54,8 +54,8 @@
 {#if view === 'city'}
   <City bind:this={city} {districts} {current} {onplay} />
   <div class="dock">
-    {#if due > 0}<button class="btn review" onclick={onreview}>🔁 {ui('review_title')} · {due} {ui('review_n')}</button>{/if}
-    {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>{ui('continue')} · {current}{where > 0 ? ` (${ui('card')} ${where + 1}/${content.levels[current].cartes.length})` : ''}</button>{/if}
+    {#if due > 0}<button class="btn review" onclick={onreview} aria-label="{ui('review_title')} · {due} {ui('review_n')}" title="{ui('review_title')}">🔁<span class="badge">{due}</span></button>{/if}
+    {#if current}<button class="btn primary go" onclick={() => onplay(current!)}>▶ {ui('continue')} · {current}</button>{/if}
   </div>
 {:else}
 <div class="wrap list">
@@ -96,8 +96,11 @@
   .hudlayer { position: fixed; inset: 0 0 auto 0; z-index: 6; padding: calc(var(--sat) + 10px) calc(var(--sar) + 12px) 0 calc(var(--sal) + 12px); pointer-events: none; display: flex; flex-direction: column; gap: 8px; max-width: 760px; margin: 0 auto; }
   .hudlayer > :global(*) { pointer-events: auto; } .hudlayer .hud { margin: 0; pointer-events: none; } .hudlayer .hud > :global(*) { pointer-events: auto; }
   .hudlayer .chip { background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); border-color: rgb(255 255 255 / .18); text-shadow: 0 1px 2px rgb(0 0 0 / .5); }
-  .dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: grid; gap: 8px; max-width: 520px; margin: 0 auto; padding: 0 calc(var(--sar) + 16px) calc(var(--sab) + 16px) calc(var(--sal) + 16px); pointer-events: none; }
+  .dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: flex; justify-content: space-between; align-items: center; gap: 10px; max-width: 760px; margin: 0 auto; padding: 0 calc(var(--sar) + 14px) calc(var(--sab) + 14px) calc(var(--sal) + 14px); pointer-events: none; }
   .dock > :global(*) { pointer-events: auto; margin: 0; box-shadow: 0 8px 28px rgb(0 0 0 / .45); }
+  .dock .go { margin-left: auto; width: auto; min-height: 48px; padding: 0 20px; border-radius: 99px; }
+  .dock .review { position: relative; width: 48px; height: 48px; min-height: 48px; padding: 0; border-radius: 50%; font-size: 1.25rem; }
+  .dock .badge { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; border-radius: 99px; background: #ea4335; color: #fff; font-size: .75rem; font-weight: 800; display: grid; place-items: center; padding: 0 5px; }
   .dock .review { background: rgb(40 16 20 / .88); color: #fff; }
   .view { margin-left: auto; cursor: pointer; font: inherit; font-weight: 600; font-size: .9rem; color: var(--c-text); }
   .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }

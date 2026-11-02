@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.10] — 2026-11-02
+
+### Message fr
+La ville n'est plus gênée : le message d'info disparaît seul, les deux gros boutons deviennent une pastille de révision et un bouton « Continuer » compact, et tu peux zoomer la carte (pincement, double toucher, boutons ＋ −).
+
+### Message en
+The city is no longer obstructed: the info message disappears on its own, the two big buttons become a review badge and a compact “Continue” button, and you can zoom the map (pinch, double tap, ＋ − buttons).
+
 ## [0.3.9] — 2026-11-02
 
 ### Message fr
