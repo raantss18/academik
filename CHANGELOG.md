@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.20] — 2026-11-02
+
+### Message fr
+La carte est plus fluide quand tu zoomes, et chaque leçon prend les couleurs de son quartier, de jour comme de nuit, avec une brume légère et quelques lucioles qui ne gênent jamais la lecture.
+
+### Message en
+The map is smoother when you zoom, and each lesson takes the colours of its district, by day and by night, with a light mist and a few fireflies that never get in the way of reading.
+
 ## [0.3.19] — 2026-11-02
 
 ### Message fr

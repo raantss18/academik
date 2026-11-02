@@ -24,25 +24,36 @@
   let z = $state(1);
   const MAXZ = 3.5, pts = new Map<number, { x: number; y: number }>();
   let d0 = 0, z0 = 1, lastTap = 0;
-  function zoomTo(nz: number, fx?: number, fy?: number) {
+  // Pendant un geste, seul `transform` change (couche composée par le GPU, aucun redessin des ~9 000 formes du SVG) ;
+  // la taille réelle n'est modifiée qu'une fois, à la fin du geste (`commit`), ce qui re-rasterise net. Garde-fou E32.
+  let live: { nz: number; px: number; py: number; ox: number; oy: number } | null = null, wheelTimer = 0;
+  function preview(nz: number, fx?: number, fy?: number) {
     const svg = box?.querySelector<SVGElement>('svg'); if (!box || !svg) return;
     nz = Math.min(MAXZ, Math.max(1, nz)); const r = box.getBoundingClientRect();
-    const px = fx ?? r.width / 2, py = fy ?? r.height / 2, cx = (box.scrollLeft + px) / z, cy = (box.scrollTop + py) / z;
-    z = nz; svg.style.width = `${nz * 100}%`; svg.style.minWidth = `${900 * nz}px`;
-    box.scrollLeft = cx * nz - px; box.scrollTop = cy * nz - py;
+    const px = fx ?? r.width / 2, py = fy ?? r.height / 2, ox = box.scrollLeft + px, oy = box.scrollTop + py;
+    svg.style.willChange = 'transform'; svg.style.transformOrigin = `${ox}px ${oy}px`; svg.style.transform = `scale(${nz / z})`;
+    live = { nz, px, py, ox, oy };
   }
+  function commit() {
+    const svg = box?.querySelector<SVGElement>('svg'); if (!live || !box || !svg) return;
+    const { nz, px, py, ox, oy } = live, f = nz / z; live = null; clearTimeout(wheelTimer);
+    svg.style.transform = ''; svg.style.transformOrigin = ''; svg.style.willChange = '';
+    z = nz; svg.style.width = `${nz * 100}%`; svg.style.minWidth = `${900 * nz}px`;
+    box.scrollLeft = ox * f - px; box.scrollTop = oy * f - py;
+  }
+  const zoomTo = (nz: number, fx?: number, fy?: number) => { preview(nz, fx, fy); commit(); };
   const rel = (e: PointerEvent) => { const r = box!.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
   const dist = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
   function down(e: PointerEvent) { pts.set(e.pointerId, rel(e)); if (pts.size === 2) { d0 = dist(); z0 = z; } }
   function move(e: PointerEvent) {
     if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, rel(e));
-    if (pts.size === 2 && d0 > 0) { const [a, b] = [...pts.values()]; zoomTo(z0 * dist() / d0, (a.x + b.x) / 2, (a.y + b.y) / 2); }
+    if (pts.size === 2 && d0 > 0) { const [a, b] = [...pts.values()]; preview(z0 * dist() / d0, (a.x + b.x) / 2, (a.y + b.y) / 2); }
   }
   function up(e: PointerEvent) {
-    const wasOne = pts.size === 1; pts.delete(e.pointerId);
+    const wasOne = pts.size === 1; pts.delete(e.pointerId); if (live && pts.size < 2) commit();
     if (wasOne && e.pointerType === 'touch' && !(e.target as Element).closest('.pin')) { const n = Date.now(); if (n - lastTap < 320) { const p = rel(e); zoomTo(z > 1.5 ? 1 : 2.2, p.x, p.y); lastTap = 0; } else lastTap = n; }
   }
-  const wheel = (e: WheelEvent) => { if (!e.ctrlKey) return; e.preventDefault(); const p = { x: e.clientX - box!.getBoundingClientRect().left, y: e.clientY - box!.getBoundingClientRect().top }; zoomTo(z * Math.exp(-e.deltaY / 300), p.x, p.y); };
+  const wheel = (e: WheelEvent) => { if (!e.ctrlKey) return; e.preventDefault(); const p = { x: e.clientX - box!.getBoundingClientRect().left, y: e.clientY - box!.getBoundingClientRect().top }; preview((live?.nz ?? z) * Math.exp(-e.deltaY / 300), p.x, p.y); clearTimeout(wheelTimer); wheelTimer = window.setTimeout(commit, 140); };
   $effect(() => { const b = box; if (!b) return; b.addEventListener('wheel', wheel, { passive: false }); return () => b.removeEventListener('wheel', wheel); });
 
   const pick = (e: Event) => { const p = (e.target as Element).closest<SVGElement>('.pin'); if (p?.dataset.id) { sel = p.dataset.id; void tick().then(() => play?.focus()); } };

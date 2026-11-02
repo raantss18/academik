@@ -268,4 +268,25 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(c).not.toMatch(/^import .* from '\.\.\/generated\/content\.json'/m); expect(c).toContain("import('../generated/content.json')");
     expect(read('scripts/check-offline.mjs')).toContain('premier chargement trop lourd');
   });
+  it('E32 : le zoom de la carte passe par transform pendant le geste et ne redimensionne le SVG qu’une fois, à la fin', () => {
+    const c = read('src/ui/City.svelte');
+    expect(c).toContain('function preview'); expect(c).toContain('function commit'); expect(c).toContain("willChange = 'transform'");
+    const move = c.slice(c.indexOf('function move'), c.indexOf('function up'));
+    expect(move).toContain('preview('); expect(move).not.toContain('style.width');
+  });
+  it('E33 : chaque module a une ambiance de nuit et de jour, et le texte y garde un contraste ≥ 4,5 : 1', async () => {
+    const { AMBIANCES, contraste, melange } = await import('../src/lib/ambiance');
+    const cur = parse(read('content/cursus.yaml')) as { modules: { id: number }[] };
+    expect(AMBIANCES.length).toBeGreaterThanOrEqual(cur.modules.length);
+    const bad: string[] = [];
+    AMBIANCES.forEach((a, i) => {
+      for (const [mode, p, texte] of [['nuit', a.nuit, '#e6eae5'], ['jour', a.jour, '#1b211d']] as const)
+        for (const [nom, fond] of [['haut', p.haut], ['bas', p.bas], ['lueur diffuse', melange(p.bas, p.lueur, 0.25)]] as const)
+          if (contraste(texte, fond) < 4.5) bad.push(`${i} ${a.nom} ${mode} ${nom}: ${contraste(texte, fond).toFixed(2)}`);
+    });
+    expect(bad).toEqual([]);
+    const amb = read('src/ui/Ambiance.svelte');
+    expect(amb).toContain('prefers-reduced-motion'); expect(amb).toContain('document.hidden'); expect(amb).toContain('focusin'); expect(amb).toContain('linear-gradient');
+    expect(read('src/ui/Lesson.svelte')).toContain('<Ambiance module=');
+  });
 });
