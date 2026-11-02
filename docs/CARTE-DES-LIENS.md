@@ -149,8 +149,8 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
-| **12.1** Tokens et BPE | Kintana découpe le texte en morceaux numérotés, comme le font tous les modèles de langage. | — | 12.boss, 13.4 |
-| **12.2** Softmax et plongements | Kintana transforme des scores en probabilités et des mots en vecteurs qu’elle sait comparer. | — | 12.3 |
+| **12.1** Tokens et BPE | Kintana découpe le texte en morceaux numérotés, comme le font tous les modèles de langage. | — | 12.boss, 13.4, 14.3 |
+| **12.2** Softmax et plongements | Kintana transforme des scores en probabilités et des mots en vecteurs qu’elle sait comparer. | — | 12.3, 14.3 |
 | **12.3** L’attention | Kintana regarde les bons mots du contexte en pesant chacun d’eux. | 12.2 | 12.4 |
 | **12.4** Masque et positions | Kintana sait où se trouve chaque mot et s’interdit de lire la suite du texte. | 12.3 | — |
 | **12.5** Échantillonner | Kintana choisit le mot suivant : sûr ou audacieux, selon un réglage de température. | — | 12.boss |
@@ -161,8 +161,30 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
 | **13.1** Pré-entraîner, adapter, inférer | Kintana distingue ce qui coûte des millions d’heures de calcul de ce qu’elle peut faire sur ton appareil. | — | — |
-| **13.2** Le budget mémoire | Kintana sait calculer si un modèle tient dans la mémoire de ton appareil. | — | 13.boss |
+| **13.2** Le budget mémoire | Kintana sait calculer si un modèle tient dans la mémoire de ton appareil. | — | 13.boss, 14.1 |
 | **13.3** La quantification | Kintana réduit ses poids à quelques bits pour tenir dans la mémoire, en acceptant une petite erreur. | — | — |
-| **13.4** Prompts et modèles de chat | Kintana met en forme la conversation comme son modèle l’attend et surveille sa fenêtre de contexte. | 12.1 | — |
+| **13.4** Prompts et modèles de chat | Kintana met en forme la conversation comme son modèle l’attend et surveille sa fenêtre de contexte. | 12.1 | 14.1 |
 | **13.5** Vitesse et licences | Kintana sait combien de temps elle mettra à répondre et si elle a le droit d’utiliser son modèle. | — | 13.boss |
 | **13.boss** Choisis ton modèle | Kintana choisit son propre modèle : assez petit pour tenir, assez libre pour servir, assez grand pour bien répondre. | 13.2, 13.5 | — |
+
+## 14 · RAG
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **14.1** Découper en passages | Kintana découpe tes cours en passages qu’elle pourra retrouver et citer. | 13.2, 13.4 | — |
+| **14.2** La recherche BM25 | Kintana retrouve les passages qui contiennent les mots rares de ta question. | — | — |
+| **14.3** Embeddings et recherche vectorielle | Kintana retrouve un passage par son sens, même si aucun mot de la question n’y figure. | 12.1, 12.2 | — |
+| **14.4** Recherche hybride et reranking | Kintana combine la recherche par mots et la recherche par sens, puis réordonne les meilleurs candidats. | — | — |
+| **14.5** Citer et s’abstenir | Kintana cite ses sources, vérifie ses citations et dit « je ne sais pas » quand elle ne trouve rien. | — | — |
+| **14.boss** Ton assistant de cours | Kintana répond avec ses sources ou reconnaît qu’elle ne sait pas, et tu as mesuré sa recherche. | — | — |
+
+## 15 · Agents et MCP
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **15.1** Processus et messages | Kintana fait dialoguer des programmes par des messages JSON sur des flux de texte. | — | 15.5 |
+| **15.2** Permissions et isolation | Kintana n’agit que dans les limites qu’on lui fixe, et se méfie des textes qu’elle lit. | — | 15.3, 15.boss |
+| **15.3** L’appel d’outils | Kintana demande des actions, et ton programme les valide et les exécute. | 15.2 | — |
+| **15.4** La boucle d’agent | Kintana enchaîne réflexion, action et observation, avec des garde-fous pour ne pas tourner en rond. | — | 15.boss |
+| **15.5** Le protocole MCP | Kintana parle aux outils par un protocole standard, en gardant ses garde-fous. | 15.1 | — |
+| **15.boss** Ton agent local | Kintana agit avec des outils, sous la garde de ton programme, et sait refuser. | 15.2, 15.4 | — |

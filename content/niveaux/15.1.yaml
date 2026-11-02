@@ -1,0 +1,288 @@
+# Niveau 15.1 — Agents et MCP 1 : processus, flux et messages JSON. Original academik ; notions vérifiées dans la spécification MCP (citée) et la documentation Python (json).
+id: '15.1'
+module: 15
+duree_min: 16
+titre:
+  fr: Processus et messages
+  en: Processes and messages
+ia:
+  fr: Kintana fait dialoguer des programmes par des messages JSON sur des flux de texte.
+  en: Kintana makes programs talk through JSON messages on text streams.
+sources:
+- titre: 'Model Context Protocol — Specification (transports : stdio)'
+  url: https://modelcontextprotocol.io/specification
+  licence: Spécification en ligne ; idées citées
+- titre: Python — documentation de json et subprocess
+  url: https://docs.python.org/3/library/json.html
+  licence: PSF ; documentation citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un agent doit lancer un petit programme (par exemple une calculatrice) et lui envoyer une demande. Comment deux programmes sur la même machine peuvent-ils se parler simplement ?
+  en: An agent must launch a small program (for example a calculator) and send it a request. How can two programs on the same machine talk to each other simply?
+  choix:
+  - fr: 'Par des flux de texte : l’un écrit dans l’entrée de l’autre et lit sa sortie'
+    en: 'Through text streams: one writes into the other’s input and reads its output'
+    juste: true
+  - fr: Par un fichier envoyé par la poste
+    en: Through a file sent by post
+  - fr: Ils ne le peuvent jamais
+    en: They never can
+  indice:
+    fr: 'Un programme a une entrée standard et une sortie standard : on peut les relier, comme dans un terminal (module 1).'
+    en: 'A program has a standard input and a standard output: they can be linked, as in a terminal (module 1).'
+  explication:
+    fr: Un **processus** a une entrée (`stdin`), une sortie (`stdout`) et des erreurs (`stderr`). Relier ces flux est la méthode la plus simple pour faire dialoguer deux programmes.
+    en: A **process** has an input (`stdin`), an output (`stdout`) and errors (`stderr`). Linking these streams is the simplest way to make two programs talk.
+- id: c2
+  type: idee
+  fr: 'Un **processus** est un programme en cours d’exécution. Il lit sur `stdin`, écrit sur `stdout`, et signale ses problèmes sur `stderr`. À la fin, il rend un **code de sortie** : `0` veut dire que tout s’est bien passé.'
+  en: 'A **process** is a running program. It reads from `stdin`, writes to `stdout`, and reports its problems on `stderr`. At the end, it returns an **exit code**: `0` means all went well.'
+  exemple:
+    fr: Dans le terminal du module 1, `echo bonjour | wc -c` relie la sortie de `echo` à l’entrée de `wc`.
+    en: In the module 1 terminal, `echo hello | wc -c` links the output of `echo` to the input of `wc`.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Flux
+      en: Stream
+    - fr: Rôle
+      en: Role
+    cellules:
+    - - stdin
+      - fr: entrée
+        en: input
+    - - stdout
+      - fr: résultats
+        en: results
+    - - fr: stderr
+        en: stderr
+        ton: ok
+      - fr: journaux et erreurs
+        en: logs and errors
+        ton: ok
+    legende:
+      fr: 'Les résultats sur stdout, les journaux sur stderr : ne les mélange jamais.'
+      en: 'Results on stdout, logs on stderr: never mix them.'
+- id: c3
+  type: idee
+  fr: Pour échanger des données structurées, on envoie un message **JSON par ligne** (JSON Lines). Chaque ligne est un objet complet, facile à lire et à écrire. Le protocole MCP, qu’on verra au niveau 15.5, repose sur ce principe.
+  en: To exchange structured data, we send one **JSON message per line** (JSON Lines). Each line is a complete object, easy to read and write. The MCP protocol, which we will see in level 15.5, relies on this principle.
+  exemple:
+    fr: 'La ligne `{"outil": "calculer", "args": {"expr": "2+3"}}` est un message complet.'
+    en: 'The line `{"outil": "calculer", "args": {"expr": "2+3"}}` is a complete message.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Un message JSON aller-retour
+    en: A JSON round trip
+  lang: python
+  etapes:
+  - code: |-
+      import json
+      msg = {"outil": "calculer", "args": {"expr": "2+3"}}
+    fr: Un dictionnaire Python décrivant une demande.
+    en: A Python dictionary describing a request.
+  - code: ligne = json.dumps(msg, ensure_ascii=False) + "\n"
+    fr: On le transforme en une ligne de texte terminée par un retour à la ligne.
+    en: We turn it into one line of text ending with a newline.
+  - code: print(json.loads(ligne)["args"]["expr"])
+    fr: 'On relit la ligne et on affiche `2+3` : le message a traversé le flux intact.'
+    en: 'We read the line back and display `2+3`: the message crossed the stream intact.'
+  verif: |-
+    import json
+    msg = {"outil": "calculer", "args": {"expr": "2+3"}}
+    ligne = json.dumps(msg, ensure_ascii=False) + "\n"
+    print(json.loads(ligne)["args"]["expr"])
+  sortie: 2+3
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `encoder_message(obj)`** : renvoie `json.dumps(obj, ensure_ascii=False)` suivi d’un retour à la ligne `"\n"`.'
+  en: 'Your turn. **Write `encoder_message(obj)`**: return `json.dumps(obj, ensure_ascii=False)` followed by a newline `"\n"`.'
+  depart: |
+    import json
+
+    # écris ta fonction encoder_message ici
+  tests: |-
+    assert encoder_message({"a": 1}) == '{"a": 1}\n'
+    assert encoder_message([1, 2]) == "[1, 2]\n"
+    assert encoder_message({"mot": "é"}) == '{"mot": "é"}\n'
+    assert encoder_message("x").endswith("\n") and encoder_message("x").count("\n") == 1
+  solutionCode: |
+    import json
+
+    def encoder_message(obj):
+        return json.dumps(obj, ensure_ascii=False) + "\n"
+  indice:
+    fr: 'Une seule ligne : `json.dumps(...) + "\n"`.'
+    en: 'A single line: `json.dumps(...) + "\n"`.'
+  explication:
+    fr: 'Le retour à la ligne marque la fin du message : sans lui, le lecteur ne sait pas où s’arrête le message.'
+    en: 'The newline marks the end of the message: without it, the reader does not know where the message ends.'
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `decoder_flux(texte)`** : découpe `texte` aux `"\n"`, ignore les lignes vides, et renvoie la liste des objets lus avec `json.loads`. Si une ligne n’est pas du JSON valide (`ValueError`), ajoute à la place `{"erreur": ligne}`.'
+  en: '**Write `decoder_flux(texte)`**: split `texte` at `"\n"`, ignore empty lines, and return the list of objects read with `json.loads`. If a line is not valid JSON (`ValueError`), append `{"erreur": ligne}` instead.'
+  depart: |
+    import json
+
+    # écris ta fonction decoder_flux ici
+  tests: |-
+    assert decoder_flux('{"a": 1}\n{"b": 2}\n') == [{"a": 1}, {"b": 2}]
+    assert decoder_flux("") == []
+    assert decoder_flux('{"a": 1}\nceci n\'est pas du json\n') == [{"a": 1}, {"erreur": "ceci n\'est pas du json"}]
+    assert decoder_flux("\n\n[1]\n") == [[1]]
+  solutionCode: |
+    import json
+
+    def decoder_flux(texte):
+        messages = []
+        for ligne in texte.split("\n"):
+            if not ligne.strip():
+                continue
+            try:
+                messages.append(json.loads(ligne))
+            except ValueError:
+                messages.append({"erreur": ligne})
+        return messages
+  indice:
+    fr: Une boucle sur `texte.split("\n")`, un `continue` pour les lignes vides, et un `try` / `except ValueError` autour de `json.loads`.
+    en: A loop over `texte.split("\n")`, a `continue` for empty lines, and a `try` / `except ValueError` around `json.loads`.
+  explication:
+    fr: 'Un lecteur robuste ne plante pas sur une ligne invalide : il la signale et continue.'
+    en: 'A robust reader does not crash on an invalid line: it reports it and carries on.'
+- id: c6b
+  type: idee
+  fr: 'Un processus peut aussi en **lancer** un autre. Un agent démarre un petit programme, lui envoie ses messages et lit ses réponses. À la fin, il ferme le processus : un processus oublié reste en mémoire.'
+  en: 'A process can also **launch** another: an agent starts a small program, sends it its messages and reads its replies. When the agent stops, it closes the process. A forgotten process stays in memory and consumes resources.'
+  exemple:
+    fr: En Python, le module `subprocess` lance un programme et relie ses flux ; on ferme toujours le processus à la fin.
+    en: In Python, the `subprocess` module launches a program and links its streams; the process is always closed at the end.
+- id: c7
+  type: idee
+  fr: 'Un autre moyen de communiquer est **HTTP** : le même JSON voyage dans une requête sur le réseau. C’est utile pour un service distant. Mais un programme **local** relié par `stdio` n’ouvre aucun port réseau : personne d’autre sur le réseau ne peut lui parler.'
+  en: 'Another way to communicate is **HTTP**: the same JSON travels in a request over the network. It is useful for a remote service. But a **local** program linked through `stdio` opens no network port: no one else on the network can talk to it.'
+  exemple:
+    fr: Pour un outil qui lit tes fichiers, `stdio` est plus sûr qu’un serveur HTTP ouvert à tout le réseau.
+    en: For a tool that reads your files, `stdio` is safer than an HTTP server open to the whole network.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Transport
+      en: Transport
+    - fr: Usage typique
+      en: Typical use
+    cellules:
+    - - stdio
+      - fr: outil local, simple, privé
+        en: local tool, simple, private
+    - - fr: HTTP
+        en: HTTP
+      - fr: service distant, partagé
+        en: remote service, shared
+    legende:
+      fr: Moins d’exposition, moins de risques.
+      en: Less exposure, fewer risks.
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un programme se termine avec le code de sortie `0`. Veut-il dire que tout s’est bien passé ? Réponds `oui` ou `non`.
+  en: A program ends with exit code `0`. Does it mean everything went well? Answer `oui` or `non`.
+  reponses:
+  - oui
+  verif: print("oui" if 0 == 0 else "non")
+  indice:
+    fr: Par convention, un code différent de zéro signale un problème.
+    en: By convention, a non-zero code signals a problem.
+  explication:
+    fr: '`0` signifie « succès ». Tout autre code (1, 2, …) signale une erreur.'
+    en: '`0` means “success”. Any other code (1, 2, …) signals an error.'
+- id: c9
+  type: piege
+  fr: 'Un `print` de débogage sur `stdout` casse le protocole : le lecteur reçoit une ligne qui n’est pas du JSON. Les messages de diagnostic vont sur **stderr**, jamais sur stdout. C’est l’erreur la plus fréquente quand on écrit un outil à relier à un agent.'
+  en: 'A debugging `print` on `stdout` breaks the protocol: the reader receives a line that is not JSON. Diagnostic messages go on **stderr**, never on stdout. This is the most frequent mistake when writing a tool to link with an agent.'
+- id: c10
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `session(entrees, gestionnaire)`** : décode `entrees` avec `decoder_flux` et applique `gestionnaire` à chaque message. Encode chaque réponse avec `encoder_message` et renvoie toutes les lignes bout à bout. `decoder_flux` et `encoder_message` sont fournies.'
+  en: 'Challenge. **Write `session(entrees, gestionnaire)`**: decode `entrees` with `decoder_flux`, apply `gestionnaire` to each message, encode each reply with `encoder_message` and return the output text (all lines concatenated). `decoder_flux` and `encoder_message` are provided.'
+  depart: |
+    import json
+
+    def decoder_flux(texte):
+        messages = []
+        for ligne in texte.split("\n"):
+            if not ligne.strip():
+                continue
+            try:
+                messages.append(json.loads(ligne))
+            except ValueError:
+                messages.append({"erreur": ligne})
+        return messages
+
+    def encoder_message(obj):
+        return json.dumps(obj, ensure_ascii=False) + "\n"
+
+    # écris ta fonction session ici
+  tests: |-
+    sortie = session('{"n": 2}\n{"n": 5}\n', lambda m: {"carre": m["n"] ** 2})
+    assert sortie == '{"carre": 4}\n{"carre": 25}\n'
+    assert session("", lambda m: m) == ""
+    assert session('pas json\n', lambda m: m) == '{"erreur": "pas json"}\n'
+  solutionCode: |
+    import json
+
+    def decoder_flux(texte):
+        messages = []
+        for ligne in texte.split("\n"):
+            if not ligne.strip():
+                continue
+            try:
+                messages.append(json.loads(ligne))
+            except ValueError:
+                messages.append({"erreur": ligne})
+        return messages
+
+    def encoder_message(obj):
+        return json.dumps(obj, ensure_ascii=False) + "\n"
+
+    def session(entrees, gestionnaire):
+        sortie = ""
+        for msg in decoder_flux(entrees):
+            sortie += encoder_message(gestionnaire(msg))
+        return sortie
+  indice:
+    fr: Une variable `sortie = ""`, une boucle sur `decoder_flux(entrees)` et `sortie += encoder_message(gestionnaire(msg))`.
+    en: A variable `sortie = ""`, a loop over `decoder_flux(entrees)` and `sortie += encoder_message(gestionnaire(msg))`.
+  explication:
+    fr: 'Tu viens d’écrire la boucle d’un serveur : lire une ligne, traiter, répondre. Un serveur MCP local ne fait pas autre chose.'
+    en: 'You just wrote a server loop: read a line, process, reply. A local MCP server does nothing else.'
+- id: c11
+  type: idee
+  fr: 'Le niveau suivant traite la **sécurité** de ces échanges : qui a le droit de faire quoi, dans quelle zone, avec quelles confirmations. Un agent qui lance des programmes est puissant, donc dangereux s’il n’est pas encadré.'
+  en: 'The next level covers the **security** of these exchanges: who may do what, in which area, with which confirmations. An agent that launches programs is powerful, hence dangerous if not constrained.'
+  exemple:
+    fr: Un outil « lire un fichier » ne doit pas pouvoir lire `~/.ssh` ou tes mots de passe.
+    en: A “read a file” tool must not be able to read `~/.ssh` or your passwords.
+- id: c12
+  type: retenir
+  fr: 'Processus : `stdin`, `stdout`, `stderr`, code de sortie `0` = succès. Messages : un JSON par ligne. Diagnostics sur stderr. `stdio` local est plus sûr qu’un port réseau ouvert.'
+  en: 'Process: `stdin`, `stdout`, `stderr`, exit code `0` = success. Messages: one JSON per line. Diagnostics on stderr. Local `stdio` is safer than an open network port.'
+- id: c13
+  type: plus
+  fr: Pour approfondir, consulte [la spécification MCP](https://modelcontextprotocol.io/specification) ; cette page demande une connexion.
+  en: For further study, see [the MCP specification](https://modelcontextprotocol.io/specification); this page needs a connection.

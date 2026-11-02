@@ -21,6 +21,8 @@ export const AMBIANCES: Ambiance[] = [
   { nom: 'Le Carrefour des Neurones', nuit: { haut: '#120f2e', bas: '#2f2a66', lueur: '#d0c2ff' }, jour: { haut: '#eeeafc', bas: '#cdc4f2', lueur: '#43358f' } },
   { nom: 'L’Atelier des Tisseurs', nuit: { haut: '#1d130f', bas: '#4a2f22', lueur: '#ffd79a' }, jour: { haut: '#f8ecd9', bas: '#e6caa2', lueur: '#7a3f12' } },
   { nom: 'Le Garage des Modèles', nuit: { haut: '#0f1a1d', bas: '#26434a', lueur: '#d6f2a0' }, jour: { haut: '#e6f1f1', bas: '#bcd5d8', lueur: '#1f5a66' } },
+  { nom: 'La Bibliothèque des Passages', nuit: { haut: '#150f0a', bas: '#3b2a1e', lueur: '#ffd9a0' }, jour: { haut: '#f6ecdc', bas: '#e3cfae', lueur: '#7a4a1a' } },
+  { nom: 'Le Poste de Contrôle', nuit: { haut: '#081a18', bas: '#133d38', lueur: '#9affd9' }, jour: { haut: '#e2f4f0', bas: '#b3dcd3', lueur: '#0b5f55' } },
 ];
 
 export const ambianceDe = (module: number): Ambiance => AMBIANCES[((module % AMBIANCES.length) + AMBIANCES.length) % AMBIANCES.length];

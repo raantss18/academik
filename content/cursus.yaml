@@ -136,3 +136,21 @@ modules:
       - { id: "13.4", titre: { fr: "Prompts et modèles de chat" } }
       - { id: "13.5", titre: { fr: "Vitesse et licences" } }
       - { id: "13.boss", boss: true, titre: { fr: "Choisis ton modèle" } }
+  - id: 14
+    titre: { fr: "RAG", en: "RAG" }
+    niveaux:
+      - { id: "14.1", titre: { fr: "Découper en passages" } }
+      - { id: "14.2", titre: { fr: "La recherche BM25" } }
+      - { id: "14.3", titre: { fr: "Embeddings et recherche vectorielle" } }
+      - { id: "14.4", titre: { fr: "Recherche hybride et reranking" } }
+      - { id: "14.5", titre: { fr: "Citer et s’abstenir" } }
+      - { id: "14.boss", boss: true, titre: { fr: "Ton assistant de cours" } }
+  - id: 15
+    titre: { fr: "Agents et MCP", en: "Agents and MCP" }
+    niveaux:
+      - { id: "15.1", titre: { fr: "Processus et messages" } }
+      - { id: "15.2", titre: { fr: "Permissions et isolation" } }
+      - { id: "15.3", titre: { fr: "L’appel d’outils" } }
+      - { id: "15.4", titre: { fr: "La boucle d’agent" } }
+      - { id: "15.5", titre: { fr: "Le protocole MCP" } }
+      - { id: "15.boss", boss: true, titre: { fr: "Ton agent local" } }

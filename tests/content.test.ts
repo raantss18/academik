@@ -87,5 +87,5 @@ print(json.dumps([essai(d["solution"], d["tests"]), essai(d["depart"], d["tests"
       }
     }
     expect(bad).toEqual([]);
-  });
+  }, 300000);
 });

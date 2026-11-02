@@ -1,0 +1,306 @@
+# Niveau 14.2 — RAG 2 : BM25. Original academik ; notions vérifiées dans Robertson et Zaragoza 2009 (lien) et Manning, Raghavan, Schütze, Introduction to Information Retrieval (cité).
+id: '14.2'
+module: 14
+duree_min: 16
+titre:
+  fr: La recherche BM25
+  en: BM25 search
+ia:
+  fr: Kintana retrouve les passages qui contiennent les mots rares de ta question.
+  en: Kintana finds the passages that contain the rare words of your question.
+sources:
+- titre: 'Robertson, Zaragoza — The Probabilistic Relevance Framework: BM25 and Beyond'
+  url: https://www.nowpublishers.com/article/Details/INR-019
+  licence: Lien seulement ; texte non repris
+- titre: Manning, Raghavan, Schütze — Introduction to Information Retrieval (chap. 6)
+  url: https://nlp.stanford.edu/IR-book/
+  licence: Lecture en ligne ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Pour la question « comment fonctionne la rétropropagation ? », quel mot aide le plus à trouver le bon passage : « comment », « la » ou « rétropropagation » ?'
+  en: 'For the question “how does backpropagation work?”, which word helps the most to find the right passage: “how”, “the” or “backpropagation”?'
+  choix:
+  - fr: '« rétropropagation » : rare, donc très révélateur'
+    en: '“backpropagation”: rare, so very telling'
+    juste: true
+  - fr: '« la » : elle est partout'
+    en: '“the”: it is everywhere'
+  - fr: '« comment » : elle apparaît dans toutes les questions'
+    en: '“how”: it appears in all questions'
+  indice:
+    fr: Un mot présent dans presque tous les passages ne permet pas d’en distinguer un seul.
+    en: A word present in almost every passage cannot distinguish a single one.
+  explication:
+    fr: Les mots **rares** sont les plus informatifs. C’est l’idée du **poids IDF** (inverse document frequency).
+    en: '**Rare** words are the most informative. This is the idea of the **IDF weight** (inverse document frequency).'
+- id: c2
+  type: idee
+  fr: 'La recherche par mots-clés compte les mots de la question dans chaque passage. Deux ingrédients : la **fréquence du mot** dans le passage (tf), et sa **rareté** dans l’ensemble (idf). Un mot rare et répété donne un score élevé.'
+  en: 'Keyword search counts the question’s words in each passage. Two ingredients: the **word’s frequency** in the passage (tf), and its **rarity** overall (idf). A rare and repeated word gives a high score.'
+  exemple:
+    fr: « rétropropagation » dans 1 passage sur 100 pèse bien plus que « de », qui est dans 99 passages sur 100.
+    en: “backpropagation” in 1 passage out of 100 weighs far more than “of”, which is in 99 passages out of 100.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Mot
+      en: Word
+    - fr: Passages qui le contiennent
+      en: Passages containing it
+    - fr: Poids
+      en: Weight
+    cellules:
+    - - de
+      - 99 / 100
+      - fr: faible
+        en: low
+        ton: bad
+    - - attention
+      - 10 / 100
+      - fr: moyen
+        en: medium
+    - - fr: rétropropagation
+        en: backpropagation
+        ton: ok
+      - fr: 1 / 100
+        en: 1 / 100
+        ton: ok
+      - fr: fort
+        en: high
+        ton: ok
+    legende:
+      fr: Moins un mot est répandu, plus il pèse.
+      en: The less common a word, the more it weighs.
+- id: c3
+  type: idee
+  fr: 'Pour $N$ passages dont $n$ contiennent le mot : $\text{idf}=\ln\!\left(\dfrac{N-n+0{,}5}{n+0{,}5}+1\right)$. Cette version (celle de BM25) reste toujours positive. Plus $n$ est petit, plus l’idf est grand.'
+  en: 'For $N$ passages of which $n$ contain the word: $\text{idf}=\ln\!\left(\dfrac{N-n+0.5}{n+0.5}+1\right)$. This version (BM25’s) always stays positive. The smaller $n$ is, the larger the idf.'
+  exemple:
+    fr: 'Pour $N=10$ : un mot dans 1 passage a $\text{idf}=\ln(9{,}5/1{,}5+1)\approx2{,}0$ ; dans 9 passages, $\approx0{,}1$.'
+    en: 'For $N=10$: a word in 1 passage has $\text{idf}=\ln(9.5/1.5+1)\approx2.0$; in 9 passages, $\approx0.1$.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Calculer un idf
+    en: Computing an idf
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      N, n = 10, 1
+    fr: Dix passages ; le mot apparaît dans un seul.
+    en: Ten passages; the word appears in only one.
+  - code: idf = math.log((N - n + 0.5) / (n + 0.5) + 1)
+    fr: On applique la formule de BM25.
+    en: We apply the BM25 formula.
+  - code: print(round(idf, 2))
+    fr: On affiche `1.99`.
+    en: We display `1.99`.
+  verif: |-
+    import math
+    N, n = 10, 1
+    idf = math.log((N - n + 0.5) / (n + 0.5) + 1)
+    print(round(idf, 2))
+  sortie: '1.99'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: À toi. **Écris `idf(N, n)`** avec `math.log((N - n + 0.5) / (n + 0.5) + 1)`.
+  en: Your turn. **Write `idf(N, n)`** with `math.log((N - n + 0.5) / (n + 0.5) + 1)`.
+  depart: |
+    import math
+
+    # écris ta fonction idf ici
+  tests: |-
+    assert abs(idf(10, 1) - 1.9924) < 1e-3
+    assert idf(10, 9) < idf(10, 1)
+    assert idf(10, 10) > 0
+    assert abs(idf(100, 0) - math.log(202)) < 1e-9
+  solutionCode: |
+    import math
+
+    def idf(N, n):
+        return math.log((N - n + 0.5) / (n + 0.5) + 1)
+  indice:
+    fr: 'Une ligne : le logarithme du rapport plus un, avec les deux `0.5`.'
+    en: 'A single line: the logarithm of the ratio plus one, with the two `0.5`.'
+  explication:
+    fr: 'Même un mot présent dans tous les passages garde un idf positif : on évite les poids négatifs.'
+    en: 'Even a word present in all passages keeps a positive idf: negative weights are avoided.'
+- id: c6
+  type: idee
+  fr: 'BM25 ajoute deux corrections au tf. **Saturation** : la 10ᵉ répétition d’un mot compte bien moins que la première. **Longueur** : un long passage contient plus de mots par hasard, donc on le pénalise un peu. Deux réglages : $k_1$ (saturation) et $b$ (longueur).'
+  en: 'BM25 adds two corrections to tf. **Saturation**: the 10th repetition of a word counts far less than the first. **Length**: a long passage contains more words by chance, so it is slightly penalised. Two settings: $k_1$ (saturation) and $b$ (length).'
+  exemple:
+    fr: Avec $k_1=1{,}5$, passer de 1 à 2 occurrences augmente plus le score que passer de 10 à 11.
+    en: With $k_1=1.5$, going from 1 to 2 occurrences raises the score more than going from 10 to 11.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le score BM25 d’un mot
+        en: The BM25 score of a word
+      noeuds:
+      - fr: idf du mot
+        en: word idf
+      - fr: × tf saturé
+        en: × saturated tf
+      - fr: ÷ longueur du passage
+        en: ÷ passage length
+      - fr: somme sur les mots
+        en: sum over the words
+        ton: ok
+    legende:
+      fr: 'Valeurs usuelles : $k_1\approx1{,}2$ à $2$ et $b=0{,}75$.'
+      en: 'Usual values: $k_1\approx1.2$ to $2$ and $b=0.75$.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `score_bm25(requete, doc, idfs, avgdl, k1=1.5, b=0.75)`** : pour chaque mot `t` de la requête, avec `tf = doc.count(t)` (ignore si `0`), ajoute `idfs.get(t, 0.0) * tf * (k1 + 1) / (tf + k1 * (1 - b + b * len(doc) / avgdl))`. `requete` et `doc` sont des listes de mots.'
+  en: '**Write `score_bm25(requete, doc, idfs, avgdl, k1=1.5, b=0.75)`**: for each query word `t`, with `tf = doc.count(t)` (skip if `0`), add `idfs.get(t, 0.0) * tf * (k1 + 1) / (tf + k1 * (1 - b + b * len(doc) / avgdl))`. `requete` and `doc` are lists of words.'
+  depart: |
+    # écris ta fonction score_bm25 ici
+  tests: |-
+    idfs = {"a": 2.0, "b": 1.0}
+    d = ["a", "x", "x", "x"]
+    s = score_bm25(["a"], d, idfs, 4)
+    assert abs(s - 2.0 * 1 * 2.5 / (1 + 1.5)) < 1e-9
+    assert score_bm25(["z"], d, idfs, 4) == 0
+    assert score_bm25(["a"], ["a", "a"], idfs, 4) > score_bm25(["a"], ["a", "x"], idfs, 4)
+    assert score_bm25(["a"], ["a"] + ["x"] * 9, idfs, 4) < score_bm25(["a"], ["a", "x"], idfs, 4)
+  solutionCode: |
+    import math
+
+    def idf(N, n):
+        return math.log((N - n + 0.5) / (n + 0.5) + 1)
+
+    def score_bm25(requete, doc, idfs, avgdl, k1=1.5, b=0.75):
+        total = 0.0
+        for t in requete:
+            tf = doc.count(t)
+            if tf == 0:
+                continue
+            norm = tf + k1 * (1 - b + b * len(doc) / avgdl)
+            total += idfs.get(t, 0.0) * tf * (k1 + 1) / norm
+        return total
+  indice:
+    fr: 'Une boucle sur la requête : calcule `tf`, saute si `0`, puis ajoute le terme avec sa normalisation.'
+    en: 'A loop over the query: compute `tf`, skip if `0`, then add the term with its normalisation.'
+  explication:
+    fr: 'Pour `tf = 1` et un passage de longueur moyenne, le facteur vaut $(k_1+1)/(1+k_1)=1$ : le score est l’idf.'
+    en: 'For `tf = 1` and a passage of average length, the factor is $(k_1+1)/(1+k_1)=1$: the score is the idf.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Pour $N=10$ passages, un mot est dans 9 d’entre eux. Son idf est-il plus grand ou plus petit que celui d’un mot présent dans 1 passage ? Réponds par `plus petit` ou `plus grand`.
+  en: For $N=10$ passages, a word is in 9 of them. Is its idf larger or smaller than that of a word present in 1 passage? Answer `plus petit` or `plus grand`.
+  reponses:
+  - plus petit
+  - plus petit.
+  verif: |-
+    import math
+    print("plus petit" if math.log(1.5/9.5+1) < math.log(9.5/1.5+1) else "plus grand")
+  indice:
+    fr: Plus un mot est répandu, plus son poids baisse.
+    en: The more widespread a word, the lower its weight.
+  explication:
+    fr: 'Le mot répandu a un idf d’environ 0,15 contre 1,99 pour le mot rare : il est **plus petit**.'
+    en: 'The widespread word has an idf of about 0.15 against 1.99 for the rare word: it is **smaller**.'
+- id: c9
+  type: idee
+  fr: 'Avant de compter, on **tokenise** : mise en minuscules, découpage en mots, parfois suppression des accents ou des mots vides (« le », « de »). La requête et les passages doivent suivre **exactement** le même traitement.'
+  en: 'Before counting, we **tokenise**: lowercasing, splitting into words, sometimes removing accents or stop words (“the”, “of”). The query and the passages must follow **exactly** the same processing.'
+  exemple:
+    fr: « Rétropropagation » et « rétropropagation » sont un même mot après mise en minuscules.
+    en: “Backpropagation” and “backpropagation” are the same word after lowercasing.
+- id: c10
+  type: piege
+  fr: BM25 ne comprend pas le sens. Une question sur « l’automobile » ne retrouvera pas un passage qui dit seulement « voiture ». Elle manque les synonymes, les fautes de frappe et les paraphrases. Les embeddings (niveau 14.3) comblent ce manque.
+  en: BM25 does not understand meaning. A question about “the automobile” will not retrieve a passage that only says “car”. It misses synonyms, typos and paraphrases. Embeddings (level 14.3) fill this gap.
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `classer(requete, docs)`** : `docs` est un dictionnaire identifiant → liste de mots. Calcule `N`, `avgdl` et l’`idf` de chaque mot de la requête (`n` = documents qui le contiennent). Renvoie les identifiants triés du meilleur score au plus faible. `idf` et `score_bm25` sont fournies.'
+  en: 'Challenge. **Write `classer(requete, docs)`**: `docs` is a dictionary identifier → list of words. Compute `N`, `avgdl`, the `idf` of each query word (with `n` = number of documents containing it), then return the identifiers sorted from the best score to the lowest. `idf` and `score_bm25` are provided.'
+  depart: |
+    import math
+
+    def idf(N, n):
+        return math.log((N - n + 0.5) / (n + 0.5) + 1)
+
+    def score_bm25(requete, doc, idfs, avgdl, k1=1.5, b=0.75):
+        total = 0.0
+        for t in requete:
+            tf = doc.count(t)
+            if tf == 0:
+                continue
+            norm = tf + k1 * (1 - b + b * len(doc) / avgdl)
+            total += idfs.get(t, 0.0) * tf * (k1 + 1) / norm
+        return total
+
+    # écris ta fonction classer ici
+  tests: |-
+    docs = {"d1": ["chat", "dort"], "d2": ["chien", "court", "vite"], "d3": ["chat", "chat", "mange"]}
+    r = classer(["chat"], docs)
+    assert r[0] == "d3" and r[1] == "d1" and r[2] == "d2"
+    assert classer(["inconnu"], docs) == ["d1", "d2", "d3"] or len(classer(["inconnu"], docs)) == 3
+    assert classer(["chien", "vite"], docs)[0] == "d2"
+  solutionCode: |
+    import math
+
+    def idf(N, n):
+        return math.log((N - n + 0.5) / (n + 0.5) + 1)
+
+    def score_bm25(requete, doc, idfs, avgdl, k1=1.5, b=0.75):
+        total = 0.0
+        for t in requete:
+            tf = doc.count(t)
+            if tf == 0:
+                continue
+            norm = tf + k1 * (1 - b + b * len(doc) / avgdl)
+            total += idfs.get(t, 0.0) * tf * (k1 + 1) / norm
+        return total
+
+    def classer(requete, docs):
+        N = len(docs)
+        avgdl = sum(len(d) for d in docs.values()) / N
+        idfs = {}
+        for t in set(requete):
+            n = sum(1 for d in docs.values() if t in d)
+            idfs[t] = idf(N, n)
+        notes = {i: score_bm25(requete, d, idfs, avgdl) for i, d in docs.items()}
+        return sorted(notes, key=lambda i: -notes[i])
+  indice:
+    fr: 'Calcule `idfs` pour les mots de la requête, puis un dictionnaire `notes` (identifiant → score) et `sorted(notes, key=lambda i: -notes[i])`.'
+    en: 'Compute `idfs` for the query words, then a `notes` dictionary (identifier → score) and `sorted(notes, key=lambda i: -notes[i])`.'
+  explication:
+    fr: 'Tu viens de coder un vrai moteur de recherche : c’est la base de nombreux moteurs, dont Elasticsearch et Lucene.'
+    en: 'You just coded a real search engine: it is the basis of many engines, including Elasticsearch and Lucene.'
+- id: c12
+  type: idee
+  fr: BM25 est rapide, sans entraînement, et excellent quand la question reprend les mots du texte, par exemple un nom technique ou un code d’erreur. C’est pourquoi on le garde même à l’ère des embeddings.
+  en: BM25 is fast, needs no training, and is excellent when the question reuses the text’s words, for example a technical name or an error code. This is why we keep it even in the era of embeddings.
+  exemple:
+    fr: Pour retrouver « erreur 0x80070005 », la correspondance exacte de BM25 bat souvent la recherche par le sens.
+    en: To find “error 0x80070005”, BM25’s exact match often beats search by meaning.
+- id: c13
+  type: retenir
+  fr: 'idf $=\ln\left(\frac{N-n+0{,}5}{n+0{,}5}+1\right)$ : les mots rares pèsent. BM25 : idf, tf saturé, normalisation par la longueur. Même tokenisation pour la requête et les passages. Pas de sens, pas de synonymes.'
+  en: 'idf $=\ln\left(\frac{N-n+0.5}{n+0.5}+1\right)$: rare words weigh. BM25: idf, saturated tf, length normalisation. Same tokenisation for the query and the passages. No meaning, no synonyms.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [le cadre BM25 de Robertson et Zaragoza](https://www.nowpublishers.com/article/Details/INR-019) ; cet article demande une connexion.
+  en: For further study, see [Robertson and Zaragoza’s BM25 framework](https://www.nowpublishers.com/article/Details/INR-019); this paper needs a connection.

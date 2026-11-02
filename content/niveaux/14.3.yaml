@@ -1,0 +1,397 @@
+# Niveau 14.3 — RAG 3 : embeddings et recherche vectorielle. Original academik ; notions vérifiées dans Karpukhin et al. 2020 (arXiv 2004.04906) et Reimers et Gurevych 2019 (arXiv 1908.10084).
+id: '14.3'
+module: 14
+duree_min: 16
+titre:
+  fr: Embeddings et recherche vectorielle
+  en: Embeddings and vector search
+ia:
+  fr: Kintana retrouve un passage par son sens, même si aucun mot de la question n’y figure.
+  en: Kintana finds a passage by its meaning, even when no word of the question appears in it.
+sources:
+- titre: Karpukhin et al. — Dense Passage Retrieval for Open-Domain Question Answering
+  url: https://arxiv.org/abs/2004.04906
+  licence: Article en accès libre ; idée citée
+- titre: Reimers, Gurevych — Sentence-BERT
+  url: https://arxiv.org/abs/1908.10084
+  licence: Article en accès libre ; idée citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Un étudiant demande « comment réparer ma voiture ? ». Le cours dit seulement : « le moteur de l’automobile se vérifie ainsi ». Aucun mot de la question n’apparaît dans le passage. Que peut faire une recherche par le **sens** ?'
+  en: 'A student asks “how do I fix my car?”. The course only says: “the engine of the automobile is checked this way”. No word of the question appears in the passage. What can a search by **meaning** do?'
+  choix:
+  - fr: Le retrouver, car « voiture » et « automobile » ont des sens proches
+    en: Find it, because “car” and “automobile” have close meanings
+    juste: true
+  - fr: 'Rien : sans mot commun, c’est impossible'
+    en: 'Nothing: without a common word, it is impossible'
+  - fr: Le retrouver en ignorant la question
+    en: Find it by ignoring the question
+  indice:
+    fr: Le plongement donne des vecteurs proches à des mots de sens proche (niveau 12.2).
+    en: The embedding gives close vectors to words of close meaning (level 12.2).
+  explication:
+    fr: 'Les **embeddings** représentent le sens par un vecteur : deux textes de sens proche ont des vecteurs proches, même sans mot commun.'
+    en: '**Embeddings** represent meaning with a vector: two texts of close meaning have close vectors, even with no common word.'
+- id: c2
+  type: idee
+  fr: La recherche **vectorielle** transforme la question et chaque passage en vecteurs. Elle classe les passages par ressemblance avec la question, mesurée par le cosinus (niveau 12.2). Les plus proches sont renvoyés.
+  en: '**Vector** search turns the question and each passage into vectors, then ranks the passages by similarity to the question, measured by the cosine (level 12.2). The closest passages are returned.'
+  exemple:
+    fr: Un modèle d’embedding réel produit des vecteurs de 384 à 1 536 nombres ; ici on en prendra 3 pour rester lisible.
+    en: A real embedding model produces vectors of 384 to 1,536 numbers; here we will use 3 to stay readable.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Recherche vectorielle
+        en: Vector search
+      noeuds:
+      - fr: question
+        en: question
+      - fr: vecteur
+        en: vector
+      - fr: cosinus avec chaque passage
+        en: cosine with each passage
+      - fr: les $k$ plus proches
+        en: the $k$ closest
+        ton: ok
+    legende:
+      fr: Les vecteurs des passages sont calculés une fois, à l’avance.
+      en: Passage vectors are computed once, in advance.
+- id: c3
+  type: idee
+  fr: 'Pour représenter un texte, la méthode la plus simple est la **moyenne** des vecteurs de ses mots connus. Les modèles réels font mieux, mais le principe reste le même : un vecteur par texte.'
+  en: 'To represent a text with word vectors, the simplest method is the **average**: add the vectors of the known words and divide by their number. Real models do better, but the principle remains to produce one vector per text.'
+  exemple:
+    fr: '« chat dort » : moyenne de $(1;\,0{,}9;\,0)$ et $(0{,}5;\,0{,}5;\,0)$, soit $(0{,}75;\,0{,}7;\,0)$.'
+    en: '“chat dort”: average of $(1;\,0.9;\,0)$ and $(0.5;\,0.5;\,0)$, that is $(0.75;\,0.7;\,0)$.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Le vecteur moyen d’un texte
+    en: A text’s average vector
+  lang: python
+  etapes:
+  - code: |-
+      chat = [1.0, 0.9, 0.0]
+      dort = [0.5, 0.5, 0.0]
+    fr: Les vecteurs de deux mots.
+    en: The vectors of two words.
+  - code: moy = [(a + b) / 2 for a, b in zip(chat, dort)]
+    fr: On fait la moyenne coordonnée par coordonnée.
+    en: We average coordinate by coordinate.
+  - code: print(moy)
+    fr: On affiche `[0.75, 0.7, 0.0]`.
+    en: We display `[0.75, 0.7, 0.0]`.
+  verif: |-
+    chat = [1.0, 0.9, 0.0]
+    dort = [0.5, 0.5, 0.0]
+    moy = [(a + b) / 2 for a, b in zip(chat, dort)]
+    print(moy)
+  sortie: '[0.75, 0.7, 0.0]'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `embed(texte, table)`** : sépare `texte.lower()` en mots, garde les vecteurs des mots présents dans `table`, et renvoie leur moyenne coordonnée par coordonnée. Si aucun mot n’est connu, renvoie un vecteur de zéros de la même taille. `table` est fournie.'
+  en: 'Your turn. **Write `embed(texte, table)`**: split `texte.lower()` into words, keep the vectors of the words present in `table`, and return their average coordinate by coordinate. If no word is known, return a vector of zeros of the same size. `table` is provided.'
+  depart: |
+    import math
+
+    TABLE = {
+        "chat": [1.0, 0.9, 0.0],
+        "chien": [0.9, 1.0, 0.0],
+        "dort": [0.5, 0.5, 0.0],
+        "voiture": [0.0, 0.0, 1.0],
+        "moteur": [0.0, 0.1, 1.0],
+        "roule": [0.0, 0.2, 0.9],
+    }
+
+    def cosinus(u, v):
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        if nu == 0 or nv == 0:
+            return 0.0
+        return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+    # écris ta fonction embed ici
+  tests: |-
+    assert embed("chat dort", TABLE) == [0.75, 0.7, 0.0]
+    assert embed("CHAT", TABLE) == [1.0, 0.9, 0.0]
+    assert embed("inconnu mot", TABLE) == [0.0, 0.0, 0.0]
+    assert embed("chat inconnu", TABLE) == [1.0, 0.9, 0.0]
+  solutionCode: |
+    import math
+
+    TABLE = {
+        "chat": [1.0, 0.9, 0.0],
+        "chien": [0.9, 1.0, 0.0],
+        "dort": [0.5, 0.5, 0.0],
+        "voiture": [0.0, 0.0, 1.0],
+        "moteur": [0.0, 0.1, 1.0],
+        "roule": [0.0, 0.2, 0.9],
+    }
+
+    def cosinus(u, v):
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        if nu == 0 or nv == 0:
+            return 0.0
+        return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+    def embed(texte, table):
+        vecs = [table[m] for m in texte.lower().split() if m in table]
+        if not vecs:
+            return [0.0] * len(next(iter(table.values())))
+        return [sum(v[i] for v in vecs) / len(vecs) for i in range(len(vecs[0]))]
+  indice:
+    fr: Fabrique `vecs = [table[m] for m in ... if m in table]` ; si la liste est vide, renvoie des zéros ; sinon la moyenne.
+    en: Build `vecs = [table[m] for m in ... if m in table]`; if the list is empty, return zeros; otherwise the average.
+  explication:
+    fr: 'Les mots inconnus sont ignorés : un vrai modèle gère n’importe quel mot en le découpant en tokens (niveau 12.1).'
+    en: 'Unknown words are ignored: a real model handles any word by splitting it into tokens (level 12.1).'
+- id: c6
+  type: idee
+  fr: 'Avec des millions de passages, comparer la question à chacun est lent. Les bases vectorielles utilisent un **index approché** (voisins proches approximatifs) : elles renvoient presque toujours les bons passages, beaucoup plus vite. Pour quelques milliers de passages, la comparaison directe suffit.'
+  en: 'With millions of passages, comparing the question with each one is slow. Vector databases use an **approximate index** (approximate nearest neighbours): they almost always return the right passages, much faster. For a few thousand passages, direct comparison is enough.'
+  exemple:
+    fr: 'Ton cours de 90 niveaux contient quelques milliers de passages : une boucle simple suffit, sans base spécialisée.'
+    en: 'Your 90-level course contains a few thousand passages: a simple loop suffices, with no specialised database.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Taille
+      en: Size
+    - fr: Méthode
+      en: Method
+    cellules:
+    - - fr: quelques milliers
+        en: a few thousand
+      - fr: comparaison directe
+        en: direct comparison
+    - - fr: des millions
+        en: millions
+      - fr: index approché
+        en: approximate index
+        ton: ok
+    legende:
+      fr: Commence simple, optimise seulement si c’est trop lent.
+      en: Start simple, optimise only if it is too slow.
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `plus_proches(q, base, k)`** : `base` est un dictionnaire identifiant → vecteur. Renvoie les `k` identifiants dont le vecteur a le plus grand `cosinus` avec `q`, du plus proche au moins proche. `cosinus` est fournie.'
+  en: '**Write `plus_proches(q, base, k)`**: `base` is a dictionary identifier → vector. Return the `k` identifiers whose vector has the largest `cosinus` with `q`, from closest to least close. `cosinus` is provided.'
+  depart: |
+    import math
+
+    TABLE = {
+        "chat": [1.0, 0.9, 0.0],
+        "chien": [0.9, 1.0, 0.0],
+        "dort": [0.5, 0.5, 0.0],
+        "voiture": [0.0, 0.0, 1.0],
+        "moteur": [0.0, 0.1, 1.0],
+        "roule": [0.0, 0.2, 0.9],
+    }
+
+    def cosinus(u, v):
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        if nu == 0 or nv == 0:
+            return 0.0
+        return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+    # écris ta fonction plus_proches ici
+  tests: |-
+    b = {"a": [1, 0, 0], "b": [0.9, 0.1, 0], "c": [0, 1, 0]}
+    assert plus_proches([1, 0, 0], b, 2) == ["a", "b"]
+    assert plus_proches([0, 1, 0], b, 1) == ["c"]
+    assert plus_proches([1, 0, 0], b, 10) == ["a", "b", "c"]
+    assert plus_proches([1, 0, 0], {}, 3) == []
+  solutionCode: |
+    import math
+
+    TABLE = {
+        "chat": [1.0, 0.9, 0.0],
+        "chien": [0.9, 1.0, 0.0],
+        "dort": [0.5, 0.5, 0.0],
+        "voiture": [0.0, 0.0, 1.0],
+        "moteur": [0.0, 0.1, 1.0],
+        "roule": [0.0, 0.2, 0.9],
+    }
+
+    def cosinus(u, v):
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        if nu == 0 or nv == 0:
+            return 0.0
+        return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+    def embed(texte, table):
+        vecs = [table[m] for m in texte.lower().split() if m in table]
+        if not vecs:
+            return [0.0] * len(next(iter(table.values())))
+        return [sum(v[i] for v in vecs) / len(vecs) for i in range(len(vecs[0]))]
+
+    def plus_proches(q, base, k):
+        notes = {i: cosinus(q, v) for i, v in base.items()}
+        return sorted(notes, key=lambda i: -notes[i])[:k]
+  indice:
+    fr: 'Construis un dictionnaire `notes` identifiant → cosinus, puis `sorted(notes, key=lambda i: -notes[i])[:k]`.'
+    en: 'Build a `notes` dictionary identifier → cosine, then `sorted(notes, key=lambda i: -notes[i])[:k]`.'
+  explication:
+    fr: 'Le `[:k]` garde les meilleurs : si `k` dépasse la taille de la base, on renvoie tout.'
+    en: 'The `[:k]` keeps the best: if `k` exceeds the size of the base, we return everything.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Le cosinus de la question « moteur » avec le texte « voiture roule » est-il plus grand qu’avec « chat dort » ? Réponds par `oui` ou `non`.
+  en: Is the cosine of the question “moteur” with the text “voiture roule” larger than with “chat dort”? Answer `oui` or `non`.
+  reponses:
+  - oui
+  verif: |-
+    import math
+
+    TABLE = {
+        "chat": [1.0, 0.9, 0.0],
+        "chien": [0.9, 1.0, 0.0],
+        "dort": [0.5, 0.5, 0.0],
+        "voiture": [0.0, 0.0, 1.0],
+        "moteur": [0.0, 0.1, 1.0],
+        "roule": [0.0, 0.2, 0.9],
+    }
+
+    def cosinus(u, v):
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        if nu == 0 or nv == 0:
+            return 0.0
+        return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+    q=TABLE["moteur"]
+    v1=[(a+b)/2 for a,b in zip(TABLE["voiture"],TABLE["roule"])]
+    v2=[(a+b)/2 for a,b in zip(TABLE["chat"],TABLE["dort"])]
+    print("oui" if cosinus(q,v1)>cosinus(q,v2) else "non")
+  indice:
+    fr: Les vecteurs de « moteur » et « voiture » pointent vers la même troisième coordonnée.
+    en: The vectors of “moteur” and “voiture” point towards the same third coordinate.
+  explication:
+    fr: '« moteur » et « voiture roule » sont presque alignés : le cosinus est proche de 1, contre 0,07 environ avec « chat dort ».'
+    en: '“moteur” and “voiture roule” are almost aligned: the cosine is close to 1, against about 0.07 with “chat dort”.'
+- id: c9
+  type: idee
+  fr: 'Il faut choisir **le même modèle d’embedding** pour les passages et pour les questions. Changer de modèle change tous les vecteurs : il faut alors recalculer ceux de tous les passages. Garde le nom et la version du modèle avec l’index.'
+  en: 'You must use **the same embedding model** for passages and questions. Changing the model changes all vectors: those of all passages must then be recomputed. Keep the model’s name and version with the index.'
+  exemple:
+    fr: Un index construit avec un modèle A donnera des résultats absurdes si les questions sont encodées avec un modèle B.
+    en: An index built with a model A will give absurd results if the questions are encoded with a model B.
+- id: c10
+  type: piege
+  fr: Un embedding peut rapprocher des textes de sens **opposé** s’ils parlent du même sujet (« le médicament est sûr » et « le médicament est dangereux »). La recherche vectorielle trouve le thème, pas toujours la bonne réponse. Il faut lire les passages, ou les vérifier avec un second étage qu’on verra au niveau 14.4.
+  en: 'An embedding can bring together texts of **opposite** meaning if they talk about the same topic (“the drug is safe” and “the drug is dangerous”). Vector search finds the topic, not always the right answer: the passages must be read, or checked with a second stage (level 14.4).'
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `recherche(question, passages, table, k)`** : `passages` est un dictionnaire identifiant → texte. Calcule le vecteur de chaque passage avec `embed`, celui de la question, puis renvoie `plus_proches(...)`. `embed` et `plus_proches` sont fournies.'
+  en: 'Challenge. **Write `recherche(question, passages, table, k)`**: `passages` is a dictionary identifier → text. Compute each passage’s vector with `embed`, the question’s vector, then return `plus_proches(...)`. `embed` and `plus_proches` are provided.'
+  depart: |
+    import math
+
+    TABLE = {
+        "chat": [1.0, 0.9, 0.0],
+        "chien": [0.9, 1.0, 0.0],
+        "dort": [0.5, 0.5, 0.0],
+        "voiture": [0.0, 0.0, 1.0],
+        "moteur": [0.0, 0.1, 1.0],
+        "roule": [0.0, 0.2, 0.9],
+    }
+
+    def cosinus(u, v):
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        if nu == 0 or nv == 0:
+            return 0.0
+        return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+    def embed(texte, table):
+        vecs = [table[m] for m in texte.lower().split() if m in table]
+        if not vecs:
+            return [0.0] * len(next(iter(table.values())))
+        return [sum(v[i] for v in vecs) / len(vecs) for i in range(len(vecs[0]))]
+
+    def plus_proches(q, base, k):
+        notes = {i: cosinus(q, v) for i, v in base.items()}
+        return sorted(notes, key=lambda i: -notes[i])[:k]
+
+    # écris ta fonction recherche ici
+  tests: |-
+    P = {"p1": "chat dort", "p2": "voiture roule", "p3": "chien dort"}
+    assert recherche("moteur", P, TABLE, 1) == ["p2"]
+    assert recherche("chien", P, TABLE, 2) == ["p3", "p1"]
+    assert recherche("chat", P, TABLE, 3)[0] == "p1"
+    assert recherche("moteur", {}, TABLE, 2) == []
+  solutionCode: |
+    import math
+
+    TABLE = {
+        "chat": [1.0, 0.9, 0.0],
+        "chien": [0.9, 1.0, 0.0],
+        "dort": [0.5, 0.5, 0.0],
+        "voiture": [0.0, 0.0, 1.0],
+        "moteur": [0.0, 0.1, 1.0],
+        "roule": [0.0, 0.2, 0.9],
+    }
+
+    def cosinus(u, v):
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        if nu == 0 or nv == 0:
+            return 0.0
+        return sum(a * b for a, b in zip(u, v)) / (nu * nv)
+
+    def embed(texte, table):
+        vecs = [table[m] for m in texte.lower().split() if m in table]
+        if not vecs:
+            return [0.0] * len(next(iter(table.values())))
+        return [sum(v[i] for v in vecs) / len(vecs) for i in range(len(vecs[0]))]
+
+    def plus_proches(q, base, k):
+        notes = {i: cosinus(q, v) for i, v in base.items()}
+        return sorted(notes, key=lambda i: -notes[i])[:k]
+
+    def recherche(question, passages, table, k):
+        base = {i: embed(t, table) for i, t in passages.items()}
+        return plus_proches(embed(question, table), base, k)
+  indice:
+    fr: 'Deux lignes : `base = {i: embed(t, table) for i, t in passages.items()}`, puis `plus_proches(embed(question, table), base, k)`.'
+    en: 'Two lines: `base = {i: embed(t, table) for i, t in passages.items()}`, then `plus_proches(embed(question, table), base, k)`.'
+  explication:
+    fr: '« moteur » retrouve « voiture roule » sans aucun mot commun : exactement ce que BM25 ne sait pas faire.'
+    en: '“moteur” retrieves “voiture roule” with no common word: exactly what BM25 cannot do.'
+- id: c12
+  type: idee
+  fr: 'Chaque méthode a ses forces : BM25 gagne sur les mots exacts, les embeddings sur le sens. Le niveau 14.4 les **combinera** : ce sera la recherche hybride, la plus robuste en pratique.'
+  en: 'Each method has its strengths: BM25 wins on exact words, embeddings on meaning. Level 14.4 **combines** them: this is hybrid search, the most robust in practice.'
+  exemple:
+    fr: Pour « erreur 0x80070005 », BM25 est meilleur ; pour « pourquoi mon programme est lent ? », les embeddings le sont.
+    en: For “error 0x80070005”, BM25 is better; for “why is my program slow?”, embeddings are.
+- id: c13
+  type: retenir
+  fr: 'Embedding : un vecteur par texte, proche si le sens est proche. Recherche : cosinus entre la question et chaque passage. Même modèle pour les deux. Trouve le thème, pas toujours la bonne réponse.'
+  en: 'Embedding: one vector per text, close if the meaning is close. Search: cosine between the question and each passage. Same model for both. Finds the topic, not always the right answer.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [Dense Passage Retrieval](https://arxiv.org/abs/2004.04906) ; cet article demande une connexion.
+  en: For further study, see [Dense Passage Retrieval](https://arxiv.org/abs/2004.04906); this paper needs a connection.

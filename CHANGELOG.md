@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.25] — 2026-11-02
+
+### Message fr
+Deux nouveaux modules : « RAG » pour construire un assistant qui répond avec ses sources ou dit qu'il ne sait pas, et « Agents et MCP » pour écrire un agent local qui utilise des outils sous la garde de permissions strictes.
+
+### Message en
+Two new modules: “RAG” to build an assistant that answers with its sources or says it does not know, and “Agents and MCP” to write a local agent that uses tools under the guard of strict permissions.
+
 ## [0.3.24] — 2026-11-02
 
 ### Message fr
