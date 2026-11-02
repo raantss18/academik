@@ -1,0 +1,171 @@
+# Niveau 8.boss — La fuite d'information (mission quant : repérer une fuite dans un test). Original academik ; notions vérifiées dans la documentation officielle scikit-learn (Common pitfalls : data leakage) et la documentation Python.
+id: '8.boss'
+module: 8
+duree_min: 19
+titre: { fr: 'La fuite d’information', en: 'The information leak' }
+ia: { fr: 'Kintana traque les fuites qui rendent un test trop beau pour être vrai : avant, pendant et après le découpage.', en: 'Kintana hunts the leaks that make a test too good to be true: before, during and after the split.' }
+sources:
+  - { titre: 'scikit-learn — Common pitfalls and recommended practices (data leakage)', url: 'https://scikit-learn.org/stable/common_pitfalls.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+  - { titre: 'Python — opérations sur les ensembles', url: 'https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana calcule la moyenne de **toutes** les données, s’en sert pour centrer les valeurs, **puis** coupe en train et test. Y a-t-il un problème ?'
+    en: 'Kintana computes the mean of **all** the data, uses it to centre the values, **then** cuts into train and test. Is there a problem?'
+    choix:
+      - { fr: 'Oui : le test a déjà influencé le calcul', en: 'Yes: the test set has already influenced the computation', juste: true }
+      - { fr: 'Non : la moyenne est une simple statistique', en: 'No: the mean is just a statistic' }
+      - { fr: 'Non : tant que le test est séparé ensuite', en: 'No: as long as the test set is separated afterwards' }
+    explication: { fr: 'La moyenne contient de l’information sur le test. Toute statistique doit être calculée sur l’entraînement seul.', en: 'The mean contains information about the test set. Every statistic must be computed on training alone.' }
+  - id: c2
+    type: idee
+    fr: 'Une **fuite d’information** est une information du test, ou du futur, qui entre dans l’apprentissage. Le score paraît excellent, mais il est faux : en vrai, le modèle ne verra jamais ces informations.'
+    en: 'An **information leak** is information from the test set, or the future, that enters learning. The score looks excellent but is false: in real use, the model will never see that information.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Fuite', en: 'Leak' }, { fr: 'Comment elle arrive', en: 'How it happens' }, { fr: 'Remède', en: 'Remedy' }]
+      cellules:
+        - [{ fr: 'statistique globale', en: 'global statistic' }, { fr: 'moyenne calculée avant la coupure', en: 'mean computed before the cut' }, { fr: 'couper d’abord', en: 'cut first' }]
+        - [{ fr: 'doublons', en: 'duplicates' }, { fr: 'même ligne dans train et test', en: 'same row in train and test' }, { fr: 'dédoublonner avant', en: 'deduplicate before' }]
+        - [{ fr: 'le futur', en: 'the future' }, { fr: 'série mélangée au hasard', en: 'series shuffled at random' }, { fr: 'couper dans le temps', en: 'cut in time' }]
+        - [{ fr: 'la réponse', en: 'the answer' }, { fr: 'une colonne en dépend', en: 'a column depends on it' }, { fr: 'retirer la colonne', en: 'remove the column', ton: ok }]
+      legende: { fr: 'Quatre fuites classiques ; dans ce niveau, tu apprends à les repérer et à les empêcher.', en: 'Four classic leaks; in this level, you learn to spot and prevent them.' }
+  - id: d_stat
+    type: exemple
+    titre: { fr: 'Une moyenne qui a vu le test', en: 'A mean that saw the test set' }
+    lang: python
+    etapes:
+      - { code: 'donnees = [1, 2, 3, 4, 100]', fr: 'Cinq valeurs ; la dernière est mise de côté pour le test.', en: 'Five values; the last one is set aside for testing.' }
+      - { code: 'moyenne_fausse = sum(donnees) / len(donnees)', fr: 'Moyenne de **toutes** les valeurs : elle contient déjà le `100`. Elle vaut 22.', en: 'Mean of **all** the values: it already contains the `100`. It is 22.' }
+      - { code: 'train = donnees[:4]\nmoyenne_juste = sum(train) / len(train)', fr: 'Moyenne de l’entraînement seul : 2,5. Elle ignore le test, comme en vrai usage.', en: 'Mean of the training set alone: 2.5. It ignores the test set, as in real use.' }
+      - { code: 'print(moyenne_fausse, moyenne_juste)', fr: 'On affiche `22.0 2.5` : l’écart montre à quel point le test a influencé le premier calcul.', en: 'We display `22.0 2.5`: the gap shows how much the test set influenced the first computation.' }
+    verif: |-
+      donnees = [1, 2, 3, 4, 100]
+      moyenne_fausse = sum(donnees) / len(donnees)
+      train = donnees[:4]
+      moyenne_juste = sum(train) / len(train)
+      print(moyenne_fausse, moyenne_juste)
+    sortie: '22.0 2.5'
+  - id: c3
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `moyenne_train(donnees, n_test)`** : la moyenne des données **sans** les `n_test` dernières valeurs (réservées au test).'
+    en: 'Your turn. **Write `moyenne_train(donnees, n_test)`**: the mean of the data **without** the last `n_test` values (reserved for testing).'
+    depart: |
+      # écris ta fonction moyenne_train ici
+    tests: |
+      assert moyenne_train([1, 2, 3, 4, 100], 1) == 2.5
+      assert moyenne_train([10, 20, 30, 99, 99], 2) == 20
+      assert moyenne_train([5, 7], 1) == 5
+    solutionCode: |
+      def moyenne_train(donnees, n_test):
+          train = donnees[:len(donnees) - n_test]
+          return sum(train) / len(train)
+    indice: { fr: 'Garde la tranche `donnees[:len(donnees) - n_test]`, puis moyenne classique.', en: 'Keep the slice `donnees[:len(donnees) - n_test]`, then an ordinary mean.' }
+    explication: { fr: 'On coupe **avant** de calculer : le test n’a aucune chance d’influencer la statistique.', en: 'We cut **before** computing: the test set has no chance to influence the statistic.' }
+  - id: d_dup
+    type: idee
+    fr: 'Si la même ligne se trouve dans l’entraînement **et** dans le test, le modèle l’a déjà vue : son « succès » est de la mémoire. On vérifie l’intersection des deux jeux.'
+    en: 'If the same row is in both training **and** testing, the model has already seen it: its “success” is memory. Check the intersection of the two sets.'
+    exemple: { fr: '`set(train) & set(test)` donne les éléments communs. S’il n’est pas vide, il y a une fuite : on retire ces lignes du test.', en: '`set(train) & set(test)` gives the common elements. If it is not empty, there is a leak: remove those rows from the test set.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `communs(train, test)`** : la liste **triée** des valeurs présentes à la fois dans `train` et dans `test`.'
+    en: '**Write `communs(train, test)`**: the **sorted** list of values present in both `train` and `test`.'
+    depart: |
+      # écris ta fonction communs ici
+    tests: |
+      assert communs([1, 2, 3], [3, 4, 2]) == [2, 3]
+      assert communs([1], [2]) == []
+      assert communs(["a", "b"], ["b", "b"]) == ["b"]
+      assert communs([], [1]) == []
+    solutionCode: |
+      def communs(train, test):
+          return sorted(set(train) & set(test))
+    indice: { fr: 'Transforme chaque liste en ensemble avec `set`, intersecte avec `&`, puis `sorted`.', en: 'Turn each list into a set with `set`, intersect with `&`, then `sorted`.' }
+    explication: { fr: 'Un ensemble ignore les répétitions, et `&` garde ce qui est dans les deux : exactement la définition d’une fuite par doublon.', en: 'A set ignores repetitions, and `&` keeps what is in both: exactly the definition of a duplicate leak.' }
+  - id: d_temps
+    type: idee
+    fr: 'Pour une série dans le temps (des prix par jour), coupe à une **date limite**. Ce qui est avant sert à apprendre, ce qui est après sert à tester. Le futur ne doit jamais aider à prédire le passé.'
+    en: 'For a series over time (prices per day), cut at a **cut-off date**. What is before is used to learn, what is after is used to test. The future must never help predict the past.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Date (ISO)', en: 'Date (ISO)' }, { fr: 'Rôle avec limite `2025-03-01`', en: 'Role with cut-off `2025-03-01`' }]
+      cellules:
+        - ['`2025-01-15`', { fr: 'entraînement', en: 'training', ton: ok }]
+        - ['`2025-02-28`', { fr: 'entraînement', en: 'training', ton: ok }]
+        - ['`2025-03-01`', { fr: 'test', en: 'test', ton: bad }]
+        - ['`2025-04-10`', { fr: 'test', en: 'test', ton: bad }]
+      legende: { fr: 'Les dates au format `AAAA-MM-JJ` se comparent comme des textes : l’ordre alphabétique est l’ordre du temps.', en: 'Dates in `YYYY-MM-DD` format compare as text: alphabetical order is time order.' }
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `coupe_temps(lignes, limite)`** : `lignes` est une liste de couples `(date, valeur)`. Renvoie `(train, test)` : les lignes dont la date est **strictement avant** `limite`, et les autres, chaque liste dans l’ordre des dates.'
+    en: '**Write `coupe_temps(lignes, limite)`**: `lignes` is a list of `(date, value)` pairs. Return `(train, test)`: the rows whose date is **strictly before** `limite`, and the others, each list in date order.'
+    depart: |
+      # écris ta fonction coupe_temps ici
+    tests: |
+      lignes = [("2025-03-01", 5), ("2025-01-15", 1), ("2025-04-10", 9), ("2025-02-28", 3)]
+      assert coupe_temps(lignes, "2025-03-01") == ([("2025-01-15", 1), ("2025-02-28", 3)], [("2025-03-01", 5), ("2025-04-10", 9)])
+      assert coupe_temps([], "2025-01-01") == ([], [])
+      assert coupe_temps([("2025-05-05", 1)], "2025-01-01") == ([], [("2025-05-05", 1)])
+    solutionCode: |
+      def coupe_temps(lignes, limite):
+          rangees = sorted(lignes)
+          train = [l for l in rangees if l[0] < limite]
+          test = [l for l in rangees if l[0] >= limite]
+          return (train, test)
+    indice: { fr: 'Trie d’abord les lignes par date (`sorted`), puis deux listes en compréhension avec `< limite` et `>= limite`.', en: 'First sort the rows by date (`sorted`), then two comprehensions with `< limite` and `>= limite`.' }
+    explication: { fr: 'Le tri puis la comparaison de textes ISO garantissent qu’aucun futur n’entre dans l’entraînement.', en: 'Sorting then comparing ISO text guarantees that no future enters training.' }
+  - id: d_col
+    type: idee
+    fr: 'Une colonne peut contenir la réponse **déguisée**. Pour prédire une fraude, la colonne « montant remboursé » n’existe qu’**après** la décision : elle trahit la cible. Retire-la.'
+    en: 'A column can contain the answer **in disguise**. To predict fraud, the column “amount refunded” only exists **after** the decision: it betrays the target. Remove it.'
+    exemple: { fr: 'Question à se poser pour chaque colonne : « À l’instant de la prédiction, est-ce que je connaîtrais déjà cette valeur ? » Si non, c’est une fuite.', en: 'Question to ask for each column: “At the moment of prediction, would I already know this value?” If not, it is a leak.' }
+  - id: d_p_beau
+    type: piege
+    fr: 'Un score **trop beau** (99 % sur un problème difficile) est un signal d’alarme, pas une victoire. Cherche d’abord une fuite avant de fêter le résultat.'
+    en: 'A score that is **too good** (99% on a hard problem) is an alarm signal, not a win. Look for a leak before celebrating.'
+  - id: c6
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'On prédit si un client **résiliera** son abonnement. Quelle colonne est une fuite ?'
+    en: 'We predict whether a customer will **cancel** their subscription. Which column is a leak?'
+    choix:
+      - { fr: 'Le nombre de mois depuis l’inscription', en: 'The number of months since sign-up' }
+      - { fr: 'La date de résiliation', en: 'The cancellation date', juste: true }
+      - { fr: 'Le nombre de connexions le mois dernier', en: 'The number of logins last month' }
+    explication: { fr: 'La date de résiliation n’existe que si le client a déjà résilié : c’est la réponse elle-même.', en: 'The cancellation date exists only if the customer has already cancelled: it is the answer itself.' }
+  - id: d_ordre
+    type: idee
+    fr: 'La règle d’or tient en un ordre : **couper d’abord**, puis calculer, nettoyer et choisir **seulement avec l’entraînement**. Le test n’intervient qu’à la toute fin, une seule fois.'
+    en: 'The golden rule fits in one order: **cut first**, then compute, clean and choose **with training only**. The test set comes in only at the very end, once.'
+    exemple: { fr: 'Ordre correct : lire → nettoyer les lignes → couper → calculer les statistiques sur train → entraîner → tester une fois. Ordre fautif : calculer sur tout → couper.', en: 'Correct order: read → clean rows → cut → compute statistics on train → train → test once. Faulty order: compute on everything → cut.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi final. **Écris `centrer(train, test)`** : elle centre les deux jeux avec la moyenne du **train seul** (chaque valeur moins cette moyenne) et renvoie `(train_centre, test_centre)`.'
+    en: 'Final challenge. **Write `centrer(train, test)`**: it centres both sets with the mean of **train alone** (each value minus that mean) and returns `(centred_train, centred_test)`.'
+    depart: |
+      # écris ta fonction centrer ici
+    tests: |
+      assert centrer([1, 3], [10]) == ([-1.0, 1.0], [8.0])
+      assert centrer([5, 5], [5, 7]) == ([0.0, 0.0], [0.0, 2.0])
+      assert centrer([2], []) == ([0.0], [])
+    solutionCode: |
+      def centrer(train, test):
+          m = sum(train) / len(train)
+          return ([v - m for v in train], [v - m for v in test])
+    indice: { fr: 'Calcule `m` sur `train` seulement, puis soustrais `m` aux deux listes.', en: 'Compute `m` on `train` only, then subtract `m` from both lists.' }
+    explication: { fr: 'Le test est transformé avec une statistique **apprise sur le train** : c’est exactement la bonne façon, sans fuite.', en: 'The test set is transformed with a statistic **learned on train**: exactly the right way, without a leak.' }
+  - id: c8
+    type: retenir
+    fr: 'Une fuite = de l’information du test ou du futur dans l’apprentissage. Couper d’abord, statistiques sur le train seul, pas de doublons communs, pas de colonne qui trahit la réponse. Un score trop beau est suspect.'
+    en: 'A leak = test or future information in learning. Cut first, statistics on train alone, no shared duplicates, no column that betrays the answer. A score that is too good is suspicious.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [scikit-learn — Pièges courants](https://scikit-learn.org/stable/common_pitfalls.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [scikit-learn — Common pitfalls](https://scikit-learn.org/stable/common_pitfalls.html); this optional reading needs a connection.

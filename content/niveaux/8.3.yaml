@@ -1,0 +1,192 @@
+# Niveau 8.3 — Données 3 : résumer. Original academik ; notions vérifiées dans la documentation officielle Python (module statistics).
+id: '8.3'
+module: 8
+duree_min: 18
+titre: { fr: 'Résumer', en: 'Summarising' }
+ia: { fr: 'Kintana résume une colonne de nombres en quelques chiffres et compare des groupes.', en: 'Kintana summarises a column of numbers in a few figures and compares groups.' }
+sources:
+  - { titre: 'Python — module statistics', url: 'https://docs.python.org/3/library/statistics.html', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      import statistics
+      print(statistics.median([1, 3, 100]))
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      import statistics
+      print(statistics.median([1, 3, 100]))
+      ```
+    choix:
+      - { fr: '`3`', en: '`3`', juste: true }
+      - { fr: '`34.67`', en: '`34.67`' }
+      - { fr: '`100`', en: '`100`' }
+    verif: |-
+      import statistics
+      print(statistics.median([1, 3, 100]))
+    sortie: '3'
+    explication: { fr: 'La **médiane** est la valeur du milieu une fois les nombres rangés : 1, **3**, 100.', en: 'The **median** is the middle value once the numbers are sorted: 1, **3**, 100.' }
+  - id: c2
+    type: idee
+    fr: 'Résumer une colonne, c’est la ramener à quelques nombres : un **centre** (moyenne, médiane) et une **dispersion** (étendue, écart-type). Ils disent où sont les valeurs et à quel point elles varient.'
+    en: 'Summarising a column means reducing it to a few numbers: a **centre** (mean, median) and a **spread** (range, standard deviation). They say where the values are and how much they vary.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Pour $2,4,4,4,5,5,7,9$', en: 'For $2,4,4,4,5,5,7,9$' }, { fr: 'Calcul', en: 'Computation' }, { fr: 'Valeur', en: 'Value' }]
+      cellules:
+        - [{ fr: 'moyenne', en: 'mean' }, '$40/8$', '$5$']
+        - [{ fr: 'médiane', en: 'median' }, { fr: 'milieu de $4$ et $5$', en: 'middle of $4$ and $5$' }, '$4{,}5$']
+        - [{ fr: 'étendue', en: 'range' }, '$9-2$', '$7$']
+        - [{ fr: 'écart-type', en: 'standard deviation' }, { fr: 'racine de la variance', en: 'square root of the variance' }, { fr: '$2$', en: '$2$', ton: ok }]
+      legende: { fr: 'L’écart-type est la racine de la moyenne des carrés des écarts à la moyenne (niveau 6.4).', en: 'The standard deviation is the root of the mean of squared gaps to the mean (level 6.4).' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Résumer avec le module statistics', en: 'Summarising with the statistics module' }
+    lang: python
+    etapes:
+      - { code: 'import statistics', fr: 'Le module `statistics` est fourni avec Python.', en: 'The `statistics` module comes with Python.' }
+      - { code: 'd = [2, 4, 4, 4, 5, 5, 7, 9]', fr: 'Notre colonne de huit valeurs.', en: 'Our column of eight values.' }
+      - { code: 'print(statistics.mean(d), statistics.median(d), statistics.pstdev(d))', fr: 'Moyenne, médiane, écart-type de la population : on affiche `5 4.5 2.0`.', en: 'Mean, median, population standard deviation: we display `5 4.5 2.0`.' }
+    verif: |-
+      import statistics
+      d = [2, 4, 4, 4, 5, 5, 7, 9]
+      print(statistics.mean(d), statistics.median(d), statistics.pstdev(d))
+    sortie: '5 4.5 2.0'
+  - id: d_med
+    type: idee
+    fr: 'La **moyenne** est sensible aux valeurs extrêmes ; la **médiane** ne l’est presque pas. Si une colonne peut contenir des valeurs aberrantes, donne les deux.'
+    en: 'The **mean** is sensitive to extreme values; the **median** hardly is. If a column may contain outliers, report both.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Valeurs', en: 'Values' }, { fr: 'Moyenne', en: 'Mean' }, { fr: 'Médiane', en: 'Median' }]
+      cellules:
+        - ['`1, 2, 3, 4, 5`', '`3`', '`3`']
+        - ['`1, 2, 3, 4, 100`', { fr: '`22` : tirée par le 100', en: '`22`: pulled by the 100', ton: bad }, { fr: '`3` : stable', en: '`3`: stable', ton: ok }]
+      legende: { fr: 'Un seul `100` déplace la moyenne de 3 à 22, et la médiane pas du tout.', en: 'A single `100` moves the mean from 3 to 22, and the median not at all.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `resume(valeurs)`** : elle renvoie un dictionnaire avec les clés `"min"`, `"max"` et `"moyenne"` d’une liste de nombres non vide.'
+    en: 'Your turn. **Write `resume(valeurs)`**: it returns a dictionary with the keys `"min"`, `"max"` and `"moyenne"` for a non-empty list of numbers.'
+    depart: |
+      # écris ta fonction resume ici
+    tests: |
+      assert resume([2, 4, 9]) == {"min": 2, "max": 9, "moyenne": 5}
+      assert resume([7]) == {"min": 7, "max": 7, "moyenne": 7}
+      assert resume([1, 2]) == {"min": 1, "max": 2, "moyenne": 1.5}
+    solutionCode: |
+      def resume(valeurs):
+          return {"min": min(valeurs), "max": max(valeurs), "moyenne": sum(valeurs) / len(valeurs)}
+    indice: { fr: '`min`, `max` et `sum(...) / len(...)` suffisent ; renvoie un dictionnaire avec ces trois clés.', en: '`min`, `max` and `sum(...) / len(...)` are enough; return a dictionary with these three keys.' }
+    explication: { fr: 'Trois résumés d’une seule colonne rangés dans un dictionnaire, prêts à être comparés.', en: 'Three summaries of a single column stored in a dictionary, ready to be compared.' }
+  - id: d_quart
+    type: exemple
+    titre: { fr: 'Les quartiles', en: 'Quartiles' }
+    lang: python
+    etapes:
+      - { code: 'import statistics', fr: 'On réutilise `statistics`.', en: 'We reuse `statistics`.' }
+      - { code: 'print(statistics.quantiles([1, 2, 3, 4, 5, 6, 7, 8, 9], n=4))', fr: '`quantiles` avec `n=4` coupe les données en quatre parts égales et donne les trois coupures : `[2.5, 5.0, 7.5]`.', en: '`quantiles` with `n=4` cuts the data into four equal parts and gives the three cut points: `[2.5, 5.0, 7.5]`.' }
+      - { fr: 'La coupure du milieu est la médiane (5). Un quart des valeurs est sous 2,5, un quart au-dessus de 7,5.', en: 'The middle cut is the median (5). A quarter of the values are below 2.5, a quarter above 7.5.' }
+    verif: |-
+      import statistics
+      print(statistics.quantiles([1, 2, 3, 4, 5, 6, 7, 8, 9], n=4))
+    sortie: '[2.5, 5.0, 7.5]'
+  - id: d_groupe
+    type: idee
+    fr: 'Pour **comparer des groupes**, on range les valeurs dans un dictionnaire : une clé par groupe, une liste de valeurs par clé. Puis on résume chaque liste séparément.'
+    en: 'To **compare groups**, store the values in a dictionary: one key per group, one list of values per key. Then summarise each list separately.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Ventes (ville, montant)', en: 'Sales (town, amount)' }, { fr: 'Dictionnaire de groupes', en: 'Groups dictionary' }]
+      cellules:
+        - ['`("tana", 10)`', '`{"tana": [10, 14]`']
+        - ['`("fia", 7)`', '`"fia": [7]}`']
+        - ['`("tana", 14)`', { fr: 'même clé : on ajoute à la liste', en: 'same key: append to the list', ton: ok }]
+      legende: { fr: 'Pour chaque ligne : `groupes.setdefault(ville, []).append(montant)`.', en: 'For each row: `groups.setdefault(town, []).append(amount)`.' }
+  - id: d_groupe_ex
+    type: exemple
+    titre: { fr: 'Moyenne par groupe', en: 'Mean per group' }
+    lang: python
+    etapes:
+      - { code: 'ventes = [("tana", 10), ("fia", 7), ("tana", 14)]', fr: 'Trois ventes dans deux villes.', en: 'Three sales in two towns.' }
+      - { code: 'groupes = {}\nfor ville, montant in ventes:\n    groupes.setdefault(ville, []).append(montant)', fr: '`setdefault` crée la liste vide si la clé est nouvelle, puis on ajoute le montant.', en: '`setdefault` creates the empty list if the key is new, then we append the amount.' }
+      - { code: 'moyennes = {v: sum(m) / len(m) for v, m in groupes.items()}', fr: 'Pour chaque ville, la somme divisée par le nombre de ventes.', en: 'For each town, the sum divided by the number of sales.' }
+      - { code: 'print(moyennes)', fr: "On affiche `{'tana': 12.0, 'fia': 7.0}`.", en: "We display `{'tana': 12.0, 'fia': 7.0}`." }
+    verif: |-
+      ventes = [("tana", 10), ("fia", 7), ("tana", 14)]
+      groupes = {}
+      for ville, montant in ventes:
+          groupes.setdefault(ville, []).append(montant)
+      moyennes = {v: sum(m) / len(m) for v, m in groupes.items()}
+      print(moyennes)
+    sortie: "{'tana': 12.0, 'fia': 7.0}"
+  - id: c5
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `moyenne_par_groupe(lignes)`** : `lignes` est une liste de couples `(groupe, valeur)` ; renvoie un dictionnaire `groupe → moyenne`.'
+    en: '**Write `moyenne_par_groupe(lignes)`**: `lignes` is a list of `(group, value)` pairs; return a dictionary `group → mean`.'
+    depart: |
+      # écris ta fonction moyenne_par_groupe ici
+    tests: |
+      assert moyenne_par_groupe([("a", 10), ("b", 7), ("a", 14)]) == {"a": 12, "b": 7}
+      assert moyenne_par_groupe([]) == {}
+      assert moyenne_par_groupe([("x", 1), ("x", 2)]) == {"x": 1.5}
+    solutionCode: |
+      def moyenne_par_groupe(lignes):
+          groupes = {}
+          for g, v in lignes:
+              groupes.setdefault(g, []).append(v)
+          return {g: sum(vs) / len(vs) for g, vs in groupes.items()}
+    indice: { fr: 'D’abord regrouper (`setdefault(g, []).append(v)`), ensuite calculer une moyenne par liste.', en: 'First group (`setdefault(g, []).append(v)`), then compute one mean per list.' }
+    explication: { fr: 'Deux étapes séparées : regrouper, puis résumer. C’est le schéma « group by » de tous les outils de données.', en: 'Two separate steps: group, then summarise. This is the “group by” pattern of every data tool.' }
+  - id: d_p_moy
+    type: piege
+    fr: 'La moyenne des moyennes de groupes **n’est pas** la moyenne générale quand les groupes n’ont pas la même taille. Avec `[10]` et `[20, 20, 20]` : `15` contre `17,5`.'
+    en: 'The mean of group means is **not** the overall mean when groups differ in size. With `[10]` and `[20, 20, 20]`: `15` versus `17.5`.'
+  - id: c6
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Un groupe contient `[10]`, l’autre `[20, 20, 20]`. Quelle est la moyenne **de toutes les valeurs ensemble** ?'
+    en: 'One group contains `[10]`, the other `[20, 20, 20]`. What is the mean of **all values together**?'
+    reponses: ['17.5', '17,5']
+    verif: 'print((10 + 20 + 20 + 20) / 4)'
+    indice: { fr: 'Additionne les quatre valeurs et divise par 4, pas par 2.', en: 'Add the four values and divide by 4, not by 2.' }
+    explication: { fr: '$70/4=17{,}5$ : chaque valeur pèse pareil, donc le grand groupe compte plus.', en: '$70/4=17.5$: each value weighs the same, so the big group counts more.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `ecart_type(valeurs)`** sans utiliser le module `statistics` : la racine carrée de la moyenne des carrés des écarts à la moyenne (écart-type de la population).'
+    en: 'Challenge. **Write `ecart_type(valeurs)`** without using the `statistics` module: the square root of the mean of the squared gaps to the mean (population standard deviation).'
+    depart: |
+      import math
+
+      # écris ta fonction ecart_type ici
+    tests: |
+      assert abs(ecart_type([2, 4, 4, 4, 5, 5, 7, 9]) - 2) < 1e-9
+      assert ecart_type([5, 5, 5]) == 0
+      assert abs(ecart_type([1, 3]) - 1) < 1e-9
+    solutionCode: |
+      import math
+
+      def ecart_type(valeurs):
+          m = sum(valeurs) / len(valeurs)
+          variance = sum((v - m) ** 2 for v in valeurs) / len(valeurs)
+          return math.sqrt(variance)
+    indice: { fr: 'Trois étapes : la moyenne `m`, la moyenne des `(v - m) ** 2`, puis `math.sqrt`.', en: 'Three steps: the mean `m`, the mean of the `(v - m) ** 2`, then `math.sqrt`.' }
+    explication: { fr: 'On retrouve la définition du niveau 6.4 : variance puis racine carrée.', en: 'We find the definition from level 6.4: variance then square root.' }
+  - id: c8
+    type: retenir
+    fr: 'Résumer = un centre (moyenne, médiane) et une dispersion (étendue, écart-type, quartiles). La médiane résiste aux valeurs extrêmes ; pour comparer des groupes : regrouper dans un dictionnaire, puis résumer chaque liste.'
+    en: 'Summarising = a centre (mean, median) and a spread (range, standard deviation, quartiles). The median resists extreme values; to compare groups: group in a dictionary, then summarise each list.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — module statistics](https://docs.python.org/3/library/statistics.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — statistics module](https://docs.python.org/3/library/statistics.html); this optional reading needs a connection.

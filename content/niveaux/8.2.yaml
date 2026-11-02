@@ -1,0 +1,194 @@
+# Niveau 8.2 — Données 2 : nettoyer. Original academik ; notions vérifiées dans la documentation officielle Python (méthodes de chaînes, dict.fromkeys) et dans la documentation scikit-learn (valeurs manquantes, imputation).
+id: '8.2'
+module: 8
+duree_min: 18
+titre: { fr: 'Nettoyer', en: 'Cleaning' }
+ia: { fr: 'Kintana repère les valeurs manquantes, les doublons et les valeurs impossibles avant de calculer quoi que ce soit.', en: 'Kintana spots missing values, duplicates and impossible values before computing anything.' }
+sources:
+  - { titre: 'Python — méthodes de chaînes (strip, isdigit)', url: 'https://docs.python.org/3/library/stdtypes.html#string-methods', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'scikit-learn — Imputation of missing values', url: 'https://scikit-learn.org/stable/modules/impute.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      print(" ana  ".strip().title())
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      print(" ana  ".strip().title())
+      ```
+    choix:
+      - { fr: '`Ana`', en: '`Ana`', juste: true }
+      - { fr: '` Ana `', en: '` Ana `' }
+      - { fr: '`ANA`', en: '`ANA`' }
+    verif: 'print(" ana  ".strip().title())'
+    sortie: 'Ana'
+    explication: { fr: '`strip()` retire les espaces autour, `title()` met la première lettre en majuscule.', en: '`strip()` removes the surrounding spaces, `title()` capitalises the first letter.' }
+  - id: c2
+    type: idee
+    fr: 'Les données réelles sont **sales** : cases vides, espaces en trop, textes à la place des nombres, valeurs impossibles. Calculer sans nettoyer donne des résultats faux sans erreur visible.'
+    en: 'Real data is **dirty**: empty cells, extra spaces, text where numbers belong, impossible values. Computing without cleaning gives wrong results with no visible error.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Problème', en: 'Problem' }, { fr: 'Exemple', en: 'Example' }, { fr: 'Remède', en: 'Remedy' }]
+      cellules:
+        - [{ fr: 'espaces', en: 'spaces' }, '`" 16"`', '`.strip()`']
+        - [{ fr: 'case vide', en: 'empty cell' }, '`""`', { fr: 'ignorer ou remplacer', en: 'skip or replace' }]
+        - [{ fr: 'texte', en: 'text' }, '`"abc"`', { fr: 'tester avant de convertir', en: 'test before converting' }]
+        - [{ fr: 'valeur impossible', en: 'impossible value' }, '`-3` ou `200` ans', { fr: 'borner', en: 'bound it', ton: ok }]
+      legende: { fr: 'On traite chaque problème par une règle écrite et explicite.', en: 'Each problem is handled by a written, explicit rule.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Ne garder que les âges valides', en: 'Keeping only valid ages' }
+    lang: python
+    etapes:
+      - { code: 'valeurs = ["15", " 16", "", "abc", "-3", "17"]', fr: 'Une colonne d’âges en texte, avec des défauts.', en: 'A column of ages as text, with flaws.' }
+      - { code: 'propres = []', fr: 'On prépare la liste des valeurs propres.', en: 'We prepare the list of clean values.' }
+      - { code: 'for v in valeurs:\n    v = v.strip()', fr: 'Pour chaque valeur, on retire d’abord les espaces : `" 16"` devient `"16"`.', en: 'For each value, we first remove spaces: `" 16"` becomes `"16"`.' }
+      - { code: '    if v.isdigit() and 0 <= int(v) <= 120:\n        propres.append(int(v))', fr: '`isdigit()` n’accepte que des chiffres : `""`, `"abc"` et `"-3"` sont écartés. On borne aussi l’âge entre 0 et 120.', en: '`isdigit()` accepts only digits: `""`, `"abc"` and `"-3"` are rejected. We also bound the age between 0 and 120.' }
+      - { code: 'print(propres)', fr: 'On affiche `[15, 16, 17]`.', en: 'We display `[15, 16, 17]`.' }
+    verif: |-
+      valeurs = ["15", " 16", "", "abc", "-3", "17"]
+      propres = []
+      for v in valeurs:
+          v = v.strip()
+          if v.isdigit() and 0 <= int(v) <= 120:
+              propres.append(int(v))
+      print(propres)
+    sortie: '[15, 16, 17]'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `ages_valides(valeurs)`** : elle reçoit une liste de textes. Elle renvoie la liste des âges (entiers) valides : des chiffres entre 0 et 120, une fois les espaces retirés.'
+    en: 'Your turn. **Write `ages_valides(valeurs)`**: it receives a list of texts. It returns the list of valid ages (integers): digits between 0 and 120, once spaces are removed.'
+    depart: |
+      # écris ta fonction ages_valides ici
+    tests: |
+      assert ages_valides(["15", " 16 ", "", "abc"]) == [15, 16]
+      assert ages_valides(["121", "120", "0"]) == [120, 0]
+      assert ages_valides([]) == []
+      assert ages_valides(["-1", "2.5"]) == []
+    solutionCode: |
+      def ages_valides(valeurs):
+          propres = []
+          for v in valeurs:
+              v = v.strip()
+              if v.isdigit() and 0 <= int(v) <= 120:
+                  propres.append(int(v))
+          return propres
+    indice: { fr: 'Même schéma que l’exemple : `strip`, puis `isdigit()` et la borne dans un seul `if`.', en: 'Same pattern as the example: `strip`, then `isdigit()` and the bound in a single `if`.' }
+    explication: { fr: '`"2.5"` n’est pas fait que de chiffres (il contient un point) : il est écarté avec le reste.', en: '`"2.5"` is not made only of digits (it contains a dot): it is rejected with the rest.' }
+  - id: d_manq
+    type: idee
+    fr: 'Une valeur **manquante** peut être traitée de trois façons : **supprimer** la ligne, la **remplacer** par une valeur typique, ou la **marquer** comme inconnue. Aucune n’est neutre.'
+    en: 'A **missing** value can be handled in three ways: **drop** the row, **replace** it with a typical value, or **mark** it as unknown. None is neutral.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Choix', en: 'Choice' }, { fr: 'Avantage', en: 'Advantage' }, { fr: 'Risque', en: 'Risk' }]
+      cellules:
+        - [{ fr: 'supprimer la ligne', en: 'drop the row' }, { fr: 'simple', en: 'simple' }, { fr: 'perd des données', en: 'loses data' }]
+        - [{ fr: 'remplacer par la moyenne', en: 'replace with the mean' }, { fr: 'garde la ligne', en: 'keeps the row' }, { fr: 'réduit la variabilité', en: 'reduces variability', ton: bad }]
+        - [{ fr: 'marquer « inconnu »', en: 'mark “unknown”' }, { fr: 'honnête', en: 'honest' }, { fr: 'à gérer ensuite', en: 'to handle later' }]
+      legende: { fr: 'Choisis une règle, note-la, et applique-la partout de la même façon.', en: 'Choose a rule, write it down, and apply it everywhere in the same way.' }
+  - id: d_p_zero
+    type: piege
+    fr: 'Remplacer une valeur manquante par **0** est un piège. Les âges `15`, `17` et « manquant » donnent une moyenne de `10,67` avec le zéro. Ignorer la case vide donne `16`.'
+    en: 'Replacing a missing value with **0** is a trap. Ages `15`, `17` and “missing” give a mean of `10.67` with the zero. Ignoring the empty cell gives `16`.'
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Les notes sont `10`, `14` et une case vide. En **ignorant** la case vide, quelle est la moyenne ?'
+    en: 'The marks are `10`, `14` and an empty cell. **Ignoring** the empty cell, what is the average?'
+    reponses: ['12']
+    verif: 'print((10 + 14) // 2)'
+    indice: { fr: 'Additionne seulement les deux notes présentes et divise par 2.', en: 'Add only the two marks present and divide by 2.' }
+    explication: { fr: '$(10+14)/2=12$ : la case vide ne compte pas, ni dans la somme ni dans le nombre.', en: '$(10+14)/2=12$: the empty cell counts neither in the sum nor in the number.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `moyenne_sans_vides(valeurs)`** : la liste contient des textes ; les `""` sont ignorés ; les autres sont convertis en `float`. Renvoie la moyenne.'
+    en: '**Write `moyenne_sans_vides(valeurs)`**: the list contains texts; the `""` are ignored; the others are converted to `float`. Return the average.'
+    depart: |
+      # écris ta fonction moyenne_sans_vides ici
+    tests: |
+      assert moyenne_sans_vides(["10", "14", ""]) == 12
+      assert moyenne_sans_vides(["", "5"]) == 5
+      assert moyenne_sans_vides(["1", "2", "3", "4"]) == 2.5
+    solutionCode: |
+      def moyenne_sans_vides(valeurs):
+          nombres = [float(v) for v in valeurs if v.strip() != ""]
+          return sum(nombres) / len(nombres)
+    indice: { fr: 'Filtre d’abord les valeurs non vides, convertis-les, puis `sum(...) / len(...)` sur la liste filtrée.', en: 'Filter the non-empty values first, convert them, then `sum(...) / len(...)` on the filtered list.' }
+    explication: { fr: 'On divise par le nombre de valeurs **présentes**, pas par la taille de la liste d’origine.', en: 'We divide by the number of values **present**, not by the size of the original list.' }
+  - id: d_dup
+    type: exemple
+    titre: { fr: 'Retirer les doublons en gardant l’ordre', en: 'Removing duplicates while keeping order' }
+    lang: python
+    etapes:
+      - { code: 'noms = ["ana", "rado", "ana", "soa", "rado"]', fr: 'Une liste où deux noms sont répétés.', en: 'A list in which two names are repeated.' }
+      - { code: 'uniques = list(dict.fromkeys(noms))', fr: '`dict.fromkeys` crée un dictionnaire dont les clés sont les noms : une clé ne peut exister qu’une fois, et l’ordre d’arrivée est gardé.', en: '`dict.fromkeys` creates a dictionary whose keys are the names: a key can exist only once, and arrival order is kept.' }
+      - { code: 'print(uniques, len(uniques))', fr: "On affiche `['ana', 'rado', 'soa'] 3`.", en: "We display `['ana', 'rado', 'soa'] 3`." }
+    verif: |-
+      noms = ["ana", "rado", "ana", "soa", "rado"]
+      uniques = list(dict.fromkeys(noms))
+      print(uniques, len(uniques))
+    sortie: "['ana', 'rado', 'soa'] 3"
+  - id: d_aberr
+    type: idee
+    fr: 'Une valeur **aberrante** est très éloignée des autres ou impossible (un âge de 200 ans). On la repère avec une **borne écrite à l’avance**, jamais en regardant le résultat qu’on voudrait obtenir.'
+    en: 'An **outlier** is far from the others or impossible (an age of 200 years). Spot it with a **bound written in advance**, never by looking at the result you would like.'
+    figure:
+      kind: nombres
+      liste: [14, 15, 15, 16, 17, 17, 18, 200]
+      groupes:
+        - { valeurs: [14, 15, 15, 16, 17, 17, 18], ton: ok, label: { fr: 'dans la borne $[0,120]$', en: 'within the bound $[0,120]$' } }
+        - { valeurs: [200], ton: bad, label: { fr: 'impossible : à vérifier', en: 'impossible: to check' } }
+      legende: { fr: 'Un seul `200` suffit à faire passer la moyenne de $16$ à $38$ : un nettoyage oublié coûte cher.', en: 'A single `200` is enough to move the mean from $16$ to $38$: a forgotten cleanup is costly.' }
+  - id: d_trace
+    type: idee
+    fr: 'Nettoyer, c’est **décider** : chaque ligne supprimée change le résultat. Garde donc une trace : combien de lignes écartées, et pourquoi. C’est le principe d’honnêteté de ce cours.'
+    en: 'Cleaning is **deciding**: each row removed changes the result. So keep a record: how many rows were dropped, and why. This is the honesty principle of this course.'
+    exemple: { fr: 'Rapport honnête : « 5 lignes lues, 1 case vide, 1 texte non numérique, 1 âge hors borne : 2 lignes gardées. »', en: 'Honest report: “5 rows read, 1 empty cell, 1 non-numeric text, 1 age out of bounds: 2 rows kept.”' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `nettoyer(texte)`** : elle lit un CSV `nom,age` et renvoie un couple `(ages_gardes, nb_ecartes)`. Un âge est gardé s’il est fait de chiffres (espaces retirés) et entre 0 et 120.'
+    en: 'Challenge. **Write `nettoyer(texte)`**: it reads a `nom,age` CSV and returns a pair `(kept_ages, number_dropped)`. An age is kept if it is made of digits (spaces removed) and between 0 and 120.'
+    depart: |
+      import csv, io
+
+      # écris ta fonction nettoyer ici
+    tests: |
+      assert nettoyer("nom,age\nana, 15\nrado,\nsoa,abc\nmiora,200\nvola,17") == ([15, 17], 3)
+      assert nettoyer("nom,age\na,5") == ([5], 0)
+      assert nettoyer("nom,age\na,x\nb,y") == ([], 2)
+    solutionCode: |
+      import csv, io
+
+      def nettoyer(texte):
+          gardes = []
+          ecartes = 0
+          for ligne in csv.DictReader(io.StringIO(texte)):
+              v = ligne["age"].strip()
+              if v.isdigit() and 0 <= int(v) <= 120:
+                  gardes.append(int(v))
+              else:
+                  ecartes = ecartes + 1
+          return (gardes, ecartes)
+    indice: { fr: 'Même test de validité que 8.2, avec un compteur supplémentaire dans le `else`.', en: 'Same validity test as before, with an extra counter in the `else`.' }
+    explication: { fr: 'On rend à la fois le résultat **et** le nombre de lignes écartées : la trace dont on parlait.', en: 'We return both the result **and** the number of dropped rows: the record we spoke about.' }
+  - id: c8
+    type: retenir
+    fr: 'Avant de calculer : `strip` les espaces, `isdigit()` avant `int`. Manquants : une règle explicite, jamais 0 par défaut. Borner les valeurs, retirer les doublons, noter ce qu’on écarte.'
+    en: 'Before computing: `strip` the spaces, `isdigit()` before `int`. Missing values: an explicit rule, never 0 by default. Bound the values, remove duplicates, note what you drop.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [scikit-learn — Valeurs manquantes](https://scikit-learn.org/stable/modules/impute.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [scikit-learn — Missing values](https://scikit-learn.org/stable/modules/impute.html); this optional reading needs a connection.

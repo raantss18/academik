@@ -1,0 +1,174 @@
+# Niveau 8.4 — Données 4 : voir les données. Original academik ; notions vérifiées dans la documentation officielle Python (collections.Counter, opérations sur les chaînes) et le tutoriel de Matplotlib sur les histogrammes (source citée).
+id: '8.4'
+module: 8
+duree_min: 17
+titre: { fr: 'Voir les données', en: 'Seeing the data' }
+ia: { fr: 'Kintana dessine la forme d’une colonne de nombres, en texte, et sait repérer un graphique trompeur.', en: 'Kintana draws the shape of a column of numbers, in text, and knows how to spot a misleading chart.' }
+sources:
+  - { titre: 'Python — collections.Counter', url: 'https://docs.python.org/3/library/collections.html#collections.Counter', licence: 'PSF License (documentation officielle, citée)' }
+  - { titre: 'Matplotlib — Histograms', url: 'https://matplotlib.org/stable/gallery/statistics/hist.html', licence: 'Matplotlib License (PSF-compatible, source citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: |
+      Que **affiche** ce programme ?
+
+      ```python
+      print("#" * 3)
+      ```
+    en: |
+      What does this program **display**?
+
+      ```python
+      print("#" * 3)
+      ```
+    choix:
+      - { fr: '`###`', en: '`###`', juste: true }
+      - { fr: '`3`', en: '`3`' }
+      - { fr: '`# # #`', en: '`# # #`' }
+    verif: 'print("#" * 3)'
+    sortie: '###'
+    explication: { fr: 'Multiplier un texte par un entier le répète : `"#" * 3` donne `###`. C’est la brique de nos barres.', en: 'Multiplying a text by an integer repeats it: `"#" * 3` gives `###`. This is the building block of our bars.' }
+  - id: c2
+    type: idee
+    fr: 'Un **histogramme** range les valeurs en **classes** (des intervalles de même largeur) et compte combien tombent dans chacune. La hauteur d’une barre est ce nombre : on voit la **forme** des données.'
+    en: 'A **histogram** sorts values into **classes** (intervals of equal width) and counts how many fall in each. A bar’s height is that count: you see the **shape** of the data.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Classe', en: 'Class' }, { fr: 'Valeurs de `3, 7, 12, 15, 18, 22, 25, 29`', en: 'Values of `3, 7, 12, 15, 18, 22, 25, 29`' }, { fr: 'Barre', en: 'Bar' }]
+      cellules:
+        - ['`0-9`', '`3, 7`', '`##`']
+        - ['`10-19`', '`12, 15, 18`', '`###`']
+        - ['`20-29`', '`22, 25, 29`', { fr: '`###`', en: '`###`', ton: ok }]
+      legende: { fr: 'On trouve la classe d’une valeur avec `v // 10` : la division entière par la largeur.', en: 'A value’s class is found with `v // 10`: the integer division by the width.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Un histogramme en texte', en: 'A text histogram' }
+    lang: python
+    etapes:
+      - { code: 'from collections import Counter', fr: '`Counter` compte les éléments qui se répètent.', en: '`Counter` counts repeated elements.' }
+      - { code: 'valeurs = [3, 7, 12, 15, 18, 22, 25, 29]', fr: 'La même colonne que dans la figure.', en: 'The same column as in the figure.' }
+      - { code: 'classes = Counter(v // 10 for v in valeurs)', fr: 'Pour chaque valeur, on calcule sa classe (0, 1 ou 2) et on compte.', en: 'For each value, we compute its class (0, 1 or 2) and count.' }
+      - { code: 'for c in sorted(classes):\n    print(c * 10, "#" * classes[c])', fr: 'On parcourt les classes dans l’ordre, et on affiche le début de la classe puis une barre.', en: 'We go through the classes in order and display the class start, then a bar.' }
+    verif: |-
+      from collections import Counter
+      valeurs = [3, 7, 12, 15, 18, 22, 25, 29]
+      classes = Counter(v // 10 for v in valeurs)
+      for c in sorted(classes):
+          print(c * 10, "#" * classes[c])
+    sortie: |-
+      0 ##
+      10 ###
+      20 ###
+  - id: d_largeur
+    type: idee
+    fr: 'La **largeur des classes** change ce qu’on voit. Trop large : tout est écrasé dans une barre. Trop étroite : le dessin est en dents de scie. Teste plusieurs largeurs avant de conclure.'
+    en: 'The **class width** changes what you see. Too wide: everything is squashed into one bar. Too narrow: the drawing is jagged. Try several widths before concluding.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Largeur', en: 'Width' }, { fr: 'Effectifs des classes', en: 'Class counts' }, { fr: 'Lecture', en: 'Reading' }]
+      cellules:
+        - ['`30`', '`8`', { fr: 'aucune forme visible', en: 'no visible shape', ton: bad }]
+        - ['`10`', '`2, 3, 3`', { fr: 'forme claire', en: 'clear shape', ton: ok }]
+        - ['`5`', '`1, 1, 1, 2, 1, 2`', { fr: 'trop de détails', en: 'too much detail' }]
+      legende: { fr: 'Même colonne `3, 7, 12, 15, 18, 22, 25, 29` avec trois largeurs différentes.', en: 'The same column `3, 7, 12, 15, 18, 22, 25, 29` with three different widths.' }
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `histogramme(valeurs, largeur)`** : elle renvoie un dictionnaire `début de classe → effectif`, avec les classes qui contiennent au moins une valeur.'
+    en: 'Your turn. **Write `histogramme(valeurs, largeur)`**: it returns a dictionary `class start → count`, with the classes that contain at least one value.'
+    depart: |
+      # écris ta fonction histogramme ici
+    tests: |
+      assert histogramme([3, 7, 12, 15, 18, 22, 25, 29], 10) == {0: 2, 10: 3, 20: 3}
+      assert histogramme([], 10) == {}
+      assert histogramme([1, 2, 3], 5) == {0: 3}
+      assert histogramme([4, 5, 9, 10], 5) == {0: 1, 5: 2, 10: 1}
+    solutionCode: |
+      def histogramme(valeurs, largeur):
+          h = {}
+          for v in valeurs:
+              debut = (v // largeur) * largeur
+              h[debut] = h.get(debut, 0) + 1
+          return h
+    indice: { fr: 'Le début de la classe de `v` vaut `(v // largeur) * largeur`. Compte avec `h.get(debut, 0) + 1`.', en: 'The start of the class of `v` is `(v // largeur) * largeur`. Count with `h.get(debut, 0) + 1`.' }
+    explication: { fr: 'On retrouve le schéma de comptage du niveau 2.5, avec une clé calculée.', en: 'We find the counting pattern from level 2.5, with a computed key.' }
+  - id: d_lire
+    type: idee
+    fr: 'Pour lire un graphique, pose toujours quatre questions : que mesure l’**axe horizontal** ? l’**axe vertical** ? dans quelle **unité** ? et où **commence** l’axe vertical ?'
+    en: 'To read a chart, always ask four questions: what does the **horizontal axis** measure? the **vertical axis**? in what **unit**? and where does the vertical axis **start**?'
+    exemple: { fr: 'Un graphique « ventes » sans unité ni origine ne permet pas de dire si 5 000 est beaucoup ou peu : il manque de quoi comparer.', en: 'A “sales” chart with no unit or origin does not tell whether 5,000 is a lot or a little: there is nothing to compare with.' }
+  - id: d_p_axe
+    type: piege
+    fr: 'Un axe qui **ne commence pas à zéro** gonfle les écarts. Deux barres de 98 et 100, avec un axe qui démarre à 96, semblent avoir un rapport de 2 à 4. Vérifie toujours l’origine.'
+    en: 'An axis that **does not start at zero** inflates gaps. Two bars of 98 and 100, with an axis starting at 96, seem to have a ratio of 2 to 4. Always check the origin.'
+  - id: d_forme
+    type: idee
+    fr: 'La **forme** d’un histogramme renseigne sur la moyenne et la médiane. Symétrique : elles sont proches. Étalé vers la droite par quelques grandes valeurs : la moyenne dépasse la médiane.'
+    en: 'The **shape** of a histogram tells about the mean and the median. Symmetric: they are close. Stretched to the right by a few large values: the mean exceeds the median.'
+    exemple: { fr: 'Salaires `1, 1, 2, 2, 3, 20` : médiane `2`, moyenne `4,83`. La longue « queue » à droite tire la moyenne vers le haut.', en: 'Salaries `1, 1, 2, 2, 3, 20`: median `2`, mean `4.83`. The long “tail” on the right pulls the mean upward.' }
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Deux barres valent 98 et 100, sur un axe qui démarre à 96. La plus haute **paraît** combien de fois plus haute que l’autre ?'
+    en: 'Two bars are 98 and 100, on an axis starting at 96. The higher one **looks** how many times taller than the other?'
+    reponses: ['2']
+    verif: 'print((100 - 96) // (98 - 96))'
+    indice: { fr: 'Compare `100 - 96` à `98 - 96` : ce sont les hauteurs visibles.', en: 'Compare `100 - 96` with `98 - 96`: these are the visible heights.' }
+    explication: { fr: 'Les hauteurs visibles sont 4 et 2 : la barre de 100 semble deux fois plus haute, alors qu’elle ne l’est que de 2 %.', en: 'The visible heights are 4 and 2: the 100 bar looks twice as tall, while it is only 2% higher.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `barre(valeur, maximum, largeur)`** : renvoie une chaîne de `#` dont la longueur est `valeur / maximum * largeur`, arrondie avec `round`.'
+    en: '**Write `barre(valeur, maximum, largeur)`**: return a string of `#` whose length is `valeur / maximum * largeur`, rounded with `round`.'
+    depart: |
+      # écris ta fonction barre ici
+    tests: |
+      assert barre(5, 10, 20) == "#" * 10
+      assert barre(0, 10, 20) == ""
+      assert barre(10, 10, 20) == "#" * 20
+      assert barre(1, 4, 8) == "##"
+    solutionCode: |
+      def barre(valeur, maximum, largeur):
+          return "#" * round(valeur / maximum * largeur)
+    indice: { fr: 'Une seule ligne : `"#"` multiplié par le nombre de caractères arrondi.', en: 'A single line: `"#"` multiplied by the rounded number of characters.' }
+    explication: { fr: 'On met les valeurs à l’échelle : la plus grande remplit toute la largeur, les autres sont proportionnelles, et l’axe part de zéro.', en: 'We scale the values: the largest fills the whole width, the others are proportional, and the axis starts at zero.' }
+  - id: d_correl
+    type: idee
+    fr: 'Deux colonnes qui varient ensemble ne prouvent pas que l’une **cause** l’autre. Les ventes de glaces et les coups de soleil montent en même temps parce que la chaleur agit sur les deux.'
+    en: 'Two columns that vary together do not prove that one **causes** the other. Ice cream sales and sunburns rise together because heat acts on both.'
+    exemple: { fr: 'Un graphique peut montrer une corrélation ; seule une expérience ou un raisonnement sur les causes permet de parler de cause.', en: 'A chart can show a correlation; only an experiment or reasoning about causes allows speaking of cause.' }
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `etiquettes(valeurs, largeur)`** : une liste de lignes `"début-fin: ###"`, triées par classe, avec une barre de `#` par valeur. Exemple : `"0-9: ##"`.'
+    en: 'Challenge. **Write `etiquettes(valeurs, largeur)`**: a list of lines `"start-end: ###"`, sorted by class, with one `#` per value. Example: `"0-9: ##"`.'
+    depart: |
+      # écris ta fonction etiquettes ici
+    tests: |
+      assert etiquettes([3, 7, 12], 10) == ["0-9: ##", "10-19: #"]
+      assert etiquettes([], 10) == []
+      assert etiquettes([5, 6, 7], 5) == ["5-9: ###"]
+      assert etiquettes([1, 9, 11, 21, 22], 10) == ["0-9: ##", "10-19: #", "20-29: ##"]
+    solutionCode: |
+      def etiquettes(valeurs, largeur):
+          h = {}
+          for v in valeurs:
+              debut = (v // largeur) * largeur
+              h[debut] = h.get(debut, 0) + 1
+          lignes = []
+          for debut in sorted(h):
+              lignes.append(str(debut) + "-" + str(debut + largeur - 1) + ": " + "#" * h[debut])
+          return lignes
+    indice: { fr: 'Compte comme dans `histogramme`, puis construis chaque ligne avec la fin de classe `debut + largeur - 1`.', en: 'Count as in `histogramme`, then build each line with the class end `debut + largeur - 1`.' }
+    explication: { fr: 'Deux étapes : compter par classe, puis mettre en forme chaque classe en texte.', en: 'Two steps: count per class, then format each class as text.' }
+  - id: c8
+    type: retenir
+    fr: 'Histogramme = valeurs rangées en classes de même largeur ; `v // largeur` donne la classe. Teste plusieurs largeurs, vérifie l’origine des axes, et ne conclus pas à une cause à partir d’un graphique.'
+    en: 'Histogram = values sorted into classes of equal width; `v // width` gives the class. Try several widths, check the axis origin, and do not conclude a cause from a chart.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Matplotlib — Histogrammes](https://matplotlib.org/stable/gallery/statistics/hist.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Matplotlib — Histograms](https://matplotlib.org/stable/gallery/statistics/hist.html); this optional reading needs a connection.

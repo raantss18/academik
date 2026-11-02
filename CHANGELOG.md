@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.14] — 2026-11-02
+
+### Message fr
+Le cours s'agrandit : le module 1 (le terminal) et le module 2 (Python) sont complets, et un nouveau quartier, « Données », t'apprend à lire, nettoyer, résumer et tester des données sans te laisser piéger par une fuite d'information.
+
+### Message en
+The course grows: module 1 (the terminal) and module 2 (Python) are complete, and a new district, “Data”, teaches you to read, clean, summarise and test data without falling for an information leak.
+
 ## [0.3.13] — 2026-11-02
 
 ### Message fr

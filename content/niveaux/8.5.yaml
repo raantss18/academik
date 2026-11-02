@@ -1,0 +1,171 @@
+# Niveau 8.5 — Données 5 : entraîner et tester. Original academik ; notions vérifiées dans la documentation officielle scikit-learn (Cross-validation : evaluating estimator performance, Common pitfalls) et la documentation Python (random).
+id: '8.5'
+module: 8
+duree_min: 18
+titre: { fr: 'Entraîner et tester', en: 'Training and testing' }
+ia: { fr: 'Kintana met de côté des données qu’elle ne regarde pas pendant qu’elle apprend, pour mesurer honnêtement ce qu’elle sait.', en: 'Kintana sets aside data she does not look at while she learns, to honestly measure what she knows.' }
+sources:
+  - { titre: 'scikit-learn — Cross-validation: evaluating estimator performance', url: 'https://scikit-learn.org/stable/modules/cross_validation.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+  - { titre: 'scikit-learn — Common pitfalls and recommended practices', url: 'https://scikit-learn.org/stable/common_pitfalls.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
+  - { titre: 'Python — module random', url: 'https://docs.python.org/3/library/random.html', licence: 'PSF License (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Un modèle apprend sur 80 exemples, puis on mesure son score **sur ces mêmes 80 exemples**. Que mesure ce score ?'
+    en: 'A model learns from 80 examples, then we measure its score **on those same 80 examples**. What does this score measure?'
+    choix:
+      - { fr: 'Sa capacité à bien répondre à des cas nouveaux', en: 'Its ability to answer new cases well' }
+      - { fr: 'À quel point il a retenu les exemples qu’il a déjà vus', en: 'How well it remembered the examples it already saw', juste: true }
+      - { fr: 'Rien du tout', en: 'Nothing at all' }
+    explication: { fr: 'Tester sur ce qu’on a appris, c’est faire passer un examen dont on a déjà lu les réponses.', en: 'Testing on what was learned is like giving an exam whose answers were already read.' }
+  - id: c2
+    type: idee
+    fr: 'On coupe les données en deux. Le **jeu d’entraînement** sert à apprendre. Le **jeu de test**, mis de côté et jamais regardé pendant l’apprentissage, sert à mesurer sur des cas nouveaux.'
+    en: 'We cut the data in two. The **training set** is used to learn. The **test set**, set aside and never looked at during learning, is used to measure on new cases.'
+    figure:
+      kind: schema
+      lignes:
+        - titre: { fr: 'Les données', en: 'The data' }
+          noeuds: [{ fr: '$80\,\%$ entraînement', en: '$80\,\%$ training', ton: ok }, { fr: '$20\,\%$ test (mis de côté)', en: '$20\,\%$ test (set aside)', ton: bad }]
+      legende: { fr: 'Le jeu de test reste « scellé » jusqu’à l’évaluation finale.', en: 'The test set stays “sealed” until the final evaluation.' }
+  - id: c3
+    type: exemple
+    titre: { fr: 'Couper en deux', en: 'Cutting in two' }
+    lang: python
+    etapes:
+      - { code: 'donnees = list(range(10))', fr: 'Dix observations numérotées de 0 à 9.', en: 'Ten observations numbered 0 to 9.' }
+      - { code: 'coupure = int(len(donnees) * 0.8)', fr: '80 % de 10 font 8 : la coupure est à l’indice 8.', en: '80% of 10 is 8: the cut is at index 8.' }
+      - { code: 'train, test = donnees[:coupure], donnees[coupure:]', fr: 'Les huit premières vont à l’entraînement, les deux dernières au test.', en: 'The first eight go to training, the last two to testing.' }
+      - { code: 'print(len(train), len(test), test)', fr: 'On affiche `8 2 [8, 9]`.', en: 'We display `8 2 [8, 9]`.' }
+    verif: |-
+      donnees = list(range(10))
+      coupure = int(len(donnees) * 0.8)
+      train, test = donnees[:coupure], donnees[coupure:]
+      print(len(train), len(test), test)
+    sortie: '8 2 [8, 9]'
+  - id: c4
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Écris `decouper(donnees, part_test)`** : elle renvoie un couple `(train, test)` en coupant la liste sans la mélanger. Le test est la **fin** de la liste, de taille `round(len * part_test)`.'
+    en: 'Your turn. **Write `decouper(donnees, part_test)`**: it returns a pair `(train, test)` by cutting the list without shuffling it. The test set is the **end** of the list, of size `round(len * part_test)`.'
+    depart: |
+      # écris ta fonction decouper ici
+    tests: |
+      assert decouper(list(range(10)), 0.2) == (list(range(8)), [8, 9])
+      assert decouper([1, 2, 3, 4, 5], 0.4) == ([1, 2, 3], [4, 5])
+      assert decouper([1, 2], 0.5) == ([1], [2])
+    solutionCode: |
+      def decouper(donnees, part_test):
+          n_test = round(len(donnees) * part_test)
+          coupure = len(donnees) - n_test
+          return (donnees[:coupure], donnees[coupure:])
+    indice: { fr: 'Calcule la taille du test, déduis l’indice de coupure, puis deux tranches `donnees[:c]` et `donnees[c:]`.', en: 'Compute the test size, deduce the cut index, then two slices `donnees[:c]` and `donnees[c:]`.' }
+    explication: { fr: 'Une coupure à l’indice `c` partage la liste sans rien perdre ni répéter : train + test = toutes les données.', en: 'A cut at index `c` splits the list without losing or repeating anything: train + test = all the data.' }
+  - id: d_melange
+    type: idee
+    fr: 'Si les données sont rangées (par ville, par classe), la fin de la liste ne ressemble pas au début : on **mélange** avant de couper. Mais pour une **suite dans le temps**, on ne mélange pas.'
+    en: 'If the data are sorted (by town, by class), the end of the list does not look like the start: **shuffle** before cutting. But for a **sequence over time**, do not shuffle.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Type de données', en: 'Kind of data' }, { fr: 'Découpe', en: 'Split' }, { fr: 'Pourquoi', en: 'Why' }]
+      cellules:
+        - [{ fr: 'observations indépendantes', en: 'independent observations' }, { fr: 'mélanger puis couper', en: 'shuffle then cut' }, { fr: 'test représentatif', en: 'representative test' }]
+        - [{ fr: 'prix jour après jour', en: 'prices day after day' }, { fr: 'couper dans le temps', en: 'cut in time' }, { fr: 'ne pas utiliser le futur', en: 'do not use the future', ton: bad }]
+      legende: { fr: 'Prédire hier avec les données de demain est une triche : c’est une **fuite** (niveau suivant).', en: 'Predicting yesterday with tomorrow’s data is cheating: it is a **leak** (next level).' }
+  - id: d_melange_ex
+    type: exemple
+    titre: { fr: 'Mélanger avec une graine', en: 'Shuffling with a seed' }
+    lang: python
+    etapes:
+      - { code: 'import random', fr: 'Le module `random` mélange au hasard.', en: 'The `random` module shuffles at random.' }
+      - { code: 'donnees = list(range(10))\nrandom.Random(42).shuffle(donnees)', fr: 'Le nombre 42 est la **graine** : avec la même graine, on obtient toujours le même mélange. C’est ce qui rend l’expérience reproductible.', en: 'The number 42 is the **seed**: with the same seed, you always get the same shuffle. This makes the experiment reproducible.' }
+      - { code: 'train, test = donnees[:8], donnees[8:]', fr: 'On coupe ensuite comme avant.', en: 'We then cut as before.' }
+      - { code: 'print(len(train), len(test), sorted(train + test) == list(range(10)))', fr: 'On affiche `8 2 True` : rien n’a été perdu, rien n’est en double.', en: 'We display `8 2 True`: nothing was lost, nothing is duplicated.' }
+    verif: |-
+      import random
+      donnees = list(range(10))
+      random.Random(42).shuffle(donnees)
+      train, test = donnees[:8], donnees[8:]
+      print(len(train), len(test), sorted(train + test) == list(range(10)))
+    sortie: '8 2 True'
+  - id: c5
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'On a 50 observations et on garde 20 % pour le test. Combien d’observations vont à l’**entraînement** ?'
+    en: 'We have 50 observations and keep 20% for testing. How many observations go to **training**?'
+    reponses: ['40']
+    verif: 'print(50 - round(50 * 0.2))'
+    indice: { fr: 'Le test prend 10 observations ; l’entraînement garde le reste.', en: 'The test set takes 10 observations; training keeps the rest.' }
+    explication: { fr: '20 % de 50 font 10 pour le test, donc 40 pour l’entraînement.', en: '20% of 50 is 10 for testing, so 40 for training.' }
+  - id: d_base
+    type: idee
+    fr: 'Un score ne veut rien dire seul. Compare-le toujours à une **référence naïve** : par exemple, répondre toujours la classe la plus fréquente. Un bon modèle doit faire mieux.'
+    en: 'A score means nothing alone. Always compare it with a **naive baseline**: for example, always answering the most frequent class. A good model must do better.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Données : 90 % de « non »', en: 'Data: 90% “no”' }, { fr: 'Exactitude', en: 'Accuracy' }]
+      cellules:
+        - [{ fr: 'répondre toujours « non »', en: 'always answer “no”' }, { fr: '$90\,\%$ (sans rien comprendre)', en: '$90\,\%$ (without understanding anything)', ton: bad }]
+        - [{ fr: 'un modèle à $85\,\%$', en: 'a model at $85\,\%$' }, { fr: 'moins bon que la référence', en: 'worse than the baseline', ton: bad }]
+        - [{ fr: 'un modèle à $97\,\%$', en: 'a model at $97\,\%$' }, { fr: 'vraiment utile', en: 'really useful', ton: ok }]
+      legende: { fr: '« 90 % de réussite » peut être le score de celui qui ne fait rien.', en: '“90% success” can be the score of someone who does nothing.' }
+  - id: c6
+    type: code
+    note: { kind: exercise, poids: 1 }
+    fr: '**Écris `reference(etiquettes)`** : la part (entre 0 et 1) de la classe la plus fréquente dans la liste `etiquettes`. C’est le score de la réponse naïve.'
+    en: '**Write `reference(etiquettes)`**: the share (between 0 and 1) of the most frequent class in the list `etiquettes`. It is the score of the naive answer.'
+    depart: |
+      # écris ta fonction reference ici
+    tests: |
+      assert reference(["non"] * 9 + ["oui"]) == 0.9
+      assert reference(["a", "b"]) == 0.5
+      assert reference(["x"]) == 1
+      assert reference(["a", "b", "a", "a"]) == 0.75
+    solutionCode: |
+      def reference(etiquettes):
+          compte = {}
+          for e in etiquettes:
+              compte[e] = compte.get(e, 0) + 1
+          return max(compte.values()) / len(etiquettes)
+    indice: { fr: 'Compte chaque étiquette dans un dictionnaire, prends le plus grand effectif avec `max(compte.values())`, divise par le total.', en: 'Count each label in a dictionary, take the largest count with `max(compte.values())`, divide by the total.' }
+    explication: { fr: 'C’est le comptage du niveau 2.5 suivi d’un maximum : la réponse la plus fréquente.', en: 'It is the counting from level 2.5 followed by a maximum: the most frequent answer.' }
+  - id: d_over
+    type: idee
+    fr: 'Un modèle peut **apprendre par cœur** : excellent sur l’entraînement, médiocre sur le test. C’est le **sur-apprentissage**. L’écart entre les deux scores le révèle.'
+    en: 'A model can **memorise**: excellent on training, mediocre on testing. This is **overfitting**. The gap between the two scores reveals it.'
+    exemple: { fr: 'Score `100 %` à l’entraînement et `62 %` au test : le modèle a retenu les exemples sans comprendre la règle. Un écart faible est bon signe.', en: 'Score `100%` on training and `62%` on testing: the model memorised the examples without understanding the rule. A small gap is a good sign.' }
+  - id: d_p_test
+    type: piege
+    fr: 'Regarder le jeu de test pour **choisir** entre deux modèles, c’est l’utiliser pour apprendre : il n’est plus neuf. Un test ne sert qu’**une fois**, à la fin.'
+    en: 'Looking at the test set to **choose** between two models is using it to learn: it is no longer new. A test is used only **once**, at the end.'
+  - id: c7
+    type: code
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. **Écris `exactitude(predictions, vrais)`** : la part (entre 0 et 1) des positions où la prédiction égale la valeur vraie. Les deux listes ont la même longueur.'
+    en: 'Challenge. **Write `exactitude(predictions, vrais)`**: the share (between 0 and 1) of positions where the prediction equals the true value. Both lists have the same length.'
+    depart: |
+      # écris ta fonction exactitude ici
+    tests: |
+      assert exactitude(["a", "b", "a"], ["a", "a", "a"]) == 2 / 3
+      assert exactitude([1, 2], [1, 2]) == 1
+      assert exactitude([1, 2], [2, 1]) == 0
+      assert exactitude(["x"], ["x"]) == 1
+    solutionCode: |
+      def exactitude(predictions, vrais):
+          bons = 0
+          for p, v in zip(predictions, vrais):
+              if p == v:
+                  bons = bons + 1
+          return bons / len(vrais)
+    indice: { fr: '`zip(predictions, vrais)` donne les paires ; compte les égalités, puis divise par le nombre total.', en: '`zip(predictions, vrais)` gives the pairs; count the equalities, then divide by the total number.' }
+    explication: { fr: 'L’exactitude est une simple proportion de bonnes réponses : la mesure qu’on compare à la référence.', en: 'Accuracy is a plain proportion of correct answers: the measure we compare with the baseline.' }
+  - id: c8
+    type: retenir
+    fr: 'Entraînement pour apprendre, test mis de côté pour mesurer, utilisé une seule fois. Mélanger sauf pour le temps ; fixer la graine ; comparer à une référence naïve ; se méfier d’un écart train/test.'
+    en: 'Training to learn, test set aside to measure, used only once. Shuffle except for time; fix the seed; compare with a naive baseline; beware of a train/test gap.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [scikit-learn — Validation croisée](https://scikit-learn.org/stable/modules/cross_validation.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [scikit-learn — Cross-validation](https://scikit-learn.org/stable/modules/cross_validation.html); this optional reading needs a connection.

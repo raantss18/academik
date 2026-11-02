@@ -19,7 +19,8 @@
     "AppImage Tauri (lancée sur Arch)",
     "migration Supabase appliquée au projet de Tontolo (D-019)",
     "T-002 intégré",
-    "leçons C8 : 39 niveaux (modules 0–7) ; versions 0.3.10–0.3.12"
+    "leçons C8 : 39 niveaux (modules 0–7) ; versions 0.3.10–0.3.12",
+    "modules 1, 2 complets ; module 8 « Données » (stdlib) ; version 0.3.14"
   ],
   "in_progress": [
     "v0.1.0 : fusion de la PR #1 puis publication (attend l'accord d'Antsa)"
