@@ -96,3 +96,8 @@
   (premier chargement 373 Ko → 73 Ko gzip) avec contrôle de budget ; version 0.3.19.
 - **Vérifié** : 631 tests, solutions des cartes de code exécutées avec le vrai Python, `npm run verify` vert, application relancée au navigateur.
 - **Non vérifié** : sur appareil réel ; relecture croisée Codex (retour à 18 h 29) ; GARCH et cointégration non traités.
+
+### Étude immersion et GPU (2026-11-02)
+
+- **Fait** : diagnostic mesuré de la carte (≈ 8 900 nœuds SVG, zoom par redimensionnement) ; prototype WebGL (`prototypes/immersion/`) à 60 img/s ; plan en 5 étapes (`docs/DESIGN-IMMERSION.md`). Aucun changement de l'application.
+- **En attente** : réponses d'Antsa (ambition, intensité, fond par module ou niveau, mode clair) avant tout chantier (CONSIGNES § 3).
