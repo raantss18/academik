@@ -663,6 +663,11 @@ export function renderCity(districts, opts = {}) {
 
   // ---- épingles : cercle numéroté par niveau, anneau de progression, repère rouge « position » façon carte pour le niveau à jouer
   let pinSvg = '';
+  // Aucune épingle ne doit en cacher une autre : on écarte celles qui se chevauchent (E21).
+  for (let it = 0; it < 60; it++) { let moved = false;
+    for (let i = 0; i < pins.length; i++) for (let j = i + 1; j < pins.length; j++) { const a = pins[i], b = pins[j]; let dx = b.px - a.px, dy = b.py - a.py, dd = Math.hypot(dx, dy); const MIN = 38;
+      if (dd >= MIN) continue; if (dd < .01) { const ang = (i * 2.4 + j) % 6.283; dx = Math.cos(ang); dy = Math.sin(ang); dd = 1; } const k = (MIN - dd) / 2 / dd; a.px -= dx * k; a.py -= dy * k; b.px += dx * k; b.py += dy * k; moved = true; }
+    if (!moved) break; }
   pins.slice().sort((a, b) => a.py - b.py).forEach(p => {
     const D = DATA[p.d], L = D.levels[p.l], r = p.isBoss ? 17 : 14, dim = p.st === 'locked' || p.st === 'soon', col = D.color;
     let g = `<g class="pin" tabindex="0" role="button" aria-label="${esc(L.aria)}" data-id="${esc(L.id)}" transform="translate(${fx(p.px)},${fx(p.py)})"><circle class="hit" r="30" fill="transparent"/>`;
