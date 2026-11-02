@@ -2,13 +2,19 @@
 # (f-strings : https://docs.python.org/3/tutorial/inputoutput.html). Original academik.
 id: "2.1"
 module: 2
-duree_min: 12
+duree_min: 18
 titre: { fr: "Kintana dit bonjour", en: "Kintana says hello" }
 ia:
   fr: "Kintana sait maintenant afficher un message et le personnaliser avec un
     prénom."
   en: "Kintana can now display a message and personalise it with a first name."
 sources:
+  - titre: Python — Identifiants et mots réservés
+    url: https://docs.python.org/3/reference/lexical_analysis.html#identifiers
+    licence: PSF
+  - titre: Python — Introduction, nombres et chaînes
+    url: https://docs.python.org/3/tutorial/introduction.html
+    licence: PSF
   - {
       titre: "Python Tutorial — Input and Output",
       url: "https://docs.python.org/3/tutorial/inputoutput.html",
@@ -84,6 +90,42 @@ cartes:
     en: "`=` **stores** a value in a variable. It is not the “equals” sign of maths:
       `x = x + 2` is an instruction, not an equation."
 
+  - id: d_assignment
+    type: idee
+    fr: Une affectation associe un nom à une valeur avec `=`. Python calcule d’abord la partie droite, puis associe le résultat au nom de gauche.
+    en: An assignment associates a name with a value using `=`. Python first evaluates the right side, then associates the result with the name on the left.
+  - id: d_update
+    type: exemple
+    titre:
+      fr: Suivre une valeur qui change
+      en: Tracking a changing value
+    etapes:
+      - fr: Au départ, `stock` désigne neuf.
+        en: Initially, `stock` refers to nine.
+        code: stock = 9
+      - fr: Python calcule neuf plus quatre, puis associe treize à `stock`.
+        en: Python computes nine plus four, then associates thirteen with `stock`.
+        code: stock = stock + 4
+      - fr: L’affichage donne `13`. Une affectation seule n’affiche rien.
+        en: The output is `13`. An assignment alone displays nothing.
+        code: print(stock)
+    verif: |-
+      stock=9
+      stock=stock+4
+      print(stock)
+    sortie: "13"
+    figure:
+      kind: tableau
+      entetes: [{fr: Étape, en: Step}, {fr: Valeur de stock, en: Value of stock}]
+      cellules:
+        - ['`stock = 9`', '9']
+        - ['`stock = stock + 4`', '13']
+        - ['`print(stock)`', '13']
+      legende: {fr: L’affectation change la valeur ; l’affichage la conserve., en: Assignment changes the value; printing preserves it.}
+  - id: d_p_update
+    type: piege
+    fr: Lire un nom avant de lui attribuer une valeur provoque une erreur. Python ne devine pas la valeur initiale.
+    en: Reading a name before assigning it a value causes an error. Python does not guess the initial value.
   - id: c4
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -146,6 +188,30 @@ cartes:
     en: "Quotes make all the difference: `print(nom)` displays the variable's
       **value**, `print(\"nom\")` displays the **word** nom."
 
+  - id: d_fstring
+    type: idee
+    fr: Une chaîne est une valeur textuelle. Dans une chaîne précédée de `f`, les accolades délimitent une expression à calculer et à insérer.
+    en: A string is a text value. In a string prefixed with `f`, braces surround an expression to evaluate and insert.
+  - id: d_format
+    type: exemple
+    titre:
+      fr: Composer un état de Kintana
+      en: Composing a Kintana status
+    etapes:
+      - fr: "Stockons le nombre de documents : six."
+        en: "Store the document count: six."
+        code: documents = 6
+      - fr: Les accolades insèrent le résultat de six plus deux. Le texte affiche `8 documents`.
+        en: The braces insert the result of six plus two. The text displays `8 documents`.
+        code: print(f"{documents + 2} documents")
+    verif: |-
+      documents=6
+      print(f"{documents + 2} documents")
+    sortie: 8 documents
+  - id: d_p_format
+    type: piege
+    fr: Sans le préfixe `f`, les accolades restent du texte. `"{documents}"` ne remplace pas le nom par sa valeur.
+    en: Without the `f` prefix, braces remain text. `"{documents}"` does not replace the name with its value.
   - id: c6
     type: parsons
     note: { kind: exercise, poids: 1 }
@@ -164,6 +230,26 @@ cartes:
       en: "A variable must exist before it is used: `nom`, then `message` which uses
         it, then the display."
 
+  - id: d_names
+    type: idee
+    fr: Pour un nom simple, utilise des lettres, des chiffres et le soulignement `_`. Ne commence pas par un chiffre ; évite les mots réservés.
+    en: For a simple name, use letters, digits and underscore `_`. Do not start with a digit; avoid reserved words.
+  - id: d_names_example
+    type: exemple
+    titre:
+      fr: Nommer un compteur
+      en: Naming a counter
+    etapes:
+      - fr: "`total_2` est un nom valide : la première lettre n’est pas un chiffre."
+        en: "`total_2` is a valid name: the first character is not a digit."
+        code: total_2 = 8
+      - fr: "`print(total_2)` affiche huit. `2total` ne serait pas un nom valide ; `total-2` serait une soustraction."
+        en: "`print(total_2)` displays eight. `2total` would not be a valid name; `total-2` would be subtraction."
+        code: print(total_2)
+    verif: |-
+      total_2=8
+      print(total_2)
+    sortie: "8"
   - id: c7
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -228,6 +314,32 @@ cartes:
       en: "Between quotes it is text: Python displays the letters `nom`. `print(nom)`
         would display `Soa`."
 
+  - id: d_types
+    type: idee
+    fr: "Le type d’une valeur indique sa nature. `+` additionne des nombres, mais concatène des chaînes : il colle leurs caractères."
+    en: "A value’s type indicates its kind. `+` adds numbers but concatenates strings: it joins their characters."
+  - id: d_join
+    type: exemple
+    titre:
+      fr: Deux sens pour le même signe
+      en: Two meanings for the same sign
+    etapes:
+      - fr: Avec des nombres, huit plus quatre donne douze.
+        en: With numbers, eight plus four gives twelve.
+        code: print(8 + 4)
+      - fr: "Avec des chaînes, les caractères se suivent : le résultat est `84`."
+        en: "With strings, the characters follow each other: the result is `84`."
+        code: print("8" + "4")
+    verif: |-
+      print(8+4)
+      print("8"+"4")
+    sortie: |-
+      12
+      84
+  - id: d_p_types
+    type: piege
+    fr: Un chiffre entre guillemets fait partie d’une chaîne. Python ne le transforme pas automatiquement en nombre pour une addition.
+    en: A digit inside quotes belongs to a string. Python does not automatically turn it into a number for addition.
   - id: c11
     type: qcm
     note: { kind: quiz, poids: 1 }
@@ -266,3 +378,8 @@ cartes:
         morceaux : `\"2\" + \"3\"` donne `23`."
       en: "In quotes, `\"2\"` is **text**. For text, `+` glues the pieces together:
         `\"2\" + \"3\"` gives `23`."
+
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — Identifiants et mots réservés](https://docs.python.org/3/reference/lexical_analysis.html#identifiers) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — Identifiants et mots réservés](https://docs.python.org/3/reference/lexical_analysis.html#identifiers); this optional reading needs a connection.

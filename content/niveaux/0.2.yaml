@@ -1,6 +1,6 @@
 id: '0.2'
 module: 0
-duree_min: 15
+duree_min: 18
 titre: { fr: 'Démontrer', en: 'Proving' }
 ia: { fr: 'Kintana justifie une règle et sait réfuter une généralisation abusive.', en: 'Kintana justifies a rule and can refute an unjustified generalisation.' }
 sources:
@@ -32,6 +32,24 @@ cartes:
         - { valeurs: [9, 15], ton: bad, label: { fr: 'composé : contre-exemple', en: 'composite: counterexample' } }
         - { valeurs: [1], ton: neutre, label: { fr: 'ni premier ni composé (aussi un contre-exemple)', en: 'neither prime nor composite (also a counterexample)' } }
       legende: { fr: 'Les impairs de $1$ à $15$ : il suffit d’une seule case rouge pour réfuter la règle.', en: 'Odd numbers from $1$ to $15$: a single red box is enough to refute the rule.' }
+  - id: d_counter
+    type: exemple
+    titre:
+      fr: Réfuter avec un cas
+      en: Refuting with one case
+    etapes:
+      - fr: "Règle proposée : tout multiple de trois est impair. Cherchons un multiple de trois pair."
+        en: "Proposed rule: every multiple of three is odd. Look for an even multiple of three."
+      - fr: $12=3\times4=2\times6$ remplit l’hypothèse mais contredit la conclusion.
+        en: $12=3\times4=2\times6$ satisfies the hypothesis but contradicts the conclusion.
+      - fr: La règle est fausse, même si trois et neuf la vérifient.
+        en: The rule is false, even though three and nine satisfy it.
+    verif: print(12%3,12%2)
+    sortie: 0 0
+  - id: d_p_counter
+    type: piege
+    fr: "Un cas hors de l’hypothèse ne réfute rien : quatre ne peut pas réfuter une règle sur les multiples de trois."
+    en: "A case outside the hypothesis refutes nothing: four cannot refute a rule about multiples of three."
   - id: c2a
     type: idee
     fr: 'Avant les méthodes, trois notations. Une **implication** relie une hypothèse $P$ à une conclusion $Q$. Le symbole $\neg$ veut dire « non » : il nie une phrase.'
@@ -65,6 +83,10 @@ cartes:
       - { fr: 'Soient $a=2u$ et $b=2v$, avec $u,v$ entiers : c’est la définition de deux nombres pairs.', en: 'Let $a=2u$ and $b=2v$, with integers $u,v$: this is the definition of two even numbers.' }
       - { fr: 'Alors $a+b=2u+2v=2(u+v)$.', en: 'Then $a+b=2u+2v=2(u+v)$.' }
       - { fr: '$u+v$ étant entier, la somme est paire, quels que soient ces deux nombres pairs.', en: 'Since $u+v$ is an integer, the sum is even, whichever two even numbers we chose.' }
+  - id: d_p_direct
+    type: piege
+    fr: Calculer une somme particulière illustre la preuve. Seules les lettres représentant des entiers quelconques permettent ici de couvrir toutes les sommes.
+    en: Calculating one particular sum illustrates the proof. Only letters representing arbitrary integers cover all sums here.
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -81,6 +103,22 @@ cartes:
       - { fr: 'Si $n$ est pair, $n=2k$ avec $k$ entier.', en: 'If $n$ is even, $n=2k$ with integer $k$.' }
       - { fr: 'Alors $3n=6k=2(3k)$ et $3k$ est entier : $3n$ est pair.', en: 'Then $3n=6k=2(3k)$ and $3k$ is an integer: $3n$ is even.' }
       - { fr: 'La contraposée est vraie, donc l’énoncé de départ aussi : les deux disent exactement la même chose.', en: 'The contrapositive is true, so the original statement is too: both say exactly the same thing.' }
+  - id: d_contra
+    type: exemple
+    titre:
+      fr: Voir le sens du passage
+      en: Seeing the direction of the step
+    etapes:
+      - fr: Pour un entier pair, écrivons $n=2k$. Avec $k=6$, on obtient $n=12$.
+        en: For an even integer, write $n=2k$. With $k=6$, we get $n=12$.
+      - fr: $3n=36=2\times18$ reste pair. Le calcul illustre la contraposée, sans remplacer la preuve générale.
+        en: $3n=36=2\times18$ remains even. The calculation illustrates the contrapositive without replacing the general proof.
+    verif: print(3*(2*6))
+    sortie: "36"
+  - id: d_p_contra
+    type: piege
+    fr: Inverser les deux phrases ne suffit pas. La contraposée échange leur place et nie chacune ; la réciproque échange seulement leur place.
+    en: Swapping the two statements is not enough. The contrapositive swaps and negates both; the converse only swaps them.
   - id: c5
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -109,6 +147,26 @@ cartes:
       - { fr: 'Alors $\frac{r}{2}$ est aussi un rationnel, et $0<\frac{r}{2}<r$.', en: 'Then $\frac{r}{2}$ is also rational, and $0<\frac{r}{2}<r$.' }
       - { fr: 'On a trouvé un rationnel positif plus petit que « le plus petit » : **contradiction**.', en: 'We found a positive rational smaller than “the smallest”: **contradiction**.' }
       - { fr: 'L’hypothèse est donc fausse : aucun rationnel strictement positif n’est le plus petit.', en: 'So the assumption is false: no positive rational is the smallest.' }
+  - id: d_absurde
+    type: exemple
+    titre:
+      fr: Un candidat toujours battu
+      en: A candidate that is always beaten
+    etapes:
+      - fr: Un rationnel est un quotient de deux entiers, avec un dénominateur non nul. Prenons le candidat positif $3/8$.
+        en: A rational number is a quotient of two integers with a nonzero denominator. Take the positive candidate $3/8$.
+      - fr: Sa moitié vaut $3/16$, encore positive et plus petite. Le même raisonnement marche pour tout candidat positif.
+        en: Its half is $3/16$, still positive and smaller. The same reasoning works for every positive candidate.
+    verif: |-
+      from fractions import Fraction
+      r=Fraction(3,8)
+      assert 0<r/2<r
+      print(r/2)
+    sortie: 3/16
+  - id: d_p_absurde
+    type: piege
+    fr: Une contradiction doit découler de l’hypothèse supposée. Un calcul faux ajouté au raisonnement ne constitue pas une preuve.
+    en: A contradiction must follow from the assumed hypothesis. Adding an incorrect calculation does not make a proof.
   - id: c7
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -159,3 +217,12 @@ cartes:
         - [{ fr: 'Absurde', en: 'Contradiction' }, { fr: '$P$ et $\neg Q$', en: '$P$ and $\neg Q$' }, { fr: 'une contradiction', en: 'a contradiction' }]
         - [{ fr: 'Contre-exemple', en: 'Counterexample', ton: bad }, { fr: 'un cas précis', en: 'one specific case' }, { fr: 'la règle est **fausse**', en: 'the rule is **false**', ton: bad }]
       legende: { fr: 'Les trois premières lignes **démontrent** ; la dernière **réfute**.', en: 'The first three rows **prove**; the last one **refutes**.' }
+
+  - id: d_retenir
+    type: retenir
+    fr: Kintana justifie une règle et sait réfuter une généralisation abusive.
+    en: Kintana justifies a rule and can refute an unjustified generalisation.
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Oscar Levin — Proofs](https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Oscar Levin — Proofs](https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html); this optional reading needs a connection.

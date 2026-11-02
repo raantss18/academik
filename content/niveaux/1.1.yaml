@@ -1,7 +1,7 @@
 # Niveau 1.1 — Le terminal 1 : se repérer. Original academik ; notions vérifiées dans le manuel GNU Coreutils (pwd, ls) et le manuel de Bash (cd).
 id: '1.1'
 module: 1
-duree_min: 12
+duree_min: 18
 titre: { fr: 'Se repérer', en: 'Finding your way' }
 ia: { fr: 'Kintana sait où elle se trouve et se déplace dans ses dossiers.', en: 'Kintana knows where she is and moves around her folders.' }
 sources:
@@ -29,7 +29,30 @@ cartes:
         - ['`pwd`', { fr: 'Où suis-je ?', en: 'Where am I?' }, '`/home/kintana`']
         - ['`ls`', { fr: 'Que contient ce dossier ?', en: 'What is in this folder?' }, '`docs/  photos/`']
         - ['`cd docs`', { fr: 'Entrer dans « docs »', en: 'Go into “docs”' }, { fr: '(rien ne s’affiche)', en: '(nothing is shown)' }]
-      legende: { fr: 'Un nom suivi de « / » est un dossier ; sans « / », c’est un fichier.', en: 'A name followed by “/” is a folder; without “/”, it is a file.' }
+      legende: { fr: 'Dans ce simulateur, « / » signale un dossier. Le vrai `ls` ne montre pas toujours ce suffixe.', en: 'In this simulator, “/” marks a folder. Real `ls` does not always show this suffix.' }
+  - id: d_shell
+    type: idee
+    fr: Le shell est le programme qui interprète les commandes tapées dans le terminal. Une commande comme `pwd` demande une action ; son résultat est du texte.
+    en: The shell is the program that interprets commands typed in the terminal. A command such as `pwd` requests an action; its result is text.
+  - id: d_observe
+    type: exemple
+    titre:
+      fr: Observer sans se déplacer
+      en: Observing without moving
+    etapes:
+      - fr: Dans cet exemple, le dossier courant est `/home/kintana/essais`. `pwd` affiche ce chemin.
+        en: In this example, the current folder is `/home/kintana/essais`. `pwd` displays that path.
+        code: pwd
+      - fr: "`ls` montre les noms présents, par exemple `a.txt` et `b.txt`. Il ne change pas de dossier."
+        en: "`ls` shows the names present, for example `a.txt` and `b.txt`. It does not change folders."
+        code: ls
+      - fr: Un nouveau `pwd` affiche encore `/home/kintana/essais`.
+        en: Another `pwd` still displays `/home/kintana/essais`.
+        code: pwd
+  - id: d_p_ls
+    type: piege
+    fr: Lister un dossier ne signifie pas y entrer. `ls essais` affiche son contenu ; `cd essais` change le dossier courant.
+    en: Listing a folder does not mean entering it. `ls essais` displays its contents; `cd essais` changes the current folder.
   - id: c3
     type: exemple
     titre: { fr: 'Une balade dans les dossiers', en: 'A walk through the folders' }
@@ -68,6 +91,28 @@ cartes:
         - ['`cd ~`', '`/home/kintana`']
         - ['`cd /home`', '`/home`']
       legende: { fr: '`cd ../photos` : remonte d’un cran, puis descends dans `photos`.', en: '`cd ../photos`: go up one level, then down into `photos`.' }
+  - id: d_root
+    type: idee
+    fr: La racine `/` est le départ des chemins absolus. Le dossier parent contient le dossier courant ; `..` désigne ce parent.
+    en: Root `/` is the starting point of absolute paths. The parent folder contains the current folder; `..` denotes that parent.
+  - id: d_paths
+    type: exemple
+    titre:
+      fr: Deux chemins, une destination
+      en: Two paths, one destination
+    etapes:
+      - fr: Partons de `/home/kintana/essais`. Le dossier voisin `archives` est dans `/home/kintana`.
+        en: Start in `/home/kintana/essais`. The neighbouring folder `archives` is in `/home/kintana`.
+      - fr: "`cd ../archives` monte au parent puis entre dans `archives`."
+        en: "`cd ../archives` goes up to the parent and then enters `archives`."
+        code: cd ../archives
+      - fr: Le résultat est `/home/kintana/archives`. Le chemin absolu `/home/kintana/archives` mène au même endroit depuis n’importe quel dossier.
+        en: The result is `/home/kintana/archives`. Absolute path `/home/kintana/archives` reaches the same place from any folder.
+        code: pwd
+  - id: d_p_paths
+    type: piege
+    fr: "`/archives` cherche sous la racine, tandis que `archives` cherche sous le dossier courant. Le premier `/` change le point de départ."
+    en: "`/archives` looks under root, while `archives` looks under the current folder. The initial `/` changes the starting point."
   - id: c6
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -106,6 +151,20 @@ cartes:
     type: piege
     fr: 'Les **majuscules comptent** : `Docs` et `docs` sont deux noms différents. Et `cd` tout seul te ramène dans ton dossier personnel.'
     en: '**Capital letters matter**: `Docs` and `docs` are two different names. And `cd` alone takes you back to your home folder.'
+  - id: d_up
+    type: exemple
+    titre:
+      fr: Remonter plusieurs parents
+      en: Going up several parents
+    etapes:
+      - fr: Partons de `/home/kintana/archives/2025/images`. Le chemin comporte plusieurs dossiers imbriqués.
+        en: Start in `/home/kintana/archives/2025/images`. The path contains several nested folders.
+      - fr: Un premier `..` mène à `2025`, un deuxième à `archives`.
+        en: The first `..` reaches `2025`; the second reaches `archives`.
+        code: cd ../..
+      - fr: "`pwd` affiche `/home/kintana/archives`. Compter les parents évite de remonter trop haut."
+        en: "`pwd` displays `/home/kintana/archives`. Counting parents avoids going too far up."
+        code: pwd
   - id: c10
     type: terminal
     defi: true
@@ -127,3 +186,8 @@ cartes:
     type: retenir
     fr: '`pwd` : où suis-je ? `ls` : que contient ce dossier ? `cd chemin` : y aller. `..` monte, `~` ramène chez soi.'
     en: '`pwd`: where am I? `ls`: what is in this folder? `cd path`: go there. `..` goes up, `~` brings you home.'
+
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [GNU Coreutils — pwd, ls](https://www.gnu.org/software/coreutils/manual/html_node/index.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [GNU Coreutils — pwd, ls](https://www.gnu.org/software/coreutils/manual/html_node/index.html); this optional reading needs a connection.

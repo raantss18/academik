@@ -1,9 +1,18 @@
 id: '0.boss'
 module: 0
-duree_min: 15
+duree_min: 20
 titre: { fr: 'Le message secret', en: 'The secret message' }
 ia: { fr: 'Kintana sait chiffrer et déchiffrer un message (César, affine).', en: 'Kintana can encrypt and decrypt a message (Caesar and affine ciphers).' }
 sources:
+  - titre: MIT — Pigeonhole Principle (2024)
+    url: https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/resources/mit18_200_s24_lec01_pdf/
+    licence: CC BY-NC-SA 4.0 ; référence seulement
+  - titre: Oscar Levin — Mathematical Statements
+    url: https://discrete.openmathbooks.org/dmoi3/sec_intro-statements.html
+    licence: CC BY-SA 4.0
+  - titre: Oscar Levin — Induction
+    url: https://discrete.openmathbooks.org/dmoi3/sec_seq-induction.html
+    licence: CC BY-SA 4.0
   - { titre: 'COMIMa — Chapitres 0, 1, 3 et 5 : contre-exemples, récurrence, tiroirs et congruences', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
   - { titre: 'Szabolcs Tengely — Classical ciphers, Université de Debrecen', url: 'https://shrek.unideb.hu/~tengely/crypto/section-2.html', licence: 'Licence non vérifiée : référence en lien seulement, aucun extrait repris' }
 cartes:
@@ -30,6 +39,28 @@ cartes:
         - ['N O P Q R S T', '13 14 15 16 17 18 19']
         - ['U V W X Y Z', '20 21 22 23 24 25']
       legende: { fr: 'Après Z, on revient à A : $25+1\equiv0\pmod{26}$.', en: 'After Z we go back to A: $25+1\equiv0\pmod{26}$.' }
+  - id: d_caesar
+    type: idee
+    fr: Un décalage avance chaque lettre du même nombre de positions. Pour revenir au départ, on recule de ce nombre, en bouclant sur l’alphabet.
+    en: A shift moves every letter forward by the same number of positions. To return, move back by that number, wrapping around the alphabet.
+  - id: d_shift
+    type: exemple
+    titre:
+      fr: Passer la fin de l’alphabet
+      en: Passing the end of the alphabet
+    etapes:
+      - fr: Avec un décalage de six, X part de la position $23$.
+        en: With a shift of six, X starts at position $23$.
+      - fr: "$23+6=29$ laisse le reste $3$ modulo $26$ : X devient D."
+        en: "$23+6=29$ leaves remainder $3$ modulo $26$: X becomes D."
+      - fr: "Pour revenir, $3-6=-3$ laisse le reste $23$ : D redevient X."
+        en: "To return, $3-6=-3$ leaves remainder $23$: D becomes X."
+    verif: print((23+6)%26,(3-6)%26)
+    sortie: 3 23
+  - id: d_p_shift
+    type: piege
+    fr: La position de A est zéro, pas un. Décaler un numéro de position erroné donne une autre lettre.
+    en: The position of A is zero, not one. Shifting an incorrect position gives a different letter.
   - id: c2a
     type: idee
     fr: '**César** ajoute une clé $k$ à chaque position ; on déchiffre en soustrayant $k$. **Affine** calcule $y\equiv ax+b$ ; on déchiffre avec $x\equiv a^{-1}(y-b)$, possible seulement si $a$ et $26$ n’ont pas de diviseur commun autre que $1$.'
@@ -51,6 +82,28 @@ cartes:
       - { fr: 'Pour C, on part de $x=2$ ; César avec $k=4$ donne $y=6$, donc G.', en: 'For C, start with $x=2$; Caesar with $k=4$ gives $y=6$, hence G.' }
       - { fr: 'Avec la clé affine $a=5,b=7$, C donne $y=17$, donc R.', en: 'With affine key $a=5,b=7$, C gives $y=17$, hence R.' }
       - { fr: 'L’inverse de $5$ est $21$ : depuis R, $21(17-7)=210\equiv2\pmod{26}$ redonne C.', en: 'The inverse of $5$ is $21$: from R, $21(17-7)=210\equiv2\pmod{26}$ recovers C.' }
+  - id: d_affine_words
+    type: idee
+    fr: Le chiffrement affine multiplie la position, puis ajoute un décalage. Le déchiffrement soustrait ce décalage, puis multiplie par l’inverse modulaire.
+    en: Affine encryption multiplies the position, then adds a shift. Decryption subtracts that shift, then multiplies by the modular inverse.
+  - id: d_affine_steps
+    type: exemple
+    titre:
+      fr: Faire puis défaire
+      en: Doing and undoing
+    etapes:
+      - fr: "Prenons une autre clé : multiplier par sept, puis ajouter deux. La lettre F a la position cinq."
+        en: "Take another key: multiply by seven, then add two. Letter F has position five."
+      - fr: $7\times5+2=37$ laisse $11$, donc F devient L.
+        en: $7\times5+2=37$ leaves $11$, so F becomes L.
+      - fr: "$7\\times15=105$ laisse un : quinze inverse sept. Pour L, $15(11-2)=135$ laisse cinq, donc F."
+        en: "$7\\times15=105$ leaves one: fifteen inverts seven. For L, $15(11-2)=135$ leaves five, hence F."
+    verif: print((7*5+2)%26,(7*15)%26,(15*(11-2))%26)
+    sortie: 11 1 5
+  - id: d_p_affine
+    type: piege
+    fr: Multiplier avant de retirer le décalage change le calcul. Il faut défaire la dernière opération en premier.
+    en: Multiplying before removing the shift changes the calculation. Undo the last operation first.
   - id: c4
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -63,6 +116,22 @@ cartes:
     verif: "pairs=[(0,1),(1,2),(0,13)]\nprint(next(f'{x},{y}' for x,y in pairs if (2*x)%26==(2*y)%26))"
     sortie: '0,13'
     explication: { fr: '$2\times0\equiv2\times13\equiv0\pmod{26}$ : une même sortie correspond à A et N ; c’est un contre-exemple à l’unicité du déchiffrement.', en: '$2\times0\equiv2\times13\equiv0\pmod{26}$: the same output corresponds to A and N; this is a counterexample to unique decryption.' }
+  - id: d_collision
+    type: exemple
+    titre:
+      fr: Deux entrées, une sortie
+      en: Two inputs, one output
+    etapes:
+      - fr: Avec la règle « multiplier par treize modulo vingt-six », B a pour entrée un, et D a pour entrée trois.
+        en: With the rule “multiply by thirteen modulo twenty-six”, B has input one and D has input three.
+      - fr: "$13\\times1=13$ et $13\\times3=39$ ont le même reste : treize. La sortie N ne distingue plus B et D."
+        en: "$13\\times1=13$ and $13\\times3=39$ have the same remainder: thirteen. Output N no longer distinguishes B from D."
+    verif: print(13%26,39%26)
+    sortie: 13 13
+  - id: d_p_collision
+    type: piege
+    fr: Retrouver une lettre pour un exemple ne garantit pas que la clé fonctionne pour tout l’alphabet. Un seul doublon suffit à réfuter cette garantie.
+    en: Recovering one example letter does not guarantee that the key works for the entire alphabet. One collision refutes that guarantee.
   - id: c5
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -73,6 +142,28 @@ cartes:
       - { fr: 'Conserver les $n$ lettres restituées et utiliser $(x+k)-k\equiv x$ pour la suivante.', en: 'Keep the $n$ recovered letters and use $(x+k)-k\equiv x$ for the next one.', juste: true }
       - { fr: 'Vérifier seulement un message de deux lettres.', en: 'Check only one two-letter message.' }
     explication: { fr: 'Chaque lettre est traitée indépendamment ; l’hypothèse conserve le préfixe et l’identité restitue la lettre suivante, pour tout $n\geq0$.', en: 'Each letter is processed independently; the hypothesis preserves the prefix and the identity recovers the next letter, for every $n\geq0$.' }
+  - id: d_prefix
+    type: idee
+    fr: Un préfixe est le début d’un message. La récurrence conserve les lettres déjà retrouvées et justifie la restitution de la suivante.
+    en: A prefix is the beginning of a message. Induction preserves the letters already recovered and justifies recovering the next.
+  - id: d_prefix_example
+    type: exemple
+    titre:
+      fr: Allonger un préfixe
+      en: Extending a prefix
+    etapes:
+      - fr: Avec un décalage de six, HI devient NO. H est la position sept ; I est la position huit.
+        en: With a shift of six, HI becomes NO. H is position seven; I is position eight.
+      - fr: Retirer six à N retrouve H. Retirer six à O retrouve I sans changer H.
+        en: Subtracting six from N recovers H. Subtracting six from O recovers I without changing H.
+      - fr: Ce calcul illustre le passage. La preuve générale repose sur ajouter puis soustraire la même clé pour chaque lettre.
+        en: This calculation illustrates the step. The general proof relies on adding and subtracting the same key for each letter.
+    verif: print((7+6)%26,(8+6)%26,(13-6)%26,(14-6)%26)
+    sortie: 13 14 7 8
+  - id: d_p_prefix
+    type: piege
+    fr: Vérifier HI ne démontre pas le résultat pour tous les messages. Il faut justifier le passage pour une lettre quelconque.
+    en: Checking HI does not prove the result for all messages. Justify the step for an arbitrary letter.
   - id: c6
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -81,6 +172,22 @@ cartes:
     reponses: ['27']
     verif: "alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\nprint(len(alphabet)+1)"
     explication: { fr: '$26$ étiquettes peuvent distinguer $26$ messages ; avec $27$, les tiroirs imposent une collision.', en: '$26$ labels can distinguish $26$ messages; with $27$, the pigeonhole principle forces a collision.' }
+  - id: d_labels
+    type: exemple
+    titre:
+      fr: Des étiquettes trop courtes
+      en: Labels that are too short
+    etapes:
+      - fr: Pour un essai réduit, utilisons seulement les étiquettes A, B et C.
+        en: For a reduced trial, use only labels A, B and C.
+      - fr: Trois messages peuvent recevoir des étiquettes différentes. Un quatrième doit réutiliser une des trois étiquettes.
+        en: Three messages can receive different labels. A fourth must reuse one of the three labels.
+    verif: print(len("ABC")+1)
+    sortie: "4"
+  - id: d_p_labels
+    type: piege
+    fr: Le doublon est garanti sans connaître les messages. Le principe ne dit pas quelle étiquette sera répétée.
+    en: A collision is guaranteed without knowing the messages. The principle does not say which label will repeat.
   - id: c7
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -136,3 +243,12 @@ cartes:
         - [{ fr: 'Tiroirs (0.4)', en: 'Pigeonhole (0.4)' }, { fr: '$27$ messages pour $26$ étiquettes : une collision', en: '$27$ messages for $26$ labels: a collision' }]
         - [{ fr: 'Congruences (0.5)', en: 'Congruences (0.5)' }, { fr: 'calculer modulo $26$ et inverser la clé', en: 'compute modulo $26$ and invert the key' }]
       legende: { fr: 'Le prochain quartier de Kintana : le terminal.', en: 'Kintana’s next district: the terminal.' }
+
+  - id: d_retenir
+    type: retenir
+    fr: Kintana sait chiffrer et déchiffrer un message (César, affine).
+    en: Kintana can encrypt and decrypt a message (Caesar and affine ciphers).
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [MIT — Pigeonhole Principle (2024)](https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/resources/mit18_200_s24_lec01_pdf/) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [MIT — Pigeonhole Principle (2024)](https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/resources/mit18_200_s24_lec01_pdf/); this optional reading needs a connection.

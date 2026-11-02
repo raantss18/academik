@@ -1,9 +1,12 @@
 id: '0.4'
 module: 0
-duree_min: 12
+duree_min: 18
 titre: { fr: 'Tiroirs', en: 'The pigeonhole principle' }
 ia: { fr: 'Kintana détecte quand une collision de codes est inévitable.', en: 'Kintana detects when a code collision is unavoidable.' }
 sources:
+  - titre: MIT — Mathematics for Computer Science, counting
+    url: https://courses.csail.mit.edu/6.042/spring18/mcs.pdf
+    licence: CC BY-SA 3.0 ; référence, rédaction originale
   - { titre: 'COMIMa — Principe des tiroirs, chapitre 3 (cours et recueil)', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
   - { titre: 'MIT OCW — 18.200, Lecture 1: Pigeonhole Principle (2024)', url: 'https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/resources/mit18_200_s24_lec01_pdf/', licence: 'CC BY-NC-SA 4.0 ; vérification en ligne, aucun extrait repris' }
 cartes:
@@ -29,6 +32,26 @@ cartes:
         - titre: { fr: '$4$ chaussettes, $3$ tiroirs : on remplit au mieux', en: '$4$ socks, $3$ drawers: spread them out as much as possible' }
           noeuds: [{ fr: 'tiroir 1 : $1$', en: 'drawer 1: $1$' }, { fr: 'tiroir 2 : $1$', en: 'drawer 2: $1$' }, { fr: 'tiroir 3 : $1$', en: 'drawer 3: $1$' }, { fr: 'la 4e : doublon forcé', en: 'the 4th: forced double', ton: bad }]
       legende: { fr: 'Même en évitant les doublons le plus longtemps possible, la 4e chaussette tombe dans un tiroir déjà occupé.', en: 'Even avoiding doubles as long as possible, the 4th sock lands in an occupied drawer.' }
+  - id: d_boxes
+    type: idee
+    fr: Un tiroir représente une catégorie, pas nécessairement un meuble. Chaque objet doit appartenir à une seule catégorie parmi celles comptées.
+    en: A drawer represents a category, not necessarily furniture. Each object must belong to exactly one of the counted categories.
+  - id: d_basic
+    type: exemple
+    titre:
+      fr: Nommer les objets et les tiroirs
+      en: Naming objects and drawers
+    etapes:
+      - fr: "Cinq résultats reçoivent chacun une couleur : bleu ou vert. Les résultats sont les objets, les deux couleurs sont les tiroirs."
+        en: "Five results each receive a colour: blue or green. Results are objects; the two colours are drawers."
+      - fr: Avec un seul résultat par couleur, on n’en placerait que deux. Une couleur est donc nécessairement répétée.
+        en: With only one result per colour, we could place only two. A colour must therefore be repeated.
+    verif: print(5>2)
+    sortie: "True"
+  - id: d_p_boxes
+    type: piege
+    fr: Compter les noms de fichiers comme tiroirs ne convient pas si le classement utilise les couleurs. Les catégories doivent correspondre au regroupement cherché.
+    en: Counting filenames as drawers does not work if classification uses colours. Categories must match the grouping being sought.
   - id: c2a
     type: idee
     fr: '**Version générale** : avec $m$ tiroirs, $qm+1$ objets imposent au moins $q+1$ objets dans un même tiroir. Sinon, chaque tiroir en aurait au plus $q$, soit au plus $qm$ objets en tout.'
@@ -41,6 +64,24 @@ cartes:
       - { fr: 'Kintana attribue à chaque fichier une des $3$ étiquettes A, B, C ; les fichiers sont les objets, les étiquettes les tiroirs.', en: 'Kintana assigns each file one of $3$ labels A, B, C; files are the objects and labels are the boxes.' }
       - { fr: 'Avec au plus $2$ fichiers par étiquette, on peut étiqueter au plus $6$ fichiers.', en: 'With at most $2$ files per label, we can label at most $6$ files.' }
       - { fr: 'Un septième impose une étiquette utilisée au moins $3$ fois ; cela ne dit pas laquelle.', en: 'A seventh forces some label to be used at least $3$ times; it does not tell us which one.' }
+  - id: d_capacity
+    type: exemple
+    titre:
+      fr: Capacité et seuil
+      en: Capacity and threshold
+    etapes:
+      - fr: Avec cinq boîtes, cherchons à forcer quatre objets dans une boîte. Évitons d’abord cette situation.
+        en: With five boxes, aim to force four objects into one box. First avoid that situation.
+      - fr: Trois objets par boîte donnent une capacité de $5\times3=15$. Le seizième force une boîte à en contenir quatre.
+        en: Three objects per box give a capacity of $5\times3=15$. The sixteenth forces one box to hold four.
+      - fr: La répartition $3,3,3,3,3$ montre que quinze ne suffisent pas à garantir quatre.
+        en: The distribution $3,3,3,3,3$ shows that fifteen do not guarantee four.
+    verif: print(sum([3]*5)+1)
+    sortie: "16"
+  - id: d_p_guarantee
+    type: piege
+    fr: Le principe ne choisit pas la boîte pleine. Une boîte précise peut rester vide alors qu’une autre dépasse le seuil.
+    en: The principle does not choose the full box. A specific box may remain empty while another exceeds the threshold.
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -67,6 +108,28 @@ cartes:
     reponses: ['9']
     verif: 'folders=4; limit_without_target=2; print(folders*limit_without_target+1)'
     explication: { fr: '$8$ messages peuvent se répartir $2,2,2,2$ ; le neuvième dépasse cette capacité.', en: '$8$ messages can be distributed as $2,2,2,2$; the ninth exceeds that capacity.' }
+  - id: d_product
+    type: idee
+    fr: Pour compter des codes, on compte les choix à chaque position. Si chaque choix laisse les mêmes possibilités ensuite, on multiplie ces nombres.
+    en: To count codes, count the choices at each position. If every choice leaves the same possibilities afterwards, multiply those numbers.
+  - id: d_codes
+    type: exemple
+    titre:
+      fr: Énumérer avant de multiplier
+      en: Listing before multiplying
+    etapes:
+      - fr: "Première position : A ou B. Deuxième position : 0, 1 ou 2. Les deux positions ont des rôles distincts."
+        en: "First position: A or B. Second position: 0, 1 or 2. The positions have distinct roles."
+      - fr: "Après A : A0, A1, A2. Après B : B0, B1, B2. Il y a $2\\times3=6$ codes."
+        en: "After A: A0, A1, A2. After B: B0, B1, B2. There are $2\\times3=6$ codes."
+    verif: |-
+      from itertools import product
+      print(len(list(product("AB","012"))))
+    sortie: "6"
+  - id: d_p_codes
+    type: piege
+    fr: Additionner deux et trois compte les symboles disponibles, pas les codes à deux positions. Il faut compter les associations possibles.
+    en: Adding two and three counts available symbols, not two-position codes. Count the possible combinations instead.
   - id: c7
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -114,3 +177,12 @@ cartes:
         - [{ fr: 'un doublon parmi $m$ tiroirs', en: 'a double among $m$ drawers' }, '$m$', { fr: '$m+1$', en: '$m+1$', ton: ok }]
         - [{ fr: '$q+1$ dans un même tiroir', en: '$q+1$ in one drawer' }, '$qm$', { fr: '$qm+1$', en: '$qm+1$', ton: ok }]
       legende: { fr: 'Pour montrer que le seuil est le plus petit possible, donne aussi une répartition juste en dessous qui évite le regroupement.', en: 'To show the threshold is the smallest possible, also give a distribution just below it that avoids the grouping.' }
+
+  - id: d_retenir
+    type: retenir
+    fr: Kintana détecte quand une collision de codes est inévitable.
+    en: Kintana detects when a code collision is unavoidable.
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [MIT — Mathematics for Computer Science, counting](https://courses.csail.mit.edu/6.042/spring18/mcs.pdf) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [MIT — Mathematics for Computer Science, counting](https://courses.csail.mit.edu/6.042/spring18/mcs.pdf); this optional reading needs a connection.

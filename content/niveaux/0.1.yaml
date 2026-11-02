@@ -1,6 +1,6 @@
 id: '0.1'
 module: 0
-duree_min: 14
+duree_min: 18
 titre: { fr: 'Vrai ou faux ?', en: 'True or false?' }
 ia: { fr: 'Kintana distingue une règle générale, un témoin et un contre-exemple.', en: 'Kintana distinguishes a general rule, a witness and a counterexample.' }
 sources:
@@ -24,6 +24,24 @@ cartes:
     fr: 'Une **proposition** est une phrase qui est soit vraie, soit fausse. Une question ou un ordre n’en est pas une : on ne peut pas dire s’ils sont vrais.'
     en: 'A **proposition** is a sentence that is either true or false. A question or a command is not one: we cannot say whether it is true.'
     exemple: { fr: '« $7$ est pair » est une proposition (fausse). « $7$ est-il pair ? » n’en est pas une.', en: '“$7$ is even” is a proposition (false). “Is $7$ even?” is not one.' }
+  - id: d_proposition
+    type: exemple
+    titre:
+      fr: Affirmation ou question ?
+      en: Statement or question?
+    etapes:
+      - fr: « Douze est divisible par trois » affirme quelque chose de vrai ou faux.
+        en: “Twelve is divisible by three” asserts something true or false.
+      - fr: "$12=3\\times4$ : cette proposition est vraie. Une proposition fausse reste une proposition."
+        en: "$12=3\\times4$: this statement is true. A false statement is still a statement."
+      - fr: « Divise douze par trois ! » est un ordre, sans valeur de vérité.
+        en: “Divide twelve by three!” is a command, with no truth value.
+    verif: print(12 // 3)
+    sortie: "4"
+  - id: d_p_prop
+    type: piege
+    fr: "Une proposition n’est pas forcément vraie : « douze est impair » est une proposition fausse."
+    en: "A statement need not be true: “twelve is odd” is a false statement."
   - id: c2a
     type: idee
     fr: 'Deux symboles reviennent partout. Ils parlent toujours d’un **ensemble précisé** : la liste des objets dont on parle.'
@@ -35,6 +53,28 @@ cartes:
         - ['$\forall$', { fr: '« pour tout »', en: '“for every”' }, { fr: '« $\forall x\in E$, $x$ est pair » : **faux**, à cause de $7$', en: '“$\forall x\in E$, $x$ is even”: **false**, because of $7$', ton: bad }]
         - ['$\exists$', { fr: '« il existe au moins un »', en: '“there is at least one”' }, { fr: '« $\exists x\in E$, $x$ est pair » : **vrai**, $2$ suffit', en: '“$\exists x\in E$, $x$ is even”: **true**, $2$ is enough', ton: ok }]
       legende: { fr: 'Le nombre qui rend vrai un « il existe » s’appelle un **témoin** ; celui qui rend faux un « pour tout », un **contre-exemple**.', en: 'The number that makes a “there is” true is called a **witness**; the one that makes a “for every” false, a **counterexample**.' }
+  - id: d_ensemble
+    type: idee
+    fr: Un ensemble rassemble des objets. Ici, $x\in E$ se lit « $x$ appartient à l’ensemble $E$ ». La lettre $x$ désigne un objet choisi dans cet ensemble.
+    en: A set collects objects. Here, $x\in E$ reads “$x$ belongs to set $E$”. The letter $x$ denotes an object chosen from that set.
+  - id: d_quant
+    type: exemple
+    titre:
+      fr: Tous ou au moins un ?
+      en: All or at least one?
+    etapes:
+      - fr: Considérons les nombres $10$, $12$ et $15$. « Au moins un est pair » demande un témoin.
+        en: Consider the numbers $10$, $12$ and $15$. “At least one is even” requires a witness.
+      - fr: "$10$ est pair : cela suffit. Mais « tous sont pairs » échoue sur $15$."
+        en: "$10$ is even: that is enough. But “all are even” fails at $15$."
+      - fr: La négation de « tous sont pairs » est donc vraie, sans que tous soient impairs.
+        en: The negation of “all are even” is therefore true, without all numbers being odd.
+    verif: print([n for n in [10,12,15] if n%2])
+    sortie: "[15]"
+  - id: d_p_quant
+    type: piege
+    fr: Trouver un témoin ne signifie pas qu’il est unique. Dans cette liste, dix et douze sont deux témoins de parité.
+    en: Finding a witness does not mean it is unique. In this list, ten and twelve are two witnesses of evenness.
   - id: c2b
     type: idee
     fr: '**Nier** une phrase, c’est dire le contraire exact. Le contraire de « tous » n’est pas « aucun » : c’est « au moins un ne… pas ».'
@@ -102,6 +142,24 @@ cartes:
         - [{ fr: 'il pleut', en: 'it rains' }, { fr: 'pas de parapluie', en: 'no umbrella' }, { fr: '**rompue**', en: '**broken**', ton: bad }]
         - [{ fr: 'il ne pleut pas', en: 'no rain' }, { fr: 'peu importe', en: 'either way' }, { fr: 'pas concernée : pas rompue', en: 'not concerned: not broken', ton: ok }]
       legende: { fr: 'Une seule ligne rend la règle fausse : hypothèse vraie, conclusion fausse.', en: 'Only one row makes the rule false: true hypothesis, false conclusion.' }
+  - id: d_implication
+    type: exemple
+    titre:
+      fr: Tester une promesse
+      en: Testing a promise
+    etapes:
+      - fr: "Règle : si un nombre est multiple de quatre, alors il est pair."
+        en: "Rule: if a number is a multiple of four, then it is even."
+      - fr: "$12=4\\times3$ et $12=2\\times6$ : hypothèse et conclusion sont vraies."
+        en: "$12=4\\times3$ and $12=2\\times6$: hypothesis and conclusion are true."
+      - fr: "$6$ est pair sans être multiple de quatre : cela ne rompt pas la promesse initiale."
+        en: "$6$ is even without being a multiple of four: this does not break the original promise."
+    verif: print(12%4,12%2,6%4,6%2)
+    sortie: 0 0 2 0
+  - id: d_p_imp
+    type: piege
+    fr: La réciproque échange les deux parties d’une implication. « Pair implique multiple de quatre » est faux, même si la règle initiale est vraie.
+    en: The converse swaps the two parts of an implication. “Even implies multiple of four” is false, even though the original rule is true.
   - id: c8
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -144,3 +202,12 @@ cartes:
         - [{ fr: '« pour tout » est faux', en: '“for every” is false' }, { fr: 'trouver **un** contre-exemple', en: 'find **one** counterexample', ton: ok }]
         - [{ fr: '« pour tout » est vrai', en: '“for every” is true' }, { fr: 'vérifier **chaque** cas (ensemble fini) ou faire une preuve', en: 'check **every** case (finite set) or write a proof', ton: bad }]
       legende: { fr: 'Kintana peut tout tester sur un ensemble fini ; sur tous les entiers, quelques tests ne prouvent rien.', en: 'Kintana can test everything on a finite set; on all integers, a few tests prove nothing.' }
+
+  - id: d_retenir
+    type: retenir
+    fr: Kintana distingue une règle générale, un témoin et un contre-exemple.
+    en: Kintana distinguishes a general rule, a witness and a counterexample.
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Oscar Levin — Mathematical Statements](https://discrete.openmathbooks.org/dmoi3/sec_intro-statements.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Oscar Levin — Mathematical Statements](https://discrete.openmathbooks.org/dmoi3/sec_intro-statements.html); this optional reading needs a connection.

@@ -1,6 +1,6 @@
 id: '0.3'
 module: 0
-duree_min: 14
+duree_min: 18
 titre: { fr: 'Récurrence', en: 'Mathematical induction' }
 ia: { fr: 'Kintana justifie une règle qui reste vraie à chaque étape de traitement.', en: 'Kintana justifies a rule that remains true at every processing step.' }
 sources:
@@ -17,6 +17,10 @@ cartes:
       - { fr: 'Le numéro de la dernière étape seulement.', en: 'Only the number of the last step.' }
       - { fr: 'Rien : le passage suffit.', en: 'Nothing: the transition is enough.' }
     explication: { fr: 'Sans départ vrai, la chaîne d’implications peut ne jamais établir une seule réussite.', en: 'Without a true starting point, the chain of implications may never establish a single success.' }
+  - id: d_sequence
+    type: idee
+    fr: Une suite est une liste de valeurs repérées par un entier appelé indice. $u_n$ se lit « u indice n ». Le premier indice peut être zéro.
+    en: A sequence is a list of values labelled by an integer called an index. $u_n$ reads “u subscript n”. The first index may be zero.
   - id: c2
     type: idee
     fr: 'On note $P(n)$ une **propriété** qui dépend d’un entier $n$ : pour chaque $n$, elle est vraie ou fausse. La **récurrence** prouve $P(n)$ pour tous les entiers à partir d’un premier, $n_0$, comme une file de dominos.'
@@ -43,6 +47,24 @@ cartes:
       - { fr: 'Le compteur commence à $u_0=2$ et suit $u_{n+1}=u_n+3$ ; on veut prouver $u_n=2+3n$.', en: 'The counter starts at $u_0=2$ and follows $u_{n+1}=u_n+3$; we want to prove $u_n=2+3n$.' }
       - { fr: 'Initialisation : $u_0=2=2+3\times0$.', en: 'Base case: $u_0=2=2+3\times0$.' }
       - { fr: 'Si $u_k=2+3k$, alors $u_{k+1}=u_k+3=2+3(k+1)$ ; donc la formule vaut pour tout entier $n\geq0$.', en: 'If $u_k=2+3k$, then $u_{k+1}=u_k+3=2+3(k+1)$; hence the formula holds for every integer $n\geq0$.' }
+  - id: d_start
+    type: exemple
+    titre:
+      fr: Démarrer au bon indice
+      en: Starting at the right index
+    etapes:
+      - fr: Une réserve commence avec $5$ unités à l’indice zéro. Chaque étape ajoute $4$ unités.
+        en: A reserve starts with $5$ units at index zero. Each step adds $4$ units.
+      - fr: "Les premières valeurs sont $5$, $9$, $13$ : deux étapes donnent trois valeurs en comptant le départ."
+        en: "The first values are $5$, $9$, $13$: two steps give three values when the starting value is included."
+      - fr: La formule candidate est $5+4n$. Au départ, $5+4\times0=5$.
+        en: The candidate formula is $5+4n$. At the start, $5+4\times0=5$.
+    verif: print([5+4*n for n in range(3)])
+    sortie: "[5, 9, 13]"
+  - id: d_p_start
+    type: piege
+    fr: Vérifier plusieurs valeurs ne remplace pas l’hérédité. Une formule peut marcher au début puis échouer plus loin.
+    en: Checking several values does not replace the inductive step. A formula may work initially and fail later.
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -61,6 +83,32 @@ cartes:
       - { fr: '$P(3)$', en: '$P(3)$', juste: true }
       - { fr: '$P(4)$ seulement', en: '$P(4)$ only' }
     explication: { fr: 'Le point de départ demandé est $3$ ; un départ à $4$ laisserait le cas $3$ sans preuve.', en: 'The requested starting point is $3$; starting at $4$ would leave case $3$ unproved.' }
+  - id: d_sum
+    type: idee
+    fr: Les points de suspension dans une somme indiquent que l’on continue avec les termes intermédiaires. $S_n$ désigne ici la somme jusqu’au rang $n$.
+    en: Dots in a sum mean that we continue with the intermediate terms. Here, $S_n$ denotes the sum up to index $n$.
+  - id: d_sum_step
+    type: exemple
+    titre:
+      fr: Ajouter le terme suivant
+      en: Adding the next term
+    etapes:
+      - fr: Pour les nombres impairs, posons $S_n=1+3+\cdots+(2n-1)$. La formule à prouver est $S_n=n^2$.
+        en: For odd numbers, set $S_n=1+3+\cdots+(2n-1)$. The formula to prove is $S_n=n^2$.
+      - fr: "Départ : $S_1=1=1^2$. Si $S_k=k^2$, ajoutons le prochain impair, $2k+1$."
+        en: "Base case: $S_1=1=1^2$. If $S_k=k^2$, add the next odd number, $2k+1$."
+      - fr: "$S_{k+1}=k^2+2k+1=(k+1)^2$ : le passage est établi."
+        en: "$S_{k+1}=k^2+2k+1=(k+1)^2$: the step is established."
+      - fr: Par exemple, $1+3+5=9$, puis $9+7=16$.
+        en: For example, $1+3+5=9$, then $9+7=16$.
+    verif: |-
+      assert all(sum(range(1,2*n,2))==n*n for n in range(1,50))
+      print(sum([1,3,5]),sum([1,3,5,7]))
+    sortie: 9 16
+  - id: d_p_step
+    type: piege
+    fr: L’hypothèse au rang courant sert à démontrer le suivant. Supposer directement la formule au rang suivant serait tourner en rond.
+    en: The hypothesis at the current index helps prove the next. Assuming the formula directly at the next index would be circular.
   - id: c6
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -89,6 +137,10 @@ cartes:
     reponses: ['36']
     verif: 'print(sum(range(1,9)))'
     explication: { fr: 'La somme vaut $8\times9/2=36$. Le programme la recalcule par addition.', en: 'The sum is $8\times9/2=36$. The program recomputes it by addition.' }
+  - id: d_p_jump
+    type: piege
+    fr: Un passage qui saute un indice ne couvre pas automatiquement tous les entiers. Il faut un départ pour chaque chaîne indépendante.
+    en: A step that skips an index does not automatically cover all integers. Each independent chain needs its own starting point.
   - id: c9
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -121,3 +173,12 @@ cartes:
         - [{ fr: 'Hérédité', en: 'Inductive step' }, { fr: 'soit $k\geq n_0$ ; si $P(k)$, alors $P(k+1)$', en: 'let $k\geq n_0$; if $P(k)$, then $P(k+1)$' }]
         - [{ fr: 'Conclusion', en: 'Conclusion' }, { fr: '$P(n)$ vraie pour tout $n\geq n_0$', en: '$P(n)$ true for every $n\geq n_0$', ton: ok }]
       legende: { fr: 'Les trois lignes sont obligatoires dans une rédaction.', en: 'All three rows are required in a written proof.' }
+
+  - id: d_retenir
+    type: retenir
+    fr: Kintana justifie une règle qui reste vraie à chaque étape de traitement.
+    en: Kintana justifies a rule that remains true at every processing step.
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Oscar Levin — Induction](https://discrete.openmathbooks.org/dmoi3/sec_seq-induction.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Oscar Levin — Induction](https://discrete.openmathbooks.org/dmoi3/sec_seq-induction.html); this optional reading needs a connection.
