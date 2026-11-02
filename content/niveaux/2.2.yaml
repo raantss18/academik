@@ -1,10 +1,13 @@
 # Niveau 2.2 — Python 2 : décider. Original academik ; notions vérifiées dans le tutoriel officiel Python (instructions if) et la référence (comparaisons).
 id: '2.2'
 module: 2
-duree_min: 14
+duree_min: 18
 titre: { fr: 'Décider', en: 'Deciding' }
 ia: { fr: 'Kintana sait choisir entre plusieurs réponses selon une condition.', en: 'Kintana can choose between several answers depending on a condition.' }
 sources:
+  - titre: Python — Introduction, opérateur reste
+    url: https://docs.python.org/3/tutorial/introduction.html
+    licence: PSF
   - { titre: 'Python — Tutoriel, instructions if', url: 'https://docs.python.org/3/tutorial/controlflow.html#if-statements', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'Python — Référence, comparaisons', url: 'https://docs.python.org/3/reference/expressions.html#comparisons', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
@@ -48,6 +51,36 @@ cartes:
         - ['`age < 18`', { fr: 'âge strictement inférieur à 18', en: 'age strictly less than 18' }, { fr: '`True`', en: '`True`', ton: ok }]
         - ['`age == 15`', { fr: 'âge égal à 15', en: 'age equal to 15' }, { fr: '`True`', en: '`True`', ton: ok }]
       legende: { fr: 'Autres comparaisons : `<=` (inférieur ou égal), `>` (strictement supérieur), `!=` (différent).', en: 'Other comparisons: `<=` (less or equal), `>` (strictly greater), `!=` (different).' }
+  - id: d_bool
+    type: idee
+    fr: "Un booléen est une valeur vraie ou fausse : `True` ou `False`. Une comparaison produit cette valeur avant que `if` choisisse une branche."
+    en: "A boolean is a true or false value: `True` or `False`. A comparison produces this value before `if` selects a branch."
+  - id: d_compare
+    type: exemple
+    titre:
+      fr: Vérifier une limite
+      en: Checking a boundary
+    etapes:
+      - fr: La réserve contient sept unités.
+        en: The reserve contains seven units.
+        code: reserve = 7
+      - fr: "`>=` accepte l’égalité : le premier affichage est `True`."
+        en: "`>=` accepts equality: the first output is `True`."
+        code: print(reserve >= 7)
+      - fr: "`>` exige davantage : le deuxième affichage est `False`."
+        en: "`>` requires more: the second output is `False`."
+        code: print(reserve > 7)
+    verif: |-
+      reserve=7
+      print(reserve>=7)
+      print(reserve>7)
+    sortie: |-
+      True
+      False
+  - id: d_p_compare
+    type: piege
+    fr: Changer `>=` en `>` exclut la valeur limite. Teste toujours cette valeur quand une consigne dit « au moins ».
+    en: Changing `>=` to `>` excludes the boundary value. Always test that value when a requirement says “at least”.
   - id: c3
     type: exemple
     titre: { fr: 'Un programme qui décide', en: 'A program that decides' }
@@ -58,6 +91,38 @@ cartes:
       - { code: '    print("admis")', fr: 'Ce décalage de quatre espaces, l’**indentation**, dit que la ligne appartient au `if`. Elle s’exécute.', en: 'This four-space shift, the **indentation**, says the line belongs to the `if`. It runs.' }
       - { code: 'else:', fr: 'Le `else` ne s’exécute que si la condition était fausse : ici, on le saute.', en: 'The `else` only runs if the condition was false: here, it is skipped.' }
       - { code: '    print("refusé")', fr: 'Cette ligne est sautée. Le programme affiche donc seulement `admis`.', en: 'This line is skipped. The program therefore displays only `admis`.' }
+  - id: d_indent
+    type: idee
+    fr: Un bloc regroupe les instructions d’une branche. L’indentation marque cette appartenance ; revenir à gauche signifie sortir du bloc.
+    en: A block groups the instructions of a branch. Indentation marks membership; moving back to the left means leaving the block.
+  - id: d_indent_example
+    type: exemple
+    titre:
+      fr: Ce qui s’exécute après la branche
+      en: What runs after the branch
+    etapes:
+      - fr: La valeur deux ne dépasse pas cinq.
+        en: Value two does not exceed five.
+        code: stock = 2
+      - fr: Cette condition est fausse.
+        en: This condition is false.
+        code: "if stock > 5:"
+      - fr: L’instruction indentée est sautée.
+        en: The indented instruction is skipped.
+        code: '    print("plein")'
+      - fr: "Cette ligne est hors du bloc : `fin` s’affiche quand même."
+        en: "This line is outside the block: `fin` is still displayed."
+        code: print("fin")
+    verif: |-
+      stock=2
+      if stock>5:
+          print("plein")
+      print("fin")
+    sortie: fin
+  - id: d_p_indent
+    type: piege
+    fr: Décaler une ligne change son appartenance au bloc. Ce n’est pas seulement une question de présentation.
+    en: Indenting a line changes its block membership. It is not only a matter of appearance.
   - id: c4
     type: code
     note: { kind: exercise, poids: 1 }
@@ -97,6 +162,45 @@ cartes:
         else: print("à revoir")
         ```
         With `note = 14`: the first test is false, the second is true, so `bien` is displayed.
+  - id: d_order
+    type: exemple
+    titre:
+      fr: Lire les tests dans l’ordre
+      en: Reading tests in order
+    etapes:
+      - fr: Classons une réserve de vingt unités.
+        en: Classify a reserve of twenty units.
+        code: reserve = 20
+      - fr: Le premier test est vrai.
+        en: The first test is true.
+        code: "if reserve >= 15:"
+      - fr: Le programme affiche `haute`.
+        en: The program displays `haute`.
+        code: '    print("haute")'
+      - fr: Ce deuxième test n’est pas évalué.
+        en: This second test is not evaluated.
+        code: "elif reserve >= 5:"
+      - fr: Son affichage est sauté, même si vingt dépasse aussi cinq.
+        en: Its output is skipped, even though twenty also exceeds five.
+        code: '    print("moyenne")'
+    verif: |-
+      reserve=20
+      if reserve>=15:
+          print("haute")
+      elif reserve>=5:
+          print("moyenne")
+    sortie: haute
+    figure:
+      kind: tableau
+      entetes: [{fr: Test, en: Test}, {fr: Évaluation, en: Evaluation}, {fr: Action, en: Action}]
+      cellules:
+        - ['`reserve >= 15`', '`True`', '`print("haute")`']
+        - ['`reserve >= 5`', {fr: non évalué, en: not evaluated}, {fr: aucune, en: none}]
+      legende: {fr: Une seule branche est exécutée dans cette chaîne., en: Only one branch runs in this chain.}
+  - id: d_p_order
+    type: piege
+    fr: Tester d’abord « au moins cinq » absorberait aussi vingt. Dans cette classification, commence par le seuil le plus élevé.
+    en: Testing “at least five” first would also capture twenty. In this classification, start with the highest threshold.
   - id: c6
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -168,6 +272,32 @@ cartes:
     type: piege
     fr: 'Un seul `=` **range** une valeur (`age = 15`). Deux `==` **comparent** (`age == 15`). Écrire `if age = 15:` est une erreur.'
     en: 'A single `=` **stores** a value (`age = 15`). Two `==` **compare** (`age == 15`). Writing `if age = 15:` is an error.'
+  - id: d_remainder
+    type: idee
+    fr: L’opérateur `%` calcule le reste d’une division entière. Un reste nul signifie que le nombre est divisible par le diviseur.
+    en: The `%` operator computes the remainder of integer division. A zero remainder means that the number is divisible by the divisor.
+  - id: d_multiple
+    type: exemple
+    titre:
+      fr: Tester des groupes complets
+      en: Testing complete groups
+    etapes:
+      - fr: "Pour répartir vingt-huit objets par groupes de sept, le reste vaut zéro : aucun objet ne reste seul."
+        en: "To divide twenty-eight objects into groups of seven, the remainder is zero: no object is left over."
+        code: print(28 % 7 == 0)
+      - fr: "Avec vingt-neuf objets, le reste vaut un : la comparaison affiche `False`."
+        en: "With twenty-nine objects, the remainder is one: the comparison displays `False`."
+        code: print(29 % 7 == 0)
+    verif: |-
+      print(28%7==0)
+      print(29%7==0)
+    sortie: |-
+      True
+      False
+  - id: d_p_multiple
+    type: piege
+    fr: Pour une règle avec exceptions, traite le cas particulier avant le cas général. Sinon, une branche précédente peut empêcher de considérer l’exception.
+    en: For a rule with exceptions, handle the special case before the general one. Otherwise, an earlier branch may prevent considering the exception.
   - id: c10
     type: code
     defi: true
@@ -197,3 +327,8 @@ cartes:
     type: retenir
     fr: '`if` teste une condition, `elif` en essaie une autre, `else` prend le reste ; l’indentation dit ce qui appartient à chaque bloc.'
     en: '`if` tests a condition, `elif` tries another, `else` takes the rest; indentation says what belongs to each block.'
+
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Python — Introduction, opérateur reste](https://docs.python.org/3/tutorial/introduction.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Python — Introduction, opérateur reste](https://docs.python.org/3/tutorial/introduction.html); this optional reading needs a connection.

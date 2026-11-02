@@ -1,6 +1,6 @@
 id: '0.5'
 module: 0
-duree_min: 14
+duree_min: 18
 titre: { fr: 'Congruences', en: 'Congruences' }
 ia: { fr: 'Kintana calcule sur un alphabet circulaire et retrouve une lettre grâce à un inverse modulaire.', en: 'Kintana computes on a circular alphabet and recovers a letter using a modular inverse.' }
 sources:
@@ -19,6 +19,26 @@ cartes:
     verif: 'print((24+5)%26)'
     sortie: '3'
     explication: { fr: '$24+5=29=26+3$ : on enlève un tour complet et on arrive en position $3$.', en: '$24+5=29=26+3$: remove one full turn to reach position $3$.' }
+  - id: d_remainder
+    type: idee
+    fr: Diviser un entier par un entier positif donne des tours complets et un reste. Le reste est au moins zéro, strictement inférieur au diviseur.
+    en: Dividing an integer by a positive integer gives complete turns and a remainder. The remainder is at least zero and strictly below the divisor.
+  - id: d_division
+    type: exemple
+    titre:
+      fr: Faire des tours complets
+      en: Making complete turns
+    etapes:
+      - fr: Sur une roue à huit positions, avancer de vingt-deux pas effectue deux tours complets, puis six pas.
+        en: On an eight-position wheel, moving twenty-two steps makes two complete turns, then six steps.
+      - fr: "$22=2\\times8+6$ : le reste est six. Reculer de deux pas mène aussi à six : $-2=(-1)\\times8+6$."
+        en: "$22=2\\times8+6$: the remainder is six. Moving back two steps also reaches six: $-2=(-1)\\times8+6$."
+    verif: print(22%8,(-2)%8)
+    sortie: 6 6
+  - id: d_p_remainder
+    type: piege
+    fr: Un reste modulo huit ne vaut jamais huit. Après la dernière position, on revient à zéro.
+    en: A remainder modulo eight is never eight. After the last position, we return to zero.
   - id: c2
     type: idee
     fr: '$a\equiv b\pmod m$ se lit « $a$ est **congru** à $b$ modulo $m$ ». Cela veut dire que $a$ et $b$ ont le **même reste** dans la division par $m$, autrement dit que $m$ divise $a-b$.'
@@ -35,6 +55,24 @@ cartes:
     fr: 'On peut **remplacer un nombre par son reste** avant d’additionner ou de multiplier : le reste du résultat ne change pas. Les calculs restent petits.'
     en: 'You can **replace a number by its remainder** before adding or multiplying: the remainder of the result does not change. Computations stay small.'
     exemple: { fr: 'Modulo $7$ : $17\equiv3$ et $5\equiv5$. Donc $17\times5\equiv3\times5=15\equiv1$. Vérification : $85=12\times7+1$.', en: 'Modulo $7$: $17\equiv3$ and $5\equiv5$. So $17\times5\equiv3\times5=15\equiv1$. Check: $85=12\times7+1$.' }
+  - id: d_reduce
+    type: exemple
+    titre:
+      fr: Réduire avant le calcul
+      en: Reducing before calculation
+    etapes:
+      - fr: Modulo huit, $22$ a pour reste $6$ et $11$ a pour reste $3$.
+        en: Modulo eight, $22$ has remainder $6$ and $11$ has remainder $3$.
+      - fr: Pour la somme, $6+3=9$ donne le reste $1$. Pour le produit, $6\times3=18$ donne le reste $2$.
+        en: For addition, $6+3=9$ gives remainder $1$. For multiplication, $6\times3=18$ gives remainder $2$.
+      - fr: Les calculs directs $22+11=33$ et $22\times11=242$ donnent les mêmes restes.
+        en: Direct calculations $22+11=33$ and $22\times11=242$ give the same remainders.
+    verif: print((22+11)%8,(22*11)%8)
+    sortie: 1 2
+  - id: d_p_reduce
+    type: piege
+    fr: "Réduire les facteurs ne termine pas toujours le calcul. Le résultat obtenu peut encore dépasser le module : il faut reprendre son reste."
+    en: "Reducing the factors does not always finish the calculation. The result may still exceed the modulus: take its remainder again."
   - id: c2b
     type: idee
     fr: 'Un **inverse** de $a$ modulo $m$ est un entier $u$ tel que $au\equiv1\pmod m$ : multiplier par $u$ défait la multiplication par $a$. Il existe exactement quand $a$ et $m$ n’ont pas de diviseur commun autre que $1$.'
@@ -94,6 +132,14 @@ cartes:
     verif: 'print(next(u for u in range(26) if 5*u%26==1))'
     indice: { fr: 'Essaie $26k+1$ pour $k=1,2,3,4$.', en: 'Try $26k+1$ for $k=1,2,3,4$.' }
     explication: { fr: '$5\times21=105=4\times26+1$, donc multiplier par $21$ défait une multiplication par $5$ modulo $26$.', en: '$5\times21=105=4\times26+1$, so multiplying by $21$ undoes multiplication by $5$ modulo $26$.' }
+  - id: d_gcd
+    type: idee
+    fr: Le PGCD est le plus grand diviseur commun de deux entiers. Un PGCD égal à un indique que les entiers sont premiers entre eux.
+    en: The GCD is the greatest common divisor of two integers. A GCD of one means that the integers are coprime.
+  - id: d_p_inverse
+    type: piege
+    fr: Un inverse modulaire n’est pas la fraction usuelle. Modulo huit, trois est son propre inverse car neuf a pour reste un.
+    en: A modular inverse is not the usual fraction. Modulo eight, three is its own inverse because nine has remainder one.
   - id: c9
     type: qcm
     note: { kind: exercise, poids: 1 }
@@ -106,6 +152,20 @@ cartes:
     verif: 'print(sum(2*u%26==1 for u in range(26)))'
     sortie: '0'
     explication: { fr: '$2u-26q$ est toujours pair, donc ne peut pas valoir $1$ ; le PGCD vaut $2$, pas $1$.', en: '$2u-26q$ is always even, so it cannot equal $1$; the GCD is $2$, not $1$.' }
+  - id: d_affine
+    type: exemple
+    titre:
+      fr: Défaire deux opérations
+      en: Undoing two operations
+    etapes:
+      - fr: Modulo onze, une règle multiplie par deux puis ajoute trois. Pour retrouver l’entrée, on défait les opérations dans l’ordre inverse.
+        en: Modulo eleven, a rule multiplies by two and then adds three. To recover the input, undo the operations in reverse order.
+      - fr: L’entrée quatre donne $2\times4+3=11$, donc zéro. Depuis zéro, soustrayons trois.
+        en: Input four gives $2\times4+3=11$, hence zero. From zero, subtract three.
+      - fr: Six est inverse de deux car $2\times6=12$ laisse un. Ainsi $6(0-3)=-18$ laisse quatre modulo onze.
+        en: Six is the inverse of two since $2\times6=12$ leaves one. Thus $6(0-3)=-18$ leaves four modulo eleven.
+    verif: print((2*4+3)%11,(6*(0-3))%11)
+    sortie: 0 4
   - id: c10
     type: saisie
     defi: true
@@ -121,3 +181,12 @@ cartes:
     fr: 'Récap : réduire un nombre, c’est garder son reste. Pour défaire une multiplication, Kintana cherche un inverse, qui n’existe pas pour toutes les clés.'
     en: 'Recap: reducing a number means keeping its remainder. To undo a multiplication, Kintana looks for an inverse, which does not exist for every key.'
     exemple: { fr: 'Modulo $7$, multiplier par $3$ se défait en multipliant par $5$ : $4\times3=12\equiv5$, puis $5\times5=25\equiv4$.', en: 'Modulo $7$, multiplying by $3$ is undone by multiplying by $5$: $4\times3=12\equiv5$, then $5\times5=25\equiv4$.' }
+
+  - id: d_retenir
+    type: retenir
+    fr: Kintana calcule sur un alphabet circulaire et retrouve une lettre grâce à un inverse modulaire.
+    en: Kintana computes on a circular alphabet and recovers a letter using a modular inverse.
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [Szabolcs Tengely — Classical ciphers, Université de Debrecen](https://shrek.unideb.hu/~tengely/crypto/section-2.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [Szabolcs Tengely — Classical ciphers, Université de Debrecen](https://shrek.unideb.hu/~tengely/crypto/section-2.html); this optional reading needs a connection.
