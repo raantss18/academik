@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 23,
-  "version": "0.3.20",
+  "build": 24,
+  "version": "0.3.21",
   "notes": {
-   "fr": "La carte est plus fluide quand tu zoomes, et chaque leçon prend les couleurs de son quartier, de jour comme de nuit, avec une brume légère et quelques lucioles qui ne gênent jamais la lecture.",
-   "en": "The map is smoother when you zoom, and each lesson takes the colours of its district, by day and by night, with a light mist and a few fireflies that never get in the way of reading."
+   "fr": "Dans chaque leçon, le repère rouge de la carte avance sur la route du quartier, et la silhouette du quartier en bas de l'écran s'allume fenêtre par fenêtre à chaque bonne réponse.",
+   "en": "In each lesson, the red marker from the map moves along the district road, and the district skyline at the bottom of the screen lights up window by window with each right answer."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.20/academik-0.3.20.apk",
-    "sha256": "5e3eba0daa59cb5c4b95743b120995ceb96486a5881880a7bc89a764009337ac",
-    "bytes": 10682189
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.21/academik-0.3.21.apk",
+    "sha256": "440d7ff4cb8f663c4d4fb06c4621a28370f09707c1d5c08e7cb2a7190fba4f54",
+    "bytes": 10683705
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.20/academik-0.3.20-x86_64.AppImage",
-    "sha256": "3f2bbdc01dd754cc72d925f40ea07d6fc9996ad0bb90f23306318dcdf784b61e",
-    "bytes": 115153400
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.21/academik-0.3.21-x86_64.AppImage",
+    "sha256": "439269c3a7eef4c3bb9cf08d09c0ef5fefe5e02855d3ed5bee4f980971cafe71",
+    "bytes": 115157496
    }
   }
  },
  "history": [
+  {
+   "build": 23,
+   "version": "0.3.20",
+   "notes": {
+    "fr": "La carte est plus fluide quand tu zoomes, et chaque leçon prend les couleurs de son quartier, de jour comme de nuit, avec une brume légère et quelques lucioles qui ne gênent jamais la lecture.",
+    "en": "The map is smoother when you zoom, and each lesson takes the colours of its district, by day and by night, with a light mist and a few fireflies that never get in the way of reading."
+   }
+  },
   {
    "build": 22,
    "version": "0.3.19",
