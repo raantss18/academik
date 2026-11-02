@@ -97,7 +97,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **7.2** Intervalles | Kintana encadre son estimation par un intervalle de confiance honnête. | — | 7.4, 9.4, 10.3, 16.boss, 20.2 |
 | **7.3** Tester | Kintana teste si un résultat peut s’expliquer par le hasard (p-valeur). | — | — |
 | **7.4** Bootstrap | Kintana mesure la variabilité de son estimation en rééchantillonnant ses données (bootstrap). | 7.2 | — |
-| **7.5** Tests multiples | Kintana corrige ses seuils quand elle teste beaucoup d’idées à la fois. | — | 17.3 |
+| **7.5** Tests multiples | Kintana corrige ses seuils quand elle teste beaucoup d’idées à la fois. | — | 17.3, 21.boss |
 | **7.boss** Le faux signal | Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs. | — | — |
 
 ## 8 · Données
@@ -208,8 +208,8 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **17.2** Portefeuilles et Markowitz | Kintana combine plusieurs actifs et mesure ce que la diversification apporte. | — | — |
 | **17.3** Facteurs et bêta | Kintana sépare ce qui vient du marché de ce qui est propre à l’actif. | 7.5 | — |
 | **17.4** Options et absence d’arbitrage | Kintana tarife un droit d’achat sans prédire l’avenir, par réplication. | 16.4 | — |
-| **17.5** Un backtest honnête | Kintana teste une idée sur le passé sans tricher, et compte ses essais. | 10.boss | 20.2 |
-| **17.boss** Le rapport qui rejette | Kintana distingue une vraie découverte d’un hasard heureux, et le dit dans son rapport. | 6.4 | — |
+| **17.5** Un backtest honnête | Kintana teste une idée sur le passé sans tricher, et compte ses essais. | 10.boss | 20.2, 21.boss |
+| **17.boss** Le rapport qui rejette | Kintana distingue une vraie découverte d’un hasard heureux, et le dit dans son rapport. | 6.4 | 21.boss |
 
 ## 18 · Performance
 
@@ -243,3 +243,9 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **20.4** Reproduire une expérience | Kintana fixe tout ce qui varie pour qu’un résultat puisse être refait par un autre. | 19.2 | — |
 | **20.5** Livrer avec éthique | Kintana met en service une version par étapes, mesure son équité et dit honnêtement ses limites. | — | — |
 | **20.boss** Livre ton assistant | Kintana ne livre que ce qu’elle peut prouver, mesuré, expliqué et reproductible. | 20.3 | — |
+
+## 21 · Boss final
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **21.boss** Kintana, chercheuse honnête | Kintana mène une recherche de bout en bout et rejette la fausse découverte, même quand elle paraît significative. | 7.5, 17.5, 17.boss | — |

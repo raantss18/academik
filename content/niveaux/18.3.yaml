@@ -12,8 +12,8 @@ sources:
 - titre: 'Python — documentation : functools.lru_cache'
   url: https://docs.python.org/3/library/functools.html#functools.lru_cache
   licence: PSF ; documentation citée
-- titre: Bentley — Programming Pearls (lien)
-  url: https://www.cs.bell-labs.com/cm/cs/pearls/
+- titre: Bentley — Programming Pearls (page archivée, lien)
+  url: https://web.archive.org/web/20150320220341/http://www.cs.bell-labs.com/cm/cs/pearls/
   licence: Lien seulement ; texte non repris
 cartes:
 - id: c1

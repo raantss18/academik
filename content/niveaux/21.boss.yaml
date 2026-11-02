@@ -1,0 +1,485 @@
+# Niveau 21.boss — Boss final : recherche de bout en bout (exploration, confirmation, rapport qui rejette). Original academik ; notions des modules 7, 10, 17 et 20, vérifiées dans Bailey et López de Prado 2014, Harvey, Liu, Zhu 2016 et le NIST e-Handbook (liens). Données synthétiques, cadre strictement pédagogique.
+id: 21.boss
+module: 21
+duree_min: 21
+titre:
+  fr: Kintana, chercheuse honnête
+  en: Kintana, honest researcher
+ia:
+  fr: Kintana mène une recherche de bout en bout et rejette la fausse découverte, même quand elle paraît significative.
+  en: Kintana carries out research end to end and rejects the false discovery, even when it looks significant.
+sources:
+- titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
+  url: https://doi.org/10.3905/jpm.2014.40.5.094
+  licence: Lien seulement ; texte non repris
+- titre: Harvey, Liu, Zhu — … and the Cross-Section of Expected Returns (2016)
+  url: https://doi.org/10.1093/rfs/hhv059
+  licence: Lien seulement ; texte non repris
+- titre: NIST/SEMATECH e-Handbook — Bonferroni’s method
+  url: https://www.itl.nist.gov/div898/handbook/prc/section4/prc473.htm
+  licence: Domaine public (publication fédérale américaine) ; méthode citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Kintana entend une rumeur : « le marché monte davantage un certain jour de la semaine ». Avant tout calcul, que doit-elle faire pour que son étude reste honnête ?'
+  en: 'Kintana hears a rumour: “the market rises more on a certain day of the week”. Before any computation, what should she do so that her study stays honest?'
+  choix:
+  - fr: 'Fixer son protocole : données d’exploration, données de test séparées, et seuil de décision'
+    en: 'Fix her protocol: exploration data, separate test data, and a decision threshold'
+    juste: true
+  - fr: Chercher dans toutes les données le jour qui marche le mieux, puis l’annoncer
+    en: Search all the data for the day that works best, then announce it
+  - fr: Croire la rumeur sans vérifier
+    en: Believe the rumour without checking
+  indice:
+    fr: Un résultat trouvé et vérifié sur les mêmes données est-il une preuve (niveau 17.5) ?
+    en: Is a result found and checked on the same data a proof (level 17.5)?
+  explication:
+    fr: 'On écrit le protocole **avant** de regarder : une partie des données pour explorer, une autre, jamais vue, pour confirmer **une seule** hypothèse.'
+    en: 'We write the protocol **before** looking: one part of the data to explore, another, never seen, to confirm **a single** hypothesis.'
+- id: c2
+  type: idee
+  fr: 'Mission finale : Kintana, ton agent local, mène une petite recherche de bout en bout. Elle explore cinq hypothèses (un jour chacune), retient la plus prometteuse, puis la soumet à des données **jamais vues**. Elle rend un rapport sourcé qui dit « retenue » ou « rejetée ».'
+  en: 'Final mission: Kintana, your local agent, carries out a small piece of research end to end. She explores five hypotheses (one day each), keeps the most promising, then submits it to **never-seen** data. She returns a sourced report saying “retained” or “rejected”.'
+  exemple:
+    fr: 'Les données sont synthétiques : on sait donc à l’avance s’il existe un vrai effet, ce qui permet de juger la méthode.'
+    en: 'The data are synthetic: so we know in advance whether a real effect exists, which lets us judge the method.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le protocole
+        en: The protocol
+      noeuds:
+      - fr: hypothèse et seuil écrits
+        en: hypothesis and threshold written
+      - fr: exploration (60 %)
+        en: exploration (60%)
+      - fr: confirmation (40 %)
+        en: confirmation (40%)
+      - fr: rapport sourcé
+        en: sourced report
+        ton: ok
+    legende:
+      fr: Les données de confirmation ne servent qu’une fois.
+      en: The confirmation data are used only once.
+- id: c3
+  type: idee
+  fr: Les rendements sont des données quotidiennes numérotées $0,1,2,\dots$ ; le jour de la semaine est le reste de la division par 5. Pour un jour $j$, on garde les rendements d’indice $i$ tels que $i \bmod 5 = j$. On teste ensuite si leur moyenne est nulle, avec la statistique $t$ du niveau 17.boss.
+  en: The returns are daily data numbered $0,1,2,\dots$; the weekday is the remainder of division by 5. For a day $j$, we keep the returns of index $i$ such that $i \bmod 5 = j$. We then test whether their mean is zero, with the $t$ statistic of level 17.boss.
+  exemple:
+    fr: Sur 750 jours, chaque jour de la semaine compte 150 rendements.
+    en: Over 750 days, each weekday has 150 returns.
+- id: c4
+  type: exemple
+  titre:
+    fr: Un jour de la semaine
+    en: One weekday
+  lang: python
+  etapes:
+  - code: r = [0.01, -0.02, 0.0, 0.03, 0.01, 0.02, -0.01]
+    fr: Sept rendements quotidiens.
+    en: Seven daily returns.
+  - code: lundis = [x for i, x in enumerate(r) if i % 5 == 0]
+    fr: Les indices 0 et 5 tombent le même jour de la semaine.
+    en: Indices 0 and 5 fall on the same weekday.
+  - code: print(lundis)
+    fr: On affiche `[0.01, 0.02]`.
+    en: We display `[0.01, 0.02]`.
+  verif: |-
+    r = [0.01, -0.02, 0.0, 0.03, 0.01, 0.02, -0.01]
+    lundis = [x for i, x in enumerate(r) if i % 5 == 0]
+    print(lundis)
+  sortie: '[0.01, 0.02]'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `rendements_jour(r, jour)`** : la liste des rendements `r[i]` dont l’indice vérifie `i % 5 == jour`.'
+  en: 'Your turn. **Write `rendements_jour(r, jour)`**: the list of returns `r[i]` whose index satisfies `i % 5 == jour`.'
+  depart: |
+    # écris ta fonction rendements_jour ici
+  tests: |-
+    r = list(range(12))
+    assert rendements_jour(r, 0) == [0, 5, 10]
+    assert rendements_jour(r, 4) == [4, 9]
+    assert rendements_jour([], 2) == []
+    assert sum(len(rendements_jour(r, j)) for j in range(5)) == 12
+  solutionCode: |
+    def rendements_jour(r, jour):
+        return [x for i, x in enumerate(r) if i % 5 == jour]
+  indice:
+    fr: Une compréhension de liste avec `enumerate(r)` et la condition `i % 5 == jour`.
+    en: A list comprehension with `enumerate(r)` and the condition `i % 5 == jour`.
+  explication:
+    fr: Les cinq jours se partagent tous les rendements, sans doublon ni oubli.
+    en: The five days share all the returns, without duplicates or omissions.
+- id: c6
+  type: idee
+  fr: 'L’**exploration** essaie les cinq jours et retient celui de plus petite p-valeur. C’est utile pour trouver une piste, mais le meilleur de cinq essais paraît bon par construction (niveau 17.5). La p-valeur d’exploration est donc **optimiste** : elle ne sert pas de preuve.'
+  en: '**Exploration** tries the five days and keeps the one with the smallest p-value. It is useful for finding a lead, but the best of five trials looks good by construction (level 17.5). The exploration p-value is therefore **optimistic**: it does not serve as proof.'
+  exemple:
+    fr: Même avec cinq jours sans aucun effet, le plus petit des cinq p-valeurs passe souvent sous 0,05.
+    en: Even with five days without any effect, the smallest of the five p-values often falls below 0.05.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Étape
+      en: Stage
+    - fr: Données
+      en: Data
+    - fr: Rôle
+      en: Role
+    cellules:
+    - - fr: exploration
+        en: exploration
+      - 60 %
+      - fr: trouver une piste
+        en: find a lead
+    - - fr: confirmation
+        en: confirmation
+        ton: ok
+      - fr: 40 %
+        en: 40%
+        ton: ok
+      - fr: juger une seule piste
+        en: judge a single lead
+        ton: ok
+    legende:
+      fr: Deux rôles, deux jeux de données.
+      en: Two roles, two datasets.
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `explorer(r)`** : calcule pour chaque jour `j` de `0` à `4` la p-valeur `p_valeur(t_stat(rendements_jour(r, j)))`, et renvoie le couple `(jour, p)` du jour de plus petite p-valeur. Les fonctions sont fournies.'
+  en: '**Write `explorer(r)`**: compute for each day `j` from `0` to `4` the p-value `p_valeur(t_stat(rendements_jour(r, j)))`, and return the pair `(jour, p)` of the day with the smallest p-value. The functions are provided.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def serie(n, graine, effet=0.0):
+        u = generateur(graine)
+        return [0.0003 + 0.01 * gauss(u) + (effet if t % 5 == 0 else 0.0) for t in range(n)]
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def p_valeur(t):
+        return math.erfc(abs(t) / math.sqrt(2))
+
+    def rendements_jour(r, jour):
+        return [x for i, x in enumerate(r) if i % 5 == jour]
+
+    # écris ta fonction explorer ici
+  tests: |-
+    r = serie(1250, 28)
+    j, p = explorer(r[:750])
+    assert j == 4 and p < 0.001
+    j2, p2 = explorer(serie(1250, 3, effet=0.004)[:750])
+    assert j2 == 0 and p2 < 1e-6
+  solutionCode: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def serie(n, graine, effet=0.0):
+        u = generateur(graine)
+        return [0.0003 + 0.01 * gauss(u) + (effet if t % 5 == 0 else 0.0) for t in range(n)]
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def p_valeur(t):
+        return math.erfc(abs(t) / math.sqrt(2))
+
+    def rendements_jour(r, jour):
+        return [x for i, x in enumerate(r) if i % 5 == jour]
+
+    def explorer(r):
+        ps = [p_valeur(t_stat(rendements_jour(r, j))) for j in range(5)]
+        meilleur = min(range(5), key=lambda j: ps[j])
+        return meilleur, ps[meilleur]
+  indice:
+    fr: 'Fabrique la liste `ps` des cinq p-valeurs, puis `min(range(5), key=lambda j: ps[j])`.'
+    en: 'Build the list `ps` of the five p-values, then `min(range(5), key=lambda j: ps[j])`.'
+  explication:
+    fr: 'Sur la série de graine 28, sans aucun effet, l’exploration trouve un jour à $p<0{,}001$ : un faux positif impressionnant.'
+    en: 'On the seed-28 series, without any effect, exploration finds a day at $p<0.001$: an impressive false positive.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Sur la graine 28 (sans effet), l’exploration donne une p-valeur d’environ 0,0004 pour le meilleur des 5 jours. Même avec la correction de Bonferroni sur 5 essais (seuil $0{,}05/5$), cette p-valeur passe-t-elle le seuil ? Réponds `oui` ou `non`.
+  en: On seed 28 (no effect), exploration gives a p-value of about 0.0004 for the best of 5 days. Even with the Bonferroni correction over 5 trials (threshold $0.05/5$), does this p-value pass? Answer `oui` or `non`.
+  reponses:
+  - oui
+  verif: print("oui" if 0.0004 < 0.05 / 5 else "non")
+  indice:
+    fr: Compare $0{,}0004$ au seuil $0{,}01$.
+    en: Compare $0.0004$ with the threshold $0.01$.
+  explication:
+    fr: '$0{,}0004<0{,}01$ : même corrigée, l’exploration trompe ici. Seules des données neuves peuvent trancher.'
+    en: '$0.0004<0.01$: even corrected, exploration misleads here. Only fresh data can decide.'
+- id: c9
+  type: idee
+  fr: 'La **confirmation** teste **une seule** hypothèse, choisie avant de voir les données de test. Il n’y a qu’un essai : le seuil reste $\alpha$ sans correction. Si l’effet est réel, il réapparaît ; s’il venait du hasard, il disparaît, comme ici pour la graine 28.'
+  en: '**Confirmation** tests **a single** hypothesis, chosen before seeing the test data. There is only one trial: the threshold stays $\alpha$ without correction. If the effect is real, it reappears; if it came from chance, it disappears, as here for seed 28.'
+  exemple:
+    fr: 'Graine 28 : $p=0{,}0004$ en exploration, puis $p\approx0{,}81$ sur les données de test. L’effet s’évanouit.'
+    en: 'Seed 28: $p=0.0004$ in exploration, then $p\approx0.81$ on the test data. The effect vanishes.'
+- id: c10
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `confirmer(r, jour, alpha)`** : la p-valeur `p` du jour donné sur les données `r`, et le couple `(p, p < alpha)`.'
+  en: '**Write `confirmer(r, jour, alpha)`**: the p-value `p` of the given day on the data `r`, and the pair `(p, p < alpha)`.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def serie(n, graine, effet=0.0):
+        u = generateur(graine)
+        return [0.0003 + 0.01 * gauss(u) + (effet if t % 5 == 0 else 0.0) for t in range(n)]
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def p_valeur(t):
+        return math.erfc(abs(t) / math.sqrt(2))
+
+    def rendements_jour(r, jour):
+        return [x for i, x in enumerate(r) if i % 5 == jour]
+
+    # écris ta fonction confirmer ici
+  tests: |-
+    p, ok = confirmer(serie(1250, 28)[750:], 4, 0.05)
+    assert ok is False and p > 0.5
+    p2, ok2 = confirmer(serie(1250, 3, effet=0.004)[750:], 0, 0.05)
+    assert ok2 is True and p2 < 0.001
+  solutionCode: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def serie(n, graine, effet=0.0):
+        u = generateur(graine)
+        return [0.0003 + 0.01 * gauss(u) + (effet if t % 5 == 0 else 0.0) for t in range(n)]
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def p_valeur(t):
+        return math.erfc(abs(t) / math.sqrt(2))
+
+    def rendements_jour(r, jour):
+        return [x for i, x in enumerate(r) if i % 5 == jour]
+
+    def confirmer(r, jour, alpha):
+        p = p_valeur(t_stat(rendements_jour(r, jour)))
+        return p, p < alpha
+  indice:
+    fr: Une ligne pour `p`, puis `return p, p < alpha`.
+    en: One line for `p`, then `return p, p < alpha`.
+  explication:
+    fr: 'Le vrai effet planté (graine 3) survit à la confirmation : la méthode rejette le faux et retient le vrai.'
+    en: 'The real planted effect (seed 3) survives confirmation: the method rejects the false and retains the true.'
+- id: c11
+  type: piege
+  fr: 'Le piège final : regarder les données de test, constater l’échec, puis « explorer encore un peu » et retester. Les données de test deviennent alors des données d’exploration, et la confirmation ne vaut plus rien. Une confirmation ratée se publie telle quelle.'
+  en: 'The final trap: looking at the test data, seeing the failure, then “exploring a bit more” and retesting. The test data then become exploration data, and confirmation is worth nothing. A failed confirmation is published as is.'
+- id: c12
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 2
+  fr: 'Défi final. **Écris `rapport(r, alpha)`** : coupe `r` à `len(r) * 3 // 5` (exploration avant, test après). Explore, puis confirme le jour retenu sur le test. Renvoie le dictionnaire `{"hypothese": "jour " + str(jour), "essais_exploration": 5, "p_exploration": ..., "p_test": ..., "verdict": "retenue" ou "rejetée", "sources": ["7.5", "10.boss", "17.5"]}`.'
+  en: 'Final challenge. **Write `rapport(r, alpha)`**: cut `r` at `len(r) * 3 // 5` (exploration before, test after). Explore, then confirm the retained day on the test. Return the dictionary `{"hypothese": "jour " + str(jour), "essais_exploration": 5, "p_exploration": ..., "p_test": ..., "verdict": "retenue" or "rejetée", "sources": ["7.5", "10.boss", "17.5"]}`.'
+  depart: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def serie(n, graine, effet=0.0):
+        u = generateur(graine)
+        return [0.0003 + 0.01 * gauss(u) + (effet if t % 5 == 0 else 0.0) for t in range(n)]
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def p_valeur(t):
+        return math.erfc(abs(t) / math.sqrt(2))
+
+    def rendements_jour(r, jour):
+        return [x for i, x in enumerate(r) if i % 5 == jour]
+
+    def explorer(r):
+        ps = [p_valeur(t_stat(rendements_jour(r, j))) for j in range(5)]
+        meilleur = min(range(5), key=lambda j: ps[j])
+        return meilleur, ps[meilleur]
+
+    def confirmer(r, jour, alpha):
+        p = p_valeur(t_stat(rendements_jour(r, jour)))
+        return p, p < alpha
+
+    # écris ta fonction rapport ici
+  tests: |-
+    a = rapport(serie(1250, 28), 0.05)
+    assert a["hypothese"] == "jour 4" and a["verdict"] == "rejetée" and a["p_exploration"] < 0.001 < 0.5 < a["p_test"]
+    assert a["essais_exploration"] == 5 and a["sources"] == ["7.5", "10.boss", "17.5"]
+    b = rapport(serie(1250, 3, effet=0.004), 0.05)
+    assert b["hypothese"] == "jour 0" and b["verdict"] == "retenue"
+  solutionCode: |
+    import math
+
+    def generateur(graine):
+        etat = [graine]
+        def u():
+            etat[0] = (etat[0] * 1103515245 + 12345) % 2147483648
+            return (etat[0] + 0.5) / 2147483648
+        return u
+
+    def gauss(u):
+        return math.sqrt(-2 * math.log(u())) * math.cos(2 * math.pi * u())
+
+    def serie(n, graine, effet=0.0):
+        u = generateur(graine)
+        return [0.0003 + 0.01 * gauss(u) + (effet if t % 5 == 0 else 0.0) for t in range(n)]
+
+    def t_stat(r):
+        n = len(r)
+        m = sum(r) / n
+        s = math.sqrt(sum((x - m) ** 2 for x in r) / (n - 1))
+        return m / (s / math.sqrt(n))
+
+    def p_valeur(t):
+        return math.erfc(abs(t) / math.sqrt(2))
+
+    def rendements_jour(r, jour):
+        return [x for i, x in enumerate(r) if i % 5 == jour]
+
+    def explorer(r):
+        ps = [p_valeur(t_stat(rendements_jour(r, j))) for j in range(5)]
+        meilleur = min(range(5), key=lambda j: ps[j])
+        return meilleur, ps[meilleur]
+
+    def confirmer(r, jour, alpha):
+        p = p_valeur(t_stat(rendements_jour(r, jour)))
+        return p, p < alpha
+
+    def rapport(r, alpha):
+        coupe = len(r) * 3 // 5
+        apprentissage, test = r[:coupe], r[coupe:]
+        jour, p_expl = explorer(apprentissage)
+        p_test, ok = confirmer(test, jour, alpha)
+        return {"hypothese": "jour " + str(jour), "essais_exploration": 5, "p_exploration": p_expl, "p_test": p_test,
+                "verdict": "retenue" if ok else "rejetée", "sources": ["7.5", "10.boss", "17.5"]}
+  indice:
+    fr: 'Trois étapes : couper, `explorer` sur la première partie, `confirmer` sur la seconde ; puis le dictionnaire.'
+    en: 'Three steps: cut, `explorer` on the first part, `confirmer` on the second; then the dictionary.'
+  explication:
+    fr: Ton rapport rejette la fausse découverte de la graine 28 et retient le vrai effet de la graine 3. C’est exactement ce qu’on attend d’une recherche honnête.
+    en: Your report rejects the false discovery of seed 28 and retains the real effect of seed 3. This is exactly what is expected of honest research.
+- id: c13
+  type: idee
+  fr: 'Un vrai rapport dit aussi ce qu’il ne prouve pas. Les données sont synthétiques, un effet réel peut changer, et les coûts (niveau 17.5) peuvent l’effacer. Il cite ses sources : 7.5, 10.boss et 17.5.'
+  en: 'A real report also says what it does not prove. The data are synthetic, a real effect can change, and costs (level 17.5) can wipe it out. It cites its sources: 7.5, 10.boss and 17.5.'
+  exemple:
+    fr: 'Ce cadre est strictement pédagogique : aucune recommandation d’investissement personnalisée.'
+    en: 'This framework is strictly educational: no personalised investment recommendation.'
+- id: c14
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Dans le protocole, combien de fois les données de test peuvent-elles servir à juger une hypothèse ?
+  en: In the protocol, how many times may the test data be used to judge a hypothesis?
+  reponses:
+  - '1'
+  verif: print(1)
+  indice:
+    fr: Pense à ce qui arrive si on les réutilise après un échec.
+    en: Think about what happens if they are reused after a failure.
+  explication:
+    fr: 'Une seule fois : sinon elles deviennent des données d’exploration.'
+    en: 'Only once: otherwise they become exploration data.'
+- id: c15
+  type: idee
+  fr: 'Tu as construit Kintana brique par brique, de la logique à l’évaluation. Les réseaux, le RAG, les agents et la sécurité en font partie. Le dernier réflexe est le plus important : **douter de ses propres résultats**.'
+  en: 'You built Kintana brick by brick, from logic to evaluation. Networks, RAG, agents and security are part of it. The last reflex is the most important: **doubt your own results**.'
+  exemple:
+    fr: Le module bonus « Recherche » (le Rova) prolongera ce travail vers la preuve formelle de propriétés du code.
+    en: The bonus “Research” module (the Rova) will extend this work towards formal proof of code properties.
+- id: c16
+  type: retenir
+  fr: 'Recherche honnête : protocole écrit avant, exploration et confirmation sur des données séparées, une seule confirmation, rapport sourcé qui rejette ce qui ne tient pas. Le meilleur de plusieurs essais trompe, même corrigé.'
+  en: 'Honest research: protocol written beforehand, exploration and confirmation on separate data, a single confirmation, a sourced report that rejects what does not hold. The best of several trials misleads, even corrected.'
+- id: c17
+  type: plus
+  fr: Pour aller plus loin, consulte [la méthode de Bonferroni du NIST](https://www.itl.nist.gov/div898/handbook/prc/section4/prc473.htm) ; cette page demande une connexion.
+  en: To go further, see [NIST’s Bonferroni method](https://www.itl.nist.gov/div898/handbook/prc/section4/prc473.htm); this page needs a connection.

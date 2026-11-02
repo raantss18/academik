@@ -199,3 +199,7 @@ modules:
       - { id: "20.4", titre: { fr: "Reproduire une expérience" } }
       - { id: "20.5", titre: { fr: "Livrer avec éthique" } }
       - { id: "20.boss", boss: true, titre: { fr: "Livre ton assistant" } }
+  - id: 21
+    titre: { fr: "Boss final", en: "Final boss" }
+    niveaux:
+      - { id: "21.boss", boss: true, titre: { fr: "Kintana, chercheuse honnête" } }

@@ -4,7 +4,7 @@
  * d'erreur ailleurs, et on ajoute ICI le test qui l'interdit.
  */
 import { describe, it, expect } from 'vitest';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { parse } from 'yaml';
 
 const read = (p: string) => readFileSync(p, 'utf8');
@@ -206,6 +206,36 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     expect(about).toContain('https://wa.me/261334383882'); expect(about).toContain('mailto:antsa.raniriamanjaka@univ-antananarivo.mg'); expect(about).toContain('github.com/raantss18/academik/releases/latest');
     expect(read('scripts/publish-release.sh')).toContain('release-notes.mjs'); expect(read('scripts/release-notes.mjs')).toContain('CHANGELOG.md');
   });
+  it('E36 : la version web propose de télécharger les apps Android et Linux (menu du logo et à propos), avec les noms stables publiés', () => {
+    const plat = read('src/lib/platform.ts'), menu = read('src/ui/LogoMenu.svelte'), about = read('src/ui/Consignes.svelte'), pub = read('scripts/publish-release.sh');
+    expect(plat).toContain("releases/latest/download/academik.apk"); expect(plat).toContain("releases/latest/download/academik-x86_64.AppImage");
+    expect(pub).toContain('release-out/academik.apk'); expect(pub).toContain('release-out/academik-x86_64.AppImage');
+    for (const f of [menu, about]) { expect(f).toContain("platform() === 'web'"); expect(f).toContain('DOWNLOAD_APK'); expect(f).toContain('DOWNLOAD_APPIMAGE'); }
+  });
+  it('E37 : site et AppImage ont la même CSP stricte, qui autorise les polices intégrées (KaTeX) et interdit eval et le réseau tiers', () => {
+    const vite = read('vite.config.ts'), tauri = read('src-tauri/tauri.conf.json');
+    expect(vite).toContain('cspMeta()'); expect(vite).toContain("apply: 'build'");
+    for (const f of [vite, tauri]) { expect(f).toContain("font-src 'self' data:"); expect(f).toContain("script-src 'self' 'wasm-unsafe-eval'"); expect(f).not.toContain("'unsafe-eval'"); expect(f).toContain("connect-src 'self' https://raantss18.github.io"); }
+    expect(vite).toContain("object-src 'none'");
+  });
+  it('E38 : le code coloré reste lisible (contraste ≥ 4,5:1) sur fond de code et sur la ligne courante, en clair et en sombre ; aucune ligne atténuée', () => {
+    const css = read('src/app.css');
+    const lum = (h: string) => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(x => x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+    const ratio = (a: string, b: string) => { const [x, y] = [lum(a), lum(b)]; return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+    const tok = (sel: RegExp) => [...(css.match(sel)?.[1] ?? '').matchAll(/--tk-\w: (#[0-9a-f]{6})/g)].map(m => m[1]);
+    const light = tok(/:root \{ (--tk-k[^}]*)\}/), dark = tok(/:root\[data-theme='dark'\] \{ (--tk-k[^}]*)\}/);
+    expect(light.length).toBe(5); expect(dark.length).toBe(5);
+    for (const c of light) for (const bg of ['#eef1ec', '#e6f3e9', '#ffffff']) expect(ratio(c, bg)).toBeGreaterThanOrEqual(4.5);
+    for (const c of dark) for (const bg of ['#1f2620', '#17301d', '#171c18']) expect(ratio(c, bg)).toBeGreaterThanOrEqual(4.5);
+    expect(css).not.toMatch(/\.code \.ln \{[^}]*opacity/);
+    expect(css).toContain('--c-on-primary');
+  });
+  it('E41 : le contenu embarqué est découpé par module ; aucun morceau ne s’approche de la limite de 2 Mio du précache hors ligne', () => {
+    const files = readdirSync('src/generated/pack');
+    expect(files).toContain('tete.json'); expect(files.filter(f => f.startsWith('module-')).length).toBeGreaterThanOrEqual(20);
+    for (const f of files) expect(statSync(`src/generated/pack/${f}`).size).toBeLessThan(1_000_000);
+    expect(read('src/lib/content.svelte.ts')).not.toContain('generated/content.json');
+  });
   it('E24 : sur la carte, la fiche de mise à jour est compacte et lisible (fond sombre, texte clair, hauteur bornée)', () => {
     const ban = read('src/ui/UpdateBanner.svelte'), map = read('src/ui/Map.svelte');
     expect(map).toContain("<UpdateBanner compact={view === 'city'} />");
@@ -265,7 +295,7 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
   });
   it('E31 : le contenu embarqué est un morceau à part (jamais importé statiquement) et le budget de premier chargement est contrôlé', () => {
     const c = read('src/lib/content.svelte.ts');
-    expect(c).not.toMatch(/^import .* from '\.\.\/generated\/content\.json'/m); expect(c).toContain("import('../generated/content.json')");
+    expect(c).not.toMatch(/^import .* from '\.\.\/generated\/(content|pack)/m); expect(c).toContain("import.meta.glob<{ default: Partial<Pack> }>('../generated/pack/*.json')");
     expect(read('scripts/check-offline.mjs')).toContain('premier chargement trop lourd');
   });
   it('E32 : le zoom de la carte passe par transform pendant le geste et ne redimensionne le SVG qu’une fois, à la fin', () => {

@@ -4,7 +4,7 @@
   import { theme, type Theme } from '../lib/theme.svelte';
   import { updates } from '../lib/updates.svelte';
   import { progress } from '../lib/progress.svelte';
-  import { APP_VERSION, APP_BUILD, platform } from '../lib/platform';
+  import { APP_VERSION, APP_BUILD, DOWNLOAD_APK, DOWNLOAD_APPIMAGE, platform } from '../lib/platform';
 
   let { onrules, onhome, compact = false }: { onrules?: () => void; onhome?: () => void; compact?: boolean } = $props();
   let open = $state(false), root: HTMLElement;
@@ -19,13 +19,17 @@
 <svelte:window onkeydown={key} onpointerdown={outside} />
 
 <div class="menu" class:compact bind:this={root}>
-  <button class="logo" aria-haspopup="menu" aria-expanded={open} onclick={() => (open = !open)}>
+  <button class="logo" aria-label={fr ? 'academik : menu' : 'academik: menu'} aria-haspopup="menu" aria-expanded={open} onclick={() => (open = !open)}>
     <Logo size={30} />{#if !compact}<span class="word">acad<span class="e">e</span>mik</span>{/if}<span class="chev" aria-hidden="true">▾</span>
   </button>
   {#if open}
     <div class="pop" role="menu" aria-label="academik">
       {#if onhome}<button role="menuitem" onclick={go(onhome)}><span>🏠</span> {fr ? 'Accueil' : 'Home'}</button>{/if}
       {#if onrules}<button role="menuitem" onclick={go(onrules)}><span>⚙️</span> {fr ? 'Réglages et à propos' : 'Settings and about'}</button>{/if}
+      {#if platform() === 'web'}
+        <a role="menuitem" class="item" href={DOWNLOAD_APK} rel="noopener noreferrer" onclick={close}><span>📱</span> {fr ? 'Télécharger pour Android' : 'Download for Android'}</a>
+        <a role="menuitem" class="item" href={DOWNLOAD_APPIMAGE} rel="noopener noreferrer" onclick={close}><span>🐧</span> {fr ? 'Télécharger pour Linux' : 'Download for Linux'}</a>
+      {/if}
       <button role="menuitem" onclick={() => updates.checkAll(true)} disabled={updates.checking}><span>🔄</span> {updates.checking ? (fr ? 'Vérification…' : 'Checking…') : (fr ? 'Vérifier les mises à jour' : 'Check for updates')}</button>
       <div class="row" role="group" aria-label={fr ? 'Synchronisation' : 'Sync'}>
         <span>☁️</span>
@@ -52,9 +56,10 @@
   .e { color: var(--c-accent); } .chev { color: var(--c-text-muted); font-size: .8rem; }
   .pop { position: absolute; left: 0; top: calc(100% + 6px); z-index: 20; width: min(340px, calc(100vw - 32px)); display: grid; gap: 4px; padding: 8px; border-radius: 20px; background: var(--c-surface); border: 1px solid var(--c-border); box-shadow: 0 12px 40px rgb(0 0 0 / .25); }
   .menu.compact .pop { position: fixed; left: 16px; right: 16px; width: auto; top: calc(var(--sat) + 72px); }
+  .pop > .item { display: flex; gap: 12px; align-items: center; min-height: 48px; padding: 0 14px; border-radius: 14px; font-weight: 600; color: inherit; text-decoration: none; } .pop > .item:hover, .pop > .item:focus-visible { background: var(--c-surface-2); }
   .pop > button { display: flex; gap: 12px; align-items: center; min-height: 48px; padding: 0 14px; border: 0; border-radius: 14px; background: none; text-align: left; font-weight: 600; cursor: pointer; }
   .pop > button:hover:not(:disabled) { background: var(--c-surface-2); } .pop > button:disabled { opacity: .6; }
   .row { display: flex; gap: 12px; align-items: center; padding: 8px 14px; min-height: 48px; } .txt { display: grid; gap: 2px; } small { color: var(--c-text-muted); line-height: 1.35; }
-  .seg { display: flex; gap: 4px; background: var(--c-surface-2); padding: 4px; border-radius: 999px; flex: 1; } .seg button { flex: 1; min-height: 40px; border: 0; border-radius: 999px; background: none; font-weight: 700; cursor: pointer; } .seg button.on { background: var(--c-primary); color: #fff; }
+  .seg { display: flex; gap: 4px; background: var(--c-surface-2); padding: 4px; border-radius: 999px; flex: 1; } .seg button { flex: 1; min-height: 40px; border: 0; border-radius: 999px; background: none; font-weight: 700; cursor: pointer; } .seg button.on { background: var(--c-primary); color: var(--c-on-primary); }
   .ver { padding: 4px 14px 8px; }
 </style>

@@ -62,5 +62,5 @@
   .b.compact .tx { min-width: 0; gap: 4px; } .b.compact .tx span { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   .b.compact details { display: none; } .b.compact small, .b.compact .muted { color: #cfd3ec; }
   .b.compact .btn { min-height: 40px; padding: 0 14px; background: rgb(255 255 255 / .12); color: #f2f4ff; border: 1px solid rgb(255 255 255 / .35); }
-  .b.compact .btn.primary { background: #3f9a4e; color: #fff; border-color: #3f9a4e; }
+  .b.compact .btn.primary { background: #2e7d3a; color: #fff; border-color: #2e7d3a; }
 </style>

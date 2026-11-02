@@ -1,7 +1,7 @@
 # TODO d'academik
 
 > Source unique du « qui fait quoi, où on en est ». Mis à jour à chaque tâche. Légende : ✅ fait · 🔄 en cours · ⏳ à faire · ⛔ bloqué · ❓ décision d'Antsa.
-> Dernière mise à jour : 1er nov. 2026 (v0.3.1 publiée). Règles : `CONSIGNES.md` ; décisions : `DECISIONS.md` ; Codex : `docs/CODEX.md`.
+> Dernière mise à jour : 2 nov. 2026 (v0.3.26 publiée ; vérification complète du contenu, audit sécurité et accessibilité, boss final). Règles : `CONSIGNES.md` ; décisions : `DECISIONS.md` ; Codex : `docs/CODEX.md`.
 
 ## 0. Corrections signalées par Antsa (journal)
 > **Processus (obligatoire)** : dès qu'Antsa signale une erreur → (1) l'inscrire ici **avant** de corriger ; (2) corriger la **cause**, pas seulement le symptôme ;
@@ -44,41 +44,44 @@
 | E33 | 2 nov. (demande d'Antsa) | Fond de leçon sans lien avec l'accueil | un seul fond uni pour toutes les leçons | fond par module (nuit et jour) : dégradé + brume et lucioles WebGL, repli CSS ; contraste ≥ 4,5 vérifié par test | `invariants.test` | design |
 | E34 | 2 nov. (demande d'Antsa) | Pas de sensation de jeu dans les cartes | progression = simple barre ; rien ne rappelait l'accueil | chemin du quartier (repère rouge) + silhouette dont les fenêtres s'allument à chaque bonne réponse | `invariants.test` | design |
 | E35 | 2 nov. (demande d'Antsa) | Détails de jeu manquants dans les leçons | l'immersion s'arrêtait aux fenêtres allumées | luciole après 3 réussites de suite, halo de fête au boss réussi, réduit si mouvement réduit | `invariants.test` | design |
+| E36 | 2 nov. (demande d'Antsa) | La version web ne proposait pas clairement de télécharger les apps | un seul lien générique vers la page des versions, caché dans « À propos » | menu du logo et « À propos » (web seulement) : « Télécharger pour Android » et « pour Linux », liens stables `releases/latest/download/…` vérifiés (HTTP 200) | `invariants` E36 | 0.3.27 |
+| E37 | 2 nov. (trouvée par Claude, audit sécurité) | Polices de KaTeX bloquées dans l'AppImage ; site publié sans politique de sécurité (CSP) | la CSP de Tauri interdisait les polices `data:` intégrées ; le site n'avait aucune CSP | CSP identique site/AppImage (`font-src 'self' data:`, pas d'`eval`, réseau limité au site) ; vérifiée dans le site construit (Python, formules, polices) | `invariants` E37 | 0.3.27 |
+| E38 | 2 nov. (trouvée par Claude, audit axe-core) | Contraste insuffisant : boutons actifs du menu (2,46:1), lignes de code atténuées (2,5:1), commentaires de code en clair (3,97:1) ; barre de progression et bouton logo sans nom accessible | couleur de texte fixe (`#fff`) sur un vert clair en thème sombre ; atténuation par opacité ; aucun contrôle de contraste du code | jeton `--c-on-primary` ; plus d'atténuation (ligne courante marquée par un fond et un trait) ; couleurs de code recalculées ; `aria-label` ajoutés ; audit axe : 0 violation (liste, menu, QCM, exemple, terminal) | `invariants` E38 | 0.3.27 |
+| E39 | 2 nov. (trouvée par Claude) | Une réponse juste écrite autrement était refusée (`2.0` pour `2`, `75 %` pour `75`, `2 401` pour `2401`) | comparaison de texte exacte | `src/lib/answer.ts` : écriture tolérante (virgule, espaces, `%`, notation scientifique), valeur exacte à 1e-9 près ; une valeur différente reste refusée | `answer.test` | 0.3.27 |
+| E40 | 2 nov. (vérification des sources par Claude) | Un tableau de 16.boss affichait des fréquences « simulées » non calculées ; un lien mort (Bell Labs) ; deux liens bloqués par l'éditeur | valeurs écrites à la main sans exécution ; liens jamais vérifiés après écriture | valeurs remplacées par une vraie simulation (graine 1, seuil 120 €, théorie 0,223) ; lien archivé ; DOI vérifiés par Crossref ; mesure réelle pour l'exemple NumPy (54 ms contre 1,8 ms) ; `scripts/verifier-liens.mjs` et `scripts/audit-contenu.mjs` | `audit-contenu` (KaTeX, QCM, traductions) | contenu |
+| E41 | 2 nov. (trouvée par Claude, construction) | La construction échouait : le contenu embarqué (2,11 Mo d'un bloc) dépassait la limite de 2 Mio du précache hors ligne | tout le cursus dans un seul fichier, qui grossissait à chaque module | contenu découpé en un morceau par module (≤ 200 Ko chacun), réunis au chargement ; 70 fichiers précachés | `invariants` E41 | 0.3.27 |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | générateur porté dans `src/lib/city/` (fonction pure, chargée à la demande, 15,6 Ko gzip) ; un quartier par module, un bâtiment par niveau, allumé selon les étoiles ; fiche du niveau (Jouer/Rejouer) ; liste en choix mémorisé ; retour Android ferme la fiche ; vérifié à 375 px | `city.test` (épingles, états, échappement, déterminisme, temps), `invariants` E9 | 0.3.6 |
 
 ## 1. Application et site
-- ✅ Squelette Svelte, moteur (déblocage 50 %, étoiles, XP, série, journal en ajout seul, FSRS, Elo), stockage à la COMIMa (migrations, sauvegarde, profils)
-- ✅ Hors ligne : site installable (PWA), APK signé (Capacitor), AppImage (Tauri) ; audit « hors ligne » automatique
-- ✅ Mises à jour séparées : contenu automatique (SHA-256, atomique, compatibilité **par niveau**) et application signée (`release.json` Ed25519)
-- ✅ Présentation : formules KaTeX, code coloré, encadrés, exemple à ligne surlignée ; menu du logo (réglages, à propos, synchro, langue, thème) ; icône « e » rouge ; marges de la barre d'état
-- ✅ **Carte « ville qui s'allume » à l'accueil** (E9) et **panorama libre** (E18, 0.3.9) ; ⏳ ensuite : pincement pour zoomer, animation d'allumage après une réussite, ponts sur la rivière, thème d'ambiance par saison
-- ⏳ Lecteur de leçon v2 : deux volets (texte | atelier) sur tablette/bureau, fil d'Ariane, précédent/suivant (`docs/REFERENCES-PRESENTATION.md`)
-- ✅ **Révisions espacées à l'écran** (0.3.7) : FSRS rejoué depuis le journal (rien à synchroniser), 10 cartes max, jamais le jour même, réponse jamais montrée, sans XP ; bouton « Révision du jour · n » sur l'accueil ; ⏳ réglage de la rétention cible, rappel (notification)
-- ⏳ Difficulté adaptative (Elo) ; réparation de prérequis (2 min)
-- ✅ **Éditeur Python exécutable** (0.3.8, D-026) et **terminal simulé** (D-025) ; ⏳ coloration dans l'éditeur, essai sur appareil réel (WebView Android), préchargement de Python sur le site
-- ⏳ Cartes interactives (curseur, glisser, ordonner)
-- ⏳ Figures d'intuition (SVG générés, sans équation dans l'image)
-- ⏳ Comptes et **synchronisation** : écran de connexion, RxDB + `replication-supabase` (schéma `academik` déjà en ligne, voir D-019) ; test d'accès `supabase/tests/academik_rls.sql` à exécuter
-- ⏳ Mise à jour **du site** (service worker : rechargement automatique sur la carte) : non testée dans un vrai navigateur (le navigateur de test n'a pas de service worker) ; mises à jour 0.3.3 → 0.3.4 : la 0.3.3 renvoie encore vers GitHub, une installation manuelle est nécessaire une dernière fois
-- ⏳ Test « réseau coupé » avec un vrai service worker (le navigateur de test sans interface plante ici : à faire sur machine avec Chrome/Chromium)
-- ⏳ Accessibilité WCAG 2.2 AA (audit outillé), lecteur d'écran, clavier
-- ⏳ Titres du cursus en anglais (T-003 traductions), malgache non prévu
+- ✅ Moteur (déblocage 50 %, étoiles, XP, série, journal, FSRS, Elo), stockage à la COMIMa (migrations, sauvegarde, profils), hors ligne (PWA, APK signé, AppImage), mises à jour séparées contenu / application (SHA-256, `release.json` signé Ed25519)
+- ✅ Carte « ville qui s'allume » (panorama, zoom GPU, 22 quartiers), leçon immersive (fond par quartier, chemin, silhouette, lucioles, fête du boss), révisions espacées, éditeur Python (Pyodide), terminal simulé
+- ✅ **Téléchargement des apps depuis le site** (E36), **CSP stricte** site et AppImage (E37), **audit d'accessibilité automatique** à 0 violation sur les écrans principaux (E38), **réponses numériques tolérantes** (E39)
+- ⏳ **Synchronisation et comptes** : écran de connexion, RxDB + `replication-supabase` (schéma `academik` en ligne, D-019) ; exécuter `supabase/tests/academik_rls.sql`
+- ⏳ **Tests sur appareils réels** : APK sur Xiaomi Pad 7 et Samsung S20+, AppImage sur Linux Mint ; Python (Pyodide) dans la WebView Android ; mise à jour 0.3.x → 0.3.y en conservant la progression
+- ⏳ **Service worker réel** : test réseau coupé et rechargement automatique du site dans Chrome/Chromium (le navigateur de test n'a pas de service worker fiable)
+- ⏳ Accessibilité au-delà de l'automatique : lecteur d'écran (TalkBack, Orca), navigation clavier complète dans l'éditeur de code, zoom 200 %
+- ⏳ Lecteur de leçon v2 sur tablette/bureau (deux volets), fil d'Ariane ; cartes interactives (curseur, glisser) ; difficulté adaptative (Elo) ; réglage de la rétention FSRS ; rappel de révision
+- ⏳ Récapitulatif hebdomadaire local, curseur de confiance, défis ★/★★ (idées de la revue pédagogique)
+- ⏳ Tutorat par Kintana (LLM local) : seulement en option téléchargeable, jamais embarqué (poids, D-030)
 - ❓ Mettre `/tmp` sur le disque (`sudo systemctl mask tmp.mount` puis redémarrage) : à faire par Antsa
 
-## 2. Contenu (cursus complet : `CURSUS.md`, 21 modules ≈ 126 niveaux)
-| Module | État |
+## 2. Contenu (`CURSUS.md`)
+| Modules | État |
 | --- | --- |
-| 0 Raisonner | ✅ 6 niveaux (T-003) |
-| 1 Le terminal | 🔄 1.1 fait ; 1.2 à 1.5 + boss ⏳ (cartes `terminal` prêtes) |
-| 2 Python | 🔄 2.1, 2.2 faits ; 2.3 à 2.5 + boss ⏳ (cartes `code` prêtes) |
-| 3 Algorithmes | ✅ 6 niveaux (T-004) |
-| 4 Algèbre linéaire | ✅ 6 niveaux (T-005) ; barre de clarté (T-012) ; ⏳ approfondir (T-015) |
-| 5 Analyse | ✅ 6 niveaux (T-006) |
-| 6 Probabilités, 7 Statistique | ⏳ à lancer (T-007, T-008) après T-005/T-006 |
-| 8 à 20, R | ⏳ voir `CURSUS.md` (volet IA puis quant) |
-- ⏳ Mettre à jour les passages datés des livres d'Antsa avec les sources récentes (règle « le plus moderne gagne ») ; documenter dans `remplace` du manifeste
-- ⏳ Données publiques redistribuables pour le volet quant (taux BCE : à figer) ; générateur de données synthétiques (Apache-2.0)
-- ⏳ Licences des livres d'Antsa : autorisation donnée (2 nov.) ; passages de tiers à réécrire
+| 0 à 10 (raisonner → séries temporelles) | ✅ 75 niveaux |
+| 11 Réseaux de neurones, 12 Transformers, 13 LLM locaux | ✅ 6 niveaux chacun |
+| 14 RAG, 15 Agents et MCP | ✅ 6 niveaux chacun |
+| 16 Processus stochastiques, 17 Recherche quantitative | ✅ 6 niveaux chacun |
+| 18 Performance, 19 Sécurité, 20 Évaluer et produire | ✅ 6 niveaux chacun |
+| 21 Boss final « Kintana, chercheuse honnête » | ✅ 1 niveau (exploration, confirmation, rapport qui rejette) |
+| R Recherche (bonus : Lean 4, convexité, théorie de l'information) | ⏳ à concevoir |
+- ✅ **Vérification du 2 nov.** : 136 niveaux ; toutes les solutions exécutées en vrai Python ; toutes les formules rendues par KaTeX ; une seule bonne réponse par QCM ; traduction anglaise partout ; 165 liens contrôlés (153 joignables, DOI confirmés par Crossref) ; chiffres des modules 11 à 21 recalculés
+- ⏳ **Relecture croisée par Codex** des modules 11 à 21 (écrits par Claude) : Codex résout sans voir les solutions
+- ⏳ **Vrais élèves** : tester 3 à 5 niveaux avec des élèves COMIMa et des L1 ; mesurer les temps réels (durées actuelles = estimations)
+- ⏳ Liens non joignables depuis la machine de vérification (à recontrôler d'un autre réseau) : `nlp.stanford.edu/IR-book`, `otexts.com/fpp3` ; bloqués aux robots (pages réelles) : Cloudflare Learning
+- ⏳ `content/manifest.json` : ajouter les sources des modules 11 à 21 (aujourd'hui citées dans chaque niveau, pas dans le manifeste)
+- ⏳ Niveaux « enquête » (trouver l'erreur), défis ★★ facultatifs, paquet NumPy/pandas facultatif téléchargé à la demande
+- ⏳ Données publiques redistribuables pour le volet quant (aujourd'hui : synthétiques, générateur reproductible)
 
 ## 3. Qualité de la présentation (`docs/QUALITE-COURS.md`)
 - ⏳ T-010 : audit visuel comparatif (OpenClassrooms, Svelte tutorial, Brilliant, Khan, 3Blue1Brown, Rust Book, freeCodeCamp…) sur pages publiques
@@ -92,10 +95,10 @@
 - ⏳ Tâche de **relecture croisée** : Codex résout les exercices de Claude sans voir les solutions
 
 ## 5. Publication
-- ✅ v0.1.0, v0.2.0, v0.3.0, v0.3.1 (site, APK, AppImage, `release.json` signé)
-- ⏳ Tester l'AppImage sur Linux Mint ; l'APK sur Xiaomi Pad 7 et Samsung S20+ réels (WebView ≥ 140 : mode bord à bord)
-- ⏳ **Sauvegarder** `release-keys/` (clé Android et clé `update.key`) : perdre l'une = plus de mises à jour acceptées
-- ⏳ Fiches de campagne / affiches de version (habitude d'Antsa : prompts d'usage courts) quand le produit sera stabilisé
+- ✅ v0.1.0 → v0.3.26 (site, APK, AppImage, `release.json` signé) ; chaque version : CI verte avant fusion
+- ⏳ **Sauvegarder `release-keys/`** hors de la machine (clé Android et `update.key`) : perdre l'une = plus de mises à jour acceptées
+- ⏳ Supprimer l'étiquette fantôme `v0.3.16` (`git push origin :refs/tags/v0.3.16`, à faire par Antsa)
+- ⏳ Fiches de campagne / affiches de version quand le produit sera stabilisé
 
 ## 6. Idées (non engagées)
 Mode « mission » TryHackMe avec flags locaux · défis chronométrés · partage de progression · tutorat par Kintana (LLM local) une fois le module 13 écrit.

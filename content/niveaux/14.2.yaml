@@ -10,7 +10,7 @@ ia:
   en: Kintana finds the passages that contain the rare words of your question.
 sources:
 - titre: 'Robertson, Zaragoza — The Probabilistic Relevance Framework: BM25 and Beyond'
-  url: https://www.nowpublishers.com/article/Details/INR-019
+  url: https://doi.org/10.1561/1500000019
   licence: Lien seulement ; texte non repris
 - titre: Manning, Raghavan, Schütze — Introduction to Information Retrieval (chap. 6)
   url: https://nlp.stanford.edu/IR-book/
@@ -302,5 +302,5 @@ cartes:
   en: 'idf $=\ln\left(\frac{N-n+0.5}{n+0.5}+1\right)$: rare words weigh. BM25: idf, saturated tf, length normalisation. Same tokenisation for the query and the passages. No meaning, no synonyms.'
 - id: c14
   type: plus
-  fr: Pour approfondir, consulte [le cadre BM25 de Robertson et Zaragoza](https://www.nowpublishers.com/article/Details/INR-019) ; cet article demande une connexion.
-  en: For further study, see [Robertson and Zaragoza’s BM25 framework](https://www.nowpublishers.com/article/Details/INR-019); this paper needs a connection.
+  fr: Pour approfondir, consulte [le cadre BM25 de Robertson et Zaragoza](https://doi.org/10.1561/1500000019) ; cet article demande une connexion.
+  en: For further study, see [Robertson and Zaragoza’s BM25 framework](https://doi.org/10.1561/1500000019); this paper needs a connection.
