@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.11] — 2026-11-02
+
+### Message fr
+Les repères de niveaux ne se chevauchent plus : chacun est bien visible et cliquable, même dans les quartiers serrés.
+
+### Message en
+Level markers no longer overlap: each one is clearly visible and tappable, even in crowded districts.
+
 ## [0.3.10] — 2026-11-02
 
 ### Message fr

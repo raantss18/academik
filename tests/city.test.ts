@@ -48,4 +48,10 @@ describe('carte « ville qui s’allume » (E9)', () => {
     expect(a).not.toBe(b); expect(a).not.toContain('class="float"'); expect((a.match(/<polygon points="/g) ?? []).length).toBeGreaterThan(200);
   });
   it('la marque est une enseigne dans le décor quand on la demande', () => { expect(renderCity(buildDistricts(input()), { brand: 'academik' }).svg).toContain('>acad'); });
+  it('E21 : aucune épingle n\u2019en recouvre une autre', () => {
+    const ds = buildDistricts(input()), svg = renderCity(ds, { seed: 7 }).svg;
+    const xy = [...svg.matchAll(/class="pin"[^>]*transform="translate\(([-\d.]+),([-\d.]+)\)"/g)].map(m => [+m[1], +m[2]]);
+    expect(xy.length).toBeGreaterThan(20);
+    for (let i = 0; i < xy.length; i++) for (let j = i + 1; j < xy.length; j++) expect(Math.hypot(xy[i][0] - xy[j][0], xy[i][1] - xy[j][1])).toBeGreaterThan(30);
+  });
 });
