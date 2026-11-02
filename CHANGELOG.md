@@ -2,7 +2,7 @@
 
 ## [Non publié]
 
-## [0.3.18] — 2026-11-02
+### Contenu publié sans nouvelle version de l’app (2026-11-02)
 
 ### Message fr
 Quand tu te trompes, chaque question te donne maintenant un vrai indice, et les leçons te font répondre plus souvent au lieu de lire de longues explications d'affilée.

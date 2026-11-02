@@ -87,5 +87,5 @@
 ### Indices et rythme (2026-11-02, soir)
 
 - **Fait** : T-016 (288 indices écrits, un par carte notée) et T-017 (21 questions courtes insérées dans 16 niveaux) réalisées par Claude en relais ;
-  garde-fous E29 et E30 ; durées recalculées ; version 0.3.18.
+  garde-fous E29 et E30 ; durées recalculées ; aucune nouvelle version d'app nécessaire (contenu seul).
 - **Non vérifié** : aucun vrai élève ; les indices n'ont pas été relus par un pair (relecture croisée Codex à son retour, 18 h 29).
