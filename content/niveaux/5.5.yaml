@@ -1,6 +1,6 @@
 id: '5.5'
 module: 5
-duree_min: 14
+duree_min: 17
 titre: { fr: 'Descente de gradient', en: 'Gradient descent' }
 ia: { fr: 'Kintana sait apprendre ses propres paramètres par descente de gradient.', en: 'Kintana can learn its own parameters through gradient descent.' }
 sources:
@@ -42,6 +42,19 @@ cartes:
       - { code: 'w, eta = 0, 0.25', fr: 'Pour $L(w)=(w-4)^2$, pars de $w_0=0$ avec $\eta=1/4$.', en: 'For $L(w)=(w-4)^2$, start at $w_0=0$ with $\eta=1/4$.' }
       - { code: 'g = 2*(w-4)', fr: 'La dérivée actuelle vaut $-8$.', en: 'The current derivative is $-8$.' }
       - { code: 'w = w - eta*g', fr: 'Le nouveau réglage vaut $2$ ; la perte passe de $16$ à $4$.', en: 'The new setting is $2$; the loss drops from $16$ to $4$.' }
+  - id: d_suite
+    type: idee
+    fr: 'Chaque pas se lit en trois temps : calculer la pente, la multiplier par $\eta$, retrancher le résultat. On répète avec le nouveau réglage.'
+    en: 'Each step reads in three moves: compute the slope, multiply it by $\eta$, subtract the result. Repeat with the new setting.'
+    figure:
+      kind: tableau
+      entetes: ['$k$', '$w_k$', '$L''(w_k)$']
+      cellules:
+        - ['$0$', '$0$', '$-12$']
+        - ['$1$', '$3$', '$-6$']
+        - ['$2$', '$4{,}5$', '$-3$']
+        - ['$3$', '$5{,}25$', { fr: '$-1{,}5$', en: '$-1.5$', ton: ok }]
+      legende: { fr: 'Pour $L(w)=(w-6)^2$, $\eta=\frac14$ : la pente se réduit de moitié à chaque pas ; $w_k$ approche $6$.', en: 'For $L(w)=(w-6)^2$, $\eta=\frac14$: the slope halves at each step; $w_k$ approaches $6$.' }
   - id: c4
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -58,6 +71,19 @@ cartes:
     reponses: ['1']
     verif: 'print((3-4)**2)'
     explication: { fr: 'La perte vaut $1$ ; ne confonds pas le paramètre et la perte.', en: 'The loss is $1$; distinguish the parameter from the loss.' }
+  - id: d_pas
+    type: idee
+    fr: 'Le pas $\eta$ se règle : trop petit, la descente est lente ; trop grand, elle oscille ou diverge. Voyons $L(w)=w^2$, où $L''(w)=2w$, depuis $w_0=1$.'
+    en: 'The step $\eta$ must be tuned: too small, descent is slow; too large, it oscillates or diverges. Take $L(w)=w^2$, where $L''(w)=2w$, from $w_0=1$.'
+    figure:
+      kind: tableau
+      entetes: ['$\eta$', '$w_1=1-2\eta$', { fr: 'Verdict', en: 'Verdict' }]
+      cellules:
+        - ['$0{,}1$', '$0{,}8$', { fr: 'avance doucement', en: 'moves gently', ton: ok }]
+        - ['$0{,}5$', '$0$', { fr: 'tombe sur le minimum', en: 'lands on the minimum', ton: ok }]
+        - ['$1$', '$-1$', { fr: 'saute de l’autre côté', en: 'jumps to the other side', ton: bad }]
+        - ['$1{,}1$', '$-1{,}2$', { fr: 'diverge : $|w|$ grandit', en: 'diverges: $|w|$ grows', ton: bad }]
+      legende: { fr: 'Pour $\eta>1$, chaque pas éloigne de $0$ : le pas doit rester assez petit.', en: 'For $\eta>1$ every step moves away from $0$: the step must stay small enough.' }
   - id: c6
     type: saisie
     note: { kind: exercise, poids: 1 }
@@ -76,6 +102,11 @@ cartes:
       - { fr: 'Il oscille avec une amplitude constante.', en: 'It oscillates with constant amplitude.' }
       - { fr: 'Il s’éloigne indéfiniment du minimiseur.', en: 'It moves ever farther from the minimizer.' }
     explication: { fr: '$2^{-k}$ tend vers zéro mais reste positif pour tout entier fini ; un ordinateur peut arrondir différemment.', en: '$2^{-k}$ tends to zero but remains positive for every finite integer; a computer may round differently.' }
+  - id: d_arret
+    type: idee
+    fr: 'On arrête la descente quand la pente est presque nulle ou quand la perte ne baisse presque plus. On fixe aussi d’avance un nombre maximal d’itérations.'
+    en: 'Stop the descent when the slope is almost zero or the loss barely decreases. Also fix a maximum number of iterations in advance.'
+    exemple: { fr: 'Pour $L(w)=(w-4)^2$ avec $\eta=\frac14$, on s’arrête dès que $|L''(w)|<0{,}1$, soit $|w-4|<0{,}05$ ; la limite d’itérations évite une boucle sans fin si le pas est mal choisi.', en: 'For $L(w)=(w-4)^2$ with $\eta=\frac14$, stop as soon as $|L''(w)|<0.1$, i.e. $|w-4|<0.05$; the iteration cap avoids an endless loop if the step is badly chosen.' }
   - id: c8
     type: piege
     fr: 'Un petit gradient ne prouve pas toujours un bon minimum ; en pratique, contrôle aussi la perte et limite le nombre d’itérations.'
