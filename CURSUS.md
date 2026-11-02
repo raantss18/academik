@@ -31,7 +31,7 @@
 | 18 | **Performance** | calculer vite (vectoriser, profiler, C++) | complexité réelle, mémoire/caches, vectorisation NumPy, profilage, C++ moderne de base, parallélisme | [ALGO], docs officielles |
 | 19 | **Sécurité** | résister aux attaques (injection de prompt, secrets, réseau) | réseaux, TLS, crypto moderne **par bibliothèques** (AES-GCM, X25519, ML-KEM), programmation sûre, OWASP LLM Top 10, lab d'injection de prompt | Menezes (HAC), NIST FIPS 203, OWASP |
 | 20 | **Évaluer et produire** | être mesurée, surveillée, livrée | évals, jeux de test, observabilité, reproductibilité, déploiement, éthique | HF, articles récents |
-| R | **Recherche** (bonus, le Rova) | prouver une propriété de son code | types et propositions, induction en Lean 4, optimisation convexe (Hessienne), théorie de l'information, MoE et multimodalité (bonus IA) | Mathematics in Lean |
+| 22 | **Recherche** (bonus, fait en 0.3.28) | prouver une propriété de son code | types et propositions, induction en Lean 4, optimisation convexe (Hessienne), théorie de l'information, MoE et multimodalité (bonus IA) | Mathematics in Lean |
 
 **Boss final** : Kintana, agent local (modules 13–15), reçoit une hypothèse de marché, la teste sur des données hors
 ligne (modules 10, 16, 17), corrige pour les tests multiples (module 7), et rend un rapport sourcé qui **rejette** ce qui

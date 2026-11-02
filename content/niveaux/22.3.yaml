@@ -1,0 +1,363 @@
+# Niveau 22.3 — Recherche 3 : prouver une propriété du code. Original academik ; notions vérifiées dans Theorem Proving in Lean 4 (Apache-2.0). Preuves compilées avec Lean 4.35 ; calculs exécutés.
+id: '22.3'
+module: 22
+duree_min: 19
+titre:
+  fr: Prouver une propriété de son code
+  en: Proving a property of your code
+ia:
+  fr: Kintana écrit la spécification d’une de ses fonctions et la prouve en Lean pour toutes les listes.
+  en: Kintana writes the specification of one of her functions and proves it in Lean for every list.
+sources:
+- titre: Avigad, de Moura, Kong, Ullrich — Theorem Proving in Lean 4, « Inductive Types » et « Tactics »
+  url: https://lean-lang.org/theorem_proving_in_lean4/
+  licence: Apache-2.0 ; notions citées, exemples réécrits
+- titre: Christiansen — Functional Programming in Lean
+  url: https://lean-lang.org/functional_programming_in_lean/
+  licence: Référence en lien seulement ; aucun extrait repris
+- titre: Lean 4 — manuel de référence
+  url: https://lean-lang.org/doc/reference/latest/
+  licence: Apache-2.0 ; documentation officielle citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Une fonction de tri renvoie toujours la liste vide. Elle satisfait pourtant la propriété « le résultat est trié ». Peut-on dire qu’elle est un bon tri ?
+  en: A sorting function always returns the empty list. Yet it satisfies the property “the result is sorted”. Can we call it a good sort?
+  choix:
+  - fr: 'Non : la propriété est trop faible, il manque « mêmes éléments que l’entrée »'
+    en: 'No: the property is too weak, it lacks “same elements as the input”'
+    juste: true
+  - fr: 'Oui : elle est prouvée'
+    en: 'Yes: it is proved'
+  - fr: Oui, si la liste vide est triée
+    en: Yes, if the empty list is sorted
+  indice:
+    fr: 'Une propriété prouvée ne dit que ce qu’elle dit : relis exactement ce qu’elle affirme.'
+    en: 'A proved property only says what it says: reread exactly what it claims.'
+  explication:
+    fr: 'La liste vide est triée, donc la propriété est vraie. Un bon tri doit aussi **conserver les éléments** : le résultat est une permutation de l’entrée.'
+    en: 'The empty list is sorted, so the property is true. A good sort must also **keep the elements**: the result is a permutation of the input.'
+- id: c2
+  type: idee
+  fr: Une **spécification** est la liste des propriétés que ton code doit vérifier. Prouver un programme, c’est prouver ces propriétés pour **toutes** les entrées. Plus la spécification est précise, plus la preuve vaut quelque chose.
+  en: A **specification** is the list of properties your code must satisfy. Proving a program means proving these properties for **every** input. The more precise the specification, the more the proof is worth.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Fonction
+      en: Function
+    - fr: Propriété à prouver
+      en: Property to prove
+    cellules:
+    - - fr: concaténation
+        en: concatenation
+      - fr: $\text{long}(xs\mathbin{+\!\!+}ys)=\text{long}(xs)+\text{long}(ys)$
+        en: $\text{len}(xs\mathbin{+\!\!+}ys)=\text{len}(xs)+\text{len}(ys)$
+    - - fr: renverser
+        en: reverse
+      - fr: renverser deux fois rend la liste
+        en: reversing twice returns the list
+    - - fr: trier
+        en: sort
+        ton: ok
+      - fr: résultat trié **et** permutation de l’entrée
+        en: sorted result **and** permutation of the input
+        ton: ok
+    legende:
+      fr: Chaque ligne est un énoncé que Lean peut vérifier.
+      en: Each row is a statement Lean can check.
+- id: c3
+  type: exemple
+  titre:
+    fr: Prouver une propriété sur les listes
+    en: Proving a property on lists
+  lang: lean
+  etapes:
+  - code: 'def longueur : List α → Nat'
+    fr: On définit la longueur d’une liste, avec un type `α` quelconque.
+    en: We define the length of a list, for any type `α`.
+  - code: '  | [] => 0'
+    fr: Une liste vide a pour longueur `0`.
+    en: An empty list has length `0`.
+  - code: '  | _ :: xs => longueur xs + 1'
+    fr: 'Un élément suivi de `xs` : on ajoute `1` à la longueur de `xs`.'
+    en: 'An element followed by `xs`: add `1` to the length of `xs`.'
+  - code: 'theorem longueur_concat (xs ys : List α) :'
+    fr: 'Énoncé : la longueur d’une concaténation est la somme des longueurs.'
+    en: 'Statement: the length of a concatenation is the sum of the lengths.'
+  - code: '    longueur (xs ++ ys) = longueur xs + longueur ys := by'
+    fr: Pour **toutes** les listes `xs` et `ys`.
+    en: For **all** lists `xs` and `ys`.
+  - code: '  induction xs with'
+    fr: 'On raisonne par récurrence sur `xs` : liste vide, ou élément suivi d’une liste.'
+    en: 'We use induction on `xs`: empty list, or an element followed by a list.'
+  - code: '  | nil => simp [longueur]'
+    fr: 'Cas vide : `simp` déplie `longueur` et conclut.'
+    en: 'Empty case: `simp` unfolds `longueur` and concludes.'
+  - code: '  | cons x xs ih => simp [longueur, ih]; omega'
+    fr: 'Cas `x :: xs` : `ih` vaut pour `xs`. `simp` l’utilise, `omega` finit l’addition. Lean accepte.'
+    en: 'Case `x :: xs`: `ih` holds for `xs`. `simp` uses it, `omega` finishes the addition. Lean accepts.'
+- id: c4
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: Dans le cas `| cons x xs ih`, que dit `ih` ?
+  en: In the case `| cons x xs ih`, what does `ih` say?
+  choix:
+  - fr: Que la propriété est vraie pour la queue `xs`
+    en: That the property holds for the tail `xs`
+    juste: true
+  - fr: 'Que la propriété est vraie pour `x :: xs`'
+    en: 'That the property holds for `x :: xs`'
+  - fr: Que `x` est un entier
+    en: That `x` is an integer
+  indice:
+    fr: Une récurrence suppose la propriété sur le plus petit, et la prouve sur le plus grand.
+    en: Induction assumes the property on the smaller one, and proves it on the larger one.
+  explication:
+    fr: '`ih` concerne la liste plus courte `xs` ; le but concerne `x :: xs`.'
+    en: '`ih` concerns the shorter list `xs`; the goal concerns `x :: xs`.'
+- id: c5
+  type: idee
+  fr: 'Une liste se construit avec deux briques : la liste vide `[]`, et `x :: xs`, un élément posé devant une liste. La récurrence sur les listes suit cette construction, comme celle sur les entiers suit `zero` et `succ`.'
+  en: 'A list is built from two bricks: the empty list `[]`, and `x :: xs`, an element placed in front of a list. Induction on lists follows this construction, as induction on integers follows `zero` and `succ`.'
+  exemple:
+    fr: '`[3, 1]` s’écrit `3 :: 1 :: []`.'
+    en: '`[3, 1]` is written `3 :: 1 :: []`.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Construire une liste
+        en: Building a list
+      noeuds:
+      - fr: '[]'
+        en: '[]'
+      - fr: '1 :: []'
+        en: '1 :: []'
+      - fr: '3 :: 1 :: []'
+        en: '3 :: 1 :: []'
+      - fr: '[3, 1]'
+        en: '[3, 1]'
+        ton: ok
+    legende:
+      fr: On pose les éléments un par un, de la droite vers la gauche.
+      en: Elements are placed one by one, from right to left.
+- id: c6
+  type: exemple
+  titre:
+    fr: Tester, c’est vérifier quelques cas
+    en: Testing means checking a few cases
+  lang: python
+  etapes:
+  - code: |-
+      from itertools import product
+      listes = [list(p) for n in range(4) for p in product([0, 1], repeat=n)]
+    fr: 'On énumère toutes les listes de 0 et de 1 de longueur 0 à 3 : 15 listes.'
+    en: 'We list every list of 0s and 1s of length 0 to 3: 15 lists.'
+  - code: print(all(len(a + b) == len(a) + len(b) for a in listes for b in listes))
+    fr: 'On teste la propriété de `longueur_concat` sur les 225 couples : `True`. C’est un test ; Lean, lui, l’a prouvée pour toutes les listes.'
+    en: 'We test the property of `longueur_concat` on the 225 pairs: `True`. This is a test; Lean proved it for every list.'
+  verif: |-
+    from itertools import product
+    listes = [list(p) for n in range(4) for p in product([0, 1], repeat=n)]
+    print(all(len(a + b) == len(a) + len(b) for a in listes for b in listes))
+  sortie: 'True'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `listes(l_max)`** : toutes les listes de `0` et de `1` de longueur `0` à `l_max`, rangées par longueur croissante. Utilise `product([0, 1], repeat=n)`.'
+  en: 'Your turn. **Write `listes(l_max)`**: every list of `0`s and `1`s of length `0` to `l_max`, in increasing length order. Use `product([0, 1], repeat=n)`.'
+  depart: |
+    from itertools import product
+
+    # écris ta fonction listes ici
+  tests: |-
+    assert listes(0) == [[]]
+    assert listes(1) == [[], [0], [1]]
+    assert len(listes(4)) == 31
+    assert listes(2)[3] == [0, 0]
+  solutionCode: |
+    from itertools import product
+
+    def listes(l_max):
+        return [list(p) for n in range(l_max + 1) for p in product([0, 1], repeat=n)]
+  indice:
+    fr: Une boucle sur `n` de `0` à `l_max`, puis une boucle sur `product([0, 1], repeat=n)` ; chaque `p` devient `list(p)`.
+    en: A loop on `n` from `0` to `l_max`, then a loop on `product([0, 1], repeat=n)`; each `p` becomes `list(p)`.
+  explication:
+    fr: 'Il y a $2^n$ listes de longueur $n$ : le nombre de cas double à chaque étape.'
+    en: 'There are $2^n$ lists of length $n$: the number of cases doubles at each step.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Combien de listes de `0` et de `1` de longueur au plus 4 existe-t-il ?
+  en: How many lists of `0`s and `1`s of length at most 4 exist?
+  reponses:
+  - '31'
+  verif: print(sum(2 ** n for n in range(5)))
+  indice:
+    fr: Additionne $2^0+2^1+\dots+2^4$.
+    en: Add $2^0+2^1+\dots+2^4$.
+  explication:
+    fr: '$1+2+4+8+16=31$ : c’est $2^5-1$.'
+    en: '$1+2+4+8+16=31$: this is $2^5-1$.'
+- id: c9
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `contre_exemple_liste(prop, l_max)`** : la première liste de `listes(l_max)` pour laquelle `prop(c)` est faux, ou `None`. La fonction `listes` est fournie.'
+  en: '**Write `contre_exemple_liste(prop, l_max)`**: the first list of `listes(l_max)` for which `prop(c)` is false, or `None`. The function `listes` is provided.'
+  depart: |
+    from itertools import product
+
+    def listes(l_max):
+        return [list(p) for n in range(l_max + 1) for p in product([0, 1], repeat=n)]
+
+    # écris ta fonction contre_exemple_liste ici
+  tests: |-
+    assert contre_exemple_liste(lambda c: c[::-1] == c, 4) == [0, 1]
+    assert contre_exemple_liste(lambda c: c[::-1][::-1] == c, 4) is None
+    assert contre_exemple_liste(lambda c: len(c) < 3, 4) == [0, 0, 0]
+  solutionCode: |
+    from itertools import product
+
+    def listes(l_max):
+        return [list(p) for n in range(l_max + 1) for p in product([0, 1], repeat=n)]
+
+    def contre_exemple_liste(prop, l_max):
+        for c in listes(l_max):
+            if not prop(c):
+                return c
+        return None
+  indice:
+    fr: Parcours `listes(l_max)` ; renvoie la première liste qui échoue, puis `None`.
+    en: Loop over `listes(l_max)`; return the first list that fails, then `None`.
+  explication:
+    fr: 'Comme `decide` en Lean : tout vérifier sur un domaine fini. Mais seules les petites listes sont testées.'
+    en: 'Like `decide` in Lean: check everything on a finite domain. But only small lists are tested.'
+- id: c10
+  type: parsons
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'Remets dans l’ordre la preuve de `longueur_concat`. Chaque `next` traite un but, dans l’ordre où Lean les crée : liste vide, puis `x :: xs`.'
+  en: 'Put the proof of `longueur_concat` in order. Each `next` handles a goal, in the order Lean creates them: empty list, then `x :: xs`.'
+  lang: lean
+  lignes:
+  - 'theorem longueur_concat (xs ys : List α) :'
+  - '    longueur (xs ++ ys) = longueur xs + longueur ys := by'
+  - '  induction xs'
+  - '  next => simp [longueur]'
+  - '  next x xs ih => simp [longueur, ih]; omega'
+  lean_pre: |
+    def longueur : List α → Nat
+      | [] => 0
+      | _ :: xs => longueur xs + 1
+  indice:
+    fr: 'L’énoncé vient d’abord, sur deux lignes. Ensuite `induction xs`, puis le cas vide, puis le cas `x :: xs`.'
+    en: 'The statement comes first, on two lines. Then `induction xs`, then the empty case, then the `x :: xs` case.'
+  explication:
+    fr: Le cas vide ne contient aucune hypothèse ; le second reçoit `x`, `xs` et `ih`.
+    en: The empty case has no hypothesis; the second receives `x`, `xs` and `ih`.
+- id: c11
+  type: idee
+  fr: 'Lean sait finir seul beaucoup de preuves : `rfl` conclut un calcul, `simp` simplifie, `omega` règle l’arithmétique, `decide` teste un domaine fini.'
+  en: 'Lean can finish many proofs alone: `rfl` concludes a computation, `simp` simplifies, `omega` settles arithmetic, `decide` tests a finite domain.'
+  exemple:
+    fr: '`theorem rr (xs : List Nat) : xs.reverse.reverse = xs := by simp` : une seule tactique suffit.'
+    en: '`theorem rr (xs : List Nat) : xs.reverse.reverse = xs := by simp`: a single tactic is enough.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Tactique
+      en: Tactic
+    - fr: Pour quel but ?
+      en: For which goal?
+    cellules:
+    - - fr: '`rfl`'
+        en: '`rfl`'
+      - fr: deux côtés qui se calculent pareil
+        en: two sides that compute the same
+    - - fr: '`simp`'
+        en: '`simp`'
+      - fr: récrire avec des règles connues
+        en: rewrite with known rules
+    - - fr: '`omega`'
+        en: '`omega`'
+      - fr: sommes et comparaisons d’entiers
+        en: integer sums and comparisons
+    - - fr: '`decide`'
+        en: '`decide`'
+        ton: ok
+      - fr: domaine fini, tous les cas
+        en: finite domain, every case
+        ton: ok
+    legende:
+      fr: Si aucune ne marche, on revient à la récurrence.
+      en: If none works, go back to induction.
+- id: c12
+  type: piege
+  fr: 'Une preuve garantit ce qui est énoncé, rien de plus. Un tri qui renvoie toujours `[]` est prouvé « trié ». Écris toujours la spécification **complète** : résultat trié **et** mêmes éléments que l’entrée.'
+  en: 'A proof guarantees what is stated, nothing more. A sort that always returns `[]` is proved “sorted”. Always write the **complete** specification: sorted result **and** same elements as the input.'
+- id: c13
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `verifie_tri(f, cas)`** : `True` si, pour chaque `c` de `cas`, `f(c)` est trié (`est_trie`) **et** une permutation de `c` (`est_permutation`). Les deux fonctions sont fournies.'
+  en: 'Challenge. **Write `verifie_tri(f, cas)`**: `True` if, for each `c` in `cas`, `f(c)` is sorted (`est_trie`) **and** a permutation of `c` (`est_permutation`). Both functions are provided.'
+  depart: |
+    def est_trie(c):
+        return all(c[i] <= c[i + 1] for i in range(len(c) - 1))
+
+    def est_permutation(a, b):
+        return sorted(a) == sorted(b)
+
+    # écris ta fonction verifie_tri ici
+  tests: |-
+    cas = [[3, 1, 2], [], [5, 5, 1]]
+    assert verifie_tri(sorted, cas)
+    assert not verifie_tri(lambda c: [], cas)
+    assert not verifie_tri(lambda c: c, cas)
+    assert not verifie_tri(lambda c: sorted(c)[:-1], cas)
+  solutionCode: |
+    def est_trie(c):
+        return all(c[i] <= c[i + 1] for i in range(len(c) - 1))
+
+    def est_permutation(a, b):
+        return sorted(a) == sorted(b)
+
+    def verifie_tri(f, cas):
+        return all(est_trie(f(c)) and est_permutation(f(c), c) for c in cas)
+  indice:
+    fr: Utilise `all(...)` sur `cas`, avec `est_trie(f(c)) and est_permutation(f(c), c)`.
+    en: Use `all(...)` over `cas`, with `est_trie(f(c)) and est_permutation(f(c), c)`.
+  explication:
+    fr: 'Le tri vide passe `est_trie` mais échoue `est_permutation` : la spécification complète le rattrape.'
+    en: 'The empty sort passes `est_trie` but fails `est_permutation`: the complete specification catches it.'
+- id: c14
+  type: idee
+  fr: 'Le lien avec Kintana : au niveau final du module, tu prouveras une propriété d’une de ses fonctions en Lean, puis tu la testeras en Python. La preuve donne la certitude, le test sert de filet de sécurité.'
+  en: 'The link with Kintana: in the final level of the module, you will prove a property of one of her functions in Lean, then test it in Python. The proof gives certainty, the test is a safety net.'
+  exemple:
+    fr: Pour une fonction critique, on prouve ; pour le reste, on teste vite et souvent.
+    en: For a critical function, we prove; for the rest, we test quickly and often.
+- id: c15
+  type: retenir
+  fr: 'Spécification = propriétés à prouver pour toutes les entrées. Sur les listes : `[]` ou `x :: xs`, récurrence en deux cas. Tactiques : `rfl`, `simp`, `omega`, `decide`. Une spécification incomplète rend la preuve vide de sens.'
+  en: 'Specification = properties to prove for every input. On lists: `[]` or `x :: xs`, induction in two cases. Tactics: `rfl`, `simp`, `omega`, `decide`. An incomplete specification makes the proof meaningless.'
+- id: c16
+  type: plus
+  fr: Pour aller plus loin, lis [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/) ; ce livre demande une connexion.
+  en: To go further, read [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/); this book needs a connection.

@@ -1,7 +1,7 @@
 # TODO d'academik
 
 > Source unique du « qui fait quoi, où on en est ». Mis à jour à chaque tâche. Légende : ✅ fait · 🔄 en cours · ⏳ à faire · ⛔ bloqué · ❓ décision d'Antsa.
-> Dernière mise à jour : 2 nov. 2026 (v0.3.26 publiée ; vérification complète du contenu, audit sécurité et accessibilité, boss final). Règles : `CONSIGNES.md` ; décisions : `DECISIONS.md` ; Codex : `docs/CODEX.md`.
+> Dernière mise à jour : 2 nov. 2026 (v0.3.28 : monuments par niveau, enseignes sans chevauchement, module bonus Recherche ; v0.3.27 publiée). Règles : `CONSIGNES.md` ; décisions : `DECISIONS.md` ; Codex : `docs/CODEX.md`.
 
 ## 0. Corrections signalées par Antsa (journal)
 > **Processus (obligatoire)** : dès qu'Antsa signale une erreur → (1) l'inscrire ici **avant** de corriger ; (2) corriger la **cause**, pas seulement le symptôme ;
@@ -50,11 +50,13 @@
 | E39 | 2 nov. (trouvée par Claude) | Une réponse juste écrite autrement était refusée (`2.0` pour `2`, `75 %` pour `75`, `2 401` pour `2401`) | comparaison de texte exacte | `src/lib/answer.ts` : écriture tolérante (virgule, espaces, `%`, notation scientifique), valeur exacte à 1e-9 près ; une valeur différente reste refusée | `answer.test` | 0.3.27 |
 | E40 | 2 nov. (vérification des sources par Claude) | Un tableau de 16.boss affichait des fréquences « simulées » non calculées ; un lien mort (Bell Labs) ; deux liens bloqués par l'éditeur | valeurs écrites à la main sans exécution ; liens jamais vérifiés après écriture | valeurs remplacées par une vraie simulation (graine 1, seuil 120 €, théorie 0,223) ; lien archivé ; DOI vérifiés par Crossref ; mesure réelle pour l'exemple NumPy (54 ms contre 1,8 ms) ; `scripts/verifier-liens.mjs` et `scripts/audit-contenu.mjs` | `audit-contenu` (KaTeX, QCM, traductions) | contenu |
 | E41 | 2 nov. (trouvée par Claude, construction) | La construction échouait : le contenu embarqué (2,11 Mo d'un bloc) dépassait la limite de 2 Mio du précache hors ligne | tout le cursus dans un seul fichier, qui grossissait à chaque module | contenu découpé en un morceau par module (≤ 200 Ko chacun), réunis au chargement ; 70 fichiers précachés | `invariants` E41 | 0.3.27 |
+| E42 | 2 nov. (Antsa, capture du téléphone) | L'enseigne « 20 · Évaluer et produire » cachait le repère 20.1 et un cadenas ; on ne voyait pas quel bâtiment appartient à quel niveau | l'enseigne avait un seul emplacement fixe, calculé sans tenir compte des épingles | l'enseigne essaie 30 emplacements le long de la route d'entrée et garde celui qui ne chevauche ni épingle ni autre enseigne ; chaque niveau a un monument nommé, affiché sur la fiche du niveau et l'écran de fin (« allumage 40 % », « allumage complet ») | `city.test` E42 (échoue avec l'ancien placement, vérifié) | 0.3.28 |
+| E43 | 2 nov. (Claude) | Une preuve Lean fausse aurait pu être publiée : rien ne la compilait | contenu nouveau (Lean 4) sans vérificateur dans les tests | chaque exemple et chaque exercice d'ordre Lean est compilé par le vrai `lean` ; les cartes « ordre » doivent n'avoir qu'un seul ordre valide (contrôlé à la génération) ; coloration Lean testée | `content.test` E43 (ignoré sans `lean`, comme en CI) | 0.3.28 |
 | E9 | 1 nov. | la ville n'est pas à l'accueil | la maquette n'avait pas été intégrée | générateur porté dans `src/lib/city/` (fonction pure, chargée à la demande, 15,6 Ko gzip) ; un quartier par module, un bâtiment par niveau, allumé selon les étoiles ; fiche du niveau (Jouer/Rejouer) ; liste en choix mémorisé ; retour Android ferme la fiche ; vérifié à 375 px | `city.test` (épingles, états, échappement, déterminisme, temps), `invariants` E9 | 0.3.6 |
 
 ## 1. Application et site
 - ✅ Moteur (déblocage 50 %, étoiles, XP, série, journal, FSRS, Elo), stockage à la COMIMa (migrations, sauvegarde, profils), hors ligne (PWA, APK signé, AppImage), mises à jour séparées contenu / application (SHA-256, `release.json` signé Ed25519)
-- ✅ Carte « ville qui s'allume » (panorama, zoom GPU, 22 quartiers), leçon immersive (fond par quartier, chemin, silhouette, lucioles, fête du boss), révisions espacées, éditeur Python (Pyodide), terminal simulé
+- ✅ Carte « ville qui s'allume » (panorama, zoom GPU, 23 quartiers, un monument nommé par niveau), leçon immersive (fond par quartier, chemin, silhouette, lucioles, fête du boss), révisions espacées, éditeur Python (Pyodide), terminal simulé
 - ✅ **Téléchargement des apps depuis le site** (E36), **CSP stricte** site et AppImage (E37), **audit d'accessibilité automatique** à 0 violation sur les écrans principaux (E38), **réponses numériques tolérantes** (E39)
 - ⏳ **Synchronisation et comptes** : écran de connexion, RxDB + `replication-supabase` (schéma `academik` en ligne, D-019) ; exécuter `supabase/tests/academik_rls.sql`
 - ⏳ **Tests sur appareils réels** : APK sur Xiaomi Pad 7 et Samsung S20+, AppImage sur Linux Mint ; Python (Pyodide) dans la WebView Android ; mise à jour 0.3.x → 0.3.y en conservant la progression
@@ -66,6 +68,7 @@
 - ❓ Mettre `/tmp` sur le disque (`sudo systemctl mask tmp.mount` puis redémarrage) : à faire par Antsa
 
 ## 2. Contenu (`CURSUS.md`)
+> Module 22 : preuves Lean vérifiées avec Lean 4.35 ; chiffres des experts (47 G / 13 G, 8 experts, 2 actifs) tirés du résumé arXiv 2401.04088 ; la taille d'un expert (≈ 5,7 G) est un ordre de grandeur déduit de chiffres arrondis, et le dit.
 | Modules | État |
 | --- | --- |
 | 0 à 10 (raisonner → séries temporelles) | ✅ 75 niveaux |
@@ -74,12 +77,12 @@
 | 16 Processus stochastiques, 17 Recherche quantitative | ✅ 6 niveaux chacun |
 | 18 Performance, 19 Sécurité, 20 Évaluer et produire | ✅ 6 niveaux chacun |
 | 21 Boss final « Kintana, chercheuse honnête » | ✅ 1 niveau (exploration, confirmation, rapport qui rejette) |
-| R Recherche (bonus : Lean 4, convexité, théorie de l'information) | ⏳ à concevoir |
+| 22 Recherche (bonus) : Lean 4, récurrence, spécification, Hessienne, entropie croisée/KL/perplexité, experts et patchs, boss « Prouve ton code » | ✅ 7 niveaux (preuves compilées par Lean 4.35) |
 - ✅ **Vérification du 2 nov.** : 136 niveaux ; toutes les solutions exécutées en vrai Python ; toutes les formules rendues par KaTeX ; une seule bonne réponse par QCM ; traduction anglaise partout ; 165 liens contrôlés (153 joignables, DOI confirmés par Crossref) ; chiffres des modules 11 à 21 recalculés
-- ⏳ **Relecture croisée par Codex** des modules 11 à 21 (écrits par Claude) : Codex résout sans voir les solutions
+- ⏳ **Relecture croisée par Codex** des modules 11 à 22 (écrits par Claude) : Codex résout sans voir les solutions
 - ⏳ **Vrais élèves** : tester 3 à 5 niveaux avec des élèves COMIMa et des L1 ; mesurer les temps réels (durées actuelles = estimations)
 - ⏳ Liens non joignables depuis la machine de vérification (à recontrôler d'un autre réseau) : `nlp.stanford.edu/IR-book`, `otexts.com/fpp3` ; bloqués aux robots (pages réelles) : Cloudflare Learning
-- ⏳ `content/manifest.json` : ajouter les sources des modules 11 à 21 (aujourd'hui citées dans chaque niveau, pas dans le manifeste)
+- ⏳ `content/manifest.json` : ajouter les sources des modules 11 à 22 (aujourd'hui citées dans chaque niveau, pas dans le manifeste)
 - ⏳ Niveaux « enquête » (trouver l'erreur), défis ★★ facultatifs, paquet NumPy/pandas facultatif téléchargé à la demande
 - ⏳ Données publiques redistribuables pour le volet quant (aujourd'hui : synthétiques, générateur reproductible)
 
@@ -95,7 +98,7 @@
 - ⏳ Tâche de **relecture croisée** : Codex résout les exercices de Claude sans voir les solutions
 
 ## 5. Publication
-- ✅ v0.1.0 → v0.3.26 (site, APK, AppImage, `release.json` signé) ; chaque version : CI verte avant fusion
+- ✅ v0.1.0 → v0.3.28 (site, APK, AppImage, `release.json` signé) ; chaque version : CI verte avant fusion
 - ⏳ **Sauvegarder `release-keys/`** hors de la machine (clé Android et `update.key`) : perdre l'une = plus de mises à jour acceptées
 - ⏳ Supprimer l'étiquette fantôme `v0.3.16` (`git push origin :refs/tags/v0.3.16`, à faire par Antsa)
 - ⏳ Fiches de campagne / affiches de version quand le produit sera stabilisé

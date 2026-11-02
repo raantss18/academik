@@ -1,0 +1,343 @@
+# Niveau 22.2 — Recherche 2 : récurrence en Lean 4. Original academik ; notions vérifiées dans Theorem Proving in Lean 4 (Apache-2.0). Preuves et messages d’erreur obtenus avec Lean 4.35 ; calculs exécutés.
+id: '22.2'
+module: 22
+duree_min: 19
+titre:
+  fr: La récurrence en Lean
+  en: Induction in Lean
+ia:
+  fr: Kintana prouve en Lean qu’une formule vaut pour tous les entiers, et pas seulement pour ceux qu’elle a testés.
+  en: Kintana proves in Lean that a formula holds for every integer, not only for those she tested.
+sources:
+- titre: Avigad, de Moura, Kong, Ullrich — Theorem Proving in Lean 4, « Induction and Recursion »
+  url: https://lean-lang.org/theorem_proving_in_lean4/
+  licence: Apache-2.0 ; notions citées, exemples réécrits
+- titre: Avigad, Massot — Mathematics in Lean
+  url: https://leanprover-community.github.io/mathematics_in_lean/
+  licence: Apache-2.0 ; notions citées
+- titre: Lean 4 — manuel de référence (tactiques induction, rw, simp, omega)
+  url: https://lean-lang.org/doc/reference/latest/
+  licence: Apache-2.0 ; documentation officielle citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Pour prouver une propriété $P(n)$ pour tout entier naturel $n$, que suffit-il de montrer ?
+  en: To prove a property $P(n)$ for every natural number $n$, what is it enough to show?
+  choix:
+  - fr: $P(0)$, puis que $P(k)$ entraîne $P(k+1)$ pour tout $k$
+    en: $P(0)$, then that $P(k)$ implies $P(k+1)$ for every $k$
+    juste: true
+  - fr: $P(0)$ seulement
+    en: $P(0)$ only
+  - fr: $P(k)$ pour beaucoup de valeurs de $k$
+    en: $P(k)$ for many values of $k$
+  indice:
+    fr: 'Pense aux dominos : le premier tombe, et chacun fait tomber le suivant.'
+    en: 'Think of dominoes: the first falls, and each one knocks over the next.'
+  explication:
+    fr: 'C’est la **récurrence**, vue au module 0 : une initialisation et une hérédité. Lean en fait une tactique.'
+    en: 'This is **induction**, seen in module 0: a base case and an inductive step. Lean turns it into a tactic.'
+- id: c2
+  type: idee
+  fr: 'En Lean, les entiers naturels `Nat` sont construits avec deux briques : `zero`, et `succ k`, le successeur $k+1$. Tout entier est l’un ou l’autre. La récurrence suit cette construction : un cas par brique.'
+  en: 'In Lean, natural numbers `Nat` are built from two bricks: `zero`, and `succ k`, the successor $k+1$. Every number is one or the other. Induction follows this construction: one case per brick.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Les entiers vus par Lean
+        en: Numbers as Lean sees them
+      noeuds:
+      - fr: zero
+        en: zero
+      - fr: succ zero = 1
+        en: succ zero = 1
+      - fr: succ 1 = 2
+        en: succ 1 = 2
+      - fr: …
+        en: …
+        ton: ok
+    legende:
+      fr: Prouver $P$ sur `zero`, puis passer de $k$ à `succ k`, atteint tous les entiers.
+      en: Proving $P$ on `zero`, then going from $k$ to `succ k`, reaches every number.
+- id: c3
+  type: exemple
+  titre:
+    fr: Prouver $0+n=n$ par récurrence
+    en: Proving $0+n=n$ by induction
+  lang: lean
+  etapes:
+  - code: 'theorem zero_plus (n : Nat) : 0 + n = n := by'
+    fr: '`by` ouvre le mode tactique : on avance pas à pas vers le but.'
+    en: '`by` opens tactic mode: we move step by step towards the goal.'
+  - code: '  induction n with'
+    fr: 'On raisonne par récurrence sur `n` : Lean crée deux buts.'
+    en: 'We argue by induction on `n`: Lean creates two goals.'
+  - code: '  | zero => rfl'
+    fr: 'Cas `zero` : $0+0=0$ se calcule directement.'
+    en: 'Case `zero`: $0+0=0$ computes directly.'
+  - code: '  | succ k ih => rw [Nat.add_succ, ih]'
+    fr: 'Cas `succ k` : `ih` est l’hypothèse $0+k=k$. `Nat.add_succ` récrit $0+(k+1)$ en $(0+k)+1$, puis `ih` donne $k+1$.'
+    en: 'Case `succ k`: `ih` is the hypothesis $0+k=k$. `Nat.add_succ` rewrites $0+(k+1)$ as $(0+k)+1$, then `ih` gives $k+1$.'
+- id: c4
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: Dans la ligne `| succ k ih =>`, que contient `ih` ?
+  en: In the line `| succ k ih =>`, what does `ih` contain?
+  choix:
+  - fr: L’hypothèse de récurrence $0+k=k$
+    en: The induction hypothesis $0+k=k$
+    juste: true
+  - fr: Le but $0+(k+1)=k+1$
+    en: The goal $0+(k+1)=k+1$
+  - fr: La valeur numérique de $k$
+    en: The numerical value of $k$
+  indice:
+    fr: '`ih` est l’abréviation de *induction hypothesis*.'
+    en: '`ih` is short for *induction hypothesis*.'
+  explication:
+    fr: '`ih` est ce qu’on suppose vrai pour $k$. Le but, lui, porte sur $k+1$.'
+    en: '`ih` is what we assume true for $k$. The goal is about $k+1$.'
+- id: c5
+  type: idee
+  fr: 'Pourquoi pas `rfl` dans le cas `succ` ? Lean calcule $0+(k+1)$ en $(0+k)+1$, puis bloque : $k$ est inconnu. Il faut l’hypothèse `ih` pour finir.'
+  en: 'Why not `rfl` in the `succ` case? Lean computes $0+(k+1)$ as $(0+k)+1$, then gets stuck: $k$ is unknown. The hypothesis `ih` is needed to finish.'
+  exemple:
+    fr: Avec `| succ k ih => rfl`, Lean répond « `rfl` failed » et affiche le but restant `0 + (k + 1) = k + 1`.
+    en: With `| succ k ih => rfl`, Lean answers “`rfl` failed” and shows the remaining goal `0 + (k + 1) = k + 1`.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Cas
+      en: Case
+    - fr: But
+      en: Goal
+    - fr: Ce qui le ferme
+      en: What closes it
+    cellules:
+    - - fr: '`zero`'
+        en: '`zero`'
+      - fr: $0+0=0$
+        en: $0+0=0$
+      - fr: '`rfl` : simple calcul'
+        en: '`rfl`: plain computation'
+        ton: ok
+    - - fr: '`succ k`'
+        en: '`succ k`'
+      - fr: $0+(k+1)=k+1$
+        en: $0+(k+1)=k+1$
+      - fr: '`rw` puis l’hypothèse `ih`'
+        en: '`rw` then the hypothesis `ih`'
+        ton: ok
+    legende:
+      fr: Chaque cas de la récurrence est un but séparé, que Lean affiche.
+      en: Each case of the induction is a separate goal, which Lean displays.
+- id: c6
+  type: exemple
+  titre:
+    fr: La somme de Gauss, prouvée
+    en: Gauss’s sum, proved
+  lang: lean
+  etapes:
+  - code: 'def somme : Nat → Nat'
+    fr: On définit la somme $0+1+\dots+n$ par récurrence, comme en Python.
+    en: We define the sum $0+1+\dots+n$ recursively, as in Python.
+  - code: '  | 0 => 0'
+    fr: La somme jusqu’à $0$ vaut $0$.
+    en: The sum up to $0$ is $0$.
+  - code: '  | n + 1 => somme n + (n + 1)'
+    fr: Pour $n+1$, on ajoute $n+1$ à la somme précédente.
+    en: For $n+1$, we add $n+1$ to the previous sum.
+  - code: 'theorem gauss (n : Nat) : 2 * somme n = n * (n + 1) := by'
+    fr: 'L’énoncé : deux fois la somme vaut $n(n+1)$, pour **tout** $n$.'
+    en: 'The statement: twice the sum equals $n(n+1)$, for **every** $n$.'
+  - code: '  induction n with'
+    fr: Récurrence sur $n$.
+    en: Induction on $n$.
+  - code: '  | zero => rfl'
+    fr: 'Initialisation : $2\times0=0\times1$.'
+    en: 'Base case: $2\times0=0\times1$.'
+  - code: '  | succ k ih =>'
+    fr: 'Hérédité : on suppose `ih`, soit $2\,\mathrm{somme}(k)=k(k+1)$.'
+    en: 'Inductive step: we assume `ih`, that is $2\,\mathrm{somme}(k)=k(k+1)$.'
+  - code: '    simp only [somme, Nat.mul_add, ih]'
+    fr: On déplie `somme`, on développe, puis on remplace grâce à `ih`.
+    en: We unfold `somme`, expand, then substitute using `ih`.
+  - code: '    simp only [Nat.add_mul, Nat.mul_one, Nat.one_mul]'
+    fr: On développe encore les produits.
+    en: We expand the products further.
+  - code: '    omega'
+    fr: '`omega` termine l’arithmétique qui reste. Lean accepte : la formule vaut pour tous les entiers.'
+    en: '`omega` finishes the remaining arithmetic. Lean accepts: the formula holds for every integer.'
+- id: c7
+  type: exemple
+  titre:
+    fr: Tester la même formule en Python
+    en: Testing the same formula in Python
+  lang: python
+  etapes:
+  - code: |-
+      def somme(n):
+          return 0 if n == 0 else somme(n - 1) + n
+    fr: La même définition récursive qu’en Lean.
+    en: The same recursive definition as in Lean.
+  - code: print(all(2 * somme(n) == n * (n + 1) for n in range(200)))
+    fr: 'On teste deux cents cas : `True`. C’est rassurant, mais seule la preuve couvre tous les entiers.'
+    en: 'We test two hundred cases: `True`. It is reassuring, but only the proof covers every integer.'
+  verif: |-
+    def somme(n):
+        return 0 if n == 0 else somme(n - 1) + n
+    print(all(2 * somme(n) == n * (n + 1) for n in range(200)))
+  sortie: 'True'
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `somme(n)`** de façon récursive : `0` si `n` vaut `0`, sinon `somme(n - 1) + n`.'
+  en: 'Your turn. **Write `somme(n)`** recursively: `0` if `n` is `0`, otherwise `somme(n - 1) + n`.'
+  depart: |
+    # écris ta fonction somme ici
+  tests: |-
+    assert somme(0) == 0
+    assert somme(4) == 10
+    assert somme(100) == 5050
+    assert all(2 * somme(n) == n * (n + 1) for n in range(50))
+  solutionCode: |
+    def somme(n):
+        if n == 0:
+            return 0
+        return somme(n - 1) + n
+  indice:
+    fr: 'Deux cas, comme en Lean : le cas zéro, puis l’appel sur `n - 1`.'
+    en: 'Two cases, as in Lean: the zero case, then the call on `n - 1`.'
+  explication:
+    fr: 'La définition récursive et la preuve par récurrence ont la même forme : un cas de base, un pas.'
+    en: 'The recursive definition and the proof by induction have the same shape: a base case, a step.'
+- id: c9
+  type: parsons
+  note:
+    kind: exercise
+    poids: 1
+  fr: Remets dans l’ordre cette autre écriture de la preuve de $0+n=n$. Ici, chaque `next` traite le but suivant, dans l’ordre où Lean les crée.
+  en: Put in order this other way of writing the proof of $0+n=n$. Here, each `next` handles the next goal, in the order Lean creates them.
+  lang: lean
+  lignes:
+  - 'theorem zero_plus (n : Nat) : 0 + n = n := by'
+  - '  induction n'
+  - '  next => rfl'
+  - '  next k ih => rw [Nat.add_succ, ih]'
+  indice:
+    fr: Lean crée d’abord le but `zero`, puis le but `succ`.
+    en: Lean first creates the `zero` goal, then the `succ` goal.
+  explication:
+    fr: 'Sans noms de cas, l’ordre compte : le premier `next` reçoit `zero`. Lean refuse les autres ordres.'
+    en: 'Without case names, order matters: the first `next` receives `zero`. Lean rejects the other orders.'
+- id: c10
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: La formule $\sum_{k=1}^{n}k^2=\frac{n(n+1)(2n+1)}{6}$ se prouve aussi par récurrence. Que vaut $1^2+2^2+\dots+10^2$ ?
+  en: The formula $\sum_{k=1}^{n}k^2=\frac{n(n+1)(2n+1)}{6}$ is also proved by induction. What is $1^2+2^2+\dots+10^2$?
+  reponses:
+  - '385'
+  verif: print(sum(k * k for k in range(1, 11)))
+  indice:
+    fr: Remplace $n$ par $10$ dans la formule, ou additionne les dix carrés.
+    en: Replace $n$ by $10$ in the formula, or add the ten squares.
+  explication:
+    fr: $\frac{10\times11\times21}{6}=385$, et la somme directe donne la même valeur.
+    en: $\frac{10\times11\times21}{6}=385$, and the direct sum gives the same value.
+- id: c11
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `formule_carres(n)`** : la valeur de $\frac{n(n+1)(2n+1)}{6}$, avec la division entière `//`.'
+  en: '**Write `formule_carres(n)`**: the value of $\frac{n(n+1)(2n+1)}{6}$, with integer division `//`.'
+  depart: |
+    # écris ta fonction formule_carres ici
+  tests: |-
+    assert formule_carres(0) == 0
+    assert formule_carres(10) == 385
+    assert all(formule_carres(n) == sum(k * k for k in range(n + 1)) for n in range(100))
+  solutionCode: |
+    def formule_carres(n):
+        return n * (n + 1) * (2 * n + 1) // 6
+  indice:
+    fr: Calcule le produit des trois facteurs, puis divise par `6` avec `//`.
+    en: Compute the product of the three factors, then divide by `6` with `//`.
+  explication:
+    fr: 'La division tombe juste : parmi $n$, $n+1$ et $2n+1$, il y a toujours un multiple de 2 et un de 3.'
+    en: 'The division is exact: among $n$, $n+1$ and $2n+1$, there is always a multiple of 2 and one of 3.'
+- id: c12
+  type: piege
+  fr: 'Une hérédité sans initialisation ne prouve rien. Si « $k>k+1$ » était vrai, « $k+1>k+2$ » le serait aussi, mais l’énoncé est toujours faux. Lean refuse de toute façon : sans le cas `zero`, il répond « Alternative `zero` has not been provided ».'
+  en: 'An inductive step without a base case proves nothing. If “$k>k+1$” were true, “$k+1>k+2$” would be too, yet the statement is always false. Lean refuses anyway: without the `zero` case, it answers “Alternative `zero` has not been provided”.'
+- id: c13
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `plus_petit_contre_exemple(P, n_max)`** : le plus petit `n` entre `0` et `n_max` tel que `P(n)` est faux, ou `None`. La fonction `est_premier` est fournie.'
+  en: 'Challenge. **Write `plus_petit_contre_exemple(P, n_max)`**: the smallest `n` between `0` and `n_max` such that `P(n)` is false, or `None`. The function `est_premier` is provided.'
+  depart: |
+    def est_premier(m):
+        if m < 2:
+            return False
+        d = 2
+        while d * d <= m:
+            if m % d == 0:
+                return False
+            d += 1
+        return True
+
+    # écris ta fonction plus_petit_contre_exemple ici
+  tests: |-
+    assert plus_petit_contre_exemple(lambda n: est_premier(n * n + n + 41), 100) == 40
+    assert plus_petit_contre_exemple(lambda n: 2 * n >= n, 50) is None
+    assert plus_petit_contre_exemple(lambda n: n < 7, 10) == 7
+  solutionCode: |
+    def est_premier(m):
+        if m < 2:
+            return False
+        d = 2
+        while d * d <= m:
+            if m % d == 0:
+                return False
+            d += 1
+        return True
+
+    def plus_petit_contre_exemple(P, n_max):
+        for n in range(n_max + 1):
+            if not P(n):
+                return n
+        return None
+  indice:
+    fr: Parcours `range(n_max + 1)` dans l’ordre ; renvoie le premier `n` qui échoue.
+    en: Loop over `range(n_max + 1)` in order; return the first `n` that fails.
+  explication:
+    fr: Le polynôme d’Euler $n^2+n+41$ tombe en $n=40$. Une récurrence réussie garantit qu’aucun tel `n` n’existe.
+    en: Euler’s polynomial $n^2+n+41$ fails at $n=40$. A successful induction guarantees that no such `n` exists.
+- id: c14
+  type: idee
+  fr: 'Le lien avec la suite : la récurrence ne marche pas que sur les entiers. Une liste est vide, ou un élément suivi d’une liste : la même idée s’applique. Tu prouveras des propriétés de tes fonctions sur les listes au niveau 22.3.'
+  en: 'The link with what follows: induction does not only work on integers. A list is empty, or an element followed by a list: the same idea applies. You will prove properties of your list functions in level 22.3.'
+  exemple:
+    fr: '`[3, 1]` est `3 :: (1 :: [])` : deux briques `::` posées sur la liste vide `[]`.'
+    en: '`[3, 1]` is `3 :: (1 :: [])`: two `::` bricks placed on the empty list `[]`.'
+- id: c15
+  type: retenir
+  fr: 'Récurrence en Lean : `induction n with`, un cas `zero`, un cas `succ k ih` où `ih` est l’hypothèse. `rw` récrit, `simp` simplifie, `omega` finit l’arithmétique. Sans initialisation, pas de preuve.'
+  en: 'Induction in Lean: `induction n with`, a `zero` case, a `succ k ih` case where `ih` is the hypothesis. `rw` rewrites, `simp` simplifies, `omega` finishes arithmetic. Without a base case, no proof.'
+- id: c16
+  type: plus
+  fr: Pour aller plus loin, lis le chapitre « Induction and Recursion » de [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/) ; ce livre demande une connexion.
+  en: To go further, read the “Induction and Recursion” chapter of [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/); this book needs a connection.

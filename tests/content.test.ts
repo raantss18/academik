@@ -89,3 +89,15 @@ print(json.dumps([essai(d["solution"], d["tests"]), essai(d["depart"], d["tests"
     expect(bad).toEqual([]);
   }, 300000);
 });
+
+// Les preuves Lean du module 22 sont compilées par le vrai `lean` (garde-fou E43). Sans `lean` installé (CI), la vérification se fait à la génération du niveau.
+const lean = (() => { try { execFileSync('lean', ['--version'], { stdio: 'ignore' }); return true; } catch { return false; } })();
+describe.skipIf(!lean)('contenu : chaque preuve Lean compile (E43)', () => {
+  const compile = (src: string) => { try { execFileSync('lean', ['--stdin'], { input: src, encoding: 'utf8', timeout: 120000, stdio: ['pipe', 'pipe', 'pipe'] }); return ''; } catch (e) { return String((e as { stdout?: string }).stdout ?? e); } };
+  for (const { f, L } of levels) for (const c of L.cartes) {
+    if (c.lang !== 'lean') continue;
+    const src = c.type === 'exemple' ? (c.etapes as { code: string }[]).map(e => e.code).join('\n') : `${c.lean_pre ?? ''}${(c.lignes as string[]).join('\n')}`;
+    it(`${f} ${c.id} : le code Lean est accepté par Lean`, () => { const out = compile((c.type === 'exemple' ? (c.lean_pre ?? '') : '') + src + '\n'); expect(out).not.toContain('error'); }, 130000);
+  }
+  it('au moins une preuve Lean est vérifiée', () => { expect(levels.flatMap(x => x.L.cartes).filter((c: any) => c.lang === 'lean').length).toBeGreaterThan(5); });
+});

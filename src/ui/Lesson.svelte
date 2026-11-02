@@ -14,6 +14,8 @@
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
   import { resume, clampIndex } from '../lib/resume';
   import { tick } from 'svelte';
+  import { content } from '../lib/content.svelte';
+  import { MONUMENTS, monumentEtat } from '../lib/city/index';
   import LogoMenu from './LogoMenu.svelte';
   import Figure from './Figure.svelte';
   import { python, type PyResult } from '../lib/python';
@@ -27,6 +29,11 @@
   /* svelte-ignore state_referenced_locally */
   let idx = $state(clampIndex(startAt, level.cartes.length)), step = $state(0), selected = $state<number | null>(null), text = $state(level.cartes[clampIndex(startAt, level.cartes.length)].depart ?? ''), chosen = $state<number[]>([]);
   let hints = $state(0), showHint = $state(false), result = $state<null | { ok: boolean; credit: number }>(null), earned = $state(0);
+  // Le monument du niveau (le bâtiment de la carte) : on dit lequel s'allume et de combien. Le générateur de la ville est chargé à la demande.
+  let monument = $state<string | null>(null);
+  $effect(() => { if (!finished || level.review) return; void import('../lib/city/gen.js').then(g => {
+    const mod = content.modules.find(m => m.id === level.module), i = mod ? mod.niveaux.findIndex(n => n.id === level.id) : -1, m = i >= 0 ? MONUMENTS[g.monumentKind(level.module ?? 0, i, level.id.endsWith('.boss'))] : null;
+    monument = m ? monumentEtat(m, score, i18n.lang === 'fr') : null; }, () => {}); });
   let finished = $state(false), rightCount = $state(0), serie = $state(0), eclat = $state(0);
   // Carte « terminal » : un shell simulé dans un système de fichiers virtuel (D-016), recréé pour chaque carte.
   let term = $state.raw<Term | null>(null), cmd = $state(''), ran = $state(0);
@@ -202,6 +209,7 @@
       {:else}
       <p class="big">{Math.round(score * 100)} %</p>
       <p class="stars" aria-label={`${stars(score)} / 3`}>{'★'.repeat(stars(score))}<span class="off">{'★'.repeat(3 - stars(score))}</span></p>
+      {#if monument}<p class="mon"><span aria-hidden="true">🏛️</span> {monument}</p>{/if}
       <p>{score + 1e-9 >= UNLOCK_THRESHOLD ? ui('unlocked') : ui('need')}</p>
       <div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(t(level.ia))}</div>
       <div class="foot"><button class="btn" onclick={replay}>{ui('replay')}</button><button class="btn primary" onclick={onexit}>{ui('back')}</button></div>
@@ -211,6 +219,7 @@
 </div>
 
 <style>
+  .mon { font-weight: 700; margin: 4px 0; }
   .top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
   .x { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--c-border); background: var(--c-surface); cursor: pointer; }
   .bar { flex: 1; height: 10px; background: var(--c-surface-2); border-radius: 99px; overflow: hidden; }

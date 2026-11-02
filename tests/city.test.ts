@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
 import content from '../src/generated/content.json';
 import { buildDistricts, type CityInput } from '../src/lib/city/index';
 import { renderCity } from '../src/lib/city/gen.js';
@@ -53,5 +54,34 @@ describe('carte « ville qui s’allume » (E9)', () => {
     const xy = [...svg.matchAll(/class="pin"[^>]*transform="translate\(([-\d.]+),([-\d.]+)\)"/g)].map(m => [+m[1], +m[2]]);
     expect(xy.length).toBeGreaterThan(20);
     for (let i = 0; i < xy.length; i++) for (let j = i + 1; j < xy.length; j++) expect(Math.hypot(xy[i][0] - xy[j][0], xy[i][1] - xy[j][1])).toBeGreaterThan(30);
+  });
+});
+
+describe('E42 · rien ne se chevauche sur la carte, et chaque niveau a son monument (demande d’Antsa du 2 nov.)', () => {
+  const inter = (a: number[], b: number[]) => Math.min(a[2], b[2]) > Math.max(a[0], b[0]) && Math.min(a[3], b[3]) > Math.max(a[1], b[1]);
+  // Tous les états à la fois : la goutte rouge du niveau courant est la plus grande épingle, celle qui cachait l’enseigne.
+  const toutes = new Set(modules.flatMap(m => m.niveaux.map(n => n.id)));
+  for (const [nom, o] of [['début', {}], ['tout ouvert', { open: toutes, scores: { '0.1': 1, '2.1': .6 }, current: '20.1' }], ['module 20 en cours', { open: toutes, current: '20.1' }]] as const) {
+    it(`aucune enseigne de quartier ne cache une épingle (${nom})`, () => {
+      const { boxes } = renderCity(buildDistricts(input(o as Partial<CityInput>)), { seed: 7 });
+      const bad: string[] = [];
+      boxes.signs.forEach((s, i) => boxes.pins.forEach((p, j) => { if (inter(s, p)) bad.push(`enseigne ${i} / épingle ${j}`); }));
+      expect(bad).toEqual([]);
+    });
+    it(`aucune enseigne n’en cache une autre (${nom})`, () => {
+      const { boxes } = renderCity(buildDistricts(input(o as Partial<CityInput>)), { seed: 7 });
+      for (let i = 0; i < boxes.signs.length; i++) for (let j = i + 1; j < boxes.signs.length; j++) expect(inter(boxes.signs[i], boxes.signs[j])).toBe(false);
+    });
+  }
+  it('chaque niveau de chaque module a un monument nommé en français et en anglais', async () => {
+    const { monumentKind } = await import('../src/lib/city/gen.js'), { MONUMENTS } = await import('../src/lib/city/index');
+    for (const m of modules) m.niveaux.forEach((n, i) => { const k = monumentKind(m.id, i, !!n.boss); expect(MONUMENTS[k]?.fr, `${n.id} → ${k}`).toBeTruthy(); expect(MONUMENTS[k].en).toBeTruthy(); });
+  });
+  it('les monuments d’un même quartier sont variés (au moins 3 sortes)', async () => {
+    const { monumentKind } = await import('../src/lib/city/gen.js');
+    for (const m of modules.filter(x => x.niveaux.length >= 6)) expect(new Set(m.niveaux.map((n, i) => monumentKind(m.id, i, !!n.boss))).size, `module ${m.id}`).toBeGreaterThanOrEqual(3);
+  });
+  it('la fiche du niveau et l’écran de fin disent quel monument s’allume', () => {
+    expect(readFileSync('src/ui/City.svelte', 'utf8')).toContain('monumentEtat'); expect(readFileSync('src/ui/Lesson.svelte', 'utf8')).toContain('monumentEtat');
   });
 });

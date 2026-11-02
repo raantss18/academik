@@ -1,0 +1,350 @@
+# Niveau 22.5 — Recherche 5 : théorie de l’information. Original academik ; notions vérifiées dans Shannon 1948 (lien) et MacKay ITILA (lien). Tous les nombres calculés par exécution.
+id: '22.5'
+module: 22
+duree_min: 20
+titre:
+  fr: Entropie croisée, KL et perplexité
+  en: Cross-entropy, KL and perplexity
+ia:
+  fr: Kintana mesure à quel point son modèle est surpris par un vrai texte, avec la perte qu’elle minimise à l’entraînement.
+  en: Kintana measures how surprised her model is by a real text, using the loss she minimises during training.
+sources:
+- titre: Shannon — A Mathematical Theory of Communication (1948)
+  url: https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf
+  licence: Article historique ; notion citée, aucun extrait repris
+- titre: MacKay — Information Theory, Inference, and Learning Algorithms (référence uniquement)
+  url: https://www.inference.org.uk/itila/book.html
+  licence: Copyright Cambridge University Press ; lecture libre en ligne ; lien seulement
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Pour le mot correct, le modèle A donne la probabilité $0{,}5$ et le modèle B la probabilité $0{,}25$. Lequel est le moins surpris ?
+  en: For the correct word, model A gives probability $0.5$ and model B probability $0.25$. Which is least surprised?
+  choix:
+  - fr: 'A : sa surprise $-\log_2 0{,}5=1$ bit est plus petite que $2$ bits'
+    en: 'A: its surprise $-\log_2 0.5=1$ bit is smaller than $2$ bits'
+    juste: true
+  - fr: 'B : une petite probabilité surprend moins'
+    en: 'B: a small probability surprises less'
+  - fr: 'Les deux : seul le mot compte'
+    en: 'Both: only the word counts'
+  indice:
+    fr: Une probabilité forte sur le bon mot veut dire peu de surprise.
+    en: A high probability on the right word means little surprise.
+  explication:
+    fr: 'La surprise d’un événement de probabilité $p$ vaut $-\log_2 p$ bits : $1$ bit pour $0{,}5$, $2$ bits pour $0{,}25$.'
+    en: 'The surprise of an event of probability $p$ is $-\log_2 p$ bits: $1$ bit for $0.5$, $2$ bits for $0.25$.'
+- id: c2
+  type: idee
+  fr: 'L’**entropie** d’une loi $p$ est la surprise moyenne : $H(p)=-\sum_i p_i\log_2 p_i$. Elle mesure l’incertitude, en bits. Elle est maximale pour une loi uniforme et nulle quand un résultat est certain.'
+  en: 'The **entropy** of a distribution $p$ is the average surprise: $H(p)=-\sum_i p_i\log_2 p_i$. It measures uncertainty, in bits. It is maximal for a uniform distribution and zero when one outcome is certain.'
+  exemple:
+    fr: 'Pour $p=(0{,}5;\,0{,}25;\,0{,}25)$ : $0{,}5\times1+0{,}25\times2+0{,}25\times2=1{,}5$ bit.'
+    en: 'For $p=(0.5;\,0.25;\,0.25)$: $0.5\times1+0.25\times2+0.25\times2=1.5$ bits.'
+- id: c3
+  type: exemple
+  titre:
+    fr: Calculer une entropie
+    en: Computing an entropy
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      p = [0.5, 0.25, 0.25]
+    fr: 'Une loi sur trois mots : le premier a une chance sur deux.'
+    en: 'A distribution over three words: the first has one chance in two.'
+  - code: termes = [-x * math.log2(x) for x in p]
+    fr: 'La contribution de chaque mot : $-p\log_2p$.'
+    en: 'The contribution of each word: $-p\log_2p$.'
+  - code: print(termes, sum(termes))
+    fr: 'On lit `[0.5, 0.5, 0.5]` puis `1.5` : l’entropie vaut 1,5 bit.'
+    en: 'We read `[0.5, 0.5, 0.5]` then `1.5`: the entropy is 1.5 bits.'
+  verif: |-
+    import math
+    p = [0.5, 0.25, 0.25]
+    termes = [-x * math.log2(x) for x in p]
+    print(termes, sum(termes))
+  sortie: '[0.5, 0.5, 0.5] 1.5'
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `entropie(p)`** : $-\sum p_i\log_2 p_i$ en ignorant les $p_i=0$ (par convention, $0\log0=0$).'
+  en: 'Your turn. **Write `entropie(p)`**: $-\sum p_i\log_2 p_i$ ignoring $p_i=0$ (by convention, $0\log0=0$).'
+  depart: |
+    import math
+
+    # écris ta fonction entropie ici
+  tests: |-
+    assert abs(entropie([0.5, 0.25, 0.25]) - 1.5) < 1e-12
+    assert abs(entropie([1 / 8] * 8) - 3) < 1e-12
+    assert entropie([1, 0]) == 0
+    assert abs(entropie([0.5, 0.5]) - 1) < 1e-12
+  solutionCode: |
+    import math
+
+    def entropie(p):
+        return -sum(x * math.log2(x) for x in p if x > 0)
+  indice:
+    fr: Une somme sur les `x` de `p` avec `if x > 0`, du terme `x * math.log2(x)`, le tout précédé d’un signe moins.
+    en: A sum over the `x` of `p` with `if x > 0`, of the term `x * math.log2(x)`, all preceded by a minus sign.
+  explication:
+    fr: Les modèles de langage ont une entropie élevée quand ils hésitent entre beaucoup de mots (module 6).
+    en: Language models have a high entropy when they hesitate between many words (module 6).
+- id: c5
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un modèle choisit uniformément parmi 8 mots. Quelle est son entropie, en bits ?
+  en: A model chooses uniformly among 8 words. What is its entropy, in bits?
+  reponses:
+  - '3'
+  verif: |-
+    import math
+    print(int(-sum(1 / 8 * math.log2(1 / 8) for _ in range(8))))
+  indice:
+    fr: Pour une loi uniforme sur $n$ mots, l’entropie vaut $\log_2 n$.
+    en: For a uniform distribution over $n$ words, entropy is $\log_2 n$.
+  explication:
+    fr: '$\log_2 8=3$ : trois questions oui/non suffisent pour désigner un mot parmi huit.'
+    en: '$\log_2 8=3$: three yes/no questions are enough to point out one word among eight.'
+- id: c6
+  type: idee
+  fr: L’**entropie croisée** $H(p,q)=-\sum_i p_i\log_2 q_i$ mesure le coût moyen quand la réalité suit $p$ mais le modèle prédit $q$. Elle est toujours au moins égale à $H(p)$. C’est la perte qu’on minimise pour entraîner un modèle de langage.
+  en: The **cross-entropy** $H(p,q)=-\sum_i p_i\log_2 q_i$ measures the average cost when reality follows $p$ but the model predicts $q$. It is always at least $H(p)$. It is the loss minimised to train a language model.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Loi réelle $p$
+      en: True distribution $p$
+    - fr: Modèle $q$
+      en: Model $q$
+    - fr: $H(p,q)$
+      en: $H(p,q)$
+    cellules:
+    - - $(0{,}5;0{,}25;0{,}25)$
+      - $(0{,}5;0{,}25;0{,}25)$
+      - fr: 1,5 bit (= $H(p)$)
+        en: 1.5 bits (= $H(p)$)
+        ton: ok
+    - - $(0{,}5;0{,}25;0{,}25)$
+      - $(\frac13;\frac13;\frac13)$
+      - 1,585 bit
+    - - $(1;0;0)$
+      - $(0{,}5;0{,}25;0{,}25)$
+      - 1 bit
+    legende:
+      fr: Plus le modèle ressemble à la réalité, plus l’entropie croisée baisse.
+      en: The closer the model is to reality, the lower the cross-entropy.
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `entropie_croisee(p, q)`** : $-\sum p_i\log_2 q_i$ sur les $p_i>0$. Si un `q_i` vaut `0` alors que `p_i > 0`, renvoie `math.inf`.'
+  en: '**Write `entropie_croisee(p, q)`**: $-\sum p_i\log_2 q_i$ over the $p_i>0$. If a `q_i` is `0` while `p_i > 0`, return `math.inf`.'
+  depart: |
+    import math
+
+    # écris ta fonction entropie_croisee ici
+  tests: |-
+    assert abs(entropie_croisee([0.5, 0.25, 0.25], [0.5, 0.25, 0.25]) - 1.5) < 1e-12
+    assert abs(entropie_croisee([0.5, 0.25, 0.25], [1 / 3] * 3) - 1.5849625007211563) < 1e-12
+    assert entropie_croisee([1, 0], [0.5, 0.5]) == 1
+    assert entropie_croisee([0.5, 0.5], [1, 0]) == math.inf
+  solutionCode: |
+    import math
+
+    def entropie_croisee(p, q):
+        total = 0.0
+        for a, b in zip(p, q):
+            if a > 0:
+                if b == 0:
+                    return math.inf
+                total -= a * math.log2(b)
+        return total
+  indice:
+    fr: Parcours `zip(p, q)` ; saute les `a == 0`, renvoie `math.inf` si `b == 0`, sinon retire `a * math.log2(b)`.
+    en: Loop over `zip(p, q)`; skip the `a == 0`, return `math.inf` if `b == 0`, otherwise subtract `a * math.log2(b)`.
+  explication:
+    fr: 'Quand la réalité est un seul mot (`p = (1, 0, …)`), l’entropie croisée vaut $-\log_2 q$ du bon mot : c’est la surprise du c1.'
+    en: 'When reality is a single word (`p = (1, 0, …)`), the cross-entropy is $-\log_2 q$ of the right word: the surprise from c1.'
+- id: c8
+  type: idee
+  fr: 'La **divergence de Kullback-Leibler** est l’écart : $D_{KL}(p\|q)=H(p,q)-H(p)$. Elle est toujours positive ou nulle, et nulle seulement si $p=q$. Elle n’est pas symétrique : $D_{KL}(p\|q)\ne D_{KL}(q\|p)$ en général.'
+  en: 'The **Kullback-Leibler divergence** is the gap: $D_{KL}(p\|q)=H(p,q)-H(p)$. It is always positive or zero, and zero only if $p=q$. It is not symmetric: $D_{KL}(p\|q)\ne D_{KL}(q\|p)$ in general.'
+  exemple:
+    fr: 'Avec $p=(0{,}5;0{,}25;0{,}25)$ et $q$ uniforme : $D_{KL}(p\|q)\approx0{,}0850$ bit, et $D_{KL}(q\|p)\approx0{,}0817$ bit.'
+    en: 'With $p=(0.5;0.25;0.25)$ and $q$ uniform: $D_{KL}(p\|q)\approx0.0850$ bits, and $D_{KL}(q\|p)\approx0.0817$ bits.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Entropie croisée = entropie + écart
+        en: Cross-entropy = entropy + gap
+      noeuds:
+      - fr: $H(p,q)$
+        en: $H(p,q)$
+      - fr: $=H(p)$
+        en: $=H(p)$
+      - fr: $+D_{KL}(p\|q)$
+        en: $+D_{KL}(p\|q)$
+      - fr: minimiser $H(p,q)$ = minimiser KL
+        en: minimising $H(p,q)$ = minimising KL
+        ton: ok
+    legende:
+      fr: '$H(p)$ ne dépend pas du modèle : seul l’écart KL se réduit.'
+      en: '$H(p)$ does not depend on the model: only the KL gap can be reduced.'
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `kl(p, q)`** : $D_{KL}(p\|q)=H(p,q)-H(p)$, avec `entropie` et `entropie_croisee` fournies.'
+  en: 'Challenge. **Write `kl(p, q)`**: $D_{KL}(p\|q)=H(p,q)-H(p)$, with `entropie` and `entropie_croisee` provided.'
+  depart: |
+    import math
+
+    def entropie(p):
+        return -sum(x * math.log2(x) for x in p if x > 0)
+
+    def entropie_croisee(p, q):
+        total = 0.0
+        for a, b in zip(p, q):
+            if a > 0:
+                if b == 0:
+                    return math.inf
+                total -= a * math.log2(b)
+        return total
+
+    # écris ta fonction kl ici
+  tests: |-
+    p = [0.5, 0.25, 0.25]
+    assert abs(kl(p, p)) < 1e-12
+    assert abs(kl(p, [1 / 3] * 3) - 0.0849625007211563) < 1e-12
+    assert abs(kl([1 / 3] * 3, p) - 0.08170416594551044) < 1e-12
+    assert kl([0.5, 0.5], [1, 0]) == math.inf
+  solutionCode: |
+    import math
+
+    def entropie(p):
+        return -sum(x * math.log2(x) for x in p if x > 0)
+
+    def entropie_croisee(p, q):
+        total = 0.0
+        for a, b in zip(p, q):
+            if a > 0:
+                if b == 0:
+                    return math.inf
+                total -= a * math.log2(b)
+        return total
+
+    def kl(p, q):
+        return entropie_croisee(p, q) - entropie(p)
+  indice:
+    fr: 'Une seule ligne : `entropie_croisee(p, q) - entropie(p)`.'
+    en: 'A single line: `entropie_croisee(p, q) - entropie(p)`.'
+  explication:
+    fr: '`kl([1/3]*3, p)` et `kl(p, [1/3]*3)` diffèrent : la divergence n’est pas une distance.'
+    en: '`kl([1/3]*3, p)` and `kl(p, [1/3]*3)` differ: the divergence is not a distance.'
+- id: c10
+  type: idee
+  fr: 'La **perplexité** transforme l’entropie en un nombre de choix : $\text{PPL}=2^{H}$. Une perplexité de $8$ veut dire que le modèle hésite comme s’il choisissait au hasard entre $8$ mots également probables. Plus elle est basse, mieux le modèle prédit.'
+  en: '**Perplexity** turns entropy into a number of choices: $\text{PPL}=2^{H}$. A perplexity of $8$ means the model hesitates as if choosing at random among $8$ equally likely words. The lower it is, the better the model predicts.'
+  exemple:
+    fr: Entropie $3$ bits $\Rightarrow$ perplexité $2^3=8$ ; entropie $1{,}5$ bit $\Rightarrow$ $2^{1{,}5}\approx2{,}83$.
+    en: Entropy $3$ bits $\Rightarrow$ perplexity $2^3=8$; entropy $1.5$ bits $\Rightarrow$ $2^{1.5}\approx2.83$.
+- id: c11
+  type: exemple
+  titre:
+    fr: Mesurer la perplexité d’un modèle
+    en: Measuring a model’s perplexity
+  lang: python
+  etapes:
+  - code: probas = [0.5, 0.25, 0.125, 0.125]
+    fr: Les probabilités que le modèle a données aux quatre vrais mots d’un texte.
+    en: The probabilities the model gave to the four true words of a text.
+  - code: |-
+      import math
+      nll = sum(-math.log2(x) for x in probas) / len(probas)
+    fr: 'La surprise moyenne : $(1+2+3+3)/4=2{,}25$ bits.'
+    en: 'The average surprise: $(1+2+3+3)/4=2.25$ bits.'
+  - code: print(round(2 ** nll, 2))
+    fr: 'La perplexité vaut `4.76` : le modèle hésite comme entre presque 5 mots.'
+    en: 'The perplexity is `4.76`: the model hesitates as if between almost 5 words.'
+  verif: |-
+    probas = [0.5, 0.25, 0.125, 0.125]
+    import math
+    nll = sum(-math.log2(x) for x in probas) / len(probas)
+    print(round(2 ** nll, 2))
+  sortie: '4.76'
+- id: c12
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `perplexite(probas)`** : `probas` sont les probabilités données aux vrais mots ; renvoie $2^{\text{surprise moyenne}}$.'
+  en: '**Write `perplexite(probas)`**: `probas` are the probabilities given to the true words; return $2^{\text{average surprise}}$.'
+  depart: |
+    import math
+
+    # écris ta fonction perplexite ici
+  tests: |-
+    assert abs(perplexite([0.5, 0.25, 0.125, 0.125]) - 4.756828460010884) < 1e-9
+    assert abs(perplexite([1 / 8] * 5) - 8) < 1e-9
+    assert abs(perplexite([1.0, 1.0]) - 1) < 1e-12
+  solutionCode: |
+    import math
+
+    def perplexite(probas):
+        nll = sum(-math.log2(x) for x in probas) / len(probas)
+        return 2 ** nll
+  indice:
+    fr: Calcule la moyenne des `-math.log2(x)`, puis élève `2` à cette puissance.
+    en: Compute the mean of the `-math.log2(x)`, then raise `2` to that power.
+  explication:
+    fr: Une perplexité de $1$ voudrait dire une prédiction parfaite à chaque mot.
+    en: A perplexity of $1$ would mean a perfect prediction at every word.
+- id: c13
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Pour un modèle uniforme sur 16 mots, quelle est la perplexité ?
+  en: For a model uniform over 16 words, what is the perplexity?
+  reponses:
+  - '16'
+  verif: |-
+    import math
+    print(int(round(2 ** math.log2(16))))
+  indice:
+    fr: Pour une loi uniforme, la perplexité est le nombre de mots.
+    en: For a uniform distribution, the perplexity is the number of words.
+  explication:
+    fr: '$2^{\log_2 16}=16$ : l’entropie vaut $4$ bits et $2^4=16$.'
+    en: '$2^{\log_2 16}=16$: the entropy is $4$ bits and $2^4=16$.'
+- id: c14
+  type: piege
+  fr: 'Attention au zéro : si le modèle donne la probabilité $0$ au vrai mot, $-\log_2 0$ est infini, et la perte aussi. Les modèles évitent ce piège avec le lissage du module 6, ou une petite valeur plancher.'
+  en: 'Beware of zero: if the model gives the true word probability $0$, $-\log_2 0$ is infinite, and so is the loss. Models avoid this trap with the smoothing of module 6, or a small floor value.'
+- id: c15
+  type: idee
+  fr: 'Le lien avec Kintana : la perte d’entraînement de ses réseaux (module 11) et de son mini-GPT (module 12) est une entropie croisée. La perplexité résume sa qualité en un nombre. Au niveau suivant, tu verras comment des experts spécialisés rendent un grand modèle moins coûteux.'
+  en: 'The link with Kintana: the training loss of her networks (module 11) and of her mini-GPT (module 12) is a cross-entropy. Perplexity sums up her quality in one number. In the next level, you will see how specialised experts make a large model cheaper.'
+  exemple:
+    fr: Réduire la perplexité de $5$ à $4$ revient à réduire la surprise moyenne de $\log_2 5\approx2{,}32$ à $2$ bits.
+    en: Reducing perplexity from $5$ to $4$ means reducing the average surprise from $\log_2 5\approx2.32$ to $2$ bits.
+- id: c16
+  type: retenir
+  fr: 'Entropie $H(p)=-\sum p\log_2p$ : incertitude moyenne. Entropie croisée $H(p,q)\ge H(p)$ : la perte du modèle. $D_{KL}=H(p,q)-H(p)\ge0$, asymétrique. Perplexité $=2^{H}$ : nombre de choix équivalents. Un $q=0$ sur un vrai mot donne une perte infinie.'
+  en: 'Entropy $H(p)=-\sum p\log_2p$: average uncertainty. Cross-entropy $H(p,q)\ge H(p)$: the model’s loss. $D_{KL}=H(p,q)-H(p)\ge0$, asymmetric. Perplexity $=2^{H}$: equivalent number of choices. A $q=0$ on a true word gives an infinite loss.'
+- id: c17
+  type: plus
+  fr: Pour aller plus loin, lis [l’article de Shannon de 1948](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf) ; il demande une connexion.
+  en: To go further, read [Shannon’s 1948 paper](https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf); it needs a connection.

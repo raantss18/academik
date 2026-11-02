@@ -1,0 +1,326 @@
+# Niveau 22.4 — Recherche 4 : Hessienne et convexité. Original academik ; notions vérifiées dans Boyd et Vandenberghe, Convex Optimization (lien) et Goodfellow et al., Deep Learning ch. 4 (lien). Calculs exécutés.
+id: '22.4'
+module: 22
+duree_min: 21
+titre:
+  fr: Hessienne et convexité
+  en: Hessian and convexity
+ia:
+  fr: Kintana lit la courbure de sa perte et choisit un pas de descente qui ne diverge pas.
+  en: Kintana reads the curvature of her loss and picks a descent step that does not diverge.
+sources:
+- titre: Boyd, Vandenberghe — Convex Optimization, chapitres 3 et 9 (référence uniquement)
+  url: https://web.stanford.edu/~boyd/cvxbook/
+  licence: Copyright Cambridge University Press ; accès gratuit, aucune licence libre ; lien seulement
+- titre: Goodfellow, Bengio, Courville — Deep Learning, chapitre 4 « Numerical Computation » (référence uniquement)
+  url: https://www.deeplearningbook.org/contents/numerical.html
+  licence: Copyright MIT Press ; lecture libre en ligne ; lien seulement, aucun extrait repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Pour $f(x,y)=x^2-y^2$, le gradient s’annule en $(0,0)$. Ce point est-il un minimum ?
+  en: For $f(x,y)=x^2-y^2$, the gradient vanishes at $(0,0)$. Is this point a minimum?
+  choix:
+  - fr: 'Non : $f$ monte selon $x$ et descend selon $y$ (un col)'
+    en: 'No: $f$ rises along $x$ and falls along $y$ (a saddle)'
+    juste: true
+  - fr: 'Oui : le gradient est nul'
+    en: 'Yes: the gradient is zero'
+  - fr: 'Oui : $f(0,0)=0$ est la plus petite valeur'
+    en: 'Yes: $f(0,0)=0$ is the smallest value'
+  indice:
+    fr: Compare $f(0,0)$ avec $f(0,\,0{,}1)$ et avec $f(0{,}1,\,0)$.
+    en: Compare $f(0,0)$ with $f(0,\,0.1)$ and with $f(0.1,\,0)$.
+  explication:
+    fr: '$f(0{,}1,0)=0{,}01>0$ mais $f(0,0{,}1)=-0{,}01<0$. Un gradient nul ne suffit pas : il faut regarder la courbure.'
+    en: '$f(0.1,0)=0.01>0$ but $f(0,0.1)=-0.01<0$. A zero gradient is not enough: we must look at the curvature.'
+- id: c2
+  type: idee
+  fr: La **Hessienne** est la matrice des dérivées secondes. Pour $f(x,y)$ elle vaut $\begin{pmatrix} f_{xx} & f_{xy}\\ f_{xy} & f_{yy}\end{pmatrix}$. Elle est symétrique et décrit la courbure dans chaque direction.
+  en: The **Hessian** is the matrix of second derivatives. For $f(x,y)$ it is $\begin{pmatrix} f_{xx} & f_{xy}\\ f_{xy} & f_{yy}\end{pmatrix}$. It is symmetric and describes the curvature in each direction.
+  exemple:
+    fr: 'Pour $f=x^2+xy+y^2$ : $f_{xx}=2$, $f_{xy}=1$, $f_{yy}=2$. La Hessienne est $\begin{pmatrix}2&1\\1&2\end{pmatrix}$, partout la même.'
+    en: 'For $f=x^2+xy+y^2$: $f_{xx}=2$, $f_{xy}=1$, $f_{yy}=2$. The Hessian is $\begin{pmatrix}2&1\\1&2\end{pmatrix}$, the same everywhere.'
+- id: c3
+  type: exemple
+  titre:
+    fr: Calculer une Hessienne numériquement
+    en: Computing a Hessian numerically
+  lang: python
+  etapes:
+  - code: |-
+      f = lambda x, y: x * x + x * y + y * y
+      h = 1e-3
+    fr: La fonction, et un petit pas `h` pour approcher les dérivées.
+    en: The function, and a small step `h` to approximate the derivatives.
+  - code: fxx = (f(1 + h, 2) - 2 * f(1, 2) + f(1 - h, 2)) / h ** 2
+    fr: 'Dérivée seconde en $x$ : on compare $f$ au point et à ses deux voisins.'
+    en: 'Second derivative in $x$: we compare $f$ at the point and its two neighbours.'
+  - code: fxy = (f(1 + h, 2 + h) - f(1 + h, 2 - h) - f(1 - h, 2 + h) + f(1 - h, 2 - h)) / (4 * h * h)
+    fr: 'Dérivée croisée : on combine les quatre coins d’un petit carré.'
+    en: 'Cross derivative: we combine the four corners of a small square.'
+  - code: print(round(fxx, 3), round(fxy, 3))
+    fr: On obtient `2.0` et `1.0`, comme le calcul exact. Une approximation, pas une preuve.
+    en: We get `2.0` and `1.0`, like the exact calculation. An approximation, not a proof.
+  verif: |-
+    f = lambda x, y: x * x + x * y + y * y
+    h = 1e-3
+    fxx = (f(1 + h, 2) - 2 * f(1, 2) + f(1 - h, 2)) / h ** 2
+    fxy = (f(1 + h, 2 + h) - f(1 + h, 2 - h) - f(1 - h, 2 + h) + f(1 - h, 2 - h)) / (4 * h * h)
+    print(round(fxx, 3), round(fxy, 3))
+  sortie: 2.0 1.0
+- id: c4
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `hessienne_numerique(f, x, y, h=1e-3)`** : la matrice `[[fxx, fxy], [fxy, fyy]]` approchée comme dans l’exemple.'
+  en: 'Your turn. **Write `hessienne_numerique(f, x, y, h=1e-3)`**: the matrix `[[fxx, fxy], [fxy, fyy]]` approximated as in the example.'
+  depart: |
+    # écris ta fonction hessienne_numerique ici
+  tests: |-
+    H = hessienne_numerique(lambda x, y: x * x + x * y + y * y, 1, 2)
+    assert abs(H[0][0] - 2) < 1e-4 and abs(H[0][1] - 1) < 1e-4 and abs(H[1][0] - 1) < 1e-4 and abs(H[1][1] - 2) < 1e-4
+    K = hessienne_numerique(lambda x, y: x * x - y * y, 0, 0)
+    assert abs(K[0][0] - 2) < 1e-4 and abs(K[1][1] + 2) < 1e-4 and abs(K[0][1]) < 1e-4
+  solutionCode: |
+    def hessienne_numerique(f, x, y, h=1e-3):
+        fxx = (f(x + h, y) - 2 * f(x, y) + f(x - h, y)) / h ** 2
+        fyy = (f(x, y + h) - 2 * f(x, y) + f(x, y - h)) / h ** 2
+        fxy = (f(x + h, y + h) - f(x + h, y - h) - f(x - h, y + h) + f(x - h, y - h)) / (4 * h * h)
+        return [[fxx, fxy], [fxy, fyy]]
+  indice:
+    fr: Recopie les trois formules de l’exemple ; pour $f_{yy}$, change $y$ au lieu de $x$.
+    en: Copy the three formulas of the example; for $f_{yy}$, vary $y$ instead of $x$.
+  explication:
+    fr: Les bibliothèques de calcul différentiel donnent la Hessienne exacte ; cette version approchée sert à contrôler un calcul.
+    en: Automatic differentiation libraries give the exact Hessian; this approximate version serves to check a calculation.
+- id: c5
+  type: idee
+  fr: 'Une fonction est **convexe** si sa Hessienne est **semi-définie positive** partout : elle ne courbe jamais vers le bas. Pour une matrice symétrique $\begin{pmatrix}a&b\\b&c\end{pmatrix}$ de taille $2\times2$ : $a\ge0$, $c\ge0$ et $ac-b^2\ge0$.'
+  en: 'A function is **convex** if its Hessian is **positive semi-definite** everywhere: it never bends downward. For a symmetric $2\times2$ matrix $\begin{pmatrix}a&b\\b&c\end{pmatrix}$: $a\ge0$, $c\ge0$ and $ac-b^2\ge0$.'
+  figure:
+    kind: tableau
+    entetes:
+    - $f(x,y)$
+    - fr: Hessienne
+      en: Hessian
+    - fr: Convexe ? ($ac-b^2$)
+      en: Convex? ($ac-b^2$)
+    cellules:
+    - - $x^2+xy+y^2$
+      - $\begin{pmatrix}2&1\\1&2\end{pmatrix}$
+      - fr: 'oui : $3\ge0$'
+        en: 'yes: $3\ge0$'
+        ton: ok
+    - - $x^2-y^2$
+      - $\begin{pmatrix}2&0\\0&-2\end{pmatrix}$
+      - fr: 'non : $-4<0$, un col'
+        en: 'no: $-4<0$, a saddle'
+        ton: bad
+    - - $(x+y)^2$
+      - $\begin{pmatrix}2&2\\2&2\end{pmatrix}$
+      - fr: 'oui : $0\ge0$, plat dans une direction'
+        en: 'yes: $0\ge0$, flat in one direction'
+        ton: ok
+    legende:
+      fr: Le déterminant négatif signale une direction qui monte et une qui descend.
+      en: A negative determinant signals one rising and one falling direction.
+- id: c6
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `est_semi_definie_positive(a, b, c)`** pour la matrice `[[a, b], [b, c]]` : `True` si `a >= 0`, `c >= 0` et `a*c - b*b >= 0`.'
+  en: '**Write `est_semi_definie_positive(a, b, c)`** for the matrix `[[a, b], [b, c]]`: `True` if `a >= 0`, `c >= 0` and `a*c - b*b >= 0`.'
+  depart: |
+    # écris ta fonction est_semi_definie_positive ici
+  tests: |-
+    assert est_semi_definie_positive(2, 1, 2)
+    assert not est_semi_definie_positive(2, 0, -2)
+    assert est_semi_definie_positive(2, 2, 2)
+    assert not est_semi_definie_positive(1, 2, 1)
+    assert est_semi_definie_positive(0, 0, 0)
+  solutionCode: |
+    def est_semi_definie_positive(a, b, c):
+        return a >= 0 and c >= 0 and a * c - b * b >= 0
+  indice:
+    fr: Trois comparaisons reliées par `and`.
+    en: Three comparisons joined by `and`.
+  explication:
+    fr: 'Pour la matrice $\begin{pmatrix}1&2\\2&1\end{pmatrix}$, $a$ et $c$ sont positifs mais $ac-b^2=-3$ : il faut vérifier les trois conditions.'
+    en: 'For the matrix $\begin{pmatrix}1&2\\2&1\end{pmatrix}$, $a$ and $c$ are positive but $ac-b^2=-3$: all three conditions must be checked.'
+- id: c7
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: La Hessienne $\begin{pmatrix}2&1\\1&2\end{pmatrix}$ a pour trace $4$ et pour déterminant $3$. Quelle est sa plus grande valeur propre ?
+  en: The Hessian $\begin{pmatrix}2&1\\1&2\end{pmatrix}$ has trace $4$ and determinant $3$. What is its largest eigenvalue?
+  reponses:
+  - '3'
+  verif: |-
+    tr, det = 4, 3
+    print(int((tr + (tr * tr - 4 * det) ** 0.5) / 2))
+  indice:
+    fr: Les valeurs propres $\lambda$ vérifient $\lambda^2-4\lambda+3=0$.
+    en: The eigenvalues $\lambda$ satisfy $\lambda^2-4\lambda+3=0$.
+  explication:
+    fr: '$\lambda^2-4\lambda+3=(\lambda-1)(\lambda-3)$ : les valeurs propres sont $1$ et $3$.'
+    en: '$\lambda^2-4\lambda+3=(\lambda-1)(\lambda-3)$: the eigenvalues are $1$ and $3$.'
+- id: c8
+  type: idee
+  fr: 'Pourquoi la convexité compte pour Kintana : sur une fonction convexe, un point où le gradient est nul est un **minimum global**. Il n’y a ni col ni piège. La régression linéaire et la régression logistique ont une perte convexe.'
+  en: 'Why convexity matters for Kintana: on a convex function, a point where the gradient is zero is a **global minimum**. There is no saddle and no trap. Linear regression and logistic regression have a convex loss.'
+  exemple:
+    fr: Pour la perte moyenne $\frac1n\sum(wx_i-y_i)^2$, la dérivée seconde en $w$ vaut $\frac2n\sum x_i^2\ge0$.
+    en: For the mean loss $\frac1n\sum(wx_i-y_i)^2$, the second derivative in $w$ is $\frac2n\sum x_i^2\ge0$.
+- id: c9
+  type: exemple
+  titre:
+    fr: Vérifier la convexité de la perte logistique
+    en: Checking the convexity of the logistic loss
+  lang: python
+  etapes:
+  - code: |-
+      import math
+      g = lambda z: math.log(1 + math.exp(-z))
+    fr: La perte logistique d’un exemple bien classé, en fonction de la marge $z$.
+    en: The logistic loss of a well-classified example, as a function of the margin $z$.
+  - code: 'd2 = lambda z, h=1e-3: (g(z + h) - 2 * g(z) + g(z - h)) / h ** 2'
+    fr: Une dérivée seconde numérique, par trois points voisins.
+    en: A numerical second derivative, from three neighbouring points.
+  - code: print(all(d2(k / 10) > 0 for k in range(-50, 51)))
+    fr: 'Sur $z\in[-5,5]$ elle reste positive : `True`. C’est cohérent avec $g''''=\sigma(1-\sigma)>0$.'
+    en: 'On $z\in[-5,5]$ it stays positive: `True`. This is consistent with $g''''=\sigma(1-\sigma)>0$.'
+  verif: |-
+    import math
+    g = lambda z: math.log(1 + math.exp(-z))
+    d2 = lambda z, h=1e-3: (g(z + h) - 2 * g(z) + g(z - h)) / h ** 2
+    print(all(d2(k / 10) > 0 for k in range(-50, 51)))
+  sortie: 'True'
+- id: c10
+  type: idee
+  fr: La plus grande valeur propre $\lambda_{\max}$ de la Hessienne fixe le pas maximal de la descente de gradient. Sur $f=\frac{\lambda}{2}x^2$, chaque pas multiplie $x$ par $1-\eta\lambda$. Cela converge si $\eta<\frac{2}{\lambda}$.
+  en: The largest eigenvalue $\lambda_{\max}$ of the Hessian sets the maximum step of gradient descent. On $f=\frac{\lambda}{2}x^2$, each step multiplies $x$ by $1-\eta\lambda$. It converges if $\eta<\frac{2}{\lambda}$.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Pas $\eta$
+      en: Step $\eta$
+    - fr: Facteur $|1-3\eta|$
+      en: Factor $|1-3\eta|$
+    - fr: Résultat
+      en: Result
+    cellules:
+    - - $0{,}1$
+      - $0{,}7$
+      - fr: converge
+        en: converges
+        ton: ok
+    - - $0{,}5$
+      - $0{,}5$
+      - fr: converge vite
+        en: converges fast
+        ton: ok
+    - - $0{,}7$
+      - $1{,}1$
+      - fr: diverge
+        en: diverges
+        ton: bad
+    legende:
+      fr: Pour $\lambda=3$, la limite est $\frac23\approx0{,}67$.
+      en: For $\lambda=3$, the limit is $\frac23\approx0.67$.
+- id: c11
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `descente(lam, eta, x0, n)`** : applique `n` fois `x = x - eta * lam * x` (descente de gradient sur $\frac{\lambda}{2}x^2$) et renvoie `x`.'
+  en: '**Write `descente(lam, eta, x0, n)`**: apply `x = x - eta * lam * x` `n` times (gradient descent on $\frac{\lambda}{2}x^2$) and return `x`.'
+  depart: |
+    # écris ta fonction descente ici
+  tests: |-
+    assert abs(descente(3, 0.1, 1, 2) - 0.49) < 1e-9
+    assert abs(descente(3, 0.7, 1, 3) + 1.331) < 1e-9
+    assert descente(3, 0.1, 1, 0) == 1
+    assert abs(descente(3, 0.5, 1, 20)) < 1e-5
+  solutionCode: |
+    def descente(lam, eta, x0, n):
+        x = x0
+        for _ in range(n):
+            x = x - eta * lam * x
+        return x
+  indice:
+    fr: Une boucle `for _ in range(n)` qui met à jour `x`.
+    en: A `for _ in range(n)` loop updating `x`.
+  explication:
+    fr: 'Avec $\eta=0{,}7$ le facteur $-1{,}1$ change le signe et grandit à chaque pas : $1$, $-1{,}1$, $1{,}21$, $-1{,}331$.'
+    en: 'With $\eta=0.7$ the factor $-1.1$ flips the sign and grows at each step: $1$, $-1.1$, $1.21$, $-1.331$.'
+- id: c12
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Pour une courbure $\lambda=4$, quel pas $\eta$ est la limite $\frac{2}{\lambda}$ de la descente de gradient ?
+  en: For a curvature $\lambda=4$, which step $\eta$ is the limit $\frac{2}{\lambda}$ of gradient descent?
+  reponses:
+  - '0.5'
+  verif: print(2 / 4)
+  indice:
+    fr: Divise $2$ par $\lambda$.
+    en: Divide $2$ by $\lambda$.
+  explication:
+    fr: '$\frac24=0{,}5$ : au-delà, la descente oscille de plus en plus fort.'
+    en: '$\frac24=0.5$: beyond it, the descent oscillates ever more strongly.'
+- id: c13
+  type: piege
+  fr: 'La Hessienne en un seul point ne prouve pas la convexité. Pour $g(x)=x^4-2x^2$, la dérivée seconde $12x^2-4$ vaut $44$ en $x=2$ mais $-4$ en $x=0$ : $g$ n’est pas convexe.'
+  en: 'The Hessian at a single point does not prove convexity. For $g(x)=x^4-2x^2$, the second derivative $12x^2-4$ is $44$ at $x=2$ but $-4$ at $x=0$: $g$ is not convex.'
+- id: c14
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `classer_point(a, b, c)`** pour un point critique de Hessienne `[[a, b], [b, c]]` et `det = a*c - b*b` : `"selle"` si `det < 0`, `"indéterminé"` si `det == 0`, sinon `"minimum local"` si `a > 0` et `"maximum local"` sinon.'
+  en: 'Challenge. **Write `classer_point(a, b, c)`** for a critical point with Hessian `[[a, b], [b, c]]` and `det = a*c - b*b`: `"selle"` if `det < 0`, `"indéterminé"` if `det == 0`, otherwise `"minimum local"` if `a > 0` and `"maximum local"` else.'
+  depart: |
+    # écris ta fonction classer_point ici
+  tests: |-
+    assert classer_point(2, 1, 2) == "minimum local"
+    assert classer_point(-2, 0, -2) == "maximum local"
+    assert classer_point(2, 0, -2) == "selle"
+    assert classer_point(2, 2, 2) == "indéterminé"
+  solutionCode: |
+    def classer_point(a, b, c):
+        det = a * c - b * b
+        if det < 0:
+            return "selle"
+        if det == 0:
+            return "indéterminé"
+        return "minimum local" if a > 0 else "maximum local"
+  indice:
+    fr: Calcule `det` d’abord, puis enchaîne les cas dans l’ordre de l’énoncé.
+    en: Compute `det` first, then chain the cases in the order of the statement.
+  explication:
+    fr: 'Quand `det == 0`, le test du second ordre ne conclut pas : il faut regarder des dérivées d’ordre supérieur.'
+    en: 'When `det == 0`, the second-order test is inconclusive: higher-order derivatives must be examined.'
+- id: c15
+  type: idee
+  fr: 'Le lien avec la suite : les réseaux de neurones de Kintana n’ont **pas** de perte convexe, donc des cols existent. La Hessienne explique pourquoi on choisit un petit pas. Au niveau 22.5, tu verras la perte qu’on minimise le plus souvent : l’entropie croisée.'
+  en: 'The link with what follows: Kintana’s neural networks do **not** have a convex loss, so saddles exist. The Hessian explains why we pick a small step. In level 22.5 you will see the loss minimised most often: cross-entropy.'
+  exemple:
+    fr: Même sans convexité, une petite valeur de $\lambda_{\max}$ rend la descente plus stable.
+    en: Even without convexity, a small $\lambda_{\max}$ makes the descent more stable.
+- id: c16
+  type: retenir
+  fr: 'Hessienne = dérivées secondes, symétrique. Convexe si semi-définie positive partout ; en $2\times2$ : $a,c\ge0$ et $ac-b^2\ge0$. $\det<0$ : col. Descente de gradient stable si $\eta<2/\lambda_{\max}$.'
+  en: 'Hessian = second derivatives, symmetric. Convex if positive semi-definite everywhere; in $2\times2$: $a,c\ge0$ and $ac-b^2\ge0$. $\det<0$: saddle. Gradient descent is stable if $\eta<2/\lambda_{\max}$.'
+- id: c17
+  type: plus
+  fr: Pour approfondir, lis [le chapitre 4 de Deep Learning](https://www.deeplearningbook.org/contents/numerical.html) ; ce livre demande une connexion.
+  en: To go further, read [chapter 4 of Deep Learning](https://www.deeplearningbook.org/contents/numerical.html); this book needs a connection.

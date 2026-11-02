@@ -203,3 +203,13 @@ modules:
     titre: { fr: "Boss final", en: "Final boss" }
     niveaux:
       - { id: "21.boss", boss: true, titre: { fr: "Kintana, chercheuse honnête" } }
+  - id: 22
+    titre: { fr: "Recherche (bonus)", en: "Research (bonus)" }
+    niveaux:
+      - { id: "22.1", titre: { fr: "Une preuve est un programme" } }
+      - { id: "22.2", titre: { fr: "La récurrence en Lean" } }
+      - { id: "22.3", titre: { fr: "Prouver une propriété de son code" } }
+      - { id: "22.4", titre: { fr: "Hessienne et convexité" } }
+      - { id: "22.5", titre: { fr: "Entropie croisée, KL et perplexité" } }
+      - { id: "22.6", titre: { fr: "Experts et modalités" } }
+      - { id: "22.boss", boss: true, titre: { fr: "Prouve ton code" } }

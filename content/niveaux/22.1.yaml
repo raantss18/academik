@@ -1,0 +1,301 @@
+# Niveau 22.1 — Recherche 1 : types et propositions. Original academik ; notions vérifiées dans Theorem Proving in Lean 4 (Apache-2.0). Preuves Lean compilées avec Lean 4.35 ; calculs exécutés.
+id: '22.1'
+module: 22
+duree_min: 18
+titre:
+  fr: Une preuve est un programme
+  en: A proof is a program
+ia:
+  fr: Kintana sait qu’un test réussi ne prouve pas tout, et écrit ses premiers théorèmes vérifiés par Lean.
+  en: Kintana knows a passing test does not prove everything, and writes her first theorems checked by Lean.
+sources:
+- titre: Avigad, de Moura, Kong, Ullrich — Theorem Proving in Lean 4
+  url: https://lean-lang.org/theorem_proving_in_lean4/
+  licence: Apache-2.0 ; notions citées, exemples réécrits
+- titre: Avigad, Massot — Mathematics in Lean
+  url: https://leanprover-community.github.io/mathematics_in_lean/
+  licence: Apache-2.0 ; notions citées
+- titre: Lean 4 — manuel de référence
+  url: https://lean-lang.org/doc/reference/latest/
+  licence: Apache-2.0 ; documentation officielle citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Kintana vérifie une propriété des entiers sur les mille premiers cas, et elle tient à chaque fois. Est-elle prouvée pour tous les entiers ?
+  en: Kintana checks a property of integers on the first thousand cases, and it holds every time. Is it proved for all integers?
+  choix:
+  - fr: 'Non : mille cas ne couvrent pas une infinité d’entiers'
+    en: 'No: a thousand cases do not cover infinitely many integers'
+    juste: true
+  - fr: 'Oui : mille cas suffisent'
+    en: 'Yes: a thousand cases are enough'
+  - fr: Oui, si les cas sont tirés au hasard
+    en: Yes, if the cases are drawn at random
+  indice:
+    fr: Après le millième entier, il en reste encore une infinité.
+    en: After the thousandth integer, infinitely many remain.
+  explication:
+    fr: Un test ne couvre que les cas essayés. Le polynôme $n^2+n+41$ donne un nombre premier pour $n=0$ à $39$, mais $40^2+40+41=41^2$.
+    en: A test only covers the cases tried. The polynomial $n^2+n+41$ gives a prime for $n=0$ to $39$, but $40^2+40+41=41^2$.
+  verif: |-
+    n = 40
+    print(n * n + n + 41 == 41 * 41)
+  sortie: 'True'
+- id: c2
+  type: idee
+  fr: Un **assistant de preuve** comme Lean vérifie chaque pas d’un raisonnement. Tu écris l’énoncé comme un **type**, et la preuve comme un **programme** de ce type. Si le programme est accepté, la preuve est juste.
+  en: A **proof assistant** such as Lean checks every step of an argument. You write the statement as a **type**, and the proof as a **program** of that type. If the program is accepted, the proof is correct.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: En mathématiques
+      en: In mathematics
+    - fr: En Lean
+      en: In Lean
+    cellules:
+    - - fr: une proposition
+        en: a proposition
+      - fr: un type de `Prop`
+        en: a type in `Prop`
+    - - fr: une preuve
+        en: a proof
+      - fr: un terme de ce type
+        en: a term of that type
+    - - fr: $p\Rightarrow q$
+        en: $p\Rightarrow q$
+      - fr: une fonction `p → q`
+        en: a function `p → q`
+    - - fr: $p$ et $q$
+        en: $p$ and $q$
+      - fr: un couple `⟨hp, hq⟩`
+        en: a pair `⟨hp, hq⟩`
+    legende:
+      fr: 'Cette correspondance s’appelle Curry-Howard : prouver, c’est programmer.'
+      en: 'This correspondence is called Curry-Howard: proving is programming.'
+- id: c3
+  type: exemple
+  titre:
+    fr: Tes deux premiers théorèmes
+    en: Your first two theorems
+  lang: lean
+  etapes:
+  - code: 'theorem deux_plus_deux : 2 + 2 = 4 := rfl'
+    fr: '`theorem` donne un nom, puis l’énoncé suit les deux-points. `rfl` dit : les deux côtés se calculent en la même valeur.'
+    en: '`theorem` gives a name, then the statement follows the colon. `rfl` says: both sides compute to the same value.'
+  - code: 'theorem modus_ponens (p q : Prop) (hp : p) (hpq : p → q) : q :='
+    fr: On suppose une preuve `hp` de `p` et une preuve `hpq` de `p → q`. On veut une preuve de `q`.
+    en: We assume a proof `hp` of `p` and a proof `hpq` of `p → q`. We want a proof of `q`.
+  - code: '  hpq hp'
+    fr: 'On applique la fonction `hpq` à `hp` : on obtient une preuve de `q`. Lean accepte les deux théorèmes.'
+    en: 'We apply the function `hpq` to `hp`: we get a proof of `q`. Lean accepts both theorems.'
+- id: c4
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: En Lean, que représente une preuve de `p → q` ?
+  en: In Lean, what does a proof of `p → q` represent?
+  choix:
+  - fr: Une fonction qui change une preuve de `p` en preuve de `q`
+    en: A function turning a proof of `p` into a proof of `q`
+    juste: true
+  - fr: Le booléen `true`
+    en: The boolean `true`
+  - fr: Un couple de deux preuves
+    en: A pair of two proofs
+  indice:
+    fr: Relis la ligne $p\Rightarrow q$ du tableau de correspondance.
+    en: Reread the $p\Rightarrow q$ row of the correspondence table.
+  explication:
+    fr: Une implication est une **fonction** sur les preuves. Le couple représente le « et ».
+    en: An implication is a **function** on proofs. The pair represents “and”.
+- id: c5
+  type: idee
+  fr: Lean refuse une preuve fausse. Pour l’énoncé `2 + 2 = 5`, `rfl` échoue, car les deux côtés ne se calculent pas pareil. Aucune faute de frappe ni aucun cas oublié ne passe.
+  en: Lean rejects a false proof. For the statement `2 + 2 = 5`, `rfl` fails, because the two sides do not compute the same. No typo and no forgotten case gets through.
+  exemple:
+    fr: '`theorem faux : 2 + 2 = 5 := rfl` donne l’erreur « Not a definitional equality » : Lean montre les deux côtés qui diffèrent.'
+    en: '`theorem faux : 2 + 2 = 5 := rfl` gives the error “Not a definitional equality”: Lean shows the two sides that differ.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le circuit d’une preuve
+        en: The path of a proof
+      noeuds:
+      - fr: énoncé (type)
+        en: statement (type)
+      - fr: preuve (programme)
+        en: proof (program)
+      - fr: Lean vérifie
+        en: Lean checks
+      - fr: accepté ou refusé
+        en: accepted or rejected
+        ton: ok
+    legende:
+      fr: 'Tu n’as pas à croire la preuve : Lean l’a contrôlée pas à pas.'
+      en: 'You do not have to trust the proof: Lean checked it step by step.'
+- id: c6
+  type: idee
+  fr: 'Sur un domaine **fini**, vérifier tous les cas est une vraie preuve. Lean le fait avec la tactique `decide`. Sur tous les entiers, il y a une infinité de cas : tu verras la récurrence au niveau 22.2.'
+  en: 'On a **finite** domain, checking every case is a real proof. Lean does it with the `decide` tactic. On all integers there are infinitely many cases: you will see induction in level 22.2.'
+  exemple:
+    fr: '`example : ∀ n : Nat, n < 10 → n * n < 100 := by decide` : Lean essaie les dix valeurs et accepte.'
+    en: '`example : ∀ n : Nat, n < 10 → n * n < 100 := by decide`: Lean tries the ten values and accepts.'
+- id: c7
+  type: exemple
+  titre:
+    fr: Une preuve par table de vérité
+    en: A proof by truth table
+  lang: python
+  etapes:
+  - code: from itertools import product
+    fr: '`product` énumère tous les couples de booléens.'
+    en: '`product` lists every pair of booleans.'
+  - code: 'imp = lambda a, b: (not a) or b'
+    fr: L’implication est fausse seulement quand `a` est vrai et `b` faux.
+    en: Implication is false only when `a` is true and `b` false.
+  - code: print(all(imp(p, q) == imp(not q, not p) for p, q in product([False, True], repeat=2)))
+    fr: 'On compare $p\Rightarrow q$ et sa contraposée sur les quatre cas : `True`, elles sont équivalentes.'
+    en: 'We compare $p\Rightarrow q$ and its contrapositive on the four cases: `True`, they are equivalent.'
+  verif: |-
+    from itertools import product
+    imp = lambda a, b: (not a) or b
+    print(all(imp(p, q) == imp(not q, not p) for p, q in product([False, True], repeat=2)))
+  sortie: 'True'
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `implique(a, b)`** : la valeur de vérité de $a\Rightarrow b$, fausse seulement si `a` est vrai et `b` faux.'
+  en: 'Your turn. **Write `implique(a, b)`**: the truth value of $a\Rightarrow b$, false only if `a` is true and `b` false.'
+  depart: |
+    # écris ta fonction implique ici
+  tests: |-
+    assert implique(True, False) is False
+    assert implique(True, True) is True
+    assert implique(False, False) is True
+    assert implique(False, True) is True
+  solutionCode: |
+    def implique(a, b):
+        return (not a) or b
+  indice:
+    fr: 'Un seul cas rend l’implication fausse : écris-le avec `not` et `or`.'
+    en: 'Only one case makes the implication false: write it with `not` and `or`.'
+  explication:
+    fr: '`(not a) or b` est la forme habituelle. Elle explique qu’une prémisse fausse rend l’implication vraie.'
+    en: '`(not a) or b` is the usual form. It explains why a false premise makes the implication true.'
+- id: c9
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `est_tautologie(f, n)`** : `True` si la fonction booléenne `f` à `n` arguments est vraie pour toutes les combinaisons de `False` et `True`.'
+  en: '**Write `est_tautologie(f, n)`**: `True` if the boolean function `f` of `n` arguments is true for every combination of `False` and `True`.'
+  depart: |
+    from itertools import product
+
+    # écris ta fonction est_tautologie ici
+  tests: |-
+    assert est_tautologie(lambda p: p or not p, 1)
+    assert not est_tautologie(lambda p, q: p or q, 2)
+    assert est_tautologie(lambda p, q: (not (p and q)) or p, 2)
+    assert est_tautologie(lambda p, q, r: True, 3)
+  solutionCode: |
+    from itertools import product
+
+    def est_tautologie(f, n):
+        return all(f(*v) for v in product([False, True], repeat=n))
+  indice:
+    fr: '`product([False, True], repeat=n)` donne les combinaisons ; `f(*v)` appelle `f` sur l’une d’elles.'
+    en: '`product([False, True], repeat=n)` gives the combinations; `f(*v)` calls `f` on one of them.'
+  explication:
+    fr: 'C’est la tactique `decide` en petit : un domaine fini, tous les cas, une preuve.'
+    en: 'This is the `decide` tactic in miniature: a finite domain, every case, a proof.'
+- id: c10
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Combien de lignes compte la table de vérité d’une formule à 5 variables ?
+  en: How many rows does the truth table of a formula with 5 variables have?
+  reponses:
+  - '32'
+  verif: print(2 ** 5)
+  indice:
+    fr: Chaque variable double le nombre de lignes.
+    en: Each variable doubles the number of rows.
+  explication:
+    fr: '$2^5=32$ lignes. À 40 variables, il y en a plus de mille milliards : la table ne suffit plus.'
+    en: '$2^5=32$ rows. With 40 variables there are over a trillion: the table is no longer enough.'
+- id: c11
+  type: parsons
+  note:
+    kind: exercise
+    poids: 1
+  fr: Remets dans l’ordre la preuve de la contraposée en Lean. Ici, `¬p` est une fonction qui mène de `p` à l’absurde.
+  en: Put the Lean proof of the contrapositive in order. Here, `¬p` is a function leading from `p` to absurdity.
+  lang: lean
+  lignes:
+  - 'theorem contraposee (p q : Prop) (hpq : p → q) (hnq : ¬q) : ¬p :='
+  - '  fun hp =>'
+  - '    hnq (hpq hp)'
+  indice:
+    fr: L’énoncé vient d’abord. Pour prouver `¬p`, on suppose `hp`, puis on fabrique l’absurde.
+    en: The statement comes first. To prove `¬p`, assume `hp`, then build absurdity.
+  explication:
+    fr: '`hpq hp` est une preuve de `q`, et `hnq` la contredit. Tu as vu cette contraposée au module 0 ; Lean la vérifie.'
+    en: '`hpq hp` is a proof of `q`, and `hnq` contradicts it. You saw this contrapositive in module 0; Lean checks it.'
+- id: c12
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `contre_exemple(f, n)`** : la première combinaison `v` (dans l’ordre de `product`) qui rend `f(*v)` faux, ou `None` si `f` est une tautologie.'
+  en: 'Challenge. **Write `contre_exemple(f, n)`**: the first combination `v` (in `product` order) making `f(*v)` false, or `None` if `f` is a tautology.'
+  depart: |
+    from itertools import product
+
+    # écris ta fonction contre_exemple ici
+  tests: |-
+    assert contre_exemple(lambda p, q: p or q, 2) == (False, False)
+    assert contre_exemple(lambda p: p or not p, 1) is None
+    assert contre_exemple(lambda p, q: (not p) or q, 2) == (True, False)
+  solutionCode: |
+    from itertools import product
+
+    def contre_exemple(f, n):
+        for v in product([False, True], repeat=n):
+            if not f(*v):
+                return v
+        return None
+  indice:
+    fr: Parcours les combinaisons ; renvoie la première qui échoue, puis `None` après la boucle.
+    en: Loop over the combinations; return the first that fails, then `None` after the loop.
+  explication:
+    fr: Un contre-exemple suffit à réfuter. Une preuve, elle, doit couvrir tous les cas.
+    en: One counterexample is enough to refute. A proof must cover every case.
+- id: c13
+  type: piege
+  fr: Ne confonds pas « vrai sur mes exemples » et « vrai pour tout $n$ ». Le polynôme $n^2+n+41$ est premier pour $n=0$ à $39$. Pourtant $40^2+40+41=1681=41^2$.
+  en: Do not confuse “true on my examples” with “true for every $n$”. The polynomial $n^2+n+41$ is prime for $n=0$ to $39$. Yet $40^2+40+41=1681=41^2$.
+- id: c14
+  type: idee
+  fr: 'Le lien avec Kintana : ses tests (module 2) montrent que son code marche sur quelques cas. Une preuve en Lean montre qu’il marche sur **tous** les cas. Les deux se complètent : tester vite, prouver ce qui compte.'
+  en: 'The link with Kintana: her tests (module 2) show her code works on a few cases. A Lean proof shows it works on **every** case. The two complement each other: test quickly, prove what matters.'
+  exemple:
+    fr: Un test trouve un bogue en une seconde ; une preuve garantit qu’il n’en reste aucun pour la propriété prouvée.
+    en: A test finds a bug in a second; a proof guarantees none remains for the proved property.
+- id: c15
+  type: retenir
+  fr: 'Prouver, c’est programmer : proposition = type, preuve = terme, $p\Rightarrow q$ = fonction. Lean refuse toute preuve fausse. Sur un domaine fini, tout vérifier est une preuve ; sur l’infini, un test ne prouve rien.'
+  en: 'Proving is programming: proposition = type, proof = term, $p\Rightarrow q$ = function. Lean rejects any false proof. On a finite domain, checking everything is a proof; on infinity, a test proves nothing.'
+- id: c16
+  type: plus
+  fr: Pour aller plus loin, lis les chapitres 3 et 4 de [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/) ; ce livre demande une connexion.
+  en: To go further, read chapters 3 and 4 of [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/); this book needs a connection.

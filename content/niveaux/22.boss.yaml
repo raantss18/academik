@@ -1,0 +1,358 @@
+# Niveau 22.boss — Recherche, boss : spécifier, tester, prouver. Original academik ; notions des niveaux 22.1 à 22.6. Preuve compilée avec Lean 4.35 ; calculs exécutés.
+id: 22.boss
+module: 22
+duree_min: 19
+titre:
+  fr: Prouve ton code
+  en: Prove your code
+ia:
+  fr: 'Kintana livre une fonction spécifiée, testée et prouvée : elle sait ce qu’elle garantit, et ce qu’elle ne garantit pas.'
+  en: 'Kintana delivers a function that is specified, tested and proved: she knows what she guarantees, and what she does not.'
+sources:
+- titre: Avigad, de Moura, Kong, Ullrich — Theorem Proving in Lean 4
+  url: https://lean-lang.org/theorem_proving_in_lean4/
+  licence: Apache-2.0 ; notions citées, exemples réécrits
+- titre: Boyd, Vandenberghe — Convex Optimization (référence uniquement)
+  url: https://web.stanford.edu/~boyd/cvxbook/
+  licence: Copyright Cambridge University Press ; lien seulement
+- titre: Shannon — A Mathematical Theory of Communication (1948)
+  url: https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf
+  licence: Article historique ; notion citée, aucun extrait repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Kintana a testé sa fonction sur dix mille listes tirées au hasard : tout passe. Sa propriété est-elle **prouvée** pour toutes les listes ?'
+  en: 'Kintana tested her function on ten thousand randomly drawn lists: everything passes. Is her property **proved** for all lists?'
+  choix:
+  - fr: 'Non : dix mille cas ne couvrent pas une infinité de listes'
+    en: 'No: ten thousand cases do not cover infinitely many lists'
+    juste: true
+  - fr: 'Oui : dix mille cas suffisent'
+    en: 'Yes: ten thousand cases are enough'
+  - fr: Oui, car le tirage est aléatoire
+    en: Yes, because the draw is random
+  indice:
+    fr: Rappelle-toi $n^2+n+41$ au niveau 22.1.
+    en: Remember $n^2+n+41$ in level 22.1.
+  explication:
+    fr: Un test couvre les cas essayés. Seule une preuve couvre tous les cas.
+    en: A test covers the cases tried. Only a proof covers every case.
+- id: c2
+  type: idee
+  fr: 'Ta mission : donner à Kintana une fonction **sûre**, en trois temps. D’abord une **spécification** précise. Ensuite des **tests** rapides pour trouver les bogues ; enfin une **preuve** Lean pour ce qui doit être certain.'
+  en: 'Your mission: give Kintana a **safe** function, in three steps. First a precise **specification**. Then quick **tests** to find bugs; finally a Lean **proof** for what must be certain.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Du code sûr en trois temps
+        en: Safe code in three steps
+      noeuds:
+      - fr: spécifier
+        en: specify
+      - fr: tester
+        en: test
+      - fr: prouver
+        en: prove
+      - fr: livrer
+        en: ship
+        ton: ok
+    legende:
+      fr: Les tests trouvent vite les bogues ; la preuve apporte la certitude.
+      en: Tests find bugs quickly; the proof brings certainty.
+- id: c3
+  type: exemple
+  titre:
+    fr: Prouver que doubler garde la longueur
+    en: Proving that doubling keeps the length
+  lang: lean
+  etapes:
+  - code: 'def doubler : List Nat → List Nat'
+    fr: 'La fonction de Kintana : elle double chaque nombre d’une liste.'
+    en: 'Kintana’s function: it doubles every number in a list.'
+  - code: '  | [] => []'
+    fr: Une liste vide reste vide.
+    en: An empty list stays empty.
+  - code: '  | x :: xs => (2 * x) :: doubler xs'
+    fr: On double `x`, puis on traite le reste.
+    en: We double `x`, then handle the rest.
+  - code: 'theorem longueur_doubler (xs : List Nat) :'
+    fr: 'La spécification : doubler ne change pas la longueur.'
+    en: 'The specification: doubling does not change the length.'
+  - code: '    (doubler xs).length = xs.length := by'
+    fr: Pour **toutes** les listes `xs`.
+    en: For **all** lists `xs`.
+  - code: '  induction xs with'
+    fr: Récurrence sur la liste.
+    en: Induction on the list.
+  - code: '  | nil => rfl'
+    fr: 'Cas vide : les deux côtés valent `0`.'
+    en: 'Empty case: both sides are `0`.'
+  - code: '  | cons x xs ih => simp [doubler, ih]'
+    fr: 'Cas `x :: xs` : `simp` déplie `doubler` et utilise `ih`. Lean accepte.'
+    en: 'Case `x :: xs`: `simp` unfolds `doubler` and uses `ih`. Lean accepts.'
+- id: c4
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: Dans le cas `cons x xs ih` de cette preuve, pourquoi `simp` a-t-il besoin de `ih` ?
+  en: In the `cons x xs ih` case of this proof, why does `simp` need `ih`?
+  choix:
+  - fr: Parce que la longueur de `doubler xs` est connue seulement grâce à `ih`
+    en: Because the length of `doubler xs` is known only thanks to `ih`
+    juste: true
+  - fr: Parce que `ih` contient la valeur de `x`
+    en: Because `ih` contains the value of `x`
+  - fr: Parce que `simp` ne sait pas additionner
+    en: Because `simp` cannot add
+  indice:
+    fr: '`ih` parle de la queue `xs`, et `doubler xs` apparaît dans le but.'
+    en: '`ih` is about the tail `xs`, and `doubler xs` appears in the goal.'
+  explication:
+    fr: Le but contient `(doubler xs).length`. L’hypothèse `ih` dit qu’il vaut `xs.length`.
+    en: The goal contains `(doubler xs).length`. The hypothesis `ih` says it equals `xs.length`.
+- id: c5
+  type: parsons
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'Remets la preuve dans l’ordre. Les cas du `induction` suivent l’ordre de Lean : liste vide, puis `x :: xs`.'
+  en: 'Put the proof in order. The `induction` cases follow Lean’s order: empty list, then `x :: xs`.'
+  lang: lean
+  lignes:
+  - 'theorem longueur_doubler (xs : List Nat) :'
+  - '    (doubler xs).length = xs.length := by'
+  - '  induction xs'
+  - '  next => rfl'
+  - '  next x xs ih => simp [doubler, ih]'
+  lean_pre: |
+    def doubler : List Nat → List Nat
+      | [] => []
+      | x :: xs => (2 * x) :: doubler xs
+  indice:
+    fr: L’énoncé d’abord, puis `induction xs`, puis le cas vide, puis le cas `cons`.
+    en: The statement first, then `induction xs`, then the empty case, then the `cons` case.
+  explication:
+    fr: Le cas vide se règle par `rfl` ; le cas `cons` a besoin de l’hypothèse `ih`.
+    en: The empty case is settled by `rfl`; the `cons` case needs the hypothesis `ih`.
+- id: c6
+  type: idee
+  fr: Chaque niveau a apporté un outil. Prouver (22.1 à 22.3), mesurer la courbure (22.4), mesurer la surprise (22.5), compter le coût d’un grand modèle (22.6).
+  en: 'Each level of the module brought a tool: proving (22.1 to 22.3), measuring curvature (22.4), measuring surprise (22.5), counting the cost of a large model (22.6).'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Niveau
+      en: Level
+    - fr: Outil
+      en: Tool
+    - fr: Question à laquelle il répond
+      en: Question it answers
+    cellules:
+    - - 22.1–22.3
+      - fr: preuve Lean, récurrence
+        en: Lean proof, induction
+      - fr: Est-ce vrai pour **tous** les cas ?
+        en: Is it true for **every** case?
+    - - '22.4'
+      - fr: Hessienne
+        en: Hessian
+      - fr: La descente est-elle stable ?
+        en: Is the descent stable?
+    - - '22.5'
+      - fr: entropie croisée, perplexité
+        en: cross-entropy, perplexity
+      - fr: Le modèle est-il peu surpris ?
+        en: Is the model little surprised?
+    - - '22.6'
+      - fr: experts, patchs
+        en: experts, patches
+      - fr: Combien de calcul, combien de mémoire ?
+        en: How much computation, how much memory?
+    legende:
+      fr: Chaque question a une réponse calculable ou prouvable.
+      en: Each question has a computable or provable answer.
+- id: c7
+  type: exemple
+  titre:
+    fr: Tester la même propriété
+    en: Testing the same property
+  lang: python
+  etapes:
+  - code: |-
+      from itertools import product
+      listes = [list(p) for n in range(5) for p in product([0, 1, 2], repeat=n)]
+    fr: 'Toutes les listes de chiffres `0`, `1`, `2` de longueur au plus 4 : 121 listes.'
+    en: 'Every list of digits `0`, `1`, `2` of length at most 4: 121 lists.'
+  - code: 'doubler = lambda xs: [2 * x for x in xs]'
+    fr: La version Python de la fonction de Kintana.
+    en: The Python version of Kintana’s function.
+  - code: print(len(listes), all(len(doubler(c)) == len(c) for c in listes))
+    fr: '`121 True` : aucun contre-exemple parmi ces listes. Lean a prouvé le cas général.'
+    en: '`121 True`: no counterexample among these lists. Lean proved the general case.'
+  verif: |-
+    from itertools import product
+    listes = [list(p) for n in range(5) for p in product([0, 1, 2], repeat=n)]
+    doubler = lambda xs: [2 * x for x in xs]
+    print(len(listes), all(len(doubler(c)) == len(c) for c in listes))
+  sortie: 121 True
+- id: c8
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `doubler(xs)`** en Python : la liste de tous les `2 * x` pour `x` dans `xs`.'
+  en: '**Write `doubler(xs)`** in Python: the list of every `2 * x` for `x` in `xs`.'
+  depart: |
+    # écris ta fonction doubler ici
+  tests: |-
+    assert doubler([]) == []
+    assert doubler([3, 1, 2]) == [6, 2, 4]
+    assert len(doubler([5] * 7)) == 7
+  solutionCode: |
+    def doubler(xs):
+        return [2 * x for x in xs]
+  indice:
+    fr: 'Une compréhension de liste : `[2 * x for x in xs]`.'
+    en: 'A list comprehension: `[2 * x for x in xs]`.'
+  explication:
+    fr: 'C’est la même fonction que celle de Lean : `#eval doubler [3, 1, 2]` affiche `[6, 2, 4]`.'
+    en: 'It is the same function as the Lean one: `#eval doubler [3, 1, 2]` shows `[6, 2, 4]`.'
+- id: c9
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `verifie_propriete(f, prop, l_max)`** : parcours `listes(l_max)` ; renvoie la première liste `c` pour laquelle `prop(c, f(c))` est faux, ou `None`. La fonction `listes` est fournie.'
+  en: '**Write `verifie_propriete(f, prop, l_max)`**: loop over `listes(l_max)`; return the first list `c` for which `prop(c, f(c))` is false, or `None`. The function `listes` is provided.'
+  depart: |
+    from itertools import product
+
+    def listes(l_max):
+        return [list(p) for n in range(l_max + 1) for p in product([0, 1, 2], repeat=n)]
+
+    # écris ta fonction verifie_propriete ici
+  tests: |-
+    assert verifie_propriete(lambda c: [2 * x for x in c], lambda c, r: len(r) == len(c), 4) is None
+    assert verifie_propriete(lambda c: c[:-1], lambda c, r: len(r) == len(c), 3) == [0]
+    assert verifie_propriete(lambda c: [x + 1 for x in c], lambda c, r: sum(r) == 2 * sum(c), 3) == [0]
+  solutionCode: |
+    from itertools import product
+
+    def listes(l_max):
+        return [list(p) for n in range(l_max + 1) for p in product([0, 1, 2], repeat=n)]
+
+    def verifie_propriete(f, prop, l_max):
+        for c in listes(l_max):
+            if not prop(c, f(c)):
+                return c
+        return None
+  indice:
+    fr: Une boucle sur `listes(l_max)` ; `if not prop(c, f(c))` renvoie `c` ; `None` à la fin.
+    en: A loop over `listes(l_max)`; `if not prop(c, f(c))` returns `c`; `None` at the end.
+  explication:
+    fr: 'Le test le plus petit qui échoue est un bon contre-exemple : court et lisible.'
+    en: 'The smallest failing test is a good counterexample: short and readable.'
+- id: c9b
+  type: idee
+  fr: 'Ce que Lean garantit : la preuve respecte les règles de la logique. Ce qu’il ne garantit pas : que l’énoncé soit **le bon**. Relire la spécification reste un travail humain. Pour une fonction critique, fais relire l’énoncé par quelqu’un d’autre.'
+  en: 'What Lean guarantees: the proof follows the rules of logic. What it does not guarantee: that the statement is **the right one**. Rereading the specification remains human work. For a critical function, have someone else reread the statement.'
+  exemple:
+    fr: 'Prouver `longueur (doubler xs) = longueur xs` ne dit rien sur les valeurs : relis ce que l’énoncé affirme.'
+    en: 'Proving `length (doubler xs) = length xs` says nothing about the values: reread what the statement claims.'
+- id: c10
+  type: idee
+  fr: 'Quoi prouver, quoi tester ? Prouve ce qui doit être certain et ne change plus : un chiffrement, un contrôle d’accès, une formule de coût. Teste ce qui évolue vite. Et dans les deux cas, écris la spécification **complète**.'
+  en: 'What to prove, what to test? Prove what must be certain and no longer changes: encryption, access control, a cost formula. Test what evolves quickly. And in both cases, write the **complete** specification.'
+  exemple:
+    fr: 'Pour `doubler`, la longueur ne suffit pas : on ajoute que chaque élément est doublé.'
+    en: 'For `doubler`, length is not enough: we add that each element is doubled.'
+- id: c11
+  type: piege
+  fr: 'Une propriété vraie n’est pas une fonction correcte. `lambda xs: [0 for _ in xs]` garde bien la longueur, mais ne double rien. Il faut une spécification qui dit aussi **quoi** est renvoyé.'
+  en: 'A true property is not a correct function. `lambda xs: [0 for _ in xs]` does keep the length, but doubles nothing. You need a specification that also says **what** is returned.'
+- id: c12
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'Un modèle de langage uniforme sur 32 mots : quelle est sa perplexité ?'
+  en: 'A language model uniform over 32 words: what is its perplexity?'
+  reponses:
+  - '32'
+  verif: |-
+    import math
+    print(int(round(2 ** math.log2(32))))
+  indice:
+    fr: Pour une loi uniforme, la perplexité est le nombre de mots.
+    en: For a uniform distribution, perplexity is the number of words.
+  explication:
+    fr: '$2^{\log_2 32}=32$ : cinq bits d’entropie.'
+    en: '$2^{\log_2 32}=32$: five bits of entropy.'
+- id: c13
+  type: qcm
+  note:
+    kind: quiz
+    poids: 1
+  fr: La Hessienne $\begin{pmatrix}1&2\\2&1\end{pmatrix}$ décrit-elle une fonction convexe ?
+  en: Does the Hessian $\begin{pmatrix}1&2\\2&1\end{pmatrix}$ describe a convex function?
+  choix:
+  - fr: 'Non : $ac-b^2=1-4=-3<0$, c’est un col'
+    en: 'No: $ac-b^2=1-4=-3<0$, it is a saddle'
+    juste: true
+  - fr: 'Oui : $a$ et $c$ sont positifs'
+    en: 'Yes: $a$ and $c$ are positive'
+  - fr: 'Oui : la matrice est symétrique'
+    en: 'Yes: the matrix is symmetric'
+  indice:
+    fr: Calcule le déterminant $ac-b^2$.
+    en: Compute the determinant $ac-b^2$.
+  explication:
+    fr: Il faut les trois conditions $a\ge0$, $c\ge0$ et $ac-b^2\ge0$ ; ici la dernière échoue.
+    en: All three conditions $a\ge0$, $c\ge0$ and $ac-b^2\ge0$ are needed; here the last one fails.
+- id: c14
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi final. **Écris `bilan(f, props, cas)`** : `props` est un dictionnaire `nom → prop(c, resultat)`. Renvoie un dictionnaire `nom → None` si la propriété tient sur tous les `cas`, sinon `nom → ` le premier `c` qui l’invalide.'
+  en: 'Final challenge. **Write `bilan(f, props, cas)`**: `props` is a dictionary `name → prop(c, result)`. Return a dictionary `name → None` if the property holds on every `cas`, otherwise `name → ` the first `c` that breaks it.'
+  depart: |
+    # écris ta fonction bilan ici
+  tests: |-
+    est_trie = lambda c, r: all(r[i] <= r[i + 1] for i in range(len(r) - 1))
+    perm = lambda c, r: sorted(c) == sorted(r)
+    props = {"trié": est_trie, "permutation": perm}
+    cas = [[3, 1, 2], [], [5, 5, 1]]
+    assert bilan(sorted, props, cas) == {"trié": None, "permutation": None}
+    assert bilan(lambda c: [], props, cas) == {"trié": None, "permutation": [3, 1, 2]}
+    assert bilan(lambda c: c, props, cas) == {"trié": [3, 1, 2], "permutation": None}
+  solutionCode: |
+    def bilan(f, props, cas):
+        resultat = {}
+        for nom, prop in props.items():
+            resultat[nom] = None
+            for c in cas:
+                if not prop(c, f(c)):
+                    resultat[nom] = c
+                    break
+        return resultat
+  indice:
+    fr: Pour chaque propriété, parcours `cas` ; mets `c` dans le résultat et `break` au premier échec.
+    en: For each property, loop over `cas`; put `c` in the result and `break` at the first failure.
+  explication:
+    fr: 'Le tri vide passe « trié » mais échoue « permutation » : c’est le piège de 22.3, détecté par un bilan complet.'
+    en: 'The empty sort passes “sorted” but fails “permutation”: this is the 22.3 pitfall, caught by a complete report.'
+- id: c15
+  type: retenir
+  fr: Spécifier, tester, prouver. Un test couvre des cas ; une preuve Lean couvre tous les cas. Une spécification incomplète laisse passer de fausses fonctions. Garde la preuve pour ce qui doit être certain.
+  en: Specify, test, prove. A test covers some cases; a Lean proof covers every case. An incomplete specification lets false functions through. Keep proofs for what must be certain.
+- id: c16
+  type: plus
+  fr: Pour poursuivre, explore [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/) puis Mathematics in Lean ; ces livres demandent une connexion.
+  en: To continue, explore [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/) then Mathematics in Lean; these books need a connection.

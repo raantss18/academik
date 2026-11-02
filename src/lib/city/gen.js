@@ -49,7 +49,7 @@ const THEMES = [
     trees: { conifer: 2, round: 1, bush: 2 }, nTrees: 14,
     kinds: { crystal: 6, tower: 1.5, house: .5 }, count: 22, align: .2,
     props: { lamp: 8, car: 2, person: 3 },
-    lm: ['crystal', 'crystal', 'tower', 'crystal', 'crystal'], boss: 'crystal' },
+    lm: ['crystal', 'tower', 'crystal', 'pavilion', 'crystal'], boss: 'crystal' },
   { place: 'Les Rizières', blurb: 'Terrasses en gradins et moulins : la pente descend.', path: 5, smooth: true,
     top: '#4d6b33', cliff: '#7a5638', lip: '#6aa84f', road: '#a8845a', roadHi: '#d9c29a', dash: false, night: '#14240f',
     patches: ['#6aa84f', '#8fb347', '#5a7d3a', '#a8b04a'], fields: 7,
@@ -203,6 +203,15 @@ const THEMES = [
     kinds: { hall: 2, tower: 2, house: 1, shop: 1 }, count: 24, align: .9,
     props: { lamp: 8, person: 4, car: 2, crate: 2 },
     lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
+  { place: 'L’Académie des Preuves', blurb: 'Colonnades, coupoles et un phare : chaque énoncé y est vérifié avant d’être cru.', path: 0, smooth: true,
+    top: '#3a3a5c', cliff: '#46466e', lip: '#5a7a8a', road: '#2a2a44', roadHi: '#d8c8ff', dash: true, night: '#0f0f24',
+    patches: ['#46466e', '#3a3a5c', '#5a7a8a'],
+    walls: ['#e4e0f5', '#cbc4e8', '#b0a8d6', '#f1eefb', '#8f88c0'], roofs: ['#5b4aa8', '#47388a', '#6e5cc0'],
+    roofW: { flat: 2, hip: 2, gable: 2 }, win: ['#ffe9a8', '#ffd36b', '#ffcf80'], leaf: ['#3f7a48', '#52965a', '#6aae6a'],
+    trees: { round: 1, conifer: 1, bush: 1 }, nTrees: 10,
+    kinds: { hall: 3, tower: 2, house: 1, shop: 1 }, count: 24, align: .9,
+    props: { lamp: 8, person: 4, car: 2, crate: 2 },
+    lm: ['hall', 'tower', 'clock', 'dome', 'crystal', 'pavilion'], boss: 'lighthouse' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).
@@ -620,6 +629,8 @@ function wiggle(a, b, R, amp, count = 2) {
   pts.push(b); return pts;
 }
 const statusOf = (d, l) => DATA[d].levels[l].st;
+/** Le monument d'un niveau (clé de `K`) : le bâtiment qui s'allume quand le niveau est terminé. Même règle que le dessin du quartier. */
+export const monumentKind = (theme, i, boss) => { const th = THEMES[theme % THEMES.length]; return boss ? th.boss : th.lm[i % th.lm.length]; };
 
 // =====================================================================================================
 // Un quartier complet
@@ -669,7 +680,7 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   // ---- repères : un bâtiment unique par niveau, posé le long de la rue principale ; il s'allume avec le score du niveau
   const NL = D.levels.length, fr = D.levels.map((_, i) => .1 + .8 * i / Math.max(1, NL - 1));
   for (let i = 0; i < NL; i++) {
-    const Lv = D.levels[i], boss = !!Lv.boss, kind = boss ? th.boss : th.lm[i % th.lm.length], sc = boss && kind !== 'rova' ? 1.4 : 1, sz = K[kind].size(R), w = sz[0] * sc, dd = sz[1] * sc, st = Lv.st; let spot = null;
+    const Lv = D.levels[i], boss = !!Lv.boss, kind = monumentKind(D.theme, i, boss), sc = boss && kind !== 'rova' ? 1.4 : 1, sz = K[kind].size(R), w = sz[0] * sc, dd = sz[1] * sc, st = Lv.st; let spot = null;
     for (let pass = 0; pass < 2 && !spot; pass++) for (let tr = 0; tr < 70 && !spot; tr++) {
       const p = M.at(Math.min(.97, Math.max(.03, fr[i] + rr(R, -.05, .05)))), side = tr % 2 ? 1 : -1, dist = .55 + Math.max(w, dd) * .5 + .07 * Math.floor(tr / 2);
       const x = p[0] - p[3] * side * dist, y = p[1] + p[2] * side * dist, ang = Math.atan2(p[3], p[2]);
@@ -723,11 +734,13 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   if (reached && !REDUCE) for (let k = 0; k < 2; k++) { const dir = k ? main.slice().reverse() : main, path = 'M' + dir.map(q => P([q[0], q[1], z])).join('L'), col = pick(R, ['#c0392b', '#2e86c1', '#e8e8e8', '#d4ac0d']);
     roadSvg += `<g><rect x="-5" y="-6" width="10" height="5" rx="2" fill="${col}"/><rect x="-2.5" y="-9" width="5" height="3.4" rx="1.4" fill="${shade(col, .8)}"/><circle cx="5" cy="-4" r="1.3" fill="#fff6c0"/><animateMotion dur="${40 + k * 12}s" begin="-${fx(R() * 30)}s" repeatCount="indefinite" rotate="auto" path="${path}"/></g>`; }
 
-  // ---- enseigne du quartier, plantée au bord de la route d'entrée (dans le décor, pas une bannière)
-  const sp = M.at(.06), sx0 = sp[0] + sp[3] * 1.0, sy0 = sp[1] - sp[2] * 1.0, [ga, gb] = iso(sx0, sy0, 0), label = D.label, tw = 34 + 7.2 * label.length, bd = reached ? D.color : '#2a2f45';
-  const sign = `<g transform="translate(${fx(ga)},${fx(gb)})"><line x1="-6" y1="0" x2="-6" y2="-46" stroke="#4a3b2c" stroke-width="3"/><line x1="${fx(tw - 6)}" y1="0" x2="${fx(tw - 6)}" y2="-46" stroke="#4a3b2c" stroke-width="3"/>`
+  // ---- enseigne du quartier : plusieurs emplacements possibles le long de la route d'entrée ; renderCity garde celui qui ne chevauche aucune épingle
+  const label = D.label, tw = 34 + 7.2 * label.length, bd = reached ? D.color : '#2a2f45', signSpots = [];
+  for (const t of [.06, .02, .12, .2, .3]) for (const side of [1, -1]) for (const dist of [1, 1.9, 2.8]) { const q = M.at(t), [ga, gb] = iso(q[0] + q[3] * side * dist, q[1] - q[2] * side * dist, 0); signSpots.push([ga, gb]); }
+  const signAt = (ga, gb) => `<g transform="translate(${fx(ga)},${fx(gb)})"><line x1="-6" y1="0" x2="-6" y2="-46" stroke="#4a3b2c" stroke-width="3"/><line x1="${fx(tw - 6)}" y1="0" x2="${fx(tw - 6)}" y2="-46" stroke="#4a3b2c" stroke-width="3"/>`
     + `<rect x="-12" y="-62" width="${fx(tw + 12)}" height="28" rx="9" fill="${bd}" stroke="rgb(255 255 255 / .35)" stroke-width="1.5"/><text x="${fx(tw / 2 - 3)}" y="-43" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="13" fill="#fff">${label}</text>`
     + (reached ? `<circle cx="-10" cy="-62" r="2.6" fill="#ffe7a3"/><circle cx="${fx(tw - 4)}" cy="-62" r="2.6" fill="#ffe7a3"/>` : '') + `</g>`;
+  const sign = { spots: signSpots, tw, at: signAt };
   items.sort((a, b) => a.k - b.k);
   return { pad: ground, road: roadSvg, shadows: shadows.join(''), items, sign };
 }
@@ -785,7 +798,6 @@ export function renderCity(districts, opts = {}) {
   const all = [...built.flatMap(b => b.items), ...country].sort((a, b) => a.k - b.k);
   let body = land; for (let d = n - 1; d >= 0; d--) body += built[d].pad; body += link; for (let d = n - 1; d >= 0; d--) body += built[d].road; for (let d = n - 1; d >= 0; d--) body += built[d].shadows;
   body += all.map(i => i.s).join('');
-  const signs = built.map(b => b.sign).join('');
 
   // ---- épingles : cercle numéroté par niveau, anneau de progression, repère rouge « position » façon carte pour le niveau à jouer
   let pinSvg = '';
@@ -794,6 +806,13 @@ export function renderCity(districts, opts = {}) {
     for (let i = 0; i < pins.length; i++) for (let j = i + 1; j < pins.length; j++) { const a = pins[i], b = pins[j]; let dx = b.px - a.px, dy = b.py - a.py, dd = Math.hypot(dx, dy); const MIN = 38;
       if (dd >= MIN) continue; if (dd < .01) { const ang = (i * 2.4 + j) % 6.283; dx = Math.cos(ang); dy = Math.sin(ang); dd = 1; } const k = (MIN - dd) / 2 / dd; a.px -= dx * k; a.py -= dy * k; b.px += dx * k; b.py += dy * k; moved = true; }
     if (!moved) break; }
+  // Rectangle occupé par une épingle (goutte rouge du niveau courant comprise) et par une enseigne ; on garde pour chaque enseigne l'emplacement le moins chevauchant.
+  const pinBox = p => p.st === 'current' ? [p.px - 30, p.py - 84, p.px + 30, p.py + 34] : [p.px - 26, p.py - 34, p.px + 26, p.py + 28];
+  const overlap = (a, b) => Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])) * Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
+  const taken = pins.map(pinBox); let signs = ''; const signBoxes = [];
+  built.forEach(b => { let best = null, bestA = Infinity;
+    for (const [ga, gb] of b.sign.spots) { const r = [ga - 12, gb - 62, ga + b.sign.tw, gb], cost = taken.reduce((t, q) => t + overlap(r, q), 0); if (cost < bestA) { bestA = cost; best = [ga, gb, r]; } if (cost === 0) break; }
+    taken.push(best[2]); signBoxes.push(best[2]); signs += b.sign.at(best[0], best[1]); });
   pins.slice().sort((a, b) => a.py - b.py).forEach(p => {
     const D = DATA[p.d], L = D.levels[p.l], r = p.isBoss ? 17 : 14, dim = p.st === 'locked' || p.st === 'soon', col = D.color;
     let g = `<g class="pin" tabindex="0" role="button" aria-label="${esc(L.aria)}" data-id="${esc(L.id)}" transform="translate(${fx(p.px)},${fx(p.py)})"><circle class="hit" r="30" fill="transparent"/>`;
@@ -815,7 +834,7 @@ export function renderCity(districts, opts = {}) {
   const svg = `<svg viewBox="${fx(minX)} ${fx(minY)} ${fx(VW)} ${fx(VH)}" xmlns="http://www.w3.org/2000/svg" role="group">`
     + `<defs><radialGradient id="halo"><stop offset="0" stop-color="#ffe7a3" stop-opacity=".55"/><stop offset="1" stop-color="#ffe7a3" stop-opacity="0"/></radialGradient>`
     + `<filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${sky}${body}${signs}${brandSvg}${pinSvg}</svg>`;
-  return { svg, width: VW };
+  return { svg, width: VW, boxes: { signs: signBoxes, pins: pins.map(pinBox) } };
 }
 /** Thèmes disponibles (place = nom du quartier, blurb = ambiance), pour la fiche d'un niveau. */
 export const themeInfo = n => { const t = THEMES[n % THEMES.length]; return { place: t.place, blurb: t.blurb }; };
