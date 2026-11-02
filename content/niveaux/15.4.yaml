@@ -1,0 +1,361 @@
+# Niveau 15.4 — Agents et MCP 4 : la boucle d’agent, limites et planification. Original academik ; notions vérifiées dans le cours Agents de Hugging Face et AI Agents for Beginners de Microsoft (cités).
+id: '15.4'
+module: 15
+duree_min: 16
+titre:
+  fr: La boucle d’agent
+  en: The agent loop
+ia:
+  fr: Kintana enchaîne réflexion, action et observation, avec des garde-fous pour ne pas tourner en rond.
+  en: Kintana chains thinking, action and observation, with safeguards so she does not go in circles.
+sources:
+- titre: Hugging Face — Agents Course
+  url: https://huggingface.co/learn/agents-course
+  licence: Cours en ligne ; contenu cité, texte non repris
+- titre: Microsoft — AI Agents for Beginners
+  url: https://github.com/microsoft/ai-agents-for-beginners
+  licence: MIT ; contenu cité, texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Pour répondre à « combien font 12 % de 250, puis doublé ? », un agent a besoin de plusieurs outils à la suite. Qu’est-ce qui fait « avancer » l’agent d’une étape à l’autre ?
+  en: To answer “what is 12% of 250, then doubled?”, an agent needs several tools in a row. What makes the agent “move on” from one step to the next?
+  choix:
+  - fr: Il lit l’observation de l’étape précédente et décide de la suite
+    en: It reads the previous step’s observation and decides what is next
+    juste: true
+  - fr: Un minuteur choisit au hasard
+    en: A timer picks at random
+  - fr: L’utilisateur tape chaque appel à la main
+    en: The user types each call by hand
+  indice:
+    fr: Le modèle décide, un outil agit, le résultat revient. Que fait alors le modèle ?
+    en: The model decides, a tool acts, the result returns. What does the model do then?
+  explication:
+    fr: 'L’agent répète un cycle : **réfléchir**, **agir** avec un outil, **observer** le résultat. La boucle s’arrête quand le modèle donne sa réponse finale.'
+    en: 'The agent repeats a cycle: **think**, **act** with a tool, **observe** the result. The loop stops when the model gives its final answer.'
+- id: c2
+  type: idee
+  fr: 'Une **boucle d’agent** garde un historique : la question, puis chaque action et chaque observation. À chaque tour, le modèle lit l’historique et produit soit un **appel d’outil**, soit une **réponse finale**.'
+  en: 'An **agent loop** keeps a history: the question, then each action and each observation. At each turn, the model reads the history and produces either a **tool call** or a **final answer**.'
+  exemple:
+    fr: 'Tour 1 : `calculer("0.12*250")`. Observation : `30.0`. Tour 2 : `calculer("30.0*2")`. Observation : `60.0`. Tour 3 : réponse « 60 ».'
+    en: 'Turn 1: `calculer("0.12*250")`. Observation: `30.0`. Turn 2: `calculer("30.0*2")`. Observation: `60.0`. Turn 3: answer “60”.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le cycle de l’agent
+        en: The agent cycle
+      noeuds:
+      - fr: historique
+        en: history
+      - fr: le modèle décide
+        en: the model decides
+      - fr: outil exécuté
+        en: tool executed
+      - fr: observation ajoutée
+        en: observation added
+        ton: ok
+    legende:
+      fr: Le cycle recommence tant que la réponse finale n’est pas donnée.
+      en: The cycle restarts until the final answer is given.
+- id: c3
+  type: idee
+  fr: 'Pour tester une boucle sans vrai modèle, on utilise un **modèle scripté** : une fonction qui renvoie, tour après tour, des actions prévues à l’avance. C’est la méthode pour écrire des tests fiables, sans dépendre d’un modèle imprévisible.'
+  en: 'To test a loop without a real model, we use a **scripted model**: a function that returns, turn after turn, actions planned in advance. This is how to write reliable tests, without depending on an unpredictable model.'
+  exemple:
+    fr: 'Un modèle scripté renvoie d’abord `{"outil": "double", "args": {"x": 4}}`, puis `{"reponse": "8"}`.'
+    en: 'A scripted model first returns `{"outil": "double", "args": {"x": 4}}`, then `{"reponse": "8"}`.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Une boucle à la main
+    en: A loop by hand
+  lang: python
+  etapes:
+  - code: |-
+      actions = [{"outil": "double", "args": {"x": 4}}, {"reponse": "8"}]
+      reg = {"double": lambda x: 2 * x}
+    fr: 'Deux tours prévus : un appel d’outil, puis la réponse.'
+    en: 'Two planned turns: a tool call, then the answer.'
+  - code: |-
+      for a in actions:
+          if "reponse" in a:
+              print("réponse :", a["reponse"])
+              break
+          print("observation :", reg[a["outil"]](**a["args"]))
+    fr: À chaque tour, on exécute l’outil ou on s’arrête sur la réponse.
+    en: At each turn, we execute the tool or stop on the answer.
+  verif: |-
+    actions = [{"outil": "double", "args": {"x": 4}}, {"reponse": "8"}]
+    reg = {"double": lambda x: 2 * x}
+    for a in actions:
+        if "reponse" in a:
+            print("réponse :", a["reponse"])
+            break
+        print("observation :", reg[a["outil"]](**a["args"]))
+  sortie: |-
+    observation : 8
+    réponse : 8
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `boucle(modele, registre, question, max_etapes)`** : l’`historique` commence par `[{"role": "user", "contenu": question}]`. Jusqu’à `max_etapes` fois : `action = modele(historique)` ; si `"reponse"` est dans `action`, renvoie `{"statut": "ok", "reponse": ..., "etapes": etape + 1}` ; sinon exécute avec `executer`, ajoute l’action (rôle `"assistant"`) et l’observation (rôle `"outil"`) à l’historique. Après la boucle, renvoie `{"statut": "limite", "reponse": None, "etapes": max_etapes}`. `executer` est fournie.'
+  en: 'Your turn. **Write `boucle(modele, registre, question, max_etapes)`**: the `historique` starts with `[{"role": "user", "contenu": question}]`. Up to `max_etapes` times: `action = modele(historique)`; if `"reponse"` is in `action`, return `{"statut": "ok", "reponse": ..., "etapes": etape + 1}`; otherwise execute with `executer`, add the action (role `"assistant"`) and the observation (role `"outil"`) to the history. After the loop, return `{"statut": "limite", "reponse": None, "etapes": max_etapes}`. `executer` is provided.'
+  depart: |
+    def executer(appel, registre):
+        nom = appel.get("outil")
+        if nom not in registre:
+            return {"ok": False, "erreur": "outil inconnu"}
+        try:
+            return {"ok": True, "resultat": registre[nom](**appel.get("args", {}))}
+        except Exception as e:
+            return {"ok": False, "erreur": str(e)}
+
+    def modele_script(actions):
+        suite = iter(actions)
+        def modele(historique):
+            return next(suite)
+        return modele
+
+    REGISTRE = {"somme": lambda a, b: a + b, "double": lambda x: 2 * x}
+
+    # écris ta fonction boucle ici
+  tests: |-
+    r = boucle(modele_script([{"outil": "double", "args": {"x": 4}}, {"reponse": "8"}]), REGISTRE, "?", 5)
+    assert r == {"statut": "ok", "reponse": "8", "etapes": 2}
+    r = boucle(modele_script([{"reponse": "direct"}]), REGISTRE, "?", 5)
+    assert r["etapes"] == 1 and r["reponse"] == "direct"
+    r = boucle(modele_script([{"outil": "double", "args": {"x": 1}}] * 10), REGISTRE, "?", 3)
+    assert r == {"statut": "limite", "reponse": None, "etapes": 3}
+    vus = []
+    def espion(h):
+        vus.append(len(h))
+        return {"outil": "double", "args": {"x": 1}} if len(h) < 3 else {"reponse": "fin"}
+    boucle(espion, REGISTRE, "?", 5)
+    assert vus == [1, 3]
+  solutionCode: |
+    def executer(appel, registre):
+        nom = appel.get("outil")
+        if nom not in registre:
+            return {"ok": False, "erreur": "outil inconnu"}
+        try:
+            return {"ok": True, "resultat": registre[nom](**appel.get("args", {}))}
+        except Exception as e:
+            return {"ok": False, "erreur": str(e)}
+
+    def modele_script(actions):
+        suite = iter(actions)
+        def modele(historique):
+            return next(suite)
+        return modele
+
+    REGISTRE = {"somme": lambda a, b: a + b, "double": lambda x: 2 * x}
+
+    def boucle(modele, registre, question, max_etapes):
+        historique = [{"role": "user", "contenu": question}]
+        for etape in range(max_etapes):
+            action = modele(historique)
+            if "reponse" in action:
+                return {"statut": "ok", "reponse": action["reponse"], "etapes": etape + 1}
+            obs = executer(action, registre)
+            historique.append({"role": "assistant", "contenu": action})
+            historique.append({"role": "outil", "contenu": obs})
+        return {"statut": "limite", "reponse": None, "etapes": max_etapes}
+  indice:
+    fr: '`for etape in range(max_etapes)` ; renvoie dès que `"reponse" in action` ; sinon `obs = executer(action, registre)` puis deux `append`.'
+    en: '`for etape in range(max_etapes)`; return as soon as `"reponse" in action`; otherwise `obs = executer(action, registre)` then two `append`s.'
+  explication:
+    fr: Le plafond `max_etapes` garantit que la boucle se termine toujours, même si le modèle ne donne jamais de réponse.
+    en: The `max_etapes` cap guarantees that the loop always ends, even if the model never gives an answer.
+- id: c6
+  type: idee
+  fr: 'Une boucle d’agent a besoin de **limites** : nombre maximal d’étapes, durée maximale, budget de tokens, nombre d’appels par outil. Sans elles, une erreur du modèle se transforme en boucle infinie qui coûte du temps et de l’argent.'
+  en: 'An agent loop needs **limits**: maximum number of steps, maximum duration, token budget, number of calls per tool. Without them, a model mistake turns into an infinite loop that costs time and money.'
+  exemple:
+    fr: Un plafond de 10 étapes suffit pour la plupart des tâches simples ; au-delà, on s’arrête et on le dit à l’utilisateur.
+    en: A cap of 10 steps is enough for most simple tasks; beyond that, we stop and tell the user.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Limite
+      en: Limit
+    - fr: Évite
+      en: Prevents
+    cellules:
+    - - fr: étapes
+        en: steps
+      - fr: boucle infinie
+        en: infinite loop
+    - - fr: durée
+        en: duration
+      - fr: attente sans fin
+        en: endless waiting
+    - - fr: budget de tokens
+        en: token budget
+        ton: ok
+      - fr: facture surprise
+        en: surprise bill
+        ton: ok
+    legende:
+      fr: 'Toujours un statut clair en sortie : ok, limite ou boucle.'
+      en: 'Always a clear status at the end: ok, limit or loop.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `action_repetee(actions, n)`** : `True` si les `n` dernières actions de la liste `actions` sont toutes identiques (et qu’il y en a au moins `n`) ; sinon `False`.'
+  en: '**Write `action_repetee(actions, n)`**: `True` if the last `n` actions of the list `actions` are all identical (and there are at least `n`); otherwise `False`.'
+  depart: |
+    # écris ta fonction action_repetee ici
+  tests: |-
+    a = {"outil": "x"}
+    b = {"outil": "y"}
+    assert action_repetee([a, a, a], 3) is True
+    assert action_repetee([a, a, b], 3) is False
+    assert action_repetee([b, a, a, a], 3) is True
+    assert action_repetee([a, a], 3) is False
+    assert action_repetee([], 1) is False
+  solutionCode: |
+    def action_repetee(actions, n):
+        if len(actions) < n:
+            return False
+        return all(a == actions[-1] for a in actions[-n:])
+  indice:
+    fr: Si `len(actions) < n`, renvoie `False` ; sinon compare chaque action des `n` dernières (`actions[-n:]`) à `actions[-1]` avec `all(...)`.
+    en: If `len(actions) < n`, return `False`; otherwise compare each action of the last `n` (`actions[-n:]`) with `actions[-1]` using `all(...)`.
+  explication:
+    fr: 'Trois fois la même action avec les mêmes arguments est presque toujours le signe d’une boucle : le modèle ne progresse plus.'
+    en: 'The same action three times with the same arguments is almost always a sign of a loop: the model is no longer making progress.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un agent a un plafond de 4 étapes et le modèle appelle un outil à chaque tour sans jamais répondre. Combien d’outils sont exécutés avant l’arrêt ?
+  en: An agent has a cap of 4 steps and the model calls a tool at each turn without ever answering. How many tools are executed before stopping?
+  reponses:
+  - '4'
+  verif: print(len(range(4)))
+  indice:
+    fr: Chaque tour exécute un outil, et il y a au plus quatre tours.
+    en: Each turn executes a tool, and there are at most four turns.
+  explication:
+    fr: Quatre tours, quatre outils, puis le statut `limite`.
+    en: Four turns, four tools, then the status `limite`.
+- id: c9
+  type: idee
+  fr: Pour les tâches longues, on ajoute la **planification**. Le modèle écrit d’abord un plan en quelques étapes, puis les exécute une par une. Il révise le plan si une observation le contredit.
+  en: 'For long tasks, we add **planning**: the model starts by writing a plan in a few steps, then executes them one by one, revising the plan if an observation contradicts it. A visible plan also helps the user control the agent.'
+  exemple:
+    fr: 'Plan : 1) chercher la définition dans les cours, 2) calculer l’exemple, 3) rédiger la réponse avec la source.'
+    en: 'Plan: 1) find the definition in the courses, 2) compute the example, 3) write the answer with the source.'
+- id: c10
+  type: piege
+  fr: 'Plus d’étapes ne veut pas dire plus de fiabilité. Une erreur au tour 2 se propage aux tours suivants, et la qualité baisse avec la longueur. Les agents échouent surtout par accumulation de petites erreurs : des tâches courtes, des outils précis et des vérifications valent mieux que des boucles interminables.'
+  en: 'More steps does not mean more reliability. A mistake at turn 2 spreads to the following turns, and quality drops with length. Agents fail mostly through accumulation of small errors: short tasks, precise tools and checks beat endless loops.'
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `boucle_sure(modele, registre, question, max_etapes)`** : comme `boucle`, mais garde la liste des `actions` demandées. Après avoir ajouté une action, si `action_repetee(actions, 3)` est vrai, renvoie `{"statut": "boucle", "reponse": None, "etapes": etape + 1}` sans exécuter. `executer` et `action_repetee` sont fournies.'
+  en: 'Challenge. **Write `boucle_sure(modele, registre, question, max_etapes)`**: like `boucle`, but keep the list of requested `actions`. After adding an action, if `action_repetee(actions, 3)` is true, return `{"statut": "boucle", "reponse": None, "etapes": etape + 1}` without executing. `executer` and `action_repetee` are provided.'
+  depart: |
+    def executer(appel, registre):
+        nom = appel.get("outil")
+        if nom not in registre:
+            return {"ok": False, "erreur": "outil inconnu"}
+        try:
+            return {"ok": True, "resultat": registre[nom](**appel.get("args", {}))}
+        except Exception as e:
+            return {"ok": False, "erreur": str(e)}
+
+    def action_repetee(actions, n):
+        if len(actions) < n:
+            return False
+        return all(a == actions[-1] for a in actions[-n:])
+
+    def modele_script(actions):
+        suite = iter(actions)
+        def modele(historique):
+            return next(suite)
+        return modele
+
+    REGISTRE = {"somme": lambda a, b: a + b, "double": lambda x: 2 * x}
+
+    # écris ta fonction boucle_sure ici
+  tests: |-
+    a = {"outil": "double", "args": {"x": 1}}
+    r = boucle_sure(modele_script([a, a, a, {"reponse": "x"}]), REGISTRE, "?", 10)
+    assert r == {"statut": "boucle", "reponse": None, "etapes": 3}
+    r = boucle_sure(modele_script([a, {"outil": "double", "args": {"x": 2}}, a, {"reponse": "ok"}]), REGISTRE, "?", 10)
+    assert r["statut"] == "ok" and r["etapes"] == 4
+    r = boucle_sure(modele_script([a, {"outil": "somme", "args": {"a": 1, "b": 2}}] * 5), REGISTRE, "?", 3)
+    assert r["statut"] == "limite"
+  solutionCode: |
+    def executer(appel, registre):
+        nom = appel.get("outil")
+        if nom not in registre:
+            return {"ok": False, "erreur": "outil inconnu"}
+        try:
+            return {"ok": True, "resultat": registre[nom](**appel.get("args", {}))}
+        except Exception as e:
+            return {"ok": False, "erreur": str(e)}
+
+    def action_repetee(actions, n):
+        if len(actions) < n:
+            return False
+        return all(a == actions[-1] for a in actions[-n:])
+
+    def modele_script(actions):
+        suite = iter(actions)
+        def modele(historique):
+            return next(suite)
+        return modele
+
+    REGISTRE = {"somme": lambda a, b: a + b, "double": lambda x: 2 * x}
+
+    def boucle_sure(modele, registre, question, max_etapes):
+        historique = [{"role": "user", "contenu": question}]
+        actions = []
+        for etape in range(max_etapes):
+            action = modele(historique)
+            if "reponse" in action:
+                return {"statut": "ok", "reponse": action["reponse"], "etapes": etape + 1}
+            actions.append(action)
+            if action_repetee(actions, 3):
+                return {"statut": "boucle", "reponse": None, "etapes": etape + 1}
+            obs = executer(action, registre)
+            historique.append({"role": "assistant", "contenu": action})
+            historique.append({"role": "outil", "contenu": obs})
+        return {"statut": "limite", "reponse": None, "etapes": max_etapes}
+  indice:
+    fr: Ajoute `action` à `actions` juste après avoir vérifié qu’il n’y a pas de réponse, puis teste `action_repetee(actions, 3)` avant `executer`.
+    en: Append `action` to `actions` right after checking there is no answer, then test `action_repetee(actions, 3)` before `executer`.
+  explication:
+    fr: 'Ton agent a maintenant trois sorties claires : `ok`, `limite` et `boucle`. L’utilisateur sait toujours pourquoi il s’est arrêté.'
+    en: 'Your agent now has three clear outcomes: `ok`, `limite` and `boucle`. The user always knows why it stopped.'
+- id: c12
+  type: idee
+  fr: Au niveau suivant, tu verras comment standardiser les outils. Le protocole **MCP** décrit comment un client découvre et appelle les outils d’un serveur, quel que soit le langage.
+  en: 'At the next level, you will see how to standardise tools: the **MCP** protocol describes how a client discovers and calls a server’s tools, whatever the language. It turns what you wrote into a shared standard.'
+  exemple:
+    fr: Un même serveur d’outils pourra servir plusieurs applications sans être réécrit pour chacune.
+    en: A single tool server will be able to serve several applications without being rewritten for each.
+- id: c13
+  type: retenir
+  fr: 'Boucle d’agent : réfléchir, agir, observer, jusqu’à la réponse. Historique des actions et observations. Limites : étapes, durée, budget. Détecter les répétitions. Tester avec un modèle scripté.'
+  en: 'Agent loop: think, act, observe, until the answer. History of actions and observations. Limits: steps, duration, budget. Detect repetitions. Test with a scripted model.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [AI Agents for Beginners](https://github.com/microsoft/ai-agents-for-beginners) ; ce site demande une connexion.
+  en: For further study, see [AI Agents for Beginners](https://github.com/microsoft/ai-agents-for-beginners); this site needs a connection.

@@ -1,0 +1,431 @@
+# Niveau 14.boss — Ton assistant de cours (mission : mesurer le rappel et décider de répondre ou de s’abstenir). Original academik ; notions des niveaux 14.1 à 14.5, vérifiées dans Lewis et al. 2020 (arXiv 2005.11401) et Manning, Raghavan, Schütze (cité).
+id: 14.boss
+module: 14
+duree_min: 14
+titre:
+  fr: Ton assistant de cours
+  en: Your course assistant
+ia:
+  fr: Kintana répond avec ses sources ou reconnaît qu’elle ne sait pas, et tu as mesuré sa recherche.
+  en: Kintana answers with her sources or admits she does not know, and you measured her search.
+sources:
+- titre: Lewis et al. — Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks
+  url: https://arxiv.org/abs/2005.11401
+  licence: Article en accès libre ; idée citée
+- titre: Manning, Raghavan, Schütze — Introduction to Information Retrieval (chap. 8, évaluation)
+  url: https://nlp.stanford.edu/IR-book/
+  licence: Lecture en ligne ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Tu as construit les briques : découpage, BM25, embeddings, fusion, citations, abstention. Comment sait-on qu’un assistant RAG est **bon** ?'
+  en: 'You built the bricks: splitting, BM25, embeddings, fusion, citations, abstention. How do we know that a RAG assistant is **good**?'
+  choix:
+  - fr: En le testant sur des questions dont on connaît la bonne source
+    en: By testing it on questions whose right source we know
+    juste: true
+  - fr: En le trouvant joli à l’écran
+    en: By finding it pretty on screen
+  - fr: En comptant ses mots
+    en: By counting its words
+  indice:
+    fr: Pour mesurer, il faut des questions de test et leur bonne réponse connue à l’avance.
+    en: To measure, we need test questions and their right answer known in advance.
+  explication:
+    fr: Un **jeu de test** de questions avec leur bon passage permet de mesurer, de comparer deux réglages, et de repérer une régression.
+    en: A **test set** of questions with their right passage lets us measure, compare two settings, and spot a regression.
+- id: c2
+  type: idee
+  fr: 'Mission : assembler ton assistant de cours sur un petit corpus de 4 passages. Tu écris la mesure du **rappel** de la recherche, puis la décision de répondre ou de s’abstenir. La recherche BM25 est fournie.'
+  en: 'Mission: assemble your course assistant on a small corpus of 4 passages. You write the measure of the search **recall**, then the decision to answer or abstain. The BM25 search is provided.'
+  exemple:
+    fr: Le corpus reprend quatre notions du module 13 et du module 12.
+    en: The corpus takes four notions from module 13 and module 12.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: L’assistant de cours
+        en: The course assistant
+      noeuds:
+      - fr: question
+        en: question
+      - fr: recherche BM25
+        en: BM25 search
+      - fr: seuil de score
+        en: score threshold
+      - fr: source ou abstention
+        en: source or abstention
+        ton: ok
+    legende:
+      fr: Tu mesures la recherche avant de lui faire confiance.
+      en: You measure the search before trusting it.
+- id: c3
+  type: exemple
+  titre:
+    fr: Interroger le corpus
+    en: Querying the corpus
+  lang: python
+  etapes:
+  - code: res = chercher("Que règle la température ?", PASSAGES)
+    fr: On lance la recherche sur une question du jeu de test.
+    en: We run the search on a question from the test set.
+  - code: print(res[0][0], round(res[0][1], 2))
+    fr: 'On affiche le meilleur passage et son score : `p4` et son score.'
+    en: 'We display the best passage and its score: `p4` and its score.'
+  - code: print([i for i, s in res])
+    fr: On affiche le classement complet des quatre passages.
+    en: We display the full ranking of the four passages.
+  verif: |-
+    import math
+    import re
+
+    PASSAGES = {
+        "p1": "le cache kv grandit avec la longueur du contexte",
+        "p2": "la quantification réduit la mémoire du modèle en utilisant moins de bits",
+        "p3": "le masque causal empêche de lire les mots futurs",
+        "p4": "la température règle le hasard lors du tirage du mot suivant",
+    }
+    QUESTIONS = {
+        "Que fait la quantification ?": "p2",
+        "Pourquoi un masque causal ?": "p3",
+        "Que règle la température ?": "p4",
+        "Comment grandit le cache kv ?": "p1",
+    }
+
+    def tokeniser(texte):
+        return re.findall(r"[a-zàâçéèêëîïôûùüÿœ0-9]+", texte.lower())
+
+    def chercher(question, passages):
+        docs = {i: tokeniser(t) for i, t in passages.items()}
+        N = len(docs)
+        if N == 0:
+            return []
+        avgdl = sum(len(d) for d in docs.values()) / N
+        q = tokeniser(question)
+        notes = {}
+        for i, d in docs.items():
+            total = 0.0
+            for t in set(q):
+                tf = d.count(t)
+                if tf == 0:
+                    continue
+                n = sum(1 for x in docs.values() if t in x)
+                idf = math.log((N - n + 0.5) / (n + 0.5) + 1)
+                total += idf * tf * 2.5 / (tf + 1.5 * (0.25 + 0.75 * len(d) / avgdl))
+            notes[i] = total
+        return sorted(notes.items(), key=lambda c: -c[1])
+    res = chercher("Que règle la température ?", PASSAGES)
+    print(res[0][0], round(res[0][1], 2))
+    print([i for i, s in res])
+  sortie: |-
+    p4 2.68
+    ['p4', 'p2', 'p1', 'p3']
+- id: c4
+  type: idee
+  fr: Le **rappel à $k$** (recall@k) mesure la part des questions dont le bon passage figure parmi les $k$ premiers résultats. Un rappel à 3 de $0{,}9$ signifie que, pour 90 % des questions, le bon passage est dans les 3 premiers.
+  en: '**Recall at $k$** (recall@k) measures the share of questions whose right passage is among the first $k$ results. A recall at 3 of $0.9$ means that for 90% of the questions, the right passage is in the top 3.'
+  exemple:
+    fr: Sur 4 questions, dont 3 avec le bon passage dans le premier résultat, le rappel à 1 vaut $3/4=0{,}75$.
+    en: On 4 questions, 3 with the right passage in the first result, recall at 1 is $3/4=0.75$.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Question
+      en: Question
+    - fr: Bon passage
+      en: Right passage
+    - fr: Rang
+      en: Rank
+    cellules:
+    - - Q1
+      - p2
+      - fr: '1'
+        en: '1'
+        ton: ok
+    - - Q2
+      - p3
+      - fr: '1'
+        en: '1'
+        ton: ok
+    - - Q3
+      - p4
+      - fr: '2'
+        en: '2'
+    legende:
+      fr: 'Rappel à 1 : 2/3. Rappel à 2 : 3/3.'
+      en: 'Recall at 1: 2/3. Recall at 2: 3/3.'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `recall_at_k(resultats, attendus, k)`** : `resultats` associe chaque question à la liste ordonnée des identifiants renvoyés ; `attendus` associe chaque question à son bon identifiant. Renvoie la part des questions dont le bon identifiant est dans les `k` premiers.'
+  en: 'Your turn. **Write `recall_at_k(resultats, attendus, k)`**: `resultats` maps each question to the ordered list of returned identifiers; `attendus` maps each question to its right identifier. Return the share of questions whose right identifier is in the first `k`.'
+  depart: |
+    # écris ta fonction recall_at_k ici
+  tests: |-
+    r = {"q1": ["a", "b", "c"], "q2": ["b", "a", "c"], "q3": ["c", "b", "a"]}
+    at = {"q1": "a", "q2": "a", "q3": "a"}
+    assert abs(recall_at_k(r, at, 1) - 1/3) < 1e-9
+    assert abs(recall_at_k(r, at, 2) - 2/3) < 1e-9
+    assert recall_at_k(r, at, 3) == 1.0
+    assert recall_at_k({"q": []}, {"q": "a"}, 2) == 0.0
+  solutionCode: |
+    def recall_at_k(resultats, attendus, k):
+        bons = 0
+        for q, attendu in attendus.items():
+            if attendu in resultats[q][:k]:
+                bons += 1
+        return bons / len(attendus)
+  indice:
+    fr: Compte avec `if attendu in resultats[q][:k]`, puis divise par `len(attendus)`.
+    en: Count with `if attendu in resultats[q][:k]`, then divide by `len(attendus)`.
+  explication:
+    fr: 'Un rappel faible signifie que le problème est dans la **recherche** : le modèle n’a même pas reçu le bon passage.'
+    en: 'A low recall means the problem is in the **search**: the model did not even receive the right passage.'
+- id: c6
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Avec le corpus et les 4 questions fournis, quel est le rappel à 1 de la recherche BM25 ? (Calcule-le avec ton `recall_at_k`, ou par la fonction `chercher`.)
+  en: With the corpus and the 4 questions provided, what is the BM25 search’s recall at 1? (Compute it with your `recall_at_k`, or with the `chercher` function.)
+  reponses:
+  - '1.0'
+  - '1'
+  verif: |-
+    import math
+    import re
+
+    PASSAGES = {
+        "p1": "le cache kv grandit avec la longueur du contexte",
+        "p2": "la quantification réduit la mémoire du modèle en utilisant moins de bits",
+        "p3": "le masque causal empêche de lire les mots futurs",
+        "p4": "la température règle le hasard lors du tirage du mot suivant",
+    }
+    QUESTIONS = {
+        "Que fait la quantification ?": "p2",
+        "Pourquoi un masque causal ?": "p3",
+        "Que règle la température ?": "p4",
+        "Comment grandit le cache kv ?": "p1",
+    }
+
+    def tokeniser(texte):
+        return re.findall(r"[a-zàâçéèêëîïôûùüÿœ0-9]+", texte.lower())
+
+    def chercher(question, passages):
+        docs = {i: tokeniser(t) for i, t in passages.items()}
+        N = len(docs)
+        if N == 0:
+            return []
+        avgdl = sum(len(d) for d in docs.values()) / N
+        q = tokeniser(question)
+        notes = {}
+        for i, d in docs.items():
+            total = 0.0
+            for t in set(q):
+                tf = d.count(t)
+                if tf == 0:
+                    continue
+                n = sum(1 for x in docs.values() if t in x)
+                idf = math.log((N - n + 0.5) / (n + 0.5) + 1)
+                total += idf * tf * 2.5 / (tf + 1.5 * (0.25 + 0.75 * len(d) / avgdl))
+            notes[i] = total
+        return sorted(notes.items(), key=lambda c: -c[1])
+    def recall_at_k(resultats, attendus, k):
+        bons = 0
+        for q, attendu in attendus.items():
+            if attendu in resultats[q][:k]:
+                bons += 1
+        return bons / len(attendus)
+    res = {q: [i for i, s in chercher(q, PASSAGES)] for q in QUESTIONS}
+    print(recall_at_k(res, QUESTIONS, 1))
+  indice:
+    fr: Pour chaque question, regarde si le premier résultat de `chercher` est le bon passage.
+    en: For each question, check whether the first result of `chercher` is the right passage.
+  explication:
+    fr: 'Les quatre questions contiennent un mot rare de leur passage : le rappel à 1 vaut `1.0`.'
+    en: 'The four questions contain a rare word from their passage: recall at 1 is `1.0`.'
+- id: c7
+  type: piege
+  fr: Réussir sur un petit corpus que tu connais par cœur ne prouve pas grand-chose. Les questions réelles sont plus floues, le corpus plus grand, les passages plus proches les uns des autres. Mesure sur des questions écrites **par d’autres** et sur un corpus réaliste.
+  en: Succeeding on a small corpus you know by heart proves little. Real questions are vaguer, the corpus larger, the passages closer to each other. Measure on questions written **by others** and on a realistic corpus.
+- id: c8
+  type: idee
+  fr: Pour l’abstention, on règle le **seuil** de score en regardant deux populations. Il y a les questions **couvertes** par le corpus, et celles qui sont **hors sujet**. Un bon seuil se place entre les deux.
+  en: 'For the abstention decision, the score **threshold** is set by looking at two populations: the scores of questions **covered** by the corpus, and those of **off-topic** questions. A good threshold sits between the two.'
+  exemple:
+    fr: Si les questions couvertes ont des scores de 1,2 à 2,5 et les hors-sujet de 0,1 à 0,4, un seuil à 0,8 les sépare.
+    en: If the covered questions have scores from 1.2 to 2.5 and the off-topic ones from 0.1 to 0.4, a threshold of 0.8 separates them.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Population
+      en: Population
+    - fr: Scores typiques
+      en: Typical scores
+    cellules:
+    - - fr: couvertes
+        en: covered
+      - fr: 1,2 à 2,5
+        en: 1.2 to 2.5
+        ton: ok
+    - - fr: hors sujet
+        en: off-topic
+      - fr: 0,1 à 0,4
+        en: 0.1 to 0.4
+        ton: bad
+    - - fr: seuil choisi
+        en: chosen threshold
+      - fr: 0,8
+        en: '0.8'
+    legende:
+      fr: Choisis le seuil sur un jeu de réglage, puis vérifie sur un autre.
+      en: Pick the threshold on a tuning set, then verify on another.
+- id: c9
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 2
+  fr: 'Défi final. **Écris `assistant(question, passages, seuil)`** : lance `chercher(question, passages)`. Si le résultat est vide ou si le meilleur score est inférieur à `seuil`, renvoie `None` (abstention) ; sinon renvoie l’identifiant du meilleur passage. `chercher` est fournie.'
+  en: 'Final challenge. **Write `assistant(question, passages, seuil)`**: run `chercher(question, passages)`. If the result is empty or the best score is below `seuil`, return `None` (abstention); otherwise return the identifier of the best passage. `chercher` is provided.'
+  depart: |
+    import math
+    import re
+
+    PASSAGES = {
+        "p1": "le cache kv grandit avec la longueur du contexte",
+        "p2": "la quantification réduit la mémoire du modèle en utilisant moins de bits",
+        "p3": "le masque causal empêche de lire les mots futurs",
+        "p4": "la température règle le hasard lors du tirage du mot suivant",
+    }
+    QUESTIONS = {
+        "Que fait la quantification ?": "p2",
+        "Pourquoi un masque causal ?": "p3",
+        "Que règle la température ?": "p4",
+        "Comment grandit le cache kv ?": "p1",
+    }
+
+    def tokeniser(texte):
+        return re.findall(r"[a-zàâçéèêëîïôûùüÿœ0-9]+", texte.lower())
+
+    def chercher(question, passages):
+        docs = {i: tokeniser(t) for i, t in passages.items()}
+        N = len(docs)
+        if N == 0:
+            return []
+        avgdl = sum(len(d) for d in docs.values()) / N
+        q = tokeniser(question)
+        notes = {}
+        for i, d in docs.items():
+            total = 0.0
+            for t in set(q):
+                tf = d.count(t)
+                if tf == 0:
+                    continue
+                n = sum(1 for x in docs.values() if t in x)
+                idf = math.log((N - n + 0.5) / (n + 0.5) + 1)
+                total += idf * tf * 2.5 / (tf + 1.5 * (0.25 + 0.75 * len(d) / avgdl))
+            notes[i] = total
+        return sorted(notes.items(), key=lambda c: -c[1])
+
+    # écris ta fonction assistant ici
+  tests: |-
+    assert assistant("Que règle la température ?", PASSAGES, 0.8) == "p4"
+    assert assistant("Pourquoi un masque causal ?", PASSAGES, 0.8) == "p3"
+    assert assistant("Quel temps fait-il demain ?", PASSAGES, 0.8) is None
+    assert assistant("quantification", {}, 0.1) is None
+  solutionCode: |
+    import math
+    import re
+
+    PASSAGES = {
+        "p1": "le cache kv grandit avec la longueur du contexte",
+        "p2": "la quantification réduit la mémoire du modèle en utilisant moins de bits",
+        "p3": "le masque causal empêche de lire les mots futurs",
+        "p4": "la température règle le hasard lors du tirage du mot suivant",
+    }
+    QUESTIONS = {
+        "Que fait la quantification ?": "p2",
+        "Pourquoi un masque causal ?": "p3",
+        "Que règle la température ?": "p4",
+        "Comment grandit le cache kv ?": "p1",
+    }
+
+    def tokeniser(texte):
+        return re.findall(r"[a-zàâçéèêëîïôûùüÿœ0-9]+", texte.lower())
+
+    def chercher(question, passages):
+        docs = {i: tokeniser(t) for i, t in passages.items()}
+        N = len(docs)
+        if N == 0:
+            return []
+        avgdl = sum(len(d) for d in docs.values()) / N
+        q = tokeniser(question)
+        notes = {}
+        for i, d in docs.items():
+            total = 0.0
+            for t in set(q):
+                tf = d.count(t)
+                if tf == 0:
+                    continue
+                n = sum(1 for x in docs.values() if t in x)
+                idf = math.log((N - n + 0.5) / (n + 0.5) + 1)
+                total += idf * tf * 2.5 / (tf + 1.5 * (0.25 + 0.75 * len(d) / avgdl))
+            notes[i] = total
+        return sorted(notes.items(), key=lambda c: -c[1])
+
+    def assistant(question, passages, seuil):
+        res = chercher(question, passages)
+        if not res or res[0][1] < seuil:
+            return None
+        return res[0][0]
+  indice:
+    fr: Récupère `res = chercher(...)`, teste `not res or res[0][1] < seuil`, puis renvoie `res[0][0]`.
+    en: Get `res = chercher(...)`, test `not res or res[0][1] < seuil`, then return `res[0][0]`.
+  explication:
+    fr: 'Ton assistant répond aux questions couvertes et s’abstient sur celles hors sujet : c’est un système RAG honnête, en miniature.'
+    en: 'Your assistant answers covered questions and abstains on off-topic ones: an honest RAG system, in miniature.'
+- id: c10
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Un assistant reçoit 10 questions hors sujet et s’abstient sur 9 d’entre elles. Quelle part de ces questions reçoit une réponse inventée ? Donne le résultat en pourcentage, sans le signe.
+  en: An assistant receives 10 off-topic questions and abstains on 9 of them. What share of these questions gets an invented answer? Give the result as a percentage, without the sign.
+  reponses:
+  - '10'
+  verif: print(int((10 - 9) / 10 * 100))
+  indice:
+    fr: 'Une seule question a reçu une réponse : calcule sa part sur le total.'
+    en: 'Only one question got an answer: compute its share among the 10.'
+  explication:
+    fr: $1/10=10\,\%$ de réponses qui auraient dû être des abstentions.
+    en: $1/10=10\,\%$ of answers that should have been abstentions.
+- id: c11
+  type: idee
+  fr: 'Pour ton vrai assistant, enchaîne les briques : passages (14.1), index BM25 et embeddings (14.2, 14.3), fusion (14.4), citations et abstention (14.5). Mesure ensuite le rappel sur ton jeu de test.'
+  en: 'To move to your real assistant: split your courses into passages (14.1), build the BM25 index and the embeddings (14.2, 14.3), fuse (14.4), cite and abstain (14.5), measure recall on your test set. It all fits in a small program.'
+  exemple:
+    fr: 'C’est exactement ce que fait la fonction d’aide d’academik : retrouver, citer, ou dire qu’elle ne sait pas.'
+    en: 'This is exactly what academik’s help feature does: retrieve, cite, or say it does not know.'
+- id: c12
+  type: idee
+  fr: 'Le module 15 donne au modèle des **outils** : calculer, lire des fichiers, lancer du Python. Un assistant RAG est déjà un outil de recherche ; l’agent saura choisir quand l’utiliser, et les risques de sécurité apparaissent avec les données non fiables.'
+  en: 'Module 15 gives the model **tools**: calculating, reading files, running Python. A RAG assistant is already a search tool; the agent will know when to use it, and security risks appear with untrusted data.'
+  exemple:
+    fr: Un agent peut décider seul de chercher dans tes cours, puis de faire un calcul avec le résultat.
+    en: An agent can decide on its own to search your courses, then do a calculation with the result.
+- id: c13
+  type: retenir
+  fr: 'Mesurer avant de croire : jeu de test, rappel à $k$ pour la recherche, fidélité pour la réponse. Régler le seuil d’abstention entre scores couverts et hors sujet. Tester sur des questions écrites par d’autres.'
+  en: 'Measure before believing: test set, recall at $k$ for the search, faithfulness for the answer. Set the abstention threshold between covered and off-topic scores. Test on questions written by others.'
+- id: c14
+  type: plus
+  fr: Pour aller plus loin, consulte [Introduction to Information Retrieval](https://nlp.stanford.edu/IR-book/) ; ce livre en ligne demande une connexion.
+  en: To go further, see [Introduction to Information Retrieval](https://nlp.stanford.edu/IR-book/); this online book needs a connection.

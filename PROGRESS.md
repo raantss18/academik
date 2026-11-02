@@ -130,3 +130,8 @@
 - **Fait** : 13.1 à 13.5 et boss « Choisis ton modèle » ; quartier « Le Garage des Modèles » ; 672 tests.
 - **Non vérifié** : appareils réels ; chiffres de vitesse et de licence à relire avec un vrai modèle ; relecture croisée par Codex.
 
+### Modules 14 et 15 (2026-11-02, 0.3.25)
+
+- **Fait** : 14.1 à 14.5 et boss « Ton assistant de cours » ; 15.1 à 15.5 et boss « Ton agent local » ; deux quartiers ; 698 tests (le test Python réel passe à 300 s de délai).
+- **Non vérifié** : appareils réels ; relecture croisée par Codex ; durées mesurées.
+

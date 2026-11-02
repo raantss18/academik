@@ -1,0 +1,319 @@
+# Niveau 15.5 — Agents et MCP 5 : le protocole MCP (JSON-RPC, client et serveur). Original academik ; notions vérifiées dans la spécification MCP et la spécification JSON-RPC 2.0 (citées).
+id: '15.5'
+module: 15
+duree_min: 16
+titre:
+  fr: Le protocole MCP
+  en: The MCP protocol
+ia:
+  fr: Kintana parle aux outils par un protocole standard, en gardant ses garde-fous.
+  en: Kintana talks to tools through a standard protocol, keeping her safeguards.
+sources:
+- titre: Model Context Protocol — Specification
+  url: https://modelcontextprotocol.io/specification
+  licence: Spécification en ligne ; idées citées
+- titre: JSON-RPC 2.0 Specification
+  url: https://www.jsonrpc.org/specification
+  licence: Spécification en ligne ; idées citées
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Chaque application (éditeur, chat, terminal) veut utiliser les mêmes outils : lire des fichiers, chercher dans une base. Écrire une version pour chaque couple outil/application serait épuisant. Que propose-t-on ?'
+  en: 'Each application (editor, chat, terminal) wants to use the same tools: reading files, searching a database. Writing a version for each tool/application pair would be exhausting. What is proposed?'
+  choix:
+  - fr: 'Un protocole commun : chaque outil et chaque application le parlent une seule fois'
+    en: 'A common protocol: each tool and each application speaks it once'
+    juste: true
+  - fr: Interdire les outils
+    en: Forbid the tools
+  - fr: Copier le code dans chaque application
+    en: Copy the code into each application
+  indice:
+    fr: Avec M applications et N outils, combien de liaisons faut-il sans protocole commun ? Et avec ?
+    en: With M applications and N tools, how many links are needed without a common protocol? And with one?
+  explication:
+    fr: 'Sans standard : $M\times N$ adaptations. Avec un standard : $M+N$. C’est la raison d’être de **MCP** (Model Context Protocol).'
+    en: 'Without a standard: $M\times N$ adaptations. With a standard: $M+N$. This is the reason for **MCP** (Model Context Protocol).'
+- id: c2
+  type: idee
+  fr: Dans **MCP**, un **client** (intégré à l’application hôte) se connecte à un **serveur** qui expose des **outils**, des ressources et des modèles de prompt. Le client demande la liste des outils, puis appelle ceux dont le modèle a besoin.
+  en: In **MCP**, a **client** (built into the host application) connects to a **server** that exposes **tools**, resources and prompt templates. The client asks for the list of tools, then calls those the model needs.
+  exemple:
+    fr: Un serveur « fichiers » expose `lire_fichier` ; un serveur « base de données » expose `executer_requete`. L’application utilise les deux de la même façon.
+    en: A “files” server exposes `lire_fichier`; a “database” server exposes `executer_requete`. The application uses both the same way.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Client et serveur MCP
+        en: MCP client and server
+      noeuds:
+      - fr: application hôte
+        en: host application
+      - fr: client MCP
+        en: MCP client
+      - fr: messages JSON
+        en: JSON messages
+      - fr: serveur d’outils
+        en: tool server
+        ton: ok
+    legende:
+      fr: Le transport local est `stdio` (niveau 15.1), le transport distant est HTTP.
+      en: The local transport is `stdio` (level 15.1), the remote transport is HTTP.
+- id: c3
+  type: idee
+  fr: 'Les messages de MCP suivent **JSON-RPC 2.0** : une requête a un `id`, une `method` et des `params` ; la réponse reprend le même `id` avec un `result` ou une `error`. Les méthodes principales : `initialize`, `tools/list` et `tools/call`.'
+  en: 'MCP messages follow **JSON-RPC 2.0**: a request has an `id`, a `method` and `params`; the response reuses the same `id` with a `result` or an `error`. The main methods: `initialize`, `tools/list` and `tools/call`.'
+  exemple:
+    fr: 'La requête `{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}` demande la liste ; la réponse porte `"id": 1`.'
+    en: 'The request `{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}` asks for the list; the response carries `"id": 1`.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Une requête et sa réponse
+    en: A request and its response
+  lang: python
+  etapes:
+  - code: |-
+      import json
+      req = {"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}
+    fr: Le client demande la liste des outils.
+    en: The client asks for the list of tools.
+  - code: 'rep = {"jsonrpc": "2.0", "id": req["id"], "result": {"tools": [{"name": "somme"}]}}'
+    fr: Le serveur répond avec le même `id`, pour qu’on associe la réponse à la requête.
+    en: The server replies with the same `id`, so the response can be matched to the request.
+  - code: print(rep["id"] == req["id"], rep["result"]["tools"][0]["name"])
+    fr: On affiche `True somme`.
+    en: We display `True somme`.
+  verif: |-
+    import json
+    req = {"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}
+    rep = {"jsonrpc": "2.0", "id": req["id"], "result": {"tools": [{"name": "somme"}]}}
+    print(rep["id"] == req["id"], rep["result"]["tools"][0]["name"])
+  sortie: True somme
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `requete(id, methode, params=None)`** : renvoie le dictionnaire `{"jsonrpc": "2.0", "id": id, "method": methode, "params": ...}` où `params` vaut le dictionnaire donné, ou `{}` s’il est absent.'
+  en: 'Your turn. **Write `requete(id, methode, params=None)`**: return the dictionary `{"jsonrpc": "2.0", "id": id, "method": methode, "params": ...}` where `params` is the given dictionary, or `{}` if absent.'
+  depart: |
+    # écris ta fonction requete ici
+  tests: |-
+    assert requete(1, "tools/list") == {"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}
+    r = requete(7, "tools/call", {"name": "somme", "arguments": {"a": 1, "b": 2}})
+    assert r["id"] == 7 and r["params"]["name"] == "somme"
+    assert requete(2, "initialize", None)["params"] == {}
+  solutionCode: |
+    def requete(id, methode, params=None):
+        return {"jsonrpc": "2.0", "id": id, "method": methode, "params": params or {}}
+  indice:
+    fr: Une seule expression de dictionnaire ; pour `params`, utilise `params or {}`.
+    en: A single dictionary expression; for `params`, use `params or {}`.
+  explication:
+    fr: L’`id` permet de retrouver quelle réponse correspond à quelle requête, même si plusieurs sont en cours.
+    en: The `id` lets you find which response matches which request, even if several are in progress.
+- id: c6
+  type: idee
+  fr: Le serveur répond à `tools/list` par la liste des outils (nom et description), et à `tools/call` par le résultat dans `content`. Une méthode inconnue renvoie l’erreur `-32601`, un paramètre invalide l’erreur `-32602`. Les codes d’erreur sont normalisés.
+  en: The server answers `tools/list` with the list of tools (name and description), and `tools/call` with the result in `content`. An unknown method returns error `-32601`, an invalid parameter error `-32602`. Error codes are standardised.
+  exemple:
+    fr: 'Appeler `tools/call` avec le nom `inexistant` renvoie `{"error": {"code": -32602, …}}`.'
+    en: 'Calling `tools/call` with the name `inexistant` returns `{"error": {"code": -32602, …}}`.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Code
+      en: Code
+    - fr: Sens
+      en: Meaning
+    cellules:
+    - - '-32601'
+      - fr: méthode inconnue
+        en: unknown method
+    - - '-32602'
+      - fr: paramètres invalides
+        en: invalid parameters
+    - - fr: '-32603'
+        en: '-32603'
+        ton: ok
+      - fr: erreur interne
+        en: internal error
+        ton: ok
+    legende:
+      fr: Les codes viennent de la norme JSON-RPC.
+      en: The codes come from the JSON-RPC standard.
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `traiter(req, outils)`**, le cœur d’un serveur. `outils` associe un nom à `{"description": ..., "fonction": ...}`. Pour `"tools/list"` : renvoie `{"jsonrpc": "2.0", "id": id, "result": {"tools": [{"name": nom, "description": ...}, ...]}}`. Pour `"tools/call"` : appelle `fonction(**arguments)` et renvoie `result` avec `{"content": [{"type": "text", "text": str(valeur)}]}`, ou l’erreur `-32602` « outil inconnu » si le nom est absent. Toute autre méthode : erreur `-32601` « méthode inconnue ».'
+  en: '**Write `traiter(req, outils)`**, the heart of a server. `outils` maps a name to `{"description": ..., "fonction": ...}`. For `"tools/list"`: return `{"jsonrpc": "2.0", "id": id, "result": {"tools": [{"name": nom, "description": ...}, ...]}}`. For `"tools/call"`: call `fonction(**arguments)` and return `result` with `{"content": [{"type": "text", "text": str(valeur)}]}`, or error `-32602` “outil inconnu” if the name is absent. Any other method: error `-32601` “méthode inconnue”.'
+  depart: |
+    OUTILS = {
+        "somme": {"description": "Additionne deux nombres", "fonction": lambda a, b: a + b},
+        "majuscules": {"description": "Met un texte en majuscules", "fonction": lambda texte: texte.upper()},
+    }
+
+    # écris ta fonction traiter ici
+  tests: |-
+    r = traiter({"jsonrpc": "2.0", "id": 1, "method": "tools/list"}, OUTILS)
+    assert r["id"] == 1 and [t["name"] for t in r["result"]["tools"]] == ["somme", "majuscules"]
+    r = traiter({"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "somme", "arguments": {"a": 2, "b": 3}}}, OUTILS)
+    assert r["result"]["content"][0]["text"] == "5"
+    r = traiter({"jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {"name": "zzz", "arguments": {}}}, OUTILS)
+    assert r["error"]["code"] == -32602
+    r = traiter({"jsonrpc": "2.0", "id": 4, "method": "autre"}, OUTILS)
+    assert r["error"]["code"] == -32601 and r["id"] == 4
+  solutionCode: |
+    OUTILS = {
+        "somme": {"description": "Additionne deux nombres", "fonction": lambda a, b: a + b},
+        "majuscules": {"description": "Met un texte en majuscules", "fonction": lambda texte: texte.upper()},
+    }
+
+    def traiter(req, outils):
+        id = req.get("id")
+        m = req.get("method")
+        if m == "tools/list":
+            liste = [{"name": n, "description": o["description"]} for n, o in outils.items()]
+            return {"jsonrpc": "2.0", "id": id, "result": {"tools": liste}}
+        if m == "tools/call":
+            p = req.get("params", {})
+            nom = p.get("name")
+            if nom not in outils:
+                return {"jsonrpc": "2.0", "id": id, "error": {"code": -32602, "message": "outil inconnu"}}
+            valeur = outils[nom]["fonction"](**p.get("arguments", {}))
+            return {"jsonrpc": "2.0", "id": id, "result": {"content": [{"type": "text", "text": str(valeur)}]}}
+        return {"jsonrpc": "2.0", "id": id, "error": {"code": -32601, "message": "méthode inconnue"}}
+  indice:
+    fr: Trois branches `if` selon `req.get("method")`, avec un `return` d’erreur `-32601` à la fin.
+    en: Three `if` branches depending on `req.get("method")`, with a `-32601` error `return` at the end.
+  explication:
+    fr: Ce que tu viens d’écrire est un serveur MCP minimal. Les vrais serveurs ajoutent `initialize`, les schémas d’entrée et la gestion d’erreurs d’outil.
+    en: What you just wrote is a minimal MCP server. Real servers add `initialize`, input schemas and tool error handling.
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Avec $M=5$ applications et $N=8$ outils, combien d’adaptations faut-il **avec** un protocole commun (une par application et une par outil) ?
+  en: With $M=5$ applications and $N=8$ tools, how many adaptations are needed **with** a common protocol (one per application and one per tool)?
+  reponses:
+  - '13'
+  verif: print(5 + 8)
+  indice:
+    fr: Additionne le nombre d’applications et le nombre d’outils.
+    en: Add the number of applications and the number of tools.
+  explication:
+    fr: $5+8=13$, contre $5\times8=40$ sans standard.
+    en: $5+8=13$, against $5\times8=40$ without a standard.
+- id: c9
+  type: idee
+  fr: Un client connecté à un serveur tiers applique des **bonnes pratiques de sécurité**. Il demande une confirmation avant les actions sensibles. Il limite les droits de chaque serveur et préfère un serveur local. Il ne se fie pas aux descriptions d’un serveur non maîtrisé.
+  en: A client connecting to a third-party server must apply **security best practices**. Ask for human confirmation before sensitive actions; limit each server’s rights; prefer a local server; and do not trust the tool descriptions of a server you do not control.
+  exemple:
+    fr: 'Une description d’outil peut contenir des instructions cachées pour le modèle : c’est une forme d’injection de prompt.'
+    en: 'A tool description can contain hidden instructions for the model: this is a form of prompt injection.'
+- id: c10
+  type: piege
+  fr: « Installer un serveur MCP » revient à **exécuter du code tiers** sur ta machine, avec les droits que tu lui donnes. Un serveur malveillant peut lire tes fichiers ou t’envoyer des textes piégés. N’installe que des serveurs dont tu connais l’origine, lis ce qu’ils demandent, et garde la confirmation activée.
+  en: “Installing an MCP server” amounts to **running third-party code** on your machine, with the rights you give it. A malicious server can read your files or send you trapped texts. Install only servers whose origin you know, read what they request, and keep confirmation enabled.
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `session_mcp(lignes, outils)`** : décode chaque ligne de `lignes` avec `json.loads` et traite la requête avec `traiter`. Renvoie la liste des réponses encodées avec `json.dumps`. Une ligne qui n’est pas du JSON donne la réponse `{"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "JSON invalide"}}`.'
+  en: 'Challenge. **Write `session_mcp(lignes, outils)`**: for each JSON line of `lignes` (list of strings), decode it with `json.loads`, process the request with the provided `traiter` function, and return the list of encoded responses (one JSON string per response, with `json.dumps`). A line that is not JSON gives the response `{"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "JSON invalide"}}`.'
+  depart: |
+    import json
+
+    OUTILS = {
+        "somme": {"description": "Additionne deux nombres", "fonction": lambda a, b: a + b},
+        "majuscules": {"description": "Met un texte en majuscules", "fonction": lambda texte: texte.upper()},
+    }
+
+    def traiter(req, outils):
+        id = req.get("id")
+        m = req.get("method")
+        if m == "tools/list":
+            liste = [{"name": n, "description": o["description"]} for n, o in outils.items()]
+            return {"jsonrpc": "2.0", "id": id, "result": {"tools": liste}}
+        if m == "tools/call":
+            p = req.get("params", {})
+            nom = p.get("name")
+            if nom not in outils:
+                return {"jsonrpc": "2.0", "id": id, "error": {"code": -32602, "message": "outil inconnu"}}
+            valeur = outils[nom]["fonction"](**p.get("arguments", {}))
+            return {"jsonrpc": "2.0", "id": id, "result": {"content": [{"type": "text", "text": str(valeur)}]}}
+        return {"jsonrpc": "2.0", "id": id, "error": {"code": -32601, "message": "méthode inconnue"}}
+
+    # écris ta fonction session_mcp ici
+  tests: |-
+    l = ['{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}', "pas du json", '{"jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": {"name": "majuscules", "arguments": {"texte": "ab"}}}']
+    r = [json.loads(x) for x in session_mcp(l, OUTILS)]
+    assert r[0]["id"] == 1 and len(r[0]["result"]["tools"]) == 2
+    assert r[1] == {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "JSON invalide"}}
+    assert r[2]["result"]["content"][0]["text"] == "AB"
+    assert session_mcp([], OUTILS) == []
+  solutionCode: |
+    import json
+
+    OUTILS = {
+        "somme": {"description": "Additionne deux nombres", "fonction": lambda a, b: a + b},
+        "majuscules": {"description": "Met un texte en majuscules", "fonction": lambda texte: texte.upper()},
+    }
+
+    def traiter(req, outils):
+        id = req.get("id")
+        m = req.get("method")
+        if m == "tools/list":
+            liste = [{"name": n, "description": o["description"]} for n, o in outils.items()]
+            return {"jsonrpc": "2.0", "id": id, "result": {"tools": liste}}
+        if m == "tools/call":
+            p = req.get("params", {})
+            nom = p.get("name")
+            if nom not in outils:
+                return {"jsonrpc": "2.0", "id": id, "error": {"code": -32602, "message": "outil inconnu"}}
+            valeur = outils[nom]["fonction"](**p.get("arguments", {}))
+            return {"jsonrpc": "2.0", "id": id, "result": {"content": [{"type": "text", "text": str(valeur)}]}}
+        return {"jsonrpc": "2.0", "id": id, "error": {"code": -32601, "message": "méthode inconnue"}}
+
+    def session_mcp(lignes, outils):
+        sorties = []
+        for ligne in lignes:
+            try:
+                req = json.loads(ligne)
+            except ValueError:
+                rep = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "JSON invalide"}}
+            else:
+                rep = traiter(req, outils)
+            sorties.append(json.dumps(rep))
+        return sorties
+  indice:
+    fr: Un `try` / `except ValueError` autour de `json.loads` ; dans le cas normal `rep = traiter(req, outils)` ; puis `json.dumps(rep)`.
+    en: A `try` / `except ValueError` around `json.loads`; in the normal case `rep = traiter(req, outils)`; then `json.dumps(rep)`.
+  explication:
+    fr: 'Tu as maintenant les deux moitiés d’un système MCP local : des messages JSON par ligne et un serveur qui les traite.'
+    en: 'You now have both halves of a local MCP system: JSON messages per line and a server that processes them.'
+- id: c12
+  type: idee
+  fr: 'Dans le boss, tu assembles ton **agent local** : boucle, validation, permissions, confirmation. Les outils pourraient très bien venir d’un serveur MCP : le principe est le même, seul le transport change.'
+  en: 'In the boss, you assemble your **local agent**: loop, validation, permissions, confirmation. The tools could very well come from an MCP server: the principle is the same, only the transport changes.'
+  exemple:
+    fr: Que les outils soient des fonctions Python ou des appels MCP, l’agent applique les mêmes gardes avant d’exécuter.
+    en: Whether tools are Python functions or MCP calls, the agent applies the same guards before executing.
+- id: c13
+  type: retenir
+  fr: 'MCP : un client appelle les outils d’un serveur par JSON-RPC (`tools/list`, `tools/call`). Standard : $M+N$ adaptations au lieu de $M\times N$. Un serveur tiers est du code tiers : confirmer, limiter, ne pas croire les descriptions.'
+  en: 'MCP: a client calls a server’s tools through JSON-RPC (`tools/list`, `tools/call`). Standard: $M+N$ adaptations instead of $M\times N$. A third-party server is third-party code: confirm, limit, do not believe the descriptions.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [la spécification MCP](https://modelcontextprotocol.io/specification) ; cette page demande une connexion.
+  en: For further study, see [the MCP specification](https://modelcontextprotocol.io/specification); this page needs a connection.

@@ -1,0 +1,293 @@
+# Niveau 14.1 — RAG 1 : découper en passages. Original academik ; notions vérifiées dans Lewis et al. 2020 (arXiv 2005.11401) et le cours LLM de Hugging Face (cité).
+id: '14.1'
+module: 14
+duree_min: 16
+titre:
+  fr: Découper en passages
+  en: Splitting into passages
+ia:
+  fr: Kintana découpe tes cours en passages qu’elle pourra retrouver et citer.
+  en: Kintana splits your courses into passages she can retrieve and cite.
+sources:
+- titre: Lewis et al. — Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks
+  url: https://arxiv.org/abs/2005.11401
+  licence: Article en accès libre ; idée citée
+- titre: Hugging Face — LLM Course
+  url: https://huggingface.co/learn/llm-course
+  licence: Cours en ligne ; contenu cité, texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Ton cours fait 40 pages, et l’assistant doit répondre à une question précise. Pourquoi découper le cours en **passages** avant de chercher ?
+  en: Your course is 40 pages long, and the assistant must answer a precise question. Why split the course into **passages** before searching?
+  choix:
+  - fr: Pour retrouver le bon extrait et ne donner au modèle que ce qui est utile
+    en: To find the right excerpt and give the model only what is useful
+    juste: true
+  - fr: Pour rendre le cours illisible
+    en: To make the course unreadable
+  - fr: Pour supprimer des chapitres
+    en: To delete chapters
+  indice:
+    fr: Le modèle a une fenêtre de contexte limitée (niveau 13.4). Que lui donne-t-on, tout le cours ou un extrait ?
+    en: The model has a limited context window (level 13.4). What do we give it, the whole course or an excerpt?
+  explication:
+    fr: 'Le **RAG** cherche d’abord les passages pertinents, puis les donne au modèle : la réponse s’appuie sur eux, et on peut les citer.'
+    en: '**RAG** first searches for relevant passages, then gives them to the model: the answer relies on them, and they can be cited.'
+- id: c2
+  type: idee
+  fr: Le **RAG** (génération augmentée par la recherche) a deux temps. On **cherche** des passages dans tes documents, puis le modèle **répond** à partir d’eux. Il ne se fie plus à sa seule mémoire.
+  en: '**RAG** (retrieval-augmented generation) has two stages: we **search** for passages in your documents, then ask the model to **answer** from them. The model no longer relies on its memory alone.'
+  exemple:
+    fr: 'Question : « Qu’est-ce que le cache KV ? ». On retrouve le passage du niveau 13.2, et le modèle l’explique en le citant.'
+    en: 'Question: “What is the KV cache?”. We retrieve the passage from level 13.2, and the model explains it while citing it.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Le RAG en deux temps
+        en: RAG in two stages
+      noeuds:
+      - fr: question
+        en: question
+      - fr: recherche de passages
+        en: passage search
+      - fr: passages + question
+        en: passages + question
+      - fr: réponse citée
+        en: cited answer
+        ton: ok
+    legende:
+      fr: Sans la recherche, le modèle répondrait de mémoire et pourrait inventer.
+      en: Without the search, the model would answer from memory and might invent.
+- id: c3
+  type: idee
+  fr: 'Un passage doit être assez petit pour être précis, assez grand pour garder le sens. Une taille courante : 100 à 300 mots. On fait **se chevaucher** les passages voisins, pour qu’une idée coupée à la frontière reste entière dans l’un d’eux.'
+  en: 'A passage must be small enough to be precise, large enough to keep meaning. A common size: 100 to 300 words. Neighbouring passages **overlap**, so an idea cut at the boundary stays whole in one of them.'
+  exemple:
+    fr: 'Pour 10 mots, taille 4, chevauchement 1 : mots 0 à 3, puis 3 à 6, puis 6 à 9. Les mots 3 et 6 sont partagés.'
+    en: 'For 10 words, size 4, overlap 1: words 0 to 3, then 3 to 6, then 6 to 9. Words 3 and 6 are shared.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Découper une liste de mots
+    en: Splitting a list of words
+  lang: python
+  etapes:
+  - code: |-
+      mots = list(range(10))
+      taille, chev = 4, 1
+      pas = taille - chev
+    fr: Dix « mots » numérotés ; le pas entre deux débuts est `3`.
+    en: Ten numbered “words”; the step between two starts is `3`.
+  - code: debuts = list(range(0, 10, pas))
+    fr: 'Les débuts possibles : `0, 3, 6, 9`.'
+    en: 'The possible starts: `0, 3, 6, 9`.'
+  - code: print([mots[d:d + taille] for d in debuts[:3]])
+    fr: Les trois premiers passages se chevauchent d’un mot.
+    en: The first three passages overlap by one word.
+  verif: |-
+    mots = list(range(10))
+    taille, chev = 4, 1
+    pas = taille - chev
+    debuts = list(range(0, 10, pas))
+    print([mots[d:d + taille] for d in debuts[:3]])
+  sortie: '[[0, 1, 2, 3], [3, 4, 5, 6], [6, 7, 8, 9]]'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `decouper(mots, taille, chevauchement)`** : renvoie la liste des passages (listes de mots). Le début avance de `taille - chevauchement` à chaque fois ; arrête-toi dès qu’un passage atteint la fin de la liste.'
+  en: 'Your turn. **Write `decouper(mots, taille, chevauchement)`**: return the list of passages (lists of words). The start advances by `taille - chevauchement` each time; stop as soon as a passage reaches the end of the list.'
+  depart: |
+    # écris ta fonction decouper ici
+  tests: |-
+    m = list(range(10))
+    assert decouper(m, 4, 1) == [[0,1,2,3],[3,4,5,6],[6,7,8,9]]
+    assert decouper(m, 10, 0) == [m]
+    assert decouper(m, 3, 0) == [[0,1,2],[3,4,5],[6,7,8],[9]]
+    assert decouper([], 4, 1) == []
+  solutionCode: |
+    def decouper(mots, taille, chevauchement):
+        pas = taille - chevauchement
+        morceaux, i = [], 0
+        while i < len(mots):
+            morceaux.append(mots[i:i + taille])
+            if i + taille >= len(mots):
+                break
+            i += pas
+        return morceaux
+  indice:
+    fr: 'Boucle `while i < len(mots)` : ajoute `mots[i:i + taille]`, sors si `i + taille >= len(mots)`, sinon avance de `pas`.'
+    en: 'Loop `while i < len(mots)`: append `mots[i:i + taille]`, exit if `i + taille >= len(mots)`, otherwise advance by `pas`.'
+  explication:
+    fr: Sans le test de sortie, on produirait un dernier passage inutile, entièrement contenu dans le précédent.
+    en: Without the exit test, we would produce a useless last passage, entirely contained in the previous one.
+- id: c6
+  type: idee
+  fr: 'Chaque passage garde ses **métadonnées** : le document d’origine, sa position, parfois le titre du chapitre. C’est ce qui permettra de **citer** précisément la source dans la réponse.'
+  en: 'Each passage keeps its **metadata**: the original document, its position, sometimes the chapter title. This is what will let us **cite** the source precisely in the answer.'
+  exemple:
+    fr: 'Un passage `cours-13#2` signifie : troisième passage du document `cours-13`.'
+    en: 'A passage `cours-13#2` means: the third passage of document `cours-13`.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Champ
+      en: Field
+    - fr: Exemple
+      en: Example
+    cellules:
+    - - id
+      - cours-13#2
+    - - texte
+      - fr: « Le cache KV grandit… »
+        en: “The KV cache grows…”
+    - - fr: debut
+        en: debut
+        ton: ok
+      - fr: '6'
+        en: '6'
+        ton: ok
+    legende:
+      fr: Sans identifiant, impossible de citer.
+      en: Without an identifier, citing is impossible.
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `passages(doc_id, texte, taille, chevauchement)`** : découpe `texte.split()` avec `decouper`, puis renvoie une liste de dictionnaires `{"id": doc_id + "#" + str(k), "texte": " ".join(m), "debut": k * pas}` où `pas = taille - chevauchement`. `decouper` est fournie.'
+  en: '**Write `passages(doc_id, texte, taille, chevauchement)`**: split `texte.split()` with `decouper`, then return a list of dictionaries `{"id": doc_id + "#" + str(k), "texte": " ".join(m), "debut": k * pas}` where `pas = taille - chevauchement`. `decouper` is provided.'
+  depart: |
+    def decouper(mots, taille, chevauchement):
+        pas = taille - chevauchement
+        morceaux, i = [], 0
+        while i < len(mots):
+            morceaux.append(mots[i:i + taille])
+            if i + taille >= len(mots):
+                break
+            i += pas
+        return morceaux
+
+    # écris ta fonction passages ici
+  tests: |-
+    p = passages("c", "a b c d e f g h i j", 4, 1)
+    assert [x["id"] for x in p] == ["c#0", "c#1", "c#2"]
+    assert p[1]["texte"] == "d e f g" and p[1]["debut"] == 3
+    assert p[2]["debut"] == 6
+    assert passages("c", "", 4, 1) == []
+  solutionCode: |
+    def decouper(mots, taille, chevauchement):
+        pas = taille - chevauchement
+        morceaux, i = [], 0
+        while i < len(mots):
+            morceaux.append(mots[i:i + taille])
+            if i + taille >= len(mots):
+                break
+            i += pas
+        return morceaux
+
+    def passages(doc_id, texte, taille, chevauchement):
+        mots = texte.split()
+        sortie, debut = [], 0
+        pas = taille - chevauchement
+        for k, m in enumerate(decouper(mots, taille, chevauchement)):
+            sortie.append({"id": doc_id + "#" + str(k), "texte": " ".join(m), "debut": k * pas})
+        return sortie
+  indice:
+    fr: Utilise `enumerate(decouper(...))` pour avoir l’indice `k` et le passage `m` en même temps.
+    en: Use `enumerate(decouper(...))` to get the index `k` and the passage `m` together.
+  explication:
+    fr: '`debut` est la position du premier mot du passage dans le document : utile pour retrouver l’extrait exact.'
+    en: '`debut` is the position of the passage’s first word in the document: useful to find the exact excerpt.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Combien de passages obtient-on pour 10 mots, avec une taille de 4 et un chevauchement de 1 ?
+  en: How many passages do we get for 10 words, with a size of 4 and an overlap of 1?
+  reponses:
+  - '3'
+  verif: |-
+    m=list(range(10))
+    i=0
+    n=0
+    while i<10:
+        n+=1
+        if i+4>=10:
+            break
+        i+=3
+    print(n)
+  indice:
+    fr: 'Les débuts sont `0, 3, 6` : le passage qui commence à 6 atteint la fin.'
+    en: 'The starts are `0, 3, 6`: the passage starting at 6 reaches the end.'
+  explication:
+    fr: 'Trois passages : `[0..3]`, `[3..6]`, `[6..9]`.'
+    en: 'Three passages: `[0..3]`, `[3..6]`, `[6..9]`.'
+- id: c9
+  type: idee
+  fr: 'Mieux vaut couper aux **frontières naturelles** : titres, paragraphes, phrases. Un passage qui commence au milieu d’une phrase est plus difficile à comprendre, pour le moteur de recherche comme pour le modèle.'
+  en: 'It is better to cut at **natural boundaries**: titles, paragraphs, sentences. A passage that starts mid-sentence is harder to understand, for the search engine as well as for the model.'
+  exemple:
+    fr: Un cours en Markdown se découpe naturellement par titre `##`, puis par paragraphe si la section est trop longue.
+    en: A Markdown course splits naturally by `##` title, then by paragraph if the section is too long.
+- id: c10
+  type: piege
+  fr: 'Des passages trop petits perdent leur contexte (« il » ne renvoie plus à rien). Des passages trop grands noient l’information utile : la recherche devient imprécise et le contexte du modèle se remplit vite. Il n’y a pas de taille parfaite : on **mesure** (niveau 14.boss).'
+  en: 'Passages that are too small lose their context (“it” no longer refers to anything). Passages that are too large drown the useful information: search becomes imprecise and the model’s context fills quickly. There is no perfect size: we **measure** (level 14.boss).'
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `decouper_phrases(texte, max_mots)`** : sépare `texte` aux points (`.`), puis regroupe les phrases dans l’ordre en passages d’au plus `max_mots` mots, **sans couper une phrase**. Chaque passage est une chaîne de phrases séparées par `". "` et terminée par `"."`. Une phrase plus longue que `max_mots` forme seule un passage.'
+  en: 'Challenge. **Write `decouper_phrases(texte, max_mots)`**: split `texte` at periods (`.`), then group the sentences in order into passages of at most `max_mots` words, **without cutting a sentence**. Each passage is a string of sentences separated by `". "` and ending with `"."`. A sentence longer than `max_mots` forms a passage alone.'
+  depart: |
+    # écris ta fonction decouper_phrases ici
+  tests: |-
+    t = "Un deux trois. Quatre cinq. Six sept huit neuf."
+    assert decouper_phrases(t, 5) == ["Un deux trois. Quatre cinq.", "Six sept huit neuf."]
+    assert decouper_phrases(t, 100) == ["Un deux trois. Quatre cinq. Six sept huit neuf."]
+    assert decouper_phrases(t, 1) == ["Un deux trois.", "Quatre cinq.", "Six sept huit neuf."]
+    assert decouper_phrases("", 5) == []
+  solutionCode: |
+    def decouper_phrases(texte, max_mots):
+        phrases = [p.strip() for p in texte.split(".") if p.strip()]
+        groupes, courant = [], []
+        for p in phrases:
+            n = len(p.split())
+            if courant and sum(len(x.split()) for x in courant) + n > max_mots:
+                groupes.append(". ".join(courant) + ".")
+                courant = []
+            courant.append(p)
+        if courant:
+            groupes.append(". ".join(courant) + ".")
+        return groupes
+  indice:
+    fr: Garde un groupe `courant` de phrases ; avant d’ajouter une phrase, si le total dépasserait `max_mots` et que `courant` n’est pas vide, ferme le groupe.
+    en: Keep a `courant` group of sentences; before adding a sentence, if the total would exceed `max_mots` and `courant` is not empty, close the group.
+  explication:
+    fr: 'Ce découpage par phrases est celui qu’on préfère pour un cours : chaque passage se lit seul.'
+    en: 'This sentence-based split is the one preferred for a course: each passage can be read alone.'
+- id: c12
+  type: idee
+  fr: 'Le niveau suivant apprend à **chercher** dans ces passages : d’abord avec les mots exacts (BM25, niveau 14.2), puis avec le sens (embeddings, niveau 14.3). Les deux se combinent ensuite (14.4).'
+  en: 'The next level teaches how to **search** these passages: first with exact words (BM25, level 14.2), then with meaning (embeddings, level 14.3). The two are then combined (14.4).'
+  exemple:
+    fr: Les passages que tu viens de découper sont la matière première de toute cette recherche.
+    en: The passages you just split are the raw material for this whole search.
+- id: c13
+  type: retenir
+  fr: 'RAG : chercher des passages, puis répondre à partir d’eux. Passages de 100 à 300 mots, avec chevauchement, coupés aux frontières naturelles. Chaque passage garde un identifiant pour pouvoir être cité.'
+  en: 'RAG: search for passages, then answer from them. Passages of 100 to 300 words, with overlap, cut at natural boundaries. Each passage keeps an identifier so it can be cited.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [l’article original sur le RAG](https://arxiv.org/abs/2005.11401) ; cet article demande une connexion.
+  en: For further study, see [the original RAG paper](https://arxiv.org/abs/2005.11401); this paper needs a connection.

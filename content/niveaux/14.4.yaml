@@ -1,0 +1,266 @@
+# Niveau 14.4 — RAG 4 : recherche hybride (RRF) et reranking. Original academik ; notions vérifiées dans Cormack et al. 2009 (lien) et Nogueira et Cho 2019 (arXiv 1901.04085).
+id: '14.4'
+module: 14
+duree_min: 16
+titre:
+  fr: Recherche hybride et reranking
+  en: Hybrid search and reranking
+ia:
+  fr: Kintana combine la recherche par mots et la recherche par sens, puis réordonne les meilleurs candidats.
+  en: Kintana combines search by words and search by meaning, then reorders the best candidates.
+sources:
+- titre: Cormack, Clarke, Buettcher — Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods (SIGIR 2009)
+  url: https://dl.acm.org/doi/10.1145/1571941.1572114
+  licence: Lien seulement ; texte non repris
+- titre: Nogueira, Cho — Passage Re-ranking with BERT
+  url: https://arxiv.org/abs/1901.04085
+  licence: Article en accès libre ; idée citée
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: BM25 classe le passage A en premier et le B en cinquième. La recherche vectorielle classe B en premier et A en troisième. Comment combiner les deux classements sans mélanger des scores d’échelles différentes ?
+  en: BM25 ranks passage A first and B fifth. Vector search ranks B first and A third. How do we combine the two rankings without mixing scores of different scales?
+  choix:
+  - fr: En combinant les **rangs** plutôt que les scores
+    en: By combining the **ranks** rather than the scores
+    juste: true
+  - fr: En additionnant directement les scores bruts
+    en: By directly adding the raw scores
+  - fr: En ne gardant que le premier moteur
+    en: By keeping only the first engine
+  indice:
+    fr: Un score BM25 vaut parfois 12, un cosinus vaut au plus 1. Peut-on les additionner ?
+    en: A BM25 score is sometimes 12, a cosine is at most 1. Can we add them?
+  explication:
+    fr: Les échelles diffèrent, mais un **rang** (1ᵉʳ, 2ᵉ, …) est comparable partout. La fusion par rangs est simple et robuste.
+    en: The scales differ, but a **rank** (1st, 2nd, …) is comparable everywhere. Fusion by ranks is simple and robust.
+- id: c2
+  type: idee
+  fr: La **recherche hybride** lance BM25 et la recherche vectorielle, puis fusionne les deux listes. BM25 apporte les correspondances exactes, les embeddings apportent le sens. Un passage bien classé par les deux monte en tête.
+  en: '**Hybrid search** runs BM25 and vector search, then fuses the two lists. BM25 brings exact matches, embeddings bring meaning. A passage ranked well by both rises to the top.'
+  exemple:
+    fr: Pour « erreur 0x80070005 », BM25 trouve le code ; pour « mon programme rame », les embeddings trouvent « lenteur ».
+    en: For “error 0x80070005”, BM25 finds the code; for “my program lags”, embeddings find “slowness”.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Moteur
+      en: Engine
+    - fr: Fort sur
+      en: Strong on
+    cellules:
+    - - BM25
+      - fr: mots exacts, codes, noms
+        en: exact words, codes, names
+    - - fr: Embeddings
+        en: Embeddings
+      - fr: sens, paraphrases
+        en: meaning, paraphrases
+    - - fr: Hybride
+        en: Hybrid
+        ton: ok
+      - fr: les deux
+        en: both
+        ton: ok
+    legende:
+      fr: 'Les deux erreurs ne sont pas les mêmes : elles se compensent.'
+      en: 'The two kinds of error differ: they compensate each other.'
+- id: c3
+  type: idee
+  fr: La **fusion par rangs réciproques** (RRF) donne à un passage de rang $r$ le score $1/(k+r)$ dans chaque liste, avec $k=60$ d’usage, et additionne. Un passage absent d’une liste ne reçoit rien de celle-ci.
+  en: '**Reciprocal rank fusion** (RRF) gives a passage of rank $r$ the score $1/(k+r)$ in each list, with $k=60$ by custom, and adds them. A passage absent from a list receives nothing from it.'
+  exemple:
+    fr: 'Passage A : rang 1 et rang 3, soit $1/61+1/63\approx0{,}0323$. Passage B : rang 5 et rang 1, soit $1/65+1/61\approx0{,}0318$. A passe devant.'
+    en: 'Passage A: rank 1 and rank 3, that is $1/61+1/63\approx0.0323$. Passage B: rank 5 and rank 1, that is $1/65+1/61\approx0.0318$. A comes first.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Fusionner deux listes
+    en: Fusing two lists
+  lang: python
+  etapes:
+  - code: |-
+      bm25 = ["A", "C", "B"]
+      vec = ["B", "A", "D"]
+    fr: Deux classements du même corpus.
+    en: Two rankings of the same corpus.
+  - code: |-
+      s = {}
+      for liste in (bm25, vec):
+          for r, i in enumerate(liste, start=1):
+              s[i] = s.get(i, 0) + 1 / (60 + r)
+    fr: Chaque passage cumule `1 / (60 + rang)` dans chaque liste.
+    en: Each passage accumulates `1 / (60 + rank)` in each list.
+  - code: 'print(sorted(s, key=lambda i: -s[i]))'
+    fr: 'On affiche `[''A'', ''B'', ''C'', ''D'']` : A est bon dans les deux listes.'
+    en: 'We display `[''A'', ''B'', ''C'', ''D'']`: A is good in both lists.'
+  verif: |-
+    bm25 = ["A", "C", "B"]
+    vec = ["B", "A", "D"]
+    s = {}
+    for liste in (bm25, vec):
+        for r, i in enumerate(liste, start=1):
+            s[i] = s.get(i, 0) + 1 / (60 + r)
+    print(sorted(s, key=lambda i: -s[i]))
+  sortie: '[''A'', ''B'', ''C'', ''D'']'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `rrf(listes, k=60)`** : `listes` est une liste de classements (listes d’identifiants, du meilleur au pire). Cumule `1.0 / (k + rang)` pour chaque identifiant (rang à partir de `1`), puis renvoie les identifiants triés par score décroissant.'
+  en: 'Your turn. **Write `rrf(listes, k=60)`**: `listes` is a list of rankings (lists of identifiers, best to worst). Accumulate `1.0 / (k + rang)` for each identifier (rank starting at `1`), then return the identifiers sorted by decreasing score.'
+  depart: |
+    # écris ta fonction rrf ici
+  tests: |-
+    assert rrf([["A", "C", "B"], ["B", "A", "D"]]) == ["A", "B", "C", "D"]
+    assert rrf([["x", "y"]]) == ["x", "y"]
+    assert rrf([]) == []
+    assert rrf([["a"], ["b"], ["b"]]) == ["b", "a"]
+  solutionCode: |
+    def rrf(listes, k=60):
+        scores = {}
+        for liste in listes:
+            for rang, i in enumerate(liste, start=1):
+                scores[i] = scores.get(i, 0.0) + 1.0 / (k + rang)
+        return sorted(scores, key=lambda i: -scores[i])
+  indice:
+    fr: Un dictionnaire `scores` ; `enumerate(liste, start=1)` donne le rang ; ajoute `1.0 / (k + rang)` avec `.get(i, 0.0)`.
+    en: A `scores` dictionary; `enumerate(liste, start=1)` gives the rank; add `1.0 / (k + rang)` with `.get(i, 0.0)`.
+  explication:
+    fr: 'Le `k = 60` adoucit l’écart entre les premiers rangs : un seul moteur ne peut pas imposer sa décision.'
+    en: 'The `k = 60` softens the gap between the top ranks: a single engine cannot impose its decision.'
+- id: c6
+  type: idee
+  fr: Le **reranking** ajoute un second étage. Un premier moteur, rapide, ramène 20 à 50 candidats. Un modèle plus fin mais plus lent (un « cross-encoder ») lit la question et chaque candidat **ensemble**, et les réordonne. On ne paie ce coût que sur peu de passages.
+  en: '**Reranking** adds a second stage. A fast first engine brings back 20 to 50 candidates. A finer but slower model (a “cross-encoder”) reads the question and each candidate **together**, and reorders them. We pay this cost on only a few passages.'
+  exemple:
+    fr: Ramener 30 candidats avec BM25 puis les reclasser avec un modèle précis coûte bien moins que de passer ce modèle sur 10 000 passages.
+    en: Bringing back 30 candidates with BM25 then reranking them with a precise model costs far less than running that model on 10,000 passages.
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Deux étages
+        en: Two stages
+      noeuds:
+      - fr: recherche rapide
+        en: fast search
+      - fr: 30 candidats
+        en: 30 candidates
+      - fr: reranking précis
+        en: precise reranking
+      - fr: les 3 meilleurs
+        en: the best 3
+        ton: ok
+    legende:
+      fr: 'Étage 1 : rappel. Étage 2 : précision.'
+      en: 'Stage 1: recall. Stage 2: precision.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `reclasser(candidats, scorer, n)`** : applique la fonction `scorer` à chaque candidat, puis renvoie les `n` candidats de plus grand score, du meilleur au moins bon.'
+  en: '**Write `reclasser(candidats, scorer, n)`**: apply the function `scorer` to each candidate, then return the `n` candidates with the largest score, from best to least good.'
+  depart: |
+    # écris ta fonction reclasser ici
+  tests: |-
+    assert reclasser(["aa", "b", "cccc"], len, 2) == ["cccc", "aa"]
+    assert reclasser([3, 1, 2], lambda x: -x, 3) == [1, 2, 3]
+    assert reclasser([], len, 2) == []
+    assert reclasser(["a"], len, 5) == ["a"]
+  solutionCode: |
+    def reclasser(candidats, scorer, n):
+        notes = {c: scorer(c) for c in candidats}
+        return sorted(candidats, key=lambda c: -notes[c])[:n]
+  indice:
+    fr: 'Calcule `notes = {c: scorer(c) for c in candidats}`, puis `sorted(candidats, key=lambda c: -notes[c])[:n]`.'
+    en: 'Compute `notes = {c: scorer(c) for c in candidats}`, then `sorted(candidats, key=lambda c: -notes[c])[:n]`.'
+  explication:
+    fr: 'Le `scorer` est un argument : tu peux y mettre un modèle précis, une règle simple, ou un test de contenu.'
+    en: 'The `scorer` is an argument: you can plug in a precise model, a simple rule, or a content test.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: Dans la fusion RRF avec $k=60$, quel est le score (arrondi à 4 décimales) d’un passage classé 1ᵉʳ dans une liste et absent de l’autre ?
+  en: In RRF fusion with $k=60$, what is the score (rounded to 4 decimals) of a passage ranked 1st in one list and absent from the other?
+  reponses:
+  - '0.0164'
+  - 0,0164
+  verif: print(round(1/61,4))
+  indice:
+    fr: 'Un seul terme compte : $1/(k+1)$.'
+    en: 'Only one term counts: $1/(k+1)$.'
+  explication:
+    fr: '$1/61\approx0{,}0164$ : l’autre liste n’ajoute rien.'
+    en: '$1/61\approx0.0164$: the other list adds nothing.'
+- id: c9
+  type: idee
+  fr: Un bon réglage est de ramener **plus** de candidats que nécessaire (rappel), puis de réduire (précision). Si le bon passage est absent de la première liste, aucun reranking ne le retrouvera. Un passage perdu à l’étage 1 est perdu pour de bon.
+  en: 'A good setting is to bring back **more** candidates than needed (recall), then reduce (precision). If the right passage is absent from the first list, no reranking will find it: a passage lost at stage 1 is lost for good.'
+  exemple:
+    fr: Pour afficher 3 passages au modèle, ramène 30 candidats, puis garde les 3 meilleurs après reranking.
+    en: To show 3 passages to the model, bring back 30 candidates, then keep the 3 best after reranking.
+- id: c10
+  type: piege
+  fr: Plus de passages donnés au modèle n’est pas toujours mieux. Au-delà de quelques passages, le contexte se remplit de bruit et le coût monte. Le modèle peut aussi s’appuyer sur un passage peu pertinent. Quelques bons passages valent mieux que beaucoup de moyens.
+  en: More passages given to the model is not always better. Beyond a few passages, the context fills with noise, the cost rises, and the model may err by relying on a barely relevant passage. A few good passages beat many average ones.
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `hybride(liste_bm25, liste_vecteurs, n)`** : fusionne les deux classements avec `rrf` et renvoie les `n` premiers identifiants. `rrf` est fournie.'
+  en: 'Challenge. **Write `hybride(liste_bm25, liste_vecteurs, n)`**: fuse the two rankings with `rrf` and return the first `n` identifiers. `rrf` is provided.'
+  depart: |
+    def rrf(listes, k=60):
+        scores = {}
+        for liste in listes:
+            for rang, i in enumerate(liste, start=1):
+                scores[i] = scores.get(i, 0.0) + 1.0 / (k + rang)
+        return sorted(scores, key=lambda i: -scores[i])
+
+    # écris ta fonction hybride ici
+  tests: |-
+    assert hybride(["A", "C", "B"], ["B", "A", "D"], 2) == ["A", "B"]
+    assert hybride(["x"], [], 5) == ["x"]
+    assert hybride([], [], 3) == []
+    assert hybride(["a", "b"], ["b", "a"], 1) in (["a"], ["b"])
+  solutionCode: |
+    def rrf(listes, k=60):
+        scores = {}
+        for liste in listes:
+            for rang, i in enumerate(liste, start=1):
+                scores[i] = scores.get(i, 0.0) + 1.0 / (k + rang)
+        return sorted(scores, key=lambda i: -scores[i])
+
+    def hybride(liste_bm25, liste_vecteurs, n):
+        return rrf([liste_bm25, liste_vecteurs])[:n]
+  indice:
+    fr: 'Une ligne : `rrf([liste_bm25, liste_vecteurs])[:n]`.'
+    en: 'A single line: `rrf([liste_bm25, liste_vecteurs])[:n]`.'
+  explication:
+    fr: Tu as maintenant un moteur de recherche hybride complet, comme dans la plupart des systèmes RAG sérieux.
+    en: You now have a complete hybrid search engine, as in most serious RAG systems.
+- id: c12
+  type: idee
+  fr: 'Reste à faire parler le modèle avec ces passages, **en les citant**. Il doit aussi dire « je ne sais pas » quand la réponse n’est pas dans les cours : ce sera le niveau 14.5.'
+  en: What remains is making the model speak with these passages, **citing them**, and teaching it to say “I don’t know” when the answer is not in the courses. That is level 14.5.
+  exemple:
+    fr: Un assistant qui invente une citation est pire qu’un assistant qui s’abstient.
+    en: An assistant that invents a citation is worse than one that abstains.
+- id: c13
+  type: retenir
+  fr: 'Hybride : BM25 pour les mots exacts, embeddings pour le sens. RRF : score $\sum 1/(k+\text{rang})$, $k=60$. Reranking : second étage précis sur peu de candidats. Plus de passages n’est pas mieux.'
+  en: 'Hybrid: BM25 for exact words, embeddings for meaning. RRF: score $\sum 1/(k+\text{rank})$, $k=60$. Reranking: a precise second stage on few candidates. More passages is not better.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [Passage Re-ranking with BERT](https://arxiv.org/abs/1901.04085) ; cet article demande une connexion.
+  en: For further study, see [Passage Re-ranking with BERT](https://arxiv.org/abs/1901.04085); this paper needs a connection.

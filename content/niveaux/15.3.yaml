@@ -1,0 +1,314 @@
+# Niveau 15.3 — Agents et MCP 3 : appel d’outils, validation, exécution sûre. Original academik ; notions vérifiées dans le cours Agents de Hugging Face (cité) et la spécification MCP (citée).
+id: '15.3'
+module: 15
+duree_min: 16
+titre:
+  fr: L’appel d’outils
+  en: Tool calling
+ia:
+  fr: Kintana demande des actions, et ton programme les valide et les exécute.
+  en: Kintana requests actions, and your program validates and executes them.
+sources:
+- titre: Hugging Face — Agents Course
+  url: https://huggingface.co/learn/agents-course
+  licence: Cours en ligne ; contenu cité, texte non repris
+- titre: Model Context Protocol — Tools
+  url: https://modelcontextprotocol.io/specification
+  licence: Spécification en ligne ; idées citées
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: Un modèle de langage écrit « 2 + 3 = 5 » en prédisant des mots. Peut-il vraiment **calculer** ou lire un fichier ? Comment lui donner cette capacité ?
+  en: A language model writes “2 + 3 = 5” by predicting words. Can it really **calculate** or read a file? How do we give it that ability?
+  choix:
+  - fr: Il écrit une demande d’outil, et un programme l’exécute à sa place
+    en: It writes a tool request, and a program executes it in its place
+    juste: true
+  - fr: Il exécute lui-même le code dans sa tête
+    en: It runs the code itself in its head
+  - fr: C’est impossible, il ne peut qu’écrire du texte
+    en: It is impossible, it can only write text
+  indice:
+    fr: Le modèle produit du texte. Qui peut transformer ce texte en action réelle ?
+    en: The model produces text. Who can turn this text into a real action?
+  explication:
+    fr: Le modèle **n’exécute rien**. Il écrit un appel (nom de l’outil et arguments), et c’est ton programme qui l’exécute, puis lui rend le résultat.
+    en: The model **executes nothing**. It writes a call (tool name and arguments), and it is your program that executes it, then returns the result.
+- id: c2
+  type: idee
+  fr: 'Un **outil** est une fonction que le programme met à disposition du modèle. Chaque outil est décrit : son **nom**, ce qu’il fait, et ses **paramètres** avec leurs types. Le modèle lit ces descriptions et choisit lequel appeler.'
+  en: 'A **tool** is a function that the program makes available to the model. Each tool is described: its **name**, what it does, and its **parameters** with their types. The model reads these descriptions and chooses which one to call.'
+  exemple:
+    fr: L’outil `calculer` prend un paramètre `expr` de type texte ; l’outil `repeter` prend `mot` (texte) et `fois` (entier).
+    en: The tool `calculer` takes a parameter `expr` of type text; the tool `repeter` takes `mot` (text) and `fois` (integer).
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Un appel d’outil
+        en: A tool call
+      noeuds:
+      - fr: le modèle écrit un appel
+        en: the model writes a call
+      - fr: le programme valide
+        en: the program validates
+      - fr: il exécute l’outil
+        en: it runs the tool
+      - fr: le résultat revient au modèle
+        en: the result returns to the model
+        ton: ok
+    legende:
+      fr: La validation vient toujours avant l’exécution.
+      en: Validation always comes before execution.
+- id: c3
+  type: idee
+  fr: 'L’appel du modèle est un petit JSON, par exemple `{"outil": "calculer", "args": {"expr": "2+3"}}`. Le modèle peut se tromper : outil inexistant, paramètre oublié, mauvais type. Le programme doit donc **tout valider** avant d’agir.'
+  en: 'The model’s call is a small JSON, for example `{"outil": "calculer", "args": {"expr": "2+3"}}`. The model can make mistakes: nonexistent tool, forgotten parameter, wrong type. The program must therefore **validate everything** before acting.'
+  exemple:
+    fr: 'L’appel `{"outil": "repeter", "args": {"mot": "a"}}` oublie `fois` : il doit être rejeté avec un message clair.'
+    en: 'The call `{"outil": "repeter", "args": {"mot": "a"}}` forgets `fois`: it must be rejected with a clear message.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Valider un appel à la main
+    en: Validating a call by hand
+  lang: python
+  etapes:
+  - code: |-
+      outils = {"repeter": {"parametres": {"mot": "str", "fois": "int"}}}
+      appel = {"outil": "repeter", "args": {"mot": "a"}}
+    fr: Un outil qui attend deux paramètres, et un appel qui n’en donne qu’un.
+    en: A tool expecting two parameters, and a call giving only one.
+  - code: |-
+      attendus = outils[appel["outil"]]["parametres"]
+      manquants = [p for p in attendus if p not in appel["args"]]
+    fr: On cherche les paramètres attendus qui manquent.
+    en: We look for the expected parameters that are missing.
+  - code: print(manquants)
+    fr: 'On affiche `[''fois'']` : l’appel est invalide.'
+    en: 'We display `[''fois'']`: the call is invalid.'
+  verif: |-
+    outils = {"repeter": {"parametres": {"mot": "str", "fois": "int"}}}
+    appel = {"outil": "repeter", "args": {"mot": "a"}}
+    attendus = outils[appel["outil"]]["parametres"]
+    manquants = [p for p in attendus if p not in appel["args"]]
+    print(manquants)
+  sortie: '[''fois'']'
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `valider_appel(appel, outils)`** : renvoie `(False, "outil inconnu")` si l’outil n’existe pas ; `(False, "paramètre manquant: x")` si un paramètre attendu manque ; `(False, "paramètre inattendu: x")` pour un paramètre en trop ; `(False, "type invalide: x")` si le type est faux (`"str"`, `"int"`, `"float"` ; un booléen n’est pas un entier) ; sinon `(True, "")`.'
+  en: 'Your turn. **Write `valider_appel(appel, outils)`**: return `(False, "outil inconnu")` if the tool does not exist; `(False, "paramètre manquant: x")` if an expected parameter is missing; `(False, "paramètre inattendu: x")` for an extra parameter; `(False, "type invalide: x")` if the type is wrong (`"str"`, `"int"`, `"float"`; a boolean is not an integer); otherwise `(True, "")`.'
+  depart: |
+    OUTILS = {
+        "calculer": {"parametres": {"expr": "str"}},
+        "repeter": {"parametres": {"mot": "str", "fois": "int"}},
+    }
+
+    # écris ta fonction valider_appel ici
+  tests: |-
+    assert valider_appel({"outil": "calculer", "args": {"expr": "1+1"}}, OUTILS) == (True, "")
+    assert valider_appel({"outil": "x", "args": {}}, OUTILS) == (False, "outil inconnu")
+    assert valider_appel({"outil": "repeter", "args": {"mot": "a"}}, OUTILS) == (False, "paramètre manquant: fois")
+    assert valider_appel({"outil": "calculer", "args": {"expr": "1", "z": 2}}, OUTILS) == (False, "paramètre inattendu: z")
+    assert valider_appel({"outil": "repeter", "args": {"mot": "a", "fois": "3"}}, OUTILS) == (False, "type invalide: fois")
+    assert valider_appel({"outil": "repeter", "args": {"mot": "a", "fois": True}}, OUTILS) == (False, "type invalide: fois")
+    assert valider_appel({"outil": "repeter", "args": {"mot": "a", "fois": 3}}, OUTILS) == (True, "")
+  solutionCode: |
+    OUTILS = {
+        "calculer": {"parametres": {"expr": "str"}},
+        "repeter": {"parametres": {"mot": "str", "fois": "int"}},
+    }
+
+    def valider_appel(appel, outils):
+        nom = appel.get("outil")
+        if nom not in outils:
+            return False, "outil inconnu"
+        attendus = outils[nom]["parametres"]
+        args = appel.get("args", {})
+        types = {"str": str, "int": int, "float": (int, float)}
+        for p in attendus:
+            if p not in args:
+                return False, "paramètre manquant: " + p
+        for p, v in args.items():
+            if p not in attendus:
+                return False, "paramètre inattendu: " + p
+            if isinstance(v, bool) or not isinstance(v, types[attendus[p]]):
+                return False, "type invalide: " + p
+        return True, ""
+  indice:
+    fr: 'Vérifie dans l’ordre : outil connu, paramètres manquants, puis pour chaque argument présent : attendu ? bon type ? (`isinstance` avec un dictionnaire des types).'
+    en: 'Check in order: known tool, missing parameters, then for each present argument: expected? right type? (`isinstance` with a dictionary of types).'
+  explication:
+    fr: Des messages précis permettent au modèle de **corriger son appel** à l’étape suivante.
+    en: Precise messages let the model **correct its call** at the next step.
+- id: c6
+  type: idee
+  fr: 'Le résultat de l’outil revient au modèle sous forme de message : on l’appelle une **observation**. Si l’appel a échoué, l’observation contient l’erreur : le modèle peut alors corriger. Une erreur cachée ou une exception non gérée casse la conversation.'
+  en: 'The tool’s result returns to the model as a message: it is called an **observation**. If the call failed, the observation contains the error: the model can then correct itself. A hidden error or an unhandled exception breaks the conversation.'
+  exemple:
+    fr: 'Observation d’échec : `{"ok": false, "erreur": "paramètre manquant: fois"}`. Le modèle réessaie avec `fois`.'
+    en: 'Failure observation: `{"ok": false, "erreur": "paramètre manquant: fois"}`. The model retries with `fois`.'
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Résultat
+      en: Result
+    - fr: Observation
+      en: Observation
+    cellules:
+    - - fr: succès
+        en: success
+      - fr: '{"ok": true, "resultat": 5}'
+        en: '{"ok": true, "resultat": 5}'
+        ton: ok
+    - - fr: échec
+        en: failure
+      - fr: '{"ok": false, "erreur": "…"}'
+        en: '{"ok": false, "erreur": "…"}'
+        ton: bad
+    legende:
+      fr: 'Toujours la même forme : le modèle apprend à la lire.'
+      en: 'Always the same shape: the model learns to read it.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `executer(appel, registre)`** : `registre` associe un nom d’outil à une fonction. Si l’outil est absent, renvoie `{"ok": False, "erreur": "outil inconnu"}`. Sinon appelle `registre[nom](**args)` : renvoie `{"ok": True, "resultat": valeur}`, ou `{"ok": False, "erreur": str(e)}` si la fonction lève une exception `e`.'
+  en: '**Write `executer(appel, registre)`**: `registre` maps a tool name to a function. If the tool is absent, return `{"ok": False, "erreur": "outil inconnu"}`. Otherwise call `registre[nom](**args)`: return `{"ok": True, "resultat": value}`, or `{"ok": False, "erreur": str(e)}` if the function raises an exception `e`.'
+  depart: |
+    # écris ta fonction executer ici
+  tests: |-
+    reg = {"somme": lambda a, b: a + b, "diviser": lambda a, b: a / b}
+    assert executer({"outil": "somme", "args": {"a": 2, "b": 3}}, reg) == {"ok": True, "resultat": 5}
+    assert executer({"outil": "x", "args": {}}, reg) == {"ok": False, "erreur": "outil inconnu"}
+    r = executer({"outil": "diviser", "args": {"a": 1, "b": 0}}, reg)
+    assert r["ok"] is False and "division" in r["erreur"]
+    assert executer({"outil": "somme", "args": {"a": 1}}, reg)["ok"] is False
+  solutionCode: |
+    def executer(appel, registre):
+        nom = appel.get("outil")
+        if nom not in registre:
+            return {"ok": False, "erreur": "outil inconnu"}
+        try:
+            return {"ok": True, "resultat": registre[nom](**appel.get("args", {}))}
+        except Exception as e:
+            return {"ok": False, "erreur": str(e)}
+  indice:
+    fr: Un `try` / `except Exception as e` autour de l’appel `registre[nom](**appel.get("args", {}))`.
+    en: A `try` / `except Exception as e` around the call `registre[nom](**appel.get("args", {}))`.
+  explication:
+    fr: 'L’agent ne plante plus sur une erreur d’outil : l’erreur devient une information pour le modèle.'
+    en: 'The agent no longer crashes on a tool error: the error becomes information for the model.'
+- id: c8
+  type: saisie
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'L’appel `{"outil": "repeter", "args": {"mot": "ab", "fois": 3}}` exécute la fonction `mot * fois`. Quel est le résultat ?'
+  en: 'The call `{"outil": "repeter", "args": {"mot": "ab", "fois": 3}}` runs the function `mot * fois`. What is the result?'
+  reponses:
+  - ababab
+  verif: print("ab" * 3)
+  indice:
+    fr: En Python, multiplier un texte par un entier le répète.
+    en: In Python, multiplying a text by an integer repeats it.
+  explication:
+    fr: '`"ab" * 3` donne `ababab`.'
+    en: '`"ab" * 3` gives `ababab`.'
+- id: c9
+  type: idee
+  fr: 'Ne fais jamais confiance aux arguments donnés par le modèle. Ils peuvent venir d’un texte piégé que l’agent a lu (niveau 15.2). Valide les types, limite les valeurs, et applique les permissions : le modèle **propose**, c’est ton programme qui **décide**.'
+  en: 'Never trust the arguments given by the model. They can come from a trapped text the agent has read (level 15.2). Validate types, limit values, and apply permissions: the model **proposes**, your program **decides**.'
+  exemple:
+    fr: 'Un argument `fois = 1000000000` pour `repeter` épuiserait la mémoire : on limite aussi les valeurs.'
+    en: 'An argument `fois = 1000000000` for `repeter` would exhaust memory: we also limit the values.'
+- id: c10
+  type: piege
+  fr: Ne passe jamais l’argument d’un modèle à `eval` ou `exec`. Un outil « calculer » qui appelle `eval(expr)` laisse le modèle, et donc quiconque lui parle, exécuter n’importe quel code. On analyse l’expression avec le module `ast` et on n’autorise que les opérations prévues.
+  en: Never pass a model’s argument to `eval` or `exec`. A “calculate” tool that calls `eval(expr)` lets the model, and thus anyone who talks to it, run any code. We parse the expression with the `ast` module and allow only the planned operations.
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `calculer_sur(expr)`** : analyse `expr` avec `ast.parse(expr, mode="eval")` et calcule seulement les nombres, `+`, `-`, `*`, `/` et le moins unaire. Toute autre construction lève `ValueError("expression non autorisée")` ; une syntaxe invalide lève `ValueError("expression invalide")`. Les constantes `ast` et `operator` sont importées.'
+  en: 'Challenge. **Write `calculer_sur(expr)`**: parse `expr` with `ast.parse(expr, mode="eval")` and compute only numbers, `+`, `-`, `*`, `/` and unary minus. Any other construct raises `ValueError("expression non autorisée")`; invalid syntax raises `ValueError("expression invalide")`. The `ast` and `operator` imports are provided.'
+  depart: |
+    import ast
+    import operator
+
+    OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv}
+
+    # écris ta fonction calculer_sur ici
+  tests: |-
+    assert calculer_sur("2+3*4") == 14
+    assert calculer_sur("(1+2)*3") == 9
+    assert calculer_sur("-5+2") == -3
+    assert calculer_sur("10/4") == 2.5
+    for mauvais in ["2**3", "__import__('os')", "a+1", "[1]", "abs(-1)"]:
+        try:
+            calculer_sur(mauvais)
+            assert False, mauvais
+        except ValueError:
+            pass
+    try:
+        calculer_sur("2+")
+        assert False
+    except ValueError as e:
+        assert "invalide" in str(e)
+    try:
+        calculer_sur("1/0")
+        assert False
+    except ZeroDivisionError:
+        pass
+  solutionCode: |
+    import ast
+    import operator
+
+    OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv}
+
+    def calculer_sur(expr):
+        def ev(n):
+            if isinstance(n, ast.Expression):
+                return ev(n.body)
+            if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)) and not isinstance(n.value, bool):
+                return n.value
+            if isinstance(n, ast.BinOp) and type(n.op) in OPS:
+                return OPS[type(n.op)](ev(n.left), ev(n.right))
+            if isinstance(n, ast.UnaryOp) and isinstance(n.op, ast.USub):
+                return -ev(n.operand)
+            raise ValueError("expression non autorisée")
+        try:
+            arbre = ast.parse(expr, mode="eval")
+        except SyntaxError:
+            raise ValueError("expression invalide")
+        return ev(arbre)
+  indice:
+    fr: 'Une petite fonction récursive `ev(n)` : `Expression` → son corps ; `Constant` numérique → sa valeur ; `BinOp` autorisé → l’opération sur les deux côtés ; `UnaryOp` moins → l’opposé.'
+    en: 'A small recursive function `ev(n)`: `Expression` → its body; numeric `Constant` → its value; allowed `BinOp` → the operation on both sides; unary minus `UnaryOp` → the negative.'
+  explication:
+    fr: 'Tout ce qui n’est pas explicitement autorisé est refusé : c’est la liste blanche appliquée au code.'
+    en: 'Everything not explicitly allowed is refused: the allowlist applied to code.'
+- id: c12
+  type: idee
+  fr: 'Avec des outils, le modèle peut agir : calculer, chercher dans tes cours (module 14), lire un fichier. Reste à enchaîner plusieurs appels pour résoudre une tâche : c’est la **boucle d’agent** du niveau suivant.'
+  en: 'With tools, the model can act: calculate, search your courses (module 14), read a file. What remains is chaining several calls to solve a task: this is the **agent loop** of the next level.'
+  exemple:
+    fr: '« Combien font 12 % de 250 ? » : le modèle appelle `calculer`, lit l’observation `30.0`, puis répond.'
+    en: '“What is 12% of 250?”: the model calls `calculer`, reads the observation `30.0`, then answers.'
+- id: c13
+  type: retenir
+  fr: 'Le modèle écrit un appel d’outil (JSON) ; le programme valide, exécute, et renvoie une observation. Tout valider : nom, paramètres, types, valeurs. Jamais d’`eval` sur un argument. Les erreurs deviennent des observations.'
+  en: 'The model writes a tool call (JSON); the program validates, executes, and returns an observation. Validate everything: name, parameters, types, values. Never `eval` on an argument. Errors become observations.'
+- id: c14
+  type: plus
+  fr: Pour approfondir, consulte [le cours Agents de Hugging Face](https://huggingface.co/learn/agents-course) ; ce cours demande une connexion.
+  en: For further study, see [the Hugging Face Agents course](https://huggingface.co/learn/agents-course); this course needs a connection.
