@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 32,
-  "version": "0.3.29",
+  "build": 33,
+  "version": "0.3.30",
   "notes": {
-   "fr": "Nouveau module bonus « Enquêtes » : tu apprends à chasser l'erreur. Dans le premier niveau, tu repères la ligne fausse d'une preuve ; dans le second, tu cherches un bogue Python en reproduisant, réduisant et testant. Toutes les sources du cours sont maintenant listées avec leur licence.",
-   "en": "New bonus module “Investigations”: you learn to hunt for errors. In the first level you spot the false line in a proof; in the second you track down a Python bug by reproducing, reducing and testing. All the course's sources are now listed with their licence."
+   "fr": "Le module « Enquêtes » est complet : trois nouveaux niveaux t'apprennent à démasquer une statistique trompeuse (moyenne, paradoxe de Simpson, taux de base), la fuite d'information d'un backtest (signal futur, coûts oubliés, meilleur-de-cent) et la faille d'un agent (la triade mortelle, outils hors liste, boucles).",
+   "en": "The “Investigations” module is complete: three new levels teach you to unmask a misleading statistic (mean, Simpson's paradox, base rate), the information leak in a backtest (future signal, forgotten costs, best-of-a-hundred) and the flaw in an agent (the lethal trifecta, off-list tools, loops)."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.29/academik-0.3.29.apk",
-    "sha256": "bd0d89571322de66ca8fc3bad02ea4a21509d8804167380bf41ae0c0b3668e07",
-    "bytes": 11455354
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.30/academik-0.3.30.apk",
+    "sha256": "d77d477e66a1b8c15e978b13b7efb1e42c541ed1ec6bbdc811d895c814360c9e",
+    "bytes": 11491994
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.29/academik-0.3.29-x86_64.AppImage",
-    "sha256": "025f2107c489f90d5b4101e0e4f67d1d01692b8fa4d79d97a38f43ea2ff564fa",
-    "bytes": 115898872
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.30/academik-0.3.30-x86_64.AppImage",
+    "sha256": "efe3716f9b4544361b6683bbd6a59e2f47b200fec97cc2758ea4a092d2f0911d",
+    "bytes": 115939832
    }
   }
  },
  "history": [
+  {
+   "build": 32,
+   "version": "0.3.29",
+   "notes": {
+    "fr": "Nouveau module bonus « Enquêtes » : tu apprends à chasser l'erreur. Dans le premier niveau, tu repères la ligne fausse d'une preuve ; dans le second, tu cherches un bogue Python en reproduisant, réduisant et testant. Toutes les sources du cours sont maintenant listées avec leur licence.",
+    "en": "New bonus module “Investigations”: you learn to hunt for errors. In the first level you spot the false line in a proof; in the second you track down a Python bug by reproducing, reducing and testing. All the course's sources are now listed with their licence."
+   }
+  },
   {
    "build": 31,
    "version": "0.3.28",
