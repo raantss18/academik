@@ -181,3 +181,12 @@ modules:
       - { id: "18.4", titre: { fr: "Profiler avant d’optimiser" } }
       - { id: "18.5", titre: { fr: "Vectoriser et paralléliser" } }
       - { id: "18.boss", boss: true, titre: { fr: "Rends-le rapide" } }
+  - id: 19
+    titre: { fr: "Sécurité", en: "Security" }
+    niveaux:
+      - { id: "19.1", titre: { fr: "Réseaux et TLS" } }
+      - { id: "19.2", titre: { fr: "Cryptographie par bibliothèques" } }
+      - { id: "19.3", titre: { fr: "Programmer sans faille" } }
+      - { id: "19.4", titre: { fr: "Les risques des applications LLM" } }
+      - { id: "19.5", titre: { fr: "Le lab d’injection de prompt" } }
+      - { id: "19.boss", boss: true, titre: { fr: "Défends ton agent" } }

@@ -1,0 +1,284 @@
+# Niveau 19.3 — Sécurité 3 : injections, échappement, fichiers, secrets. Original academik ; notions vérifiées dans OWASP (Top 10 web, Cheat Sheet Series, liens) et la documentation Python (html). Approche défensive.
+id: '19.3'
+module: 19
+duree_min: 19
+titre:
+  fr: Programmer sans faille
+  en: Programming without flaws
+ia:
+  fr: Kintana ne mélange jamais les données et le code, et protège ses secrets.
+  en: Kintana never mixes data and code, and protects her secrets.
+sources:
+- titre: OWASP — Top 10 Web Application Security Risks
+  url: https://owasp.org/www-project-top-ten/
+  licence: Lien seulement ; texte non repris
+- titre: 'Python — documentation : html.escape'
+  url: https://docs.python.org/3/library/html.html#html.escape
+  licence: PSF ; documentation citée
+- titre: OWASP Cheat Sheet Series — Injection Prevention
+  url: https://cheatsheetseries.owasp.org/
+  licence: Lien seulement ; texte non repris
+cartes:
+- id: c1
+  type: tentative
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Un site construit sa requête ainsi : `"SELECT * FROM users WHERE nom = ''" + saisie + "''"`. Un visiteur saisit `'' OR ''1''=''1`. Que se passe-t-il ?'
+  en: 'A site builds its query like this: `"SELECT * FROM users WHERE nom = ''" + saisie + "''"`. A visitor enters `'' OR ''1''=''1`. What happens?'
+  choix:
+  - fr: 'La condition devient toujours vraie : la requête renvoie tous les utilisateurs'
+    en: 'The condition becomes always true: the query returns all users'
+    juste: true
+  - fr: 'Rien : les guillemets sont ignorés'
+    en: 'Nothing: the quotes are ignored'
+  - fr: Le site refuse automatiquement
+    en: The site automatically refuses
+  indice:
+    fr: La saisie contient des guillemets qui ferment la chaîne, puis une nouvelle condition.
+    en: The input contains quotes that close the string, then a new condition.
+  explication:
+    fr: 'C’est une **injection** : des données sont interprétées comme du code. Le texte du visiteur a changé la **structure** de la requête.'
+    en: 'This is an **injection**: data is interpreted as code. The visitor’s text changed the query’s **structure**.'
+- id: c2
+  type: idee
+  fr: 'Une **injection** survient quand on colle une entrée non fiable dans une commande (SQL, shell, HTML). L’attaquant y glisse du code qui sera exécuté. Cause racine : mélanger **données** et **instructions** dans la même chaîne.'
+  en: 'An **injection** occurs when an untrusted input is pasted into a command (SQL, shell, HTML). The attacker slips in code that will be executed. Root cause: mixing **data** and **instructions** in the same string.'
+  exemple:
+    fr: La saisie `x'; DROP TABLE users; --` peut supprimer une table si elle est collée dans une requête.
+    en: The input `x'; DROP TABLE users; --` can delete a table if it is pasted into a query.
+  figure:
+    kind: tableau
+    entetes:
+    - fr: Cible
+      en: Target
+    - fr: Défense
+      en: Defence
+    cellules:
+    - - SQL
+      - fr: requêtes paramétrées
+        en: parameterised queries
+    - - HTML
+      - fr: échappement à l’affichage
+        en: escaping on display
+    - - fr: shell
+        en: shell
+        ton: ok
+      - fr: éviter, ou liste d’arguments
+        en: avoid, or argument list
+        ton: ok
+    legende:
+      fr: Toujours séparer le code des données.
+      en: Always separate code from data.
+- id: c3
+  type: idee
+  fr: 'La parade contre l’injection SQL : la **requête paramétrée**. Le texte de la requête contient des emplacements (`?`), les valeurs sont transmises à part. La base de données ne les interprète jamais comme du code.'
+  en: 'The defence against SQL injection: the **parameterised query**. The query text contains placeholders (`?`), the values are passed separately. The database never interprets them as code.'
+  exemple:
+    fr: '`("SELECT … WHERE nom = ?", (saisie,))` : même la saisie `'' OR ''1''=''1` est cherchée comme un simple nom.'
+    en: '`("SELECT … WHERE nom = ?", (saisie,))`: even the input `'' OR ''1''=''1` is looked up as a simple name.'
+- id: c4
+  type: exemple
+  titre:
+    fr: Collage dangereux ou paramètre
+    en: Dangerous pasting or parameter
+  lang: python
+  etapes:
+  - code: saisie = "' OR '1'='1"
+    fr: La saisie d’un attaquant.
+    en: An attacker’s input.
+  - code: |-
+      dangereux = "SELECT * FROM users WHERE nom = '" + saisie + "'"
+      sur = ("SELECT * FROM users WHERE nom = ?", (saisie,))
+    fr: Deux façons de construire la requête.
+    en: Two ways of building the query.
+  - code: |-
+      print(dangereux)
+      print(sur[0], sur[1])
+    fr: La première version contient `OR '1'='1` dans le code ; la seconde garde la saisie à part.
+    en: The first version contains `OR '1'='1` in the code; the second keeps the input apart.
+  verif: |-
+    saisie = "' OR '1'='1"
+    dangereux = "SELECT * FROM users WHERE nom = '" + saisie + "'"
+    sur = ("SELECT * FROM users WHERE nom = ?", (saisie,))
+    print(dangereux)
+    print(sur[0], sur[1])
+  sortie: |-
+    SELECT * FROM users WHERE nom = '' OR '1'='1'
+    SELECT * FROM users WHERE nom = ? ("' OR '1'='1",)
+- id: c5
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: 'À toi. **Écris `requete_sure(nom)`** : renvoie le couple `("SELECT * FROM utilisateurs WHERE nom = ?", (nom,))` : le texte avec un `?`, et un tuple des valeurs.'
+  en: 'Your turn. **Write `requete_sure(nom)`**: return the pair `("SELECT * FROM utilisateurs WHERE nom = ?", (nom,))`: the text with a `?`, and a tuple of values.'
+  depart: |
+    # écris ta fonction requete_sure ici
+  tests: |-
+    sql, params = requete_sure("alice")
+    assert sql == "SELECT * FROM utilisateurs WHERE nom = ?" and params == ("alice",)
+    sql2, p2 = requete_sure("' OR '1'='1")
+    assert sql2 == sql and p2 == ("' OR '1'='1",)
+    assert "OR" not in sql2
+  solutionCode: |
+    def requete_sure(nom):
+        return "SELECT * FROM utilisateurs WHERE nom = ?", (nom,)
+  indice:
+    fr: 'Le texte de la requête ne dépend pas de `nom` : seul le tuple le contient.'
+    en: 'The query text does not depend on `nom`: only the tuple contains it.'
+  explication:
+    fr: 'Le texte SQL est une constante : aucune entrée utilisateur ne peut le modifier.'
+    en: 'The SQL text is a constant: no user input can modify it.'
+- id: c6
+  type: idee
+  fr: 'L’injection **HTML/JavaScript** (XSS) : un texte contenant `<script>…</script>`, affiché tel quel dans une page, s’exécute chez les visiteurs. Défense : **échapper** les caractères spéciaux à l’affichage (`<` devient `&lt;`). Un texte de modèle de langage est aussi une entrée non fiable.'
+  en: '**HTML/JavaScript** injection (XSS): a text containing `<script>…</script>`, displayed as is in a page, runs for visitors. Defence: **escape** special characters on display (`<` becomes `&lt;`). A language model’s text is also an untrusted input.'
+  exemple:
+    fr: '`<b>` affiché échappé donne `&lt;b&gt;` : le navigateur montre le texte « <b> » sans l’interpréter.'
+    en: '`<b>` displayed escaped gives `&lt;b&gt;`: the browser shows the text “<b>” without interpreting it.'
+- id: c7
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `echapper_html(texte)`** avec `html.escape(texte, quote=True)`.'
+  en: '**Write `echapper_html(texte)`** with `html.escape(texte, quote=True)`.'
+  depart: |
+    import html
+
+    # écris ta fonction echapper_html ici
+  tests: |-
+    assert echapper_html("<script>alert(1)</script>") == "&lt;script&gt;alert(1)&lt;/script&gt;"
+    assert echapper_html("a & b") == "a &amp; b"
+    assert echapper_html("\"x\"") == "&quot;x&quot;"
+    assert echapper_html("bonjour") == "bonjour"
+  solutionCode: |
+    import html
+
+    def echapper_html(texte):
+        return html.escape(texte, quote=True)
+  indice:
+    fr: 'Une ligne : `html.escape` fait déjà tout le travail.'
+    en: 'A single line: `html.escape` already does all the work.'
+  explication:
+    fr: 'Échappe au moment de l’affichage, pas au stockage : la même donnée peut aller vers du HTML, du JSON ou du texte.'
+    en: 'Escape at display time, not at storage: the same data can go to HTML, JSON or text.'
+- id: c8
+  type: idee
+  fr: 'Ne fais pas confiance à un **nom de fichier** reçu. `../../etc/passwd` sort du dossier prévu (niveau 15.2). On applique une liste blanche de caractères autorisés et on refuse `..`. Mieux : générer soi-même le nom de fichier et ne garder que le nom d’origine comme métadonnée.'
+  en: 'Do not trust a received **file name**. `../../etc/passwd` leaves the intended folder (level 15.2). We apply an allowlist of permitted characters and refuse `..`. Better: generate the file name yourself and keep the original name only as metadata.'
+  exemple:
+    fr: '`rapport-2026.txt` est accepté ; `../secret`, `a/b` et `x;rm` sont refusés.'
+    en: '`rapport-2026.txt` is accepted; `../secret`, `a/b` and `x;rm` are refused.'
+- id: c8b
+  type: idee
+  fr: 'Une **commande shell** construite avec une saisie est une injection de commande : `"ls " + saisie` avec la saisie `x; rm -rf /` exécute deux commandes. Défense : ne pas passer par le shell, transmettre une **liste d’arguments** à `subprocess.run`, ou mieux, utiliser une fonction de bibliothèque.'
+  en: 'A **shell command** built with an input is a command injection: `"ls " + saisie` with the input `x; rm -rf /` runs two commands. Defence: do not go through the shell, pass an **argument list** to `subprocess.run`, or better, use a library function.'
+  exemple:
+    fr: '`subprocess.run(["ls", saisie])` traite `saisie` comme un seul argument, jamais comme une commande.'
+    en: '`subprocess.run(["ls", saisie])` treats `saisie` as a single argument, never as a command.'
+  figure:
+    kind: schema
+    lignes:
+    - titre:
+        fr: Du shell à la liste
+        en: From shell to list
+      noeuds:
+      - fr: chaîne de commande
+        en: command string
+      - fr: saisie collée dedans
+        en: input pasted into it
+      - fr: liste d’arguments
+        en: argument list
+      - fr: saisie = un argument
+        en: input = one argument
+        ton: ok
+    legende:
+      fr: Séparer le programme et ses arguments évite l’injection.
+      en: Separating the program and its arguments avoids injection.
+- id: c9
+  type: code
+  note:
+    kind: exercise
+    poids: 1
+  fr: '**Écris `nom_fichier_sur(nom)`** : `True` si `nom` est entièrement composé de lettres, chiffres, `_`, `.` ou `-` (utilise `re.fullmatch(r"[A-Za-z0-9_.-]+", nom)`) **et** ne contient pas `".."`.'
+  en: '**Write `nom_fichier_sur(nom)`**: `True` if `nom` consists entirely of letters, digits, `_`, `.` or `-` (use `re.fullmatch(r"[A-Za-z0-9_.-]+", nom)`) **and** does not contain `".."`.'
+  depart: |
+    import re
+
+    # écris ta fonction nom_fichier_sur ici
+  tests: |-
+    assert nom_fichier_sur("rapport-2026.txt") is True
+    assert nom_fichier_sur("../secret") is False
+    assert nom_fichier_sur("a/b") is False
+    assert nom_fichier_sur("x;rm") is False
+    assert nom_fichier_sur("..") is False
+    assert nom_fichier_sur("") is False
+  solutionCode: |
+    import re
+
+    def nom_fichier_sur(nom):
+        return re.fullmatch(r"[A-Za-z0-9_.-]+", nom) is not None and ".." not in nom
+  indice:
+    fr: '`re.fullmatch(...) is not None` pour les caractères, et `".." not in nom` pour les remontées.'
+    en: '`re.fullmatch(...) is not None` for the characters, and `".." not in nom` for the climbs.'
+  explication:
+    fr: 'Une liste blanche (ce qu’on accepte) est plus sûre qu’une liste noire (ce qu’on refuse) : on n’oublie pas un caractère dangereux.'
+    en: 'An allowlist (what we accept) is safer than a blocklist (what we refuse): no dangerous character is forgotten.'
+- id: c10
+  type: idee
+  fr: 'Les **secrets** (clés d’API, mots de passe) ne vont jamais dans le code source, ni dans un dépôt Git public, ni dans un journal. On les passe par des variables d’environnement ou un coffre. Si l’un fuite, on le **révoque** et on en génère un nouveau : l’effacer de l’historique ne suffit pas.'
+  en: '**Secrets** (API keys, passwords) never go in the source code, a public Git repository or a log. They are passed through environment variables or a vault. If one leaks, we **revoke** it and generate a new one: erasing it from history is not enough.'
+  exemple:
+    fr: 'Des robots parcourent GitHub en continu : une clé publiée est souvent exploitée en quelques minutes.'
+    en: 'Bots scan GitHub continuously: a published key is often exploited within minutes.'
+- id: c11
+  type: code
+  defi: true
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `masquer_secret(texte)`** : remplace par `[SECRET]` toute clé `sk-` suivie d’au moins 8 lettres ou chiffres. Remplace aussi la valeur dans `mot de passe: xxx` ou `password=xxx` par `[SECRET]`, en gardant le nom du champ.'
+  en: 'Challenge. **Write `masquer_secret(texte)`**: replace with `[SECRET]` any `sk-` key followed by at least 8 letters or digits. Also replace the value in `mot de passe: xxx` or `password=xxx` with `[SECRET]`, keeping the field name.'
+  depart: |
+    import re
+
+    # écris ta fonction masquer_secret ici
+  tests: |-
+    assert masquer_secret("clé sk-abcdef1234 ok") == "clé [SECRET] ok"
+    assert masquer_secret("password=hunter2") == "password: [SECRET]"
+    assert masquer_secret("Mot de passe : abc123") == "Mot de passe: [SECRET]"
+    assert masquer_secret("rien à cacher") == "rien à cacher"
+    assert masquer_secret("sk-court") == "sk-court"
+  solutionCode: |
+    import re
+
+    def masquer_secret(texte):
+        texte = re.sub(r"sk-[A-Za-z0-9]{8,}", "[SECRET]", texte)
+        return re.sub(r"(?i)(mot de passe|password)\s*[:=]\s*\S+", r"\1: [SECRET]", texte)
+  indice:
+    fr: Deux `re.sub` à la suite ; pour le second, utilise `(?i)` et le groupe `\\1` pour garder le nom du champ.
+    en: Two `re.sub` calls in a row; for the second, use `(?i)` and the group `\\1` to keep the field name.
+  explication:
+    fr: Masquer les secrets dans les journaux limite les dégâts d’une fuite de logs, sans remplacer les bonnes pratiques de stockage.
+    en: Masking secrets in logs limits the damage of a log leak, without replacing good storage practices.
+- id: c12
+  type: piege
+  fr: 'Valider dans le navigateur (JavaScript) ne protège pas le serveur : un attaquant envoie ses requêtes sans passer par ta page. **Toute validation de sécurité se refait côté serveur**. Et valider une longueur ou un format ne suffit pas à rendre sûre une donnée : il faut aussi l’échapper selon sa destination.'
+  en: 'Validating in the browser (JavaScript) does not protect the server: an attacker sends requests without going through your page. **All security validation is redone on the server side**. And validating a length or format is not enough to make data safe: it must also be escaped according to its destination.'
+- id: c13
+  type: idee
+  fr: Principes de **programmation sûre**. Valider les entrées par listes blanches, échapper les sorties selon leur destination, donner le **minimum de droits**. Ne jamais afficher d’erreurs détaillées. Mettre à jour les dépendances.
+  en: Principles of **safe programming**. Validate inputs with allowlists, escape outputs according to their destination, give the **minimum rights**. Never show detailed errors. Keep dependencies updated.
+  exemple:
+    fr: 'L’audit des licences d’academik vérifie aussi les dépendances : la même discipline s’applique aux failles connues.'
+    en: 'academik’s licence audit also checks dependencies: the same discipline applies to known flaws.'
+- id: c14
+  type: retenir
+  fr: 'Injection : données prises pour du code. SQL : requêtes paramétrées. HTML : échapper. Fichiers : liste blanche, pas de `..`. Secrets : jamais dans le code, révoquer en cas de fuite. Validation côté serveur toujours.'
+  en: 'Injection: data mistaken for code. SQL: parameterised queries. HTML: escape. Files: allowlist, no `..`. Secrets: never in code, revoke on leak. Server-side validation always.'
+- id: c15
+  type: plus
+  fr: Pour approfondir, consulte [le Top 10 OWASP des applications web](https://owasp.org/www-project-top-ten/) ; cette page demande une connexion.
+  en: For further study, see [the OWASP Top 10 for web applications](https://owasp.org/www-project-top-ten/); this page needs a connection.

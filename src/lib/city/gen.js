@@ -176,6 +176,15 @@ const THEMES = [
     kinds: { hall: 4, shop: 2, tower: 1, house: 0 }, count: 24, align: .9,
     props: { lamp: 8, person: 4, car: 2, crate: 2 },
     lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
+  { place: 'La Citadelle', blurb: 'Remparts, herses et tours de guet : chaque entrée est contrôlée, aucun secret ne sort.', path: 2, smooth: true,
+    top: '#3c444a', cliff: '#4a545b', lip: '#566a58', road: '#252b30', roadHi: '#e8d7a8', dash: true, night: '#0b0f12',
+    patches: ['#4a545b', '#3c444a', '#566a58'],
+    walls: ['#cfd5d9', '#b6bec3', '#9ca6ac', '#e6eaec', '#848f96'], roofs: ['#4d5a63', '#3a454d', '#5f6f7a'],
+    roofW: { flat: 2, hip: 2, gable: 2 }, win: ['#ffe9a8', '#ffd36b', '#ffcf80'], leaf: ['#3f7a48', '#52965a', '#6aae6a'],
+    trees: { round: 1, conifer: 1, bush: 1 }, nTrees: 10,
+    kinds: { tower: 4, hall: 2, house: 1, shop: 0 }, count: 24, align: .9,
+    props: { lamp: 8, person: 4, car: 2, crate: 2 },
+    lm: ['hall', 'tower', 'hall', 'clock', 'tower'], boss: 'dome' },
 ];
 
 // Tracés des rues (repère local du quartier : entrée en (8,4) côté +x, sortie en (4,0) côté −y).

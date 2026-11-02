@@ -183,7 +183,7 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
 | --- | --- | --- | --- |
 | **15.1** Processus et messages | Kintana fait dialoguer des programmes par des messages JSON sur des flux de texte. | — | 15.5 |
-| **15.2** Permissions et isolation | Kintana n’agit que dans les limites qu’on lui fixe, et se méfie des textes qu’elle lit. | — | 15.3, 15.boss |
+| **15.2** Permissions et isolation | Kintana n’agit que dans les limites qu’on lui fixe, et se méfie des textes qu’elle lit. | — | 15.3, 15.boss, 19.3 |
 | **15.3** L’appel d’outils | Kintana demande des actions, et ton programme les valide et les exécute. | 15.2 | — |
 | **15.4** La boucle d’agent | Kintana enchaîne réflexion, action et observation, avec des garde-fous pour ne pas tourner en rond. | — | 15.boss |
 | **15.5** Le protocole MCP | Kintana parle aux outils par un protocole standard, en gardant ses garde-fous. | 15.1 | — |
@@ -221,3 +221,14 @@ Chaque module ajoute **une capacité** à Kintana ; chaque niveau s’appuie sur
 | **18.4** Profiler avant d’optimiser | Kintana trouve d’abord où son programme perd du temps, puis seulement le corrige. | — | — |
 | **18.5** Vectoriser et paralléliser | Kintana fait travailler la machine en bloc, et sait quand ajouter des cœurs ne sert plus. | 18.2 | — |
 | **18.boss** Rends-le rapide | Kintana accélère ses fonctions de mille fois sans changer leurs résultats. | 18.1, 18.3 | — |
+
+## 19 · Sécurité
+
+| Niveau | Ce que Kintana sait faire | S’appuie sur | Prépare |
+| --- | --- | --- | --- |
+| **19.1** Réseaux et TLS | Kintana comprend ce qui voyage sur le réseau, et comment TLS le protège. | — | — |
+| **19.2** Cryptographie par bibliothèques | Kintana protège ses secrets avec des briques standard, jamais avec des inventions maison. | — | — |
+| **19.3** Programmer sans faille | Kintana ne mélange jamais les données et le code, et protège ses secrets. | 15.2 | — |
+| **19.4** Les risques des applications LLM | Kintana connaît les dix risques des applications LLM, et la combinaison qu’il ne faut jamais réunir. | — | — |
+| **19.5** Le lab d’injection de prompt | Kintana subit des attaques simulées, mesure leur succès et empile des défenses. | — | — |
+| **19.boss** Défends ton agent | Kintana résiste à une série d’attaques et rend un rapport qui dit ce qui passe encore. | — | — |
