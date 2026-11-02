@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 31,
-  "version": "0.3.28",
+  "build": 32,
+  "version": "0.3.29",
   "notes": {
-   "fr": "Chaque niveau a maintenant son monument : la fiche du niveau et l'écran de fin disent quel bâtiment de la ville s'allume, et de combien. Les enseignes des quartiers ne cachent plus les repères sur la carte. Nouveau module bonus « Recherche » : prouver du code avec Lean, lire la courbure d'une perte, mesurer l'entropie croisée et la perplexité, comprendre les modèles à experts.",
-   "en": "Each level now has its own landmark: the level sheet and the end screen say which building of the city lights up, and by how much. District signs no longer hide the map pins. New bonus module “Research”: prove code with Lean, read the curvature of a loss, measure cross-entropy and perplexity, understand expert models."
+   "fr": "Nouveau module bonus « Enquêtes » : tu apprends à chasser l'erreur. Dans le premier niveau, tu repères la ligne fausse d'une preuve ; dans le second, tu cherches un bogue Python en reproduisant, réduisant et testant. Toutes les sources du cours sont maintenant listées avec leur licence.",
+   "en": "New bonus module “Investigations”: you learn to hunt for errors. In the first level you spot the false line in a proof; in the second you track down a Python bug by reproducing, reducing and testing. All the course's sources are now listed with their licence."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.28/academik-0.3.28.apk",
-    "sha256": "9c362385f16881f7bfa4d6a814945a8631768bbdd4cd27efbd1c2ad1af88609b",
-    "bytes": 11433146
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.29/academik-0.3.29.apk",
+    "sha256": "bd0d89571322de66ca8fc3bad02ea4a21509d8804167380bf41ae0c0b3668e07",
+    "bytes": 11455354
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.28/academik-0.3.28-x86_64.AppImage",
-    "sha256": "a2083576895a83eaa3f6a229a526ee206740aec0361afa4fdbf893a20ed5bd9c",
-    "bytes": 115882488
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.29/academik-0.3.29-x86_64.AppImage",
+    "sha256": "025f2107c489f90d5b4101e0e4f67d1d01692b8fa4d79d97a38f43ea2ff564fa",
+    "bytes": 115898872
    }
   }
  },
  "history": [
+  {
+   "build": 31,
+   "version": "0.3.28",
+   "notes": {
+    "fr": "Chaque niveau a maintenant son monument : la fiche du niveau et l'écran de fin disent quel bâtiment de la ville s'allume, et de combien. Les enseignes des quartiers ne cachent plus les repères sur la carte. Nouveau module bonus « Recherche » : prouver du code avec Lean, lire la courbure d'une perte, mesurer l'entropie croisée et la perplexité, comprendre les modèles à experts.",
+    "en": "Each level now has its own landmark: the level sheet and the end screen say which building of the city lights up, and by how much. District signs no longer hide the map pins. New bonus module “Research”: prove code with Lean, read the curvature of a loss, measure cross-entropy and perplexity, understand expert models."
+   }
+  },
   {
    "build": 30,
    "version": "0.3.27",
