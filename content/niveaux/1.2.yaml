@@ -1,0 +1,195 @@
+# Niveau 1.2 — Le terminal 2 : fichiers. Original academik ; commandes vérifiées dans le manuel GNU Coreutils (mkdir, touch, cp, mv, rm) et le manuel de Bash (redirection).
+id: '1.2'
+module: 1
+duree_min: 17
+titre: { fr: 'Fichiers', en: 'Files' }
+ia: { fr: 'Kintana range ses notes : elle crée, copie, déplace et supprime des fichiers.', en: 'Kintana tidies her notes: she creates, copies, moves and deletes files.' }
+sources:
+  - { titre: 'GNU Coreutils — mkdir, touch, cp, mv, rm', url: 'https://www.gnu.org/software/coreutils/manual/html_node/index.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+  - { titre: 'GNU Bash Reference Manual — Redirections', url: 'https://www.gnu.org/software/bash/manual/bash.html#Redirections', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
+cartes:
+  - id: c1
+    type: tentative
+    note: { kind: quiz, poids: 1 }
+    fr: 'Kintana veut un nouveau dossier nommé `idees`. Quelle commande le crée ?'
+    en: 'Kintana wants a new folder named `idees`. Which command creates it?'
+    choix:
+      - { fr: '`mkdir idees`', en: '`mkdir idees`', juste: true }
+      - { fr: '`cd idees`', en: '`cd idees`' }
+      - { fr: '`ls idees`', en: '`ls idees`' }
+    explication: { fr: '`mkdir` veut dire « make directory » : créer un dossier.', en: '`mkdir` means “make directory”: create a folder.' }
+  - id: c2
+    type: idee
+    fr: 'Pour ranger, quatre gestes suffisent : **créer**, **copier**, **déplacer**, **supprimer**. Chacun a sa commande, et chaque commande reçoit des noms de fichiers.'
+    en: 'To tidy up, four moves are enough: **create**, **copy**, **move**, **delete**. Each has its own command, and each command receives file names.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Geste', en: 'Move' }, { fr: 'Commande', en: 'Command' }, { fr: 'Exemple', en: 'Example' }]
+      cellules:
+        - [{ fr: 'créer un dossier', en: 'create a folder' }, '`mkdir`', '`mkdir idees`']
+        - [{ fr: 'créer un fichier vide', en: 'create an empty file' }, '`touch`', '`touch a.txt`']
+        - [{ fr: 'copier', en: 'copy' }, '`cp`', '`cp a.txt b.txt`']
+        - [{ fr: 'déplacer ou renommer', en: 'move or rename' }, '`mv`', '`mv a.txt idees`']
+        - [{ fr: 'supprimer', en: 'delete' }, '`rm`', '`rm b.txt`']
+      legende: { fr: 'Le premier nom est la source, le dernier est la destination (pour `cp` et `mv`).', en: 'The first name is the source, the last one is the destination (for `cp` and `mv`).' }
+  - id: d_creer
+    type: exemple
+    titre: { fr: 'Créer un dossier et un fichier', en: 'Creating a folder and a file' }
+    lang: bash
+    etapes:
+      - { code: 'mkdir idees', fr: 'On crée le dossier `idees` dans le dossier courant. Rien ne s’affiche : c’est un succès.', en: 'We create the folder `idees` in the current folder. Nothing is shown: it is a success.' }
+      - { code: 'touch idees/a.txt', fr: '`touch` crée un fichier vide `a.txt`, ici dans `idees`.', en: '`touch` creates an empty file `a.txt`, here inside `idees`.' }
+      - { code: 'ls idees', fr: 'On vérifie : `ls` affiche `a.txt`.', en: 'We check: `ls` shows `a.txt`.' }
+  - id: c3
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'À toi. **Crée un dossier `rapports`**, puis **un fichier vide `v1.txt` dedans**.'
+    en: 'Your turn. **Create a folder `rapports`**, then **an empty file `v1.txt` inside it**.'
+    fs:
+      home:
+        kintana:
+          docs: { 'notes.txt': "idées pour Kintana\n" }
+    cwd: /home/kintana
+    attendu: { existent: [/home/kintana/rapports, /home/kintana/rapports/v1.txt] }
+    solution: ['mkdir rapports', 'touch rapports/v1.txt']
+    indice: { fr: 'D’abord `mkdir` avec le nom du dossier, puis `touch` avec le chemin `dossier/fichier`.', en: 'First `mkdir` with the folder name, then `touch` with the path `folder/file`.' }
+    explication: { fr: '`mkdir rapports` crée le dossier, `touch rapports/v1.txt` crée le fichier dedans.', en: '`mkdir rapports` creates the folder, `touch rapports/v1.txt` creates the file inside.' }
+  - id: d_cp
+    type: idee
+    fr: '`cp source destination` fait une **copie** : l’original reste. `mv source destination` **déplace** : l’original disparaît de son ancien endroit. Si la destination est un dossier, le fichier y entre ; sinon, c’est un nouveau nom.'
+    en: '`cp source destination` makes a **copy**: the original stays. `mv source destination` **moves**: the original leaves its old place. If the destination is a folder, the file goes into it; otherwise, it is a new name.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Avant : `a.txt`', en: 'Before: `a.txt`' }, { fr: 'Commande', en: 'Command' }, { fr: 'Après', en: 'After' }]
+      cellules:
+        - ['`a.txt`', '`cp a.txt b.txt`', { fr: '`a.txt` et `b.txt`', en: '`a.txt` and `b.txt`', ton: ok }]
+        - ['`a.txt`', '`mv a.txt b.txt`', { fr: 'seulement `b.txt`', en: 'only `b.txt`', ton: bad }]
+        - ['`a.txt`, `dossier/`', '`mv a.txt dossier`', { fr: '`dossier/a.txt`', en: '`dossier/a.txt`' }]
+      legende: { fr: 'Renommer, c’est déplacer vers un nouveau nom dans le même dossier.', en: 'Renaming is moving to a new name within the same folder.' }
+  - id: d_renommer
+    type: exemple
+    titre: { fr: 'Renommer puis ranger', en: 'Renaming then filing away' }
+    lang: bash
+    etapes:
+      - { code: 'mv brouillon.txt plan.txt', fr: 'Le fichier `brouillon.txt` s’appelle maintenant `plan.txt`. Aucun nouveau fichier n’apparaît.', en: 'The file `brouillon.txt` is now called `plan.txt`. No new file appears.' }
+      - { code: 'mv plan.txt archives', fr: '`archives` est un dossier : `plan.txt` y entre et quitte le dossier courant.', en: '`archives` is a folder: `plan.txt` goes into it and leaves the current folder.' }
+      - { code: 'ls archives', fr: '`ls` montre `plan.txt` dans `archives`.', en: '`ls` shows `plan.txt` in `archives`.' }
+  - id: c4
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: '**Copie** `notes.txt` sous le nom `sauvegarde.txt`, dans le même dossier. L’original doit rester.'
+    en: '**Copy** `notes.txt` under the name `sauvegarde.txt`, in the same folder. The original must stay.'
+    fs:
+      home:
+        kintana:
+          docs: { 'notes.txt': "idées pour Kintana\n" }
+    cwd: /home/kintana/docs
+    attendu: { existent: [/home/kintana/docs/notes.txt, /home/kintana/docs/sauvegarde.txt] }
+    solution: ['cp notes.txt sauvegarde.txt']
+    indice: { fr: '`cp` reçoit d’abord le fichier à copier, puis le nouveau nom.', en: '`cp` receives the file to copy first, then the new name.' }
+    explication: { fr: '`cp notes.txt sauvegarde.txt` laisse `notes.txt` en place et crée la copie.', en: '`cp notes.txt sauvegarde.txt` leaves `notes.txt` in place and creates the copy.' }
+  - id: c5
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: '**Déplace** `brouillon.txt` dans le dossier `archives`. Il ne doit plus rester dans le dossier courant.'
+    en: '**Move** `brouillon.txt` into the folder `archives`. It must no longer remain in the current folder.'
+    fs:
+      home:
+        kintana:
+          docs: { 'brouillon.txt': "à relire\n", archives: {} }
+    cwd: /home/kintana/docs
+    attendu: { existent: [/home/kintana/docs/archives/brouillon.txt], absents: [/home/kintana/docs/brouillon.txt] }
+    solution: ['mv brouillon.txt archives']
+    indice: { fr: 'Pour `mv`, la destination est un dossier : le fichier y entre.', en: 'For `mv`, the destination is a folder: the file goes into it.' }
+    explication: { fr: '`mv brouillon.txt archives` place le fichier dans `archives` et le retire d’ici.', en: '`mv brouillon.txt archives` puts the file in `archives` and removes it from here.' }
+  - id: d_rm
+    type: idee
+    fr: '`rm` supprime **pour de bon** : il n’y a pas de corbeille dans le terminal. Pour supprimer un dossier avec son contenu, on ajoute l’option `-r` (« récursif »).'
+    en: '`rm` deletes **for good**: there is no trash in the terminal. To delete a folder with its content, add the option `-r` (“recursive”).'
+    exemple: { fr: '`rm essai.txt` supprime un fichier. `rm -r vieux` supprime le dossier `vieux` et tout ce qu’il contient.', en: '`rm essai.txt` deletes a file. `rm -r vieux` deletes the folder `vieux` and everything in it.' }
+  - id: d_p_rm
+    type: piege
+    fr: 'Avant un `rm`, tape d’abord `ls` avec le même nom pour voir ce que tu vises. Une faute de frappe peut supprimer le mauvais fichier, sans retour possible.'
+    en: 'Before an `rm`, first type `ls` with the same name to see what you are targeting. A typo can delete the wrong file, with no way back.'
+  - id: c6
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Supprime le fichier `essai.txt` **et** le dossier `vieux` avec tout son contenu. Garde `important.txt`.'
+    en: 'Delete the file `essai.txt` **and** the folder `vieux` with all its content. Keep `important.txt`.'
+    fs:
+      home:
+        kintana:
+          docs: { 'essai.txt': 'x', 'important.txt': "à garder\n", vieux: { 'a.txt': 'a', 'b.txt': 'b' } }
+    cwd: /home/kintana/docs
+    attendu: { existent: [/home/kintana/docs/important.txt], absents: [/home/kintana/docs/essai.txt, /home/kintana/docs/vieux] }
+    solution: ['rm essai.txt', 'rm -r vieux']
+    indice: { fr: 'Un fichier se supprime avec `rm nom`. Pour un dossier, ajoute `-r` avant le nom.', en: 'A file is deleted with `rm name`. For a folder, add `-r` before the name.' }
+    explication: { fr: '`rm essai.txt` retire le fichier ; `rm -r vieux` retire le dossier et ses fichiers.', en: '`rm essai.txt` removes the file; `rm -r vieux` removes the folder and its files.' }
+  - id: d_echo
+    type: idee
+    fr: '`echo texte` affiche du texte. Avec `>`, on envoie ce texte **dans un fichier** au lieu de l’écran : `echo bonjour > a.txt`. Attention, `>` remplace tout le contenu ; `>>` ajoute à la fin.'
+    en: '`echo text` displays text. With `>`, we send the text **into a file** instead of the screen: `echo hello > a.txt`. Careful, `>` replaces all the content; `>>` appends at the end.'
+    figure:
+      kind: tableau
+      entetes: [{ fr: 'Commande', en: 'Command' }, { fr: 'Contenu de `a.txt`', en: 'Content of `a.txt`' }]
+      cellules:
+        - ['`echo un > a.txt`', '`un`']
+        - ['`echo deux >> a.txt`', { fr: '`un` puis `deux`', en: '`un` then `deux`', ton: ok }]
+        - ['`echo trois > a.txt`', { fr: '`trois` seulement', en: '`trois` only', ton: bad }]
+      legende: { fr: 'Les trois commandes se suivent : `>` efface ce qui était écrit avant.', en: 'The three commands follow each other: `>` erases what was written before.' }
+  - id: c7
+    type: terminal
+    note: { kind: exercise, poids: 1 }
+    fr: 'Écris la ligne `bonjour` dans un nouveau fichier `salut.txt`, puis **ajoute** une seconde ligne `kintana` à la fin, sans effacer la première.'
+    en: 'Write the line `bonjour` into a new file `salut.txt`, then **append** a second line `kintana` at the end, without erasing the first.'
+    fs:
+      home:
+        kintana:
+          docs: {}
+    cwd: /home/kintana/docs
+    attendu: { fichiers: { '/home/kintana/docs/salut.txt': "bonjour\nkintana" } }
+    solution: ['echo bonjour > salut.txt', 'echo kintana >> salut.txt']
+    indice: { fr: 'Un seul `>` pour la première ligne, puis `>>` pour la suivante.', en: 'A single `>` for the first line, then `>>` for the next.' }
+    explication: { fr: '`>` crée le fichier avec `bonjour` ; `>>` ajoute `kintana` à la fin.', en: '`>` creates the file with `bonjour`; `>>` appends `kintana` at the end.' }
+  - id: c8
+    type: qcm
+    note: { kind: exercise, poids: 1 }
+    fr: 'Le fichier `liste.txt` contient `a`. Tu tapes `echo b > liste.txt`. Que contient-il ensuite ?'
+    en: 'The file `liste.txt` contains `a`. You type `echo b > liste.txt`. What does it contain afterwards?'
+    choix:
+      - { fr: '`a` puis `b`', en: '`a` then `b`' }
+      - { fr: '`b` seulement', en: '`b` only', juste: true }
+      - { fr: '`a` seulement', en: '`a` only' }
+    explication: { fr: 'Un seul `>` remplace le contenu. Pour ajouter, il faut `>>`.', en: 'A single `>` replaces the content. To append, you need `>>`.' }
+  - id: c8b
+    type: saisie
+    note: { kind: exercise, poids: 1 }
+    fr: 'Écris la commande qui **renomme** `a.txt` en `b.txt`.'
+    en: 'Write the command that **renames** `a.txt` to `b.txt`.'
+    reponses: ['mv a.txt b.txt']
+    verif: 'print("mv a.txt b.txt")'
+    indice: { fr: 'Renommer, c’est déplacer vers un nouveau nom.', en: 'Renaming is moving to a new name.' }
+    explication: { fr: '`mv a.txt b.txt` : la source d’abord, le nouveau nom ensuite.', en: '`mv a.txt b.txt`: the source first, the new name next.' }
+  - id: c9
+    type: terminal
+    defi: true
+    note: { kind: quiz, poids: 1 }
+    fr: 'Défi. Dans `~/docs`, crée le dossier `ete`, **copie-y** `photo.txt` sous le nom `photo1.txt`, puis supprime l’original `photo.txt`.'
+    en: 'Challenge. In `~/docs`, create the folder `ete`, **copy** `photo.txt` into it under the name `photo1.txt`, then delete the original `photo.txt`.'
+    fs:
+      home:
+        kintana:
+          docs: { 'photo.txt': 'img' }
+    cwd: /home/kintana/docs
+    attendu: { existent: [/home/kintana/docs/ete/photo1.txt], absents: [/home/kintana/docs/photo.txt] }
+    solution: ['mkdir ete', 'cp photo.txt ete/photo1.txt', 'rm photo.txt']
+    indice: { fr: 'Une copie peut aller vers un chemin complet `dossier/nouveau-nom`.', en: 'A copy can go to a full path `folder/new-name`.' }
+    explication: { fr: 'Trois gestes : créer, copier vers un nouveau nom, supprimer l’original.', en: 'Three moves: create, copy to a new name, delete the original.' }
+  - id: c10
+    type: retenir
+    fr: '`mkdir` crée un dossier, `touch` un fichier vide, `cp` copie, `mv` déplace ou renomme, `rm` supprime sans retour. `>` écrase, `>>` ajoute.'
+    en: '`mkdir` creates a folder, `touch` an empty file, `cp` copies, `mv` moves or renames, `rm` deletes with no way back. `>` overwrites, `>>` appends.'
+  - id: d_plus
+    type: plus
+    fr: Pour approfondir, consulte [GNU Coreutils — cp, mv, rm](https://www.gnu.org/software/coreutils/manual/html_node/index.html) ; cette lecture complémentaire demande une connexion.
+    en: For further study, see [GNU Coreutils — cp, mv, rm](https://www.gnu.org/software/coreutils/manual/html_node/index.html); this optional reading needs a connection.
