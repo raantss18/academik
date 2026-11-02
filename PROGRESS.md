@@ -101,3 +101,9 @@
 
 - **Fait** : diagnostic mesuré de la carte (≈ 8 900 nœuds SVG, zoom par redimensionnement) ; prototype WebGL (`prototypes/immersion/`) à 60 img/s ; plan en 5 étapes (`docs/DESIGN-IMMERSION.md`). Aucun changement de l'application.
 - **En attente** : réponses d'Antsa (ambition, intensité, fond par module ou niveau, mode clair) avant tout chantier (CONSIGNES § 3).
+
+### Immersion, étapes 1 et 2 (2026-11-02)
+
+- **Fait** : zoom par `transform` (mesuré : 49,8 → 21,1 ms par image) ; fond de leçon par module (nuit et jour), WebGL discret avec repli CSS ; version 0.3.20.
+- **Vérifié** : 633 tests, rendu au navigateur en nuit et en jour à 390 px, `npm run verify` vert.
+- **Non vérifié** : sur téléphone réel (surtout les appareils d'entrée de gamme) ; étapes 3 (chemin du quartier) et 4 (silhouette qui s'allume) à faire.
