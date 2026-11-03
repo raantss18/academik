@@ -297,6 +297,53 @@ cartes:
   explication:
     fr: Choisir la précision au plus juste est exactement l’arbitrage qu’on fait entre qualité et mémoire pour un modèle local.
     en: Choosing the precision just right is exactly the trade-off made between quality and memory for a local model.
+- id: c9c
+  type: code
+  defi: 2
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `quantifier_blocs(w, bits, taille)`** : découpe `w` en blocs de `taille` poids consécutifs, quantifie chaque bloc avec sa propre échelle, et renvoie la liste des poids reconstruits. `quantifier` et `dequantifier` sont fournies.'
+  en: 'Challenge. **Write `quantifier_blocs(w, bits, taille)`**: cut `w` into blocks of `taille` consecutive weights, quantise each block with its own scale, and return the list of rebuilt weights. `quantifier` and `dequantifier` are provided.'
+  depart: |
+    def quantifier(w, bits):
+        niveaux = 2 ** (bits - 1) - 1
+        echelle = max(abs(x) for x in w) / niveaux
+        return [round(x / echelle) for x in w], echelle
+
+    def dequantifier(q, echelle):
+        return [v * echelle for v in q]
+
+    # écris ta fonction quantifier_blocs ici
+  tests: |
+    w = [0.01, 0.02, -0.015, 0.01, 10, 0.5, -0.3, 0.2]
+    assert quantifier_blocs(w, 4, 8)[:4] == [0.0, 0.0, 0.0, 0.0]
+    r = quantifier_blocs(w, 4, 4)
+    assert max(abs(a - b) for a, b in zip(w[:4], r[:4])) < 0.002
+    assert len(quantifier_blocs(w, 4, 3)) == 8
+    r = quantifier_blocs([1, 2, 3, 4], 8, 2)
+    assert r[1] == 2.0 and r[3] == 4.0
+  solutionCode: |
+    def quantifier(w, bits):
+        niveaux = 2 ** (bits - 1) - 1
+        echelle = max(abs(x) for x in w) / niveaux
+        return [round(x / echelle) for x in w], echelle
+
+    def dequantifier(q, echelle):
+        return [v * echelle for v in q]
+
+    def quantifier_blocs(w, bits, taille):
+        resultat = []
+        for i in range(0, len(w), taille):
+            q, echelle = quantifier(w[i:i + taille], bits)
+            resultat += dequantifier(q, echelle)
+        return resultat
+  indice:
+    fr: '`range(0, len(w), taille)` donne le début de chaque bloc, `w[i:i + taille]` le bloc. Ajoute ses poids reconstruits à la liste.'
+    en: '`range(0, len(w), taille)` gives the start of each block, `w[i:i + taille]` the block. Add its rebuilt weights to the list.'
+  explication:
+    fr: 'Avec une seule échelle, le poids 10 écrase les petits poids à 0. Par blocs, il ne gâche que son bloc : c’est ce que font les formats quantifiés réels.'
+    en: 'With a single scale, the weight 10 crushes the small weights to 0. With blocks, it only spoils its own block: this is what real quantised formats do.'
 - id: c9b
   type: idee
   fr: Les formats de llama.cpp ont des noms comme Q8_0 ou Q4_K_M. Le chiffre est le nombre de bits ; le reste décrit les blocs et le mélange de précisions. Plus le chiffre est bas, plus le fichier est petit.

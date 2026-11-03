@@ -305,6 +305,36 @@ cartes:
   explication:
     fr: 'Sur 200 000 éléments, la version à double boucle (niveau 18.1) prendrait des heures : celle-ci, une fraction de seconde.'
     en: 'On 200,000 elements, the double-loop version (level 18.1) would take hours: this one, a fraction of a second.'
+- id: c8b
+  type: code
+  defi: 2
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `paire_somme(liste, cible)`** : `True` si deux éléments à des positions différentes ont pour somme `cible`, en $O(n)$. Pour chaque `x`, cherche `cible - x` dans le `set` des éléments déjà vus.'
+  en: 'Challenge. **Write `paire_somme(liste, cible)`**: `True` if two elements at different positions add up to `cible`, in $O(n)$. For each `x`, look for `cible - x` in the `set` of elements already seen.'
+  depart: |
+    # écris ta fonction paire_somme ici
+  tests: |
+    assert paire_somme([3, 5, 9], 12) is True
+    assert paire_somme([6], 12) is False
+    assert paire_somme([6, 6], 12) is True
+    assert paire_somme([1, 2], 5) is False
+    assert paire_somme(list(range(100000)), 199997) is True
+  solutionCode: |
+    def paire_somme(liste, cible):
+        vus = set()
+        for x in liste:
+            if cible - x in vus:
+                return True
+            vus.add(x)
+        return False
+  indice:
+    fr: 'Teste `cible - x in vus` **avant** d’ajouter `x` : ainsi un élément ne fait jamais la paire avec lui-même.'
+    en: 'Test `cible - x in vus` **before** adding `x`: this way an element never pairs with itself.'
+  explication:
+    fr: La double boucle ferait environ 5 milliards de comparaisons pour 100 000 éléments ; l’ensemble en fait 100 000.
+    en: The double loop would make about 5 billion comparisons for 100,000 elements; the set makes 100,000.
 - id: c9
   type: saisie
   note:

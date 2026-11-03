@@ -226,6 +226,39 @@ cartes:
   explication:
     fr: 'Le drawdown dépend de l’ordre des prix : deux séries de même volatilité peuvent avoir des drawdowns très différents.'
     en: 'The drawdown depends on the order of prices: two series with the same volatility can have very different drawdowns.'
+- id: c9b
+  type: code
+  defi: 2
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `duree_sous_pic(prix)`** : le plus grand nombre de jours consécutifs passés **sous** le plus haut atteint jusque-là. Un prix égal ou supérieur au pic remet le compteur à 0.'
+  en: 'Challenge. **Write `duree_sous_pic(prix)`**: the largest number of consecutive days spent **below** the highest price reached so far. A price equal to or above the peak resets the counter to 0.'
+  depart: |
+    # écris ta fonction duree_sous_pic ici
+  tests: |
+    assert duree_sous_pic([100, 90, 95, 101, 99, 98, 102]) == 2
+    assert duree_sous_pic([100, 80, 90, 95]) == 3
+    assert duree_sous_pic([1, 2, 3]) == 0
+    assert duree_sous_pic([5, 4, 5, 4, 3]) == 2
+  solutionCode: |
+    def duree_sous_pic(prix):
+        pic = prix[0]
+        courant = pire = 0
+        for p in prix:
+            if p >= pic:
+                pic = p
+                courant = 0
+            else:
+                courant = courant + 1
+                pire = max(pire, courant)
+        return pire
+  indice:
+    fr: Reprends le `pic` de `drawdown_max`. Un compteur `courant` augmente sous le pic et revient à 0 dès qu’on l’égale ; garde son maximum.
+    en: Reuse the `pic` of `drawdown_max`. A counter `courant` goes up below the peak and drops to 0 as soon as the peak is matched; keep its maximum.
+  explication:
+    fr: 'La profondeur d’une chute ne dit pas tout : rester longtemps sous son ancien sommet pèse aussi sur un investisseur.'
+    en: 'The depth of a fall does not tell everything: staying a long time below a former peak also weighs on an investor.'
 - id: c10
   type: idee
   fr: 'La **VaR** (value at risk) à 95 % est la perte qui n’est dépassée que dans 5 % des cas. L’**ES** (expected shortfall) est la perte **moyenne** dans ces 5 % des pires cas. L’ES voit la queue que la VaR ignore : deux portefeuilles de même VaR peuvent avoir des ES très différents.'

@@ -293,6 +293,34 @@ cartes:
   explication:
     fr: 'Un modèle « meilleur de 3 points » sur 100 exemples n’est souvent pas distinguable du hasard : l’écart doit dépasser le bruit.'
     en: 'A model “better by 3 points” on 100 examples is often indistinguishable from chance: the gap must exceed the noise.'
+- id: c10b
+  type: code
+  defi: 2
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `taille_test(p, marge, z=1.96)`** : le plus petit entier `n` tel que $n \ge z^2\,p(1-p)/\text{marge}^2$. Il dit combien d’exemples de test il faut pour mesurer une exactitude proche de `p` à `marge` près.'
+  en: 'Challenge. **Write `taille_test(p, marge, z=1.96)`**: the smallest integer `n` such that $n \ge z^2\,p(1-p)/\text{marge}^2$. It tells how many test examples you need to measure an accuracy close to `p` within `marge`.'
+  depart: |
+    import math
+
+    # écris ta fonction taille_test ici
+  tests: |
+    assert taille_test(0.5, 0.05) == 385
+    assert taille_test(0.5, 0.1) == 97
+    assert taille_test(0.9, 0.03) == 385
+    assert taille_test(0.2, 0.04) == 385
+  solutionCode: |
+    import math
+
+    def taille_test(p, marge, z=1.96):
+        return math.ceil(z ** 2 * p * (1 - p) / marge ** 2)
+  indice:
+    fr: '`math.ceil` arrondit à l’entier supérieur. Calcule $z^2p(1-p)$, divise par `marge ** 2`, puis arrondis vers le haut.'
+    en: '`math.ceil` rounds up to the next integer. Compute $z^2p(1-p)$, divide by `marge ** 2`, then round up.'
+  explication:
+    fr: 'Diviser la marge par 2 multiplie la taille par 4 : 97 exemples pour ±10 points, 385 pour ±5 points.'
+    en: 'Halving the margin multiplies the size by 4: 97 examples for ±10 points, 385 for ±5 points.'
 - id: c11
   type: piege
   fr: 'Régler le modèle sur le jeu de test, puis annoncer le score sur ce même jeu, gonfle les résultats. Utilise trois jeux : **entraînement**, **validation** (pour régler) et **test** (pour la note finale, une seule fois). Et si tu compares beaucoup de variantes, corrige pour les essais multiples (niveau 17.5).'
