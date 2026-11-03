@@ -1,7 +1,7 @@
 {
   "name": "academik",
   "private": true,
-  "version": "0.3.34",
+  "version": "0.3.35",
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
