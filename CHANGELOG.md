@@ -2,7 +2,13 @@
 
 ## [Non publié]
 
-- Correctif (E47) : la nouvelle version s'annonce sans attendre le téléchargement du contenu ; « Vérifier les mises à jour » dit clairement si l'app est à jour, si le serveur est injoignable ou quelle version est disponible ; contenu téléchargé plus vite.
+## [0.3.34] — 2026-11-03
+
+### Message fr
+Les nouvelles versions de l'application s'annoncent tout de suite, sans attendre la fin du téléchargement des cours. « Vérifier les mises à jour » te dit clairement si tu as la dernière version, si le serveur est injoignable, ou quelle version est disponible. Les cours se téléchargent aussi plus vite.
+
+### Message en
+New app versions are announced right away, without waiting for the lessons to finish downloading. “Check for updates” now tells you clearly whether you have the latest version, whether the server is unreachable, or which version is available. Lessons also download faster.
 
 ## [0.3.33] — 2026-11-03
 
