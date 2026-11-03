@@ -104,7 +104,8 @@
 ## 5. Publication
 ### Jalon 0.4.0 — « prête pour de vrais élèves » (proposition, à valider par Antsa)
 Le contenu (modules 0 à 23) et le moteur sont complets ; la 0.4.0 marque le passage du développement à l'**usage réel**. Elle sort quand **toutes** ces cases sont cochées :
-- [x] APK testé sur appareil réel, téléphone et tablette (Antsa, confirmé le 3 nov. 2026) — Xiaomi Pad 7 et Samsung S20+ : installation, hors ligne, Python (Pyodide), mise à jour 0.3.x → 0.4.0 en gardant la progression *(Antsa)*
+- [x] APK testé sur appareil réel, téléphone et tablette (Antsa, confirmé le 3 nov. 2026) — Xiaomi Pad 7 et Samsung S20+
+- [ ] Mise à jour 0.3.x → 0.4.0 en gardant la progression : à vérifier au moment de la 0.4.0 *(Antsa)*
 - [ ] AppImage testée sur Linux Mint et EndeavourOS *(Antsa)*
 - [ ] Service worker réel : réseau coupé puis rechargement dans Chrome *(Antsa ou Claude avec un vrai Chrome)*
 - [ ] `release-keys/` sauvegardées hors de la machine *(Antsa)*
