@@ -165,3 +165,8 @@
 
 - **Fait** : récapitulatif « Ma semaine » local (D-043) ; confiance facultative sur les QCM avec retour d'hypercorrection (D-043) ; défis ★★ facultatifs hors score, hors révisions et hors durée (D-044), 13 défis dans les modules 2 à 9, solutions exécutées ; 841 tests.
 - **Non vérifié** : appareils réels, lecteur d'écran, vrais élèves ; badge « Défi ★★ réussi » pas encore vu à l'écran.
+
+### Barre des références (2026-11-03, 0.3.32)
+
+- **Fait** : critères R1–R8 tirés de Linux Journey, TryHackMe et OpenClassrooms (D-045) ; 3 objectifs par niveau (fiche, ouverture, fin cochée) ; sorties Python exécutées à la construction (157 exemples sur 165) ; 59 codes au `\n` littéral, 8.1 et 1.1 corrigés ; 14 élisions corrigées ; consignes longues en étapes ; bouton « Niveau suivant » ; 850 tests.
+- **Vérifié à l'écran** : 2.1 et 2.2, sombre et clair, téléphone (375 px). **Non vérifié** : appareils réels, lecteur d'écran, vrais élèves.
