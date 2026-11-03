@@ -21,6 +21,8 @@ async function main() {
   theme.apply();
   await content.load();               // contenu embarqué, ou téléchargé s'il est plus récent
   mount(App, { target: document.getElementById('app')! });
+  const splash = document.getElementById('splash');   // écran de chargement d'index.html : fondu puis retrait
+  if (splash) { splash.style.opacity = '0'; setTimeout(() => splash.remove(), 450); }
 
   // Site : service worker (hors ligne + nouvelle version proposée). APK et AppImage : tout est dans le paquet, mise à jour via release.json.
   if (platform() === 'web') {

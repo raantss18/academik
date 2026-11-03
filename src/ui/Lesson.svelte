@@ -228,7 +228,12 @@
       {/if}
     </footer>
   {:else}
-    <section class="card end">
+    <section class="card end" class:rapport={!level.review}>
+      {#if !level.review}
+        <!-- Rapport de mission (refonte immersive) : même papier que le dossier ouvert sur la carte, tampon du résultat. -->
+        <p class="onglet">{i18n.lang === 'fr' ? 'Rapport de mission' : 'Mission report'}</p>
+        <span class="tampon" class:echec={score + 1e-9 < UNLOCK_THRESHOLD} aria-hidden="true">{score + 1e-9 >= UNLOCK_THRESHOLD ? (i18n.lang === 'fr' ? 'Mission accomplie' : 'Mission cleared') : (i18n.lang === 'fr' ? 'À reprendre' : 'Try again')}</span>
+      {/if}
       <h1>{@html md(t(level.titre))}</h1>
       {#if level.review}
         <p class="big">{rightCount} / {total}</p>
@@ -290,4 +295,17 @@
   .prev { margin-right: auto; }
   .end { text-align: center; } .end .foot { justify-content: center; position: static; background: none; }
   .end h1 :global(p), .ia :global(p) { margin: 0; } .big { font-size: 3rem; font-weight: 800; margin: 0; } .off { opacity: .25; } .ia { background: var(--c-surface-2); border-radius: 16px; padding: 12px 16px; margin: 14px 0; text-align: left; }
+
+  /* ---- Rapport de mission : papier ivoire, encre sombre (refonte immersive) ---- */
+  .end.rapport { position: relative; margin-top: 18px; padding-top: 34px; color: #2b2418; border: 1px solid #cdb98c; border-radius: 8px;
+    background: repeating-linear-gradient(0deg, transparent 0 27px, rgb(120 96 60 / .07) 27px 28px), linear-gradient(160deg, #f6eed8, #e9dcba); box-shadow: 0 10px 30px rgb(0 0 0 / .35); }
+  .rapport .onglet { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); margin: 0; padding: 5px 18px; border-radius: 6px; background: linear-gradient(#f2b543, #d9902a); color: #3a2205; font-weight: 900; font-size: .8rem; letter-spacing: .8px; text-transform: uppercase; white-space: nowrap; box-shadow: 0 2px 6px rgb(0 0 0 / .3); }
+  .rapport .tampon { position: absolute; top: 40px; right: 10px; transform: rotate(-10deg); border: 3px solid currentColor; border-radius: 6px; padding: 2px 8px; color: #2f7d3a; font-weight: 900; font-size: .74rem; letter-spacing: 1px; text-transform: uppercase; opacity: .85; max-width: 110px; line-height: 1.15; }
+  .rapport .tampon.echec { color: #b3261e; }
+  .rapport h1 { color: #1f1a12; padding: 0 96px 0 0; text-align: left; } .rapport .big { color: #1f1a12; } .rapport .mon, .rapport p { color: #3b3020; }
+  .rapport .goals { background: rgb(255 255 255 / .4); border-color: #d8c69a; color: #2b2418; } .rapport .ia { background: rgb(255 255 255 / .45); border: 1px solid #d8c69a; color: #2b2418; }
+  .rapport :global(code) { background: rgb(80 60 30 / .1); color: #3b2c14; }
+  .rapport .stars { color: #d49a12; font-size: 1.6rem; letter-spacing: 4px; text-shadow: 0 1px 0 #8a5a12; } .rapport .stars .off { color: #b9a274; opacity: .5; }
+  .rapport .foot { flex-wrap: wrap; } .rapport .foot .btn { flex: 1 1 140px; }
+  .rapport .foot .btn:not(.primary) { background: rgb(255 255 255 / .6); color: #2b2418; border: 1px solid #cdb98c; }
 </style>

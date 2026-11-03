@@ -105,3 +105,8 @@ On reprend des **principes visuels**, aucune image.
   - **Difficulté** = règle fixe par tranche du parcours : modules 0–3 Découverte, 4–9 Intermédiaire, 10–17 Avancé, 18 et plus Expert ; un boss monte d'un cran.
 - **Carte** : repères en médaillons (anneau doré, ou de fer s'ils sont fermés), enseignes en bannières à queues échancrées, chemin
   principal lumineux dans les quartiers atteints. Emprises inchangées : le garde-fou E42 (rien ne se chevauche) reste valable.
+
+## Refonte immersive, étape 2 (3 nov. 2026)
+- **Ruban doré** dans l'en-tête (1re référence) : points et série réunis sur un ruban à queues, sur la ville comme dans la liste.
+- **Rapport de mission** en fin de leçon : même papier que le dossier, onglet, tampon « Mission accomplie » ou « À reprendre », étoiles dorées.
+- **Écran de chargement** (site et apps) : la nuit de la carte, le logo, un ruban doré animé (fixe si l'on demande moins d'animations).
