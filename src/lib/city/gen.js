@@ -615,17 +615,56 @@ function hull(Pp) {
   up.pop(); lo.pop(); return lo.concat(up);
 }
 function blob(x, y, rx, ry, z, R, n = 16, jit = .18) { const out = []; for (let i = 0; i < n; i++) { const a = i / n * 2 * Math.PI, k = 1 + (R() - .5) * 2 * jit; out.push([x + Math.cos(a) * rx * k, y + Math.sin(a) * ry * k, z]); } return out; }
+/**
+ * Pont entre deux îles (refonte : « des ponts fantaisistes et réalistes ») : un sur deux est suspendu (tablier de planches, rambardes de
+ * corde, poteaux, lanternes), l'autre en pierre à arches dont les piles plongent dans le vide. Le côté visible est celui le plus bas à l'écran.
+ */
+function pont(pts, d, allume) {
+  const n = pts.length, hw = .5, nor = pts.map((p, i) => { const a = pts[Math.max(0, i - 1)], b = pts[Math.min(n - 1, i + 1)], l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; return [-(b[1] - a[1]) / l, (b[0] - a[0]) / l]; });
+  const bord = (k, z = 0) => pts.map((p, i) => iso(p[0] + nor[i][0] * hw * k, p[1] + nor[i][1] * hw * k, z));
+  const A = bord(1), B = bord(-1), moy = e => e.reduce((s, p) => s + p[1], 0) / e.length, [avant, arriere] = moy(A) > moy(B) ? [A, B] : [B, A];
+  const ligne = (e, dy = 0) => e.map(q => [q[0], q[1] + dy].map(fx).join(',')).join(' '), tablier = A.concat(B.slice().reverse()).map(q => q.map(fx).join(',')).join(' ');
+  let s = `<polyline points="${ligne(pts.map(p => iso(p[0], p[1], 0)))}" fill="none" stroke="#fff4d6" stroke-opacity="${allume ? .1 : .04}" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if (d % 2) {
+    // pierre : flanc, arches et piles qui plongent dans le vide
+    s += `<polygon points="${ligne(avant)} ${ligne(avant.slice().reverse(), 22)}" fill="#5d594f"/>`;
+    for (let i = 3; i < n - 3; i += 6) { const p = avant[i], q = avant[Math.min(n - 1, i + 6)]; if (!q) break;
+      s += `<polygon points="${fx(p[0] - 7)},${fx(p[1] + 22)} ${fx(p[0] + 7)},${fx(p[1] + 22)} ${fx(p[0] + 5)},${fx(p[1] + 120)} ${fx(p[0] - 5)},${fx(p[1] + 120)}" fill="#4a463e"/><polygon points="${fx(p[0] - 7)},${fx(p[1] + 22)} ${fx(p[0] + 7)},${fx(p[1] + 22)} ${fx(p[0] + 5)},${fx(p[1] + 120)} ${fx(p[0] - 5)},${fx(p[1] + 120)}" fill="url(#ombre)"/>`
+        + `<path d="M${fx(p[0] + 7)} ${fx(p[1] + 22)}Q${fx((p[0] + q[0]) / 2)} ${fx((p[1] + q[1]) / 2 - 2)} ${fx(q[0] - 7)} ${fx(q[1] + 22)}" fill="none" stroke="#2a2822" stroke-width="5"/>`; }
+    s += `<polygon points="${tablier}" fill="#8a8577"/><polyline points="${ligne(arriere, -5)}" fill="none" stroke="#a8a294" stroke-width="5" stroke-dasharray="6 4"/><polyline points="${ligne(avant, -5)}" fill="none" stroke="#a8a294" stroke-width="5" stroke-dasharray="6 4"/>`;
+  } else {
+    // suspendu : tablier de planches, poteaux, rambardes de corde qui ploient
+    s += `<polygon points="${tablier}" fill="#6b4a2b"/>`;
+    for (let i = 0; i < n; i += 2) s += `<line x1="${fx(A[i][0])}" y1="${fx(A[i][1])}" x2="${fx(B[i][0])}" y2="${fx(B[i][1])}" stroke="#3e2a17" stroke-width="1.6"/>`;
+    s += `<polyline points="${ligne(avant, 6)}" fill="none" stroke="#3e2a17" stroke-width="2.4"/>`;
+    for (const e of [arriere, avant]) { const haut = e.map((q, i) => [q[0], q[1] - 16 + 6 * Math.sin(Math.PI * (i % 6) / 6)]);
+      for (let i = 0; i < n; i += 6) s += `<line x1="${fx(e[i][0])}" y1="${fx(e[i][1])}" x2="${fx(e[i][0])}" y2="${fx(e[i][1] - 19)}" stroke="#4a3320" stroke-width="2.6"/>`;
+      s += `<polyline points="${haut.map(q => q.map(fx).join(',')).join(' ')}" fill="none" stroke="#c9b38a" stroke-width="1.6"/>`; }
+  }
+  if (allume) for (let i = 6; i < n - 3; i += 12) { const q = avant[i]; s += `<circle cx="${fx(q[0])}" cy="${fx(q[1] - 24)}" r="13" fill="url(#halo)"/><circle cx="${fx(q[0])}" cy="${fx(q[1] - 24)}" r="2.8" fill="#ffcf80"/>`; }
+  return s;
+}
 function falaise(g, th, R, d) {
   const sc = outline(g, 1.07, 48).map(q => iso(q[0], q[1], 0)), n = sc.length;
   let L = 0, Rr = 0; sc.forEach((p, i) => { if (p[0] < sc[L][0]) L = i; if (p[0] > sc[Rr][0]) Rr = i; });
   const arc = i0 => { const out = []; for (let i = L; ; i = (i + i0 + n) % n) { out.push(sc[i]); if (i === Rr) break; } return out; };
   const a1 = arc(1), a2 = arc(-1), front = a1.reduce((s, p) => s + p[1], 0) / a1.length > a2.reduce((s, p) => s + p[1], 0) / a2.length ? a1 : a2;
-  const w = sc[Rr][0] - sc[L][0], DEP = w * rr(R, .42, .55), m = front.length - 1;
-  const bas = front.map((p, i) => { const t = i / m, k = Math.pow(Math.sin(Math.PI * t), .7), pic = i % 3 === 1 ? 1.18 : i % 3 === 2 ? .82 : 1; return [p[0] + (R() - .5) * 10, p[1] + 14 + DEP * k * pic * rr(R, .85, 1.1)]; });
-  const lueur = d % 2 ? '#c27dff' : '#ff9a3c', pts = front.concat(bas.reverse()).map(q => q.map(fx).join(',')).join(' ');
-  let s = `<polygon points="${pts}" fill="${C(shade(th.cliff, .8))}"/><polygon points="${pts}" fill="url(#ombre)"/>`;
-  for (let i = 2; i < m - 1; i += 3) { const p = front[i], q = bas[m - i]; s += `<line x1="${fx(p[0])}" y1="${fx(p[1] + 10)}" x2="${fx(p[0] + (q[0] - p[0]) * .2)}" y2="${fx(p[1] + (q[1] - p[1]) * .7)}" stroke="rgb(0 0 0 / .28)" stroke-width="2"/>`; }
-  s += `<polyline points="${front.map(q => q.map(fx).join(',')).join(' ')}" fill="none" stroke="${lueur}" stroke-opacity=".55" stroke-width="5" stroke-linejoin="round"/><polyline points="${front.map(q => [q[0], q[1] + 8].map(fx).join(',')).join(' ')}" fill="none" stroke="${lueur}" stroke-opacity=".18" stroke-width="12" stroke-linejoin="round"/>`;
+  const w = sc[Rr][0] - sc[L][0], DEP = Math.min(340, w * rr(R, .45, .58)), m = front.length - 1;
+  // Montagne renversée : la roche s'effile vers une pointe sous le centre de l'île (plus profonde au milieu, rentrée vers l'axe), avec des aiguilles.
+  const cx0 = (sc[L][0] + sc[Rr][0]) / 2;
+  const bas = front.map((p, i) => { const t = i / m, k = Math.pow(Math.sin(Math.PI * t), 1.5), pic = i % 3 === 1 ? 1.22 : i % 3 === 2 ? .8 : 1; return [p[0] + (cx0 - p[0]) * .38 * k + (R() - .5) * 12, p[1] + 10 + DEP * (.15 + .95 * k) * pic * rr(R, .85, 1.1)]; });
+  const lueur = d % 2 ? '#c27dff' : '#ff9a3c', pt = q => q.map(fx).join(',');
+  // Relief réaliste : facettes éclairées de la gauche (plus sombres vers la droite), puis l'ombre qui monte du vide, des strates et des racines.
+  let s = '';
+  for (let i = 0; i < m; i++) { const t = i / m, k = 1.02 - .4 * t + (R() - .5) * .12;
+    s += `<polygon points="${pt(front[i])} ${pt(front[i + 1])} ${pt(bas[i + 1])} ${pt(bas[i])}" fill="${C(shade(th.cliff, Math.max(.45, k)))}" stroke="${C(shade(th.cliff, Math.max(.45, k)))}" stroke-width=".6"/>`; }
+  const tout = front.concat(bas.slice().reverse()).map(pt).join(' ');
+  s += `<polygon points="${tout}" fill="url(#ombre)"/>`;
+  for (const k of [.18, .38, .6]) { const l = front.map((p, i) => [p[0] + (bas[i][0] - p[0]) * k, p[1] + (bas[i][1] - p[1]) * k + (R() - .5) * 5]);
+    s += `<polyline points="${l.map(pt).join(' ')}" fill="none" stroke="rgb(0 0 0 / .32)" stroke-width="2.2" stroke-linejoin="round"/><polyline points="${l.map(q => pt([q[0], q[1] + 3])).join(' ')}" fill="none" stroke="rgb(255 255 255 / .07)" stroke-width="1.4"/>`; }
+  for (let i = 2; i < m - 1; i += 3) { const p = front[i], q = bas[i]; s += `<line x1="${fx(p[0])}" y1="${fx(p[1] + 10)}" x2="${fx(p[0] + (q[0] - p[0]) * .2)}" y2="${fx(p[1] + (q[1] - p[1]) * .75)}" stroke="rgb(0 0 0 / .3)" stroke-width="2"/>`; }
+  for (let i = 1; i < m; i += 4) { const p = front[i], L2 = rr(R, 16, 42); s += `<path d="M${fx(p[0])} ${fx(p[1] + 4)}q${fx(rr(R, -6, 6))} ${fx(L2 * .5)} ${fx(rr(R, -4, 4))} ${fx(L2)}" fill="none" stroke="${C(shade(th.lip, .7))}" stroke-width="1.6" stroke-linecap="round"/>`; }
+  s += `<polyline points="${front.map(pt).join(' ')}" fill="none" stroke="${lueur}" stroke-opacity=".55" stroke-width="5" stroke-linejoin="round"/><polyline points="${front.map(q => pt([q[0], q[1] + 8])).join(' ')}" fill="none" stroke="${lueur}" stroke-opacity=".18" stroke-width="12" stroke-linejoin="round"/>`;
   return s;
 }
 const polyZ = (pts, fill, extra = '') => `<polygon points="${pts.map(P).join(' ')}" fill="${fill}"${extra}/>`;
@@ -640,11 +679,11 @@ const unit = (a, b) => { const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; re
 
 /** Centre, contour (rayon variable selon l'angle), entrée et sortie de chaque quartier. Même tirage → même panorama. */
 function layout(n, SEED) {
-  const R = rng(SEED * 53 + 11), ph = R() * 6.28, f = .75 + R() * .5, amp = 330 + R() * 150, lay = []; let sy = 0;
+  const R = rng(SEED * 53 + 11), ph = R() * 6.28, f = .75 + R() * .5, amp = 430 + R() * 190, lay = []; let sy = 0;   // îles agrandies (refonte : « des îles plus grandes »)
   for (let d = 0; d < n; d++) {
-    if (d) sy -= rr(R, 250, 380);
+    if (d) sy -= rr(R, 390, 520);
     const sx = Math.sin(d * f + ph) * amp + Math.sin(d * 2.3 + ph * 1.7) * amp * .35 + (R() - .5) * 160, [cx, cy] = toWorld(sx, sy);
-    const base = rr(R, 4.1, 4.9), p = [R() * 6.28, R() * 6.28, R() * 6.28], k = [rr(R, .1, .2), rr(R, .06, .12), rr(R, .04, .09)];
+    const base = rr(R, 6.0, 6.9), p = [R() * 6.28, R() * 6.28, R() * 6.28], k = [rr(R, .1, .2), rr(R, .06, .12), rr(R, .04, .09)];
     lay.push({ cx, cy, sx, sy, base, r: t => base * (1 + k[0] * Math.sin(2 * t + p[0]) + k[1] * Math.sin(3 * t + p[1]) + k[2] * Math.sin(5 * t + p[2])) });
   }
   const edge = (g, u, m = .96) => [g.cx + u[0] * g.r(Math.atan2(u[1], u[0])) * m, g.cy + u[1] * g.r(Math.atan2(u[1], u[0])) * m];
@@ -714,6 +753,16 @@ function buildDistrict(d, SEED, pinsOut, lay) {
 
   // ---- repères : un bâtiment unique par niveau, posé le long de la rue principale ; il s'allume avec le score du niveau
   const NL = D.levels.length, fr = D.levels.map((_, i) => .1 + .8 * i / Math.max(1, NL - 1));
+  // Chemin des leçons (refonte : « un chemin à suivre pour chaque cours, leçon ») : la route passe par une étape numérotée par niveau, dans l'ordre ;
+  // la partie déjà parcourue (jusqu'au dernier niveau réussi) brille en or, la suite reste sombre.
+  let dernier = -1; D.levels.forEach((l, i) => { if (l.st === 'done') dernier = i; });
+  const troncon = (t0, t1) => { const pts = []; for (let k = 0; k <= 24; k++) { const q = M.at(t0 + (t1 - t0) * k / 24); pts.push(P([q[0], q[1], z])); } return pts.join(' '); };
+  let etapes = `<polyline points="${troncon(0, 1)}" fill="none" stroke="#000" stroke-opacity=".25" stroke-width="7" stroke-linecap="round"/>`;
+  const parcouru = dernier >= 0 ? Math.min(1, fr[dernier] + (dernier + 1 < NL ? (fr[dernier + 1] - fr[dernier]) * .5 : .1)) : 0;
+  if (dernier >= 0 && reached) etapes += `<polyline points="${troncon(0, parcouru)}" fill="none" stroke="#ffd36b" stroke-opacity=".35" stroke-width="14" stroke-linecap="round"/><polyline points="${troncon(0, parcouru)}" fill="none" stroke="#ffe7a3" stroke-width="3.2" stroke-linecap="round"/>`;
+  D.levels.forEach((l, i) => { const q = M.at(fr[i]), [a, b] = iso(q[0], q[1], z), ok = l.st === 'done', ici = l.st === 'current';
+    etapes += `<ellipse cx="${fx(a)}" cy="${fx(b)}" rx="21" ry="10.5" fill="${ok ? '#5a4a22' : ici ? '#7a1f18' : '#2a2f40'}" stroke="${ok ? '#ffd36b' : ici ? '#ff6b5e' : '#7d8399'}" stroke-width="2"/>`
+      + `<text x="${fx(a)}" y="${fx(b + 4.4)}" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="12.5" fill="${ok ? '#ffe7a3' : '#e8e0c8'}">${l.boss ? '♛' : esc(l.id)}</text>`; });
   for (let i = 0; i < NL; i++) {
     const Lv = D.levels[i], boss = !!Lv.boss, kind = monumentKind(D.theme, i, boss), sc = boss && kind !== 'rova' ? 1.4 : 1, sz = K[kind].size(R), w = sz[0] * sc, dd = sz[1] * sc, st = Lv.st; let spot = null;
     for (let pass = 0; pass < 2 && !spot; pass++) for (let tr = 0; tr < 70 && !spot; tr++) {
@@ -733,7 +782,7 @@ function buildDistrict(d, SEED, pinsOut, lay) {
     if (boss) ground += polyZ(blob(c.x, c.y, Math.max(w, dd) * .95 + .5, Math.max(w, dd) * .8 + .4, z, R, 18, .08), C(mix(th.road, '#ffffff', .12)), ' opacity=".7"');
   }
   // ---- le reste du quartier : bâtiments tirés au hasard, orientés le long des rues, plus éclairés quand le quartier avance
-  let n = 0, att = 0; const count = Math.round(th.count * .75);
+  let n = 0, att = 0; const count = Math.round(th.count * 1.1);   // plus de bâtiments sur des îles plus grandes
   while (n < count && att < count * 40) {
     att++; const kind = wpick(R, { ...th.kinds, spire: 1.3 }), sz = K[kind].size(R), [x, y] = pt(.4), ri = roadInfo(x, y);
     const ang = R() < th.align ? ri.ang + (R() < .3 ? Math.PI / 2 : 0) + rr(R, -.07, .07) : R() * Math.PI;
@@ -782,7 +831,7 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   const signAt2 = (ga, gb) => signAt(ga, gb).replace(/<\/g>$/, `<rect x="${fx((tw - 12) / 2 - pw / 2)}" y="-31" width="${fx(pw)}" height="15" rx="3" fill="#1c1508" stroke="#d8b66a" stroke-width="1"/><text x="${fx((tw - 12) / 2)}" y="-20" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="10" fill="#f0cf7c">${plaque}</text></g>`);
   const sign = { spots: signSpots, tw, at: signAt2 };
   items.sort((a, b) => a.k - b.k);
-  return { pad: ground, road: roadSvg, shadows: shadows.join(''), items, sign };
+  return { pad: ground, road: roadSvg + etapes, shadows: shadows.join(''), items, sign };   // étapes au-dessus de la route
 }
 
 /** Même règle que `banniere` (index.ts, E50) : fond assombri à 82 % et texte blanc, sinon couleur d'origine et texte sombre (AA ≥ 4,5:1). */
@@ -808,11 +857,10 @@ export function renderCity(districts, opts = {}) {
   const R2 = rng(SEED * 17 + 3);
   for (let d = 0; d < n; d++) roadPts.push(toScreen(lay[d].E[0], lay[d].E[1]), toScreen(lay[d].X[0], lay[d].X[1]));
   for (let d = 0; d < n - 1; d++) {
-    const th = THEMES[DATA[d].theme % THEMES.length], pts = spline(wiggle(lay[d].X, lay[lay.length > d + 1 ? d + 1 : d].E, R2, 2.4, 2), 9), pl = pts.map(q => P([q[0], q[1], 0])).join(' ');
-    link += `<polyline points="${pl}" fill="none" stroke="#fff4d6" stroke-opacity=".12" stroke-width="40" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pl}" fill="none" stroke="#cbbf9a" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pl}" fill="none" stroke="#f6efd9" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>`   // route blanche lumineuse (carte fantastique)
-      + `<polyline points="${pl}" fill="none" stroke="${th.roadHi}" stroke-width="1.2" stroke-dasharray="1 6" opacity=".6" stroke-linecap="round"/>`;
+    const pts = spline(wiggle(lay[d].X, lay[lay.length > d + 1 ? d + 1 : d].E, R2, .8, 2), 9);
+    link += pont(pts, d, DATA[d + 1].reached);   // pont fantastique entre deux îles (suspendu ou de pierre)
     const M2 = measure(pts), reachedLink = DATA[d + 1].reached;
-    for (let i = 0; i < 9; i++) { const p = M2.at(rr(R2, .08, .92)), side = R2() < .5 ? 1 : -1, off = rr(R2, .9, 2.6), x = p[0] - p[3] * side * off, y = p[1] + p[2] * side * off; country.push({ k: x + y, s: tree(wpick(R2, THEMES[DATA[R2() < .5 ? d : d + 1].theme % THEMES.length].trees), x, y, 0, R2, { leaf: ['#2f6b3a', '#3f8a4b', '#5aa55a'] }) }); }
+    for (let i = 0; i < 4; i++) { const p = M2.at(rr(R2, .08, .92)), side = R2() < .5 ? 1 : -1, off = rr(R2, .9, 2.6), x = p[0] - p[3] * side * off, y = p[1] + p[2] * side * off; country.push({ k: x + y, s: tree(wpick(R2, THEMES[DATA[R2() < .5 ? d : d + 1].theme % THEMES.length].trees), x, y, 0, R2, { leaf: ['#2f6b3a', '#3f8a4b', '#5aa55a'] }) }); }
     if (reachedLink) for (let i = 0; i < 3; i++) { const p = M2.at((i + 1) / 4), [a, b] = iso(p[0], p[1], 0); link += `<line x1="${fx(a)}" y1="${fx(b)}" x2="${fx(a)}" y2="${fx(b - 15)}" stroke="#555b6e" stroke-width="1.4"/><circle cx="${fx(a)}" cy="${fx(b - 16)}" r="9" fill="url(#halo)"/><circle cx="${fx(a)}" cy="${fx(b - 16)}" r="2.2" fill="#ffe7a3"/>`; }
   }
   // ---- terrain continu : la terre suit le chemin ; collines et une rivière qui le longe
