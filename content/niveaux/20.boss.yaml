@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana ne livre que ce qu’elle peut prouver, mesuré, expliqué et reproductible.
   en: Kintana ships only what she can prove, measured, explained and reproducible.
+objectifs:
+  - { fr: 'juger l''exactitude sur la borne basse', en: 'judge accuracy on the lower bound' }
+  - { fr: 'vérifier l''équité par groupe', en: 'check fairness by group' }
+  - { fr: 'décider de livrer, avec raisons', en: 'decide to ship, with reasons' }
 sources:
 - titre: Mitchell et al. — Model Cards for Model Reporting (2019)
   url: https://arxiv.org/abs/1810.03993

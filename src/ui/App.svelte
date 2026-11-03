@@ -16,6 +16,8 @@
   let revLevel = $state<Level | null>(null);
   async function startReview() { const cards = await dueCards(progress.events, content.levels); if (!cards.length) return; revLevel = reviewLevel(cards, { fr: ui('review_title'), en: ui('review_title') }); run++; enter({ k: 'review' }); }
   let run = $state(0);
+  /** Niveau suivant dans le parcours, s'il a du contenu (bouton « Niveau suivant » en fin de leçon, R8). */
+  const nextOf = (id: string) => { const o = content.order, n = o[o.indexOf(id) + 1]; return n && content.levels[n] ? n : undefined; };
   let view = $state<View>({ k: 'map' });
   let lesson: Lesson | undefined = $state(), map: Map | undefined = $state();
 
@@ -52,7 +54,7 @@
 <svelte:window onpopstate={onpop} />
 
 {#if view.k === 'lesson' && content.levels[view.id]}
-  {#key `${view.id}/${run}`}<Lesson bind:this={lesson} level={content.levels[view.id]} startAt={resume.get(view.id, content.levels[view.id].cartes.length)} onexit={leave} onreplay={() => run++} />{/key}
+  {#key `${view.id}/${run}`}<Lesson bind:this={lesson} level={content.levels[view.id]} startAt={resume.get(view.id, content.levels[view.id].cartes.length)} onexit={leave} onreplay={() => run++} nextLevel={nextOf(view.id)} onnext={id => { view = { k: 'lesson', id }; }} />{/key}
 {:else if view.k === 'review' && revLevel}
   {#key `review/${run}`}<Lesson bind:this={lesson} level={revLevel} onexit={leave} onreplay={() => run++} />{/key}
 {:else if view.k === 'rules'}

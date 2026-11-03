@@ -3,6 +3,10 @@ module: 3
 duree_min: 14
 titre: { fr: 'L’index inversé', en: 'The inverted index' }
 ia: { fr: 'Kintana sait retrouver un document vite : index inversé, tri, recherche.', en: 'Kintana can find a document quickly: inverted indexing, sorting, and searching.' }
+objectifs:
+  - { fr: 'construire un index inversé', en: 'build an inverted index' }
+  - { fr: 'interroger le corpus avec plusieurs mots', en: 'query the corpus with several words' }
+  - { fr: 'estimer le coût de chaque étape', en: 'estimate the cost of each step' }
 sources:
   - titre: Python — Data structures
     url: https://docs.python.org/3/tutorial/datastructures.html

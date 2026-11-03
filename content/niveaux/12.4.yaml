@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana sait où se trouve chaque mot et s’interdit de lire la suite du texte.
   en: Kintana knows where each word sits and forbids herself from reading what comes next.
+objectifs:
+  - { fr: 'ajouter une information de position', en: 'add position information' }
+  - { fr: 'masquer le futur', en: 'mask the future' }
+  - { fr: 'expliquer pourquoi l''attention ignore l''ordre', en: 'explain why attention ignores order' }
 sources:
 - titre: Vaswani et al. — Attention Is All You Need (sections 3.2.3 et 3.5)
   url: https://arxiv.org/abs/1706.03762

@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana protège ses secrets avec des briques standard, jamais avec des inventions maison.
   en: Kintana protects her secrets with standard building blocks, never with homemade inventions.
+objectifs:
+  - { fr: 'calculer une empreinte SHA-256', en: 'compute a SHA-256 digest' }
+  - { fr: 'signer un message avec HMAC', en: 'sign a message with HMAC' }
+  - { fr: 'stocker un mot de passe avec un sel', en: 'store a password with a salt' }
 sources:
 - titre: 'NIST — FIPS 203 : Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM)'
   url: https://csrc.nist.gov/pubs/fips/203/final
@@ -175,7 +179,7 @@ cartes:
     fr: '`signer` : une ligne. `verifier` : `hmac.compare_digest(signer(cle, message), signature)`.'
     en: '`signer`: one line. `verifier`: `hmac.compare_digest(signer(cle, message), signature)`.'
   explication:
-    fr: 'Comparer avec `==` pourrait révéler, par de infimes différences de temps, combien de caractères sont corrects : `compare_digest` évite cette fuite.'
+    fr: 'Comparer avec `==` pourrait révéler, par d’infimes différences de temps, combien de caractères sont corrects : `compare_digest` évite cette fuite.'
     en: 'Comparing with `==` could reveal, through tiny differences in timing, how many characters are correct: `compare_digest` avoids this leak.'
 - id: c7
   type: idee

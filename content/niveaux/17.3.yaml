@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana sépare ce qui vient du marché de ce qui est propre à l’actif.
   en: Kintana separates what comes from the market from what is specific to the asset.
+objectifs:
+  - { fr: 'calculer un bêta', en: 'compute a beta' }
+  - { fr: 'lire un alpha', en: 'read an alpha' }
+  - { fr: 'appliquer le CAPM', en: 'apply the CAPM' }
 sources:
 - titre: MIT OpenCourseWare — 15.401 Finance Theory I (CAPM)
   url: https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/

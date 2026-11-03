@@ -3,6 +3,10 @@ module: 0
 duree_min: 11
 titre: { fr: 'Récurrence', en: 'Mathematical induction' }
 ia: { fr: 'Kintana justifie une règle qui reste vraie à chaque étape de traitement.', en: 'Kintana justifies a rule that remains true at every processing step.' }
+objectifs:
+  - { fr: 'vérifier l''initialisation d''une récurrence', en: 'check the base case of an induction' }
+  - { fr: 'écrire l''hérédité, de n à n + 1', en: 'write the inductive step, from n to n + 1' }
+  - { fr: 'prouver une formule de somme', en: 'prove a summation formula' }
 sources:
   - { titre: 'COMIMa — Récurrence, chapitre 1 (cours et recueil)', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
   - { titre: 'Oscar Levin — Induction', url: 'https://discrete.openmathbooks.org/dmoi3/sec_seq-induction.html', licence: 'CC BY-SA 4.0' }

@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana distingue une vraie découverte d’un hasard heureux, et le dit dans son rapport.
   en: Kintana tells a real discovery from a lucky chance, and says so in her report.
+objectifs:
+  - { fr: 'calculer une statistique t', en: 'compute a t statistic' }
+  - { fr: 'corriger le seuil pour N essais', en: 'correct the threshold for N trials' }
+  - { fr: 'rédiger un rapport qui rejette', en: 'write a report that rejects' }
 sources:
 - titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
   url: https://doi.org/10.3905/jpm.2014.40.5.094

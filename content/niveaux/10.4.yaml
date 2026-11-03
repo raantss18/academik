@@ -4,6 +4,10 @@ module: 10
 duree_min: 19
 titre: { fr: 'Prévoir : le modèle AR(1)', en: 'Forecasting: the AR(1) model' }
 ia: { fr: 'Kintana prévoit la valeur suivante d’une série stable en s’appuyant sur la valeur actuelle.', en: 'Kintana forecasts the next value of a stable series from the current value.' }
+objectifs:
+  - { fr: 'écrire le modèle AR(1)', en: 'write the AR(1) model' }
+  - { fr: 'estimer $\varphi$ sur une série centrée', en: 'estimate $\varphi$ on a centred series' }
+  - { fr: 'prévoir h pas en avant', en: 'forecast h steps ahead' }
 sources:
   - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (modèles autorégressifs)', url: 'https://otexts.com/fpp3/AR.html', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
   - { titre: 'Stanford CS229 — Machine Learning (moindres carrés)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
@@ -44,7 +48,7 @@ cartes:
     etapes:
       - { code: 'x = [4, 2, 1, 0.5]', fr: 'Une série qui se divise par deux à chaque pas.', en: 'A series that is halved at each step.' }
       - { code: 'num = sum(x[t] * x[t - 1] for t in range(1, len(x)))', fr: 'Somme des produits « valeur × valeur précédente ».', en: 'Sum of the products “value × previous value”.' }
-      - { code: 'den = sum(x[t - 1] ** 2 for t in range(1, len(x)))\nprint(num / den)', fr: 'Somme des carrés des valeurs précédentes. On affiche `0.5`.', en: 'Sum of the squares of the previous values. We display `0.5`.' }
+      - { code: "den = sum(x[t - 1] ** 2 for t in range(1, len(x)))\nprint(num / den)", fr: 'Somme des carrés des valeurs précédentes. On affiche `0.5`.', en: 'Sum of the squares of the previous values. We display `0.5`.' }
     verif: |-
       x = [4, 2, 1, 0.5]
       num = sum(x[t] * x[t - 1] for t in range(1, len(x)))

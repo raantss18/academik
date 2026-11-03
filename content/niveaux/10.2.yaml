@@ -4,6 +4,10 @@ module: 10
 duree_min: 19
 titre: { fr: 'Stationnarité', en: 'Stationarity' }
 ia: { fr: 'Kintana reconnaît une série dont le comportement reste stable, et sait différencier une série qui dérive.', en: 'Kintana recognises a series whose behaviour stays stable, and knows how to difference a series that drifts.' }
+objectifs:
+  - { fr: 'reconnaître une série stationnaire', en: 'recognise a stationary series' }
+  - { fr: 'comparer les deux moitiés d''une série', en: 'compare the two halves of a series' }
+  - { fr: 'différencier une marche aléatoire', en: 'difference a random walk' }
 sources:
   - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (stationnarité et différenciation)', url: 'https://otexts.com/fpp3/stationarity.html', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
   - { titre: 'Python — module statistics', url: 'https://docs.python.org/3/library/statistics.html', licence: 'PSF License (documentation officielle, citée)' }
@@ -35,8 +39,8 @@ cartes:
     titre: { fr: 'Comparer les deux moitiés', en: 'Comparing the two halves' }
     lang: python
     etapes:
-      - { code: 'serie = [1, 2, 3, 4, 5, 6, 7, 8]\nh = len(serie) // 2', fr: 'Une série qui monte ; `h` marque le milieu.', en: 'A rising series; `h` marks the middle.' }
-      - { code: 'm1 = sum(serie[:h]) / h\nm2 = sum(serie[h:]) / (len(serie) - h)', fr: 'Moyenne de la première moitié, puis de la seconde.', en: 'Mean of the first half, then of the second.' }
+      - { code: "serie = [1, 2, 3, 4, 5, 6, 7, 8]\nh = len(serie) // 2", fr: 'Une série qui monte ; `h` marque le milieu.', en: 'A rising series; `h` marks the middle.' }
+      - { code: "m1 = sum(serie[:h]) / h\nm2 = sum(serie[h:]) / (len(serie) - h)", fr: 'Moyenne de la première moitié, puis de la seconde.', en: 'Mean of the first half, then of the second.' }
       - { code: 'print(m1, m2)', fr: 'On affiche `2.5 6.5` : les deux moitiés n’ont pas la même moyenne, la série n’est pas stationnaire.', en: 'We display `2.5 6.5`: the two halves do not have the same mean, the series is not stationary.' }
     verif: |-
       serie = [1, 2, 3, 4, 5, 6, 7, 8]

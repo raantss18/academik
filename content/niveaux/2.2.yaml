@@ -4,6 +4,10 @@ module: 2
 duree_min: 18
 titre: { fr: 'Décider', en: 'Deciding' }
 ia: { fr: 'Kintana sait choisir entre plusieurs réponses selon une condition.', en: 'Kintana can choose between several answers depending on a condition.' }
+objectifs:
+  - { fr: 'décider avec `if`, `elif` et `else`', en: 'decide with `if`, `elif` and `else`' }
+  - { fr: 'lire l''indentation d''un bloc', en: 'read the indentation of a block' }
+  - { fr: 'combiner des conditions avec `and` et `or`', en: 'combine conditions with `and` and `or`' }
 sources:
   - titre: Python — Introduction, opérateur reste
     url: https://docs.python.org/3/tutorial/introduction.html
@@ -16,7 +20,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       age = 15
@@ -218,7 +222,7 @@ cartes:
     type: qcm
     note: { kind: exercise, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       note = 14

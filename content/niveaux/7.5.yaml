@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana corrige ses seuils quand elle teste beaucoup d’idées à la fois."
   en: "Kintana corrects her thresholds when she tests many ideas at once."
+objectifs:
+  - { fr: 'compter tous les tests d''une famille', en: 'count every test in a family' }
+  - { fr: 'corriger le seuil de Bonferroni', en: 'apply the Bonferroni correction' }
+  - { fr: 'chercher une confirmation indépendante', en: 'seek an independent confirmation' }
 sources:
   - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
     url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/

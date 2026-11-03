@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana approche une courbe en suivant sa pente pas à pas.
   en: Kintana approximates a curve by following its slope step by step.
+objectifs:
+  - { fr: 'écrire une équation différentielle', en: 'write a differential equation' }
+  - { fr: 'faire des pas d''Euler', en: 'take Euler steps' }
+  - { fr: 'reconnaître l''instabilité', en: 'recognise instability' }
 sources:
 - titre: MIT OpenCourseWare — 18.03 Differential Equations (méthodes numériques)
   url: https://ocw.mit.edu/courses/18-03-differential-equations-spring-2010/

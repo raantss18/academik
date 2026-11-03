@@ -3,6 +3,10 @@ module: 5
 duree_min: 9
 titre: { fr: 'Descente de gradient', en: 'Gradient descent' }
 ia: { fr: 'Kintana sait apprendre ses propres paramètres par descente de gradient.', en: 'Kintana can learn its own parameters through gradient descent.' }
+objectifs:
+  - { fr: 'faire un pas de descente de gradient', en: 'take a gradient descent step' }
+  - { fr: 'choisir un pas adapté', en: 'choose a suitable step size' }
+  - { fr: 'suivre la baisse de la perte', en: 'track the decrease of the loss' }
 sources:
   - { titre: 'Boyd et Vandenberghe — Convex Optimization, chapitre 9', url: 'https://web.stanford.edu/~boyd/cvxbook/', licence: 'Copyright Cambridge University Press ; référence en lien seulement, aucun extrait repris' }
 cartes:

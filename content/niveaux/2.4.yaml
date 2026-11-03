@@ -4,6 +4,10 @@ module: 2
 duree_min: 16
 titre: { fr: 'Fonctions', en: 'Functions' }
 ia: { fr: 'Kintana range ses gestes dans des fonctions qu’elle peut réutiliser.', en: 'Kintana packs her moves into functions she can reuse.' }
+objectifs:
+  - { fr: 'définir et appeler une fonction', en: 'define and call a function' }
+  - { fr: 'distinguer `return` et `print`', en: 'tell `return` from `print`' }
+  - { fr: 'comprendre les variables locales', en: 'understand local variables' }
 sources:
   - { titre: 'Python — Tutoriel, définir des fonctions', url: 'https://docs.python.org/3/tutorial/controlflow.html#defining-functions', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'Python — Tutoriel, portées et espaces de noms', url: 'https://docs.python.org/3/tutorial/classes.html#python-scopes-and-namespaces', licence: 'PSF License (documentation officielle, citée)' }
@@ -13,7 +17,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       def double(x):

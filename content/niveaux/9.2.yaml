@@ -4,6 +4,10 @@ module: 9
 duree_min: 16
 titre: { fr: 'Biais et variance', en: 'Bias and variance' }
 ia: { fr: 'Kintana règle la souplesse de son modèle : ni trop rigide pour comprendre, ni trop souple pour ne pas apprendre par cœur.', en: 'Kintana tunes the flexibility of her model: not too rigid to understand, not too flexible to avoid memorising.' }
+objectifs:
+  - { fr: 'distinguer biais et variance', en: 'tell bias from variance' }
+  - { fr: 'prédire avec les k plus proches voisins', en: 'predict with the k nearest neighbours' }
+  - { fr: 'régler la souplesse sur une validation', en: 'tune flexibility on a validation set' }
 sources:
   - { titre: 'Stanford CS229 — Machine Learning (biais et variance)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
   - { titre: 'scikit-learn — Underfitting vs. Overfitting', url: 'https://scikit-learn.org/stable/auto_examples/model_selection/plot_underfitting_overfitting.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
@@ -47,8 +51,8 @@ cartes:
     titre: { fr: 'Prédire avec les voisins', en: 'Predicting with neighbours' }
     lang: python
     etapes:
-      - { code: 'xs = [0, 1, 2, 3, 4, 5, 6, 7]\nys = [0.5, 2.5, 3.5, 6.5, 7.5, 10.5, 11.5, 14.5]', fr: 'Des exemples proches de la droite $y=2x$, avec un peu de bruit.', en: 'Examples close to the line $y=2x$, with a little noise.' }
-      - { code: 'def knn(x, k):\n    idx = sorted(range(len(xs)), key=lambda i: (abs(xs[i] - x), xs[i]))[:k]\n    return sum(ys[i] for i in idx) / k', fr: 'On trie les exemples par distance à `x`, on garde les `k` premiers et on moyenne leurs `y`.', en: 'We sort the examples by distance to `x`, keep the first `k` and average their `y`.' }
+      - { code: "xs = [0, 1, 2, 3, 4, 5, 6, 7]\nys = [0.5, 2.5, 3.5, 6.5, 7.5, 10.5, 11.5, 14.5]", fr: 'Des exemples proches de la droite $y=2x$, avec un peu de bruit.', en: 'Examples close to the line $y=2x$, with a little noise.' }
+      - { code: "def knn(x, k):\n    idx = sorted(range(len(xs)), key=lambda i: (abs(xs[i] - x), xs[i]))[:k]\n    return sum(ys[i] for i in idx) / k", fr: 'On trie les exemples par distance à `x`, on garde les `k` premiers et on moyenne leurs `y`.', en: 'We sort the examples by distance to `x`, keep the first `k` and average their `y`.' }
       - { code: 'print(knn(3.2, 1), knn(3.2, 3))', fr: 'Avec $k=1$ : `6.5` (le point en 3). Avec $k=3$ : `5.833…`, la moyenne de 6,5, 7,5 et 3,5.', en: 'With $k=1$: `6.5` (the point at 3). With $k=3$: `5.833…`, the mean of 6.5, 7.5 and 3.5.' }
     verif: |-
       xs = [0, 1, 2, 3, 4, 5, 6, 7]

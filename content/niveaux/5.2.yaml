@@ -3,6 +3,10 @@ module: 5
 duree_min: 9
 titre: { fr: 'Dérivées', en: 'Derivatives' }
 ia: { fr: 'Kintana mesure comment son erreur varie quand un paramètre change.', en: 'Kintana measures how its error varies when a parameter changes.' }
+objectifs:
+  - { fr: 'calculer une dérivée comme pente limite', en: 'compute a derivative as a limiting slope' }
+  - { fr: 'dériver une erreur quadratique', en: 'differentiate a squared error' }
+  - { fr: 'lire le signe de la dérivée', en: 'read the sign of the derivative' }
 sources:
   - { titre: 'MIT OCW — 18.01SC, Differentiation', url: 'https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/pages/1.-differentiation/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
 cartes:

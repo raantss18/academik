@@ -4,6 +4,10 @@ module: 8
 duree_min: 16
 titre: { fr: 'Nettoyer', en: 'Cleaning' }
 ia: { fr: 'Kintana repère les valeurs manquantes, les doublons et les valeurs impossibles avant de calculer quoi que ce soit.', en: 'Kintana spots missing values, duplicates and impossible values before computing anything.' }
+objectifs:
+  - { fr: 'repérer les valeurs invalides', en: 'spot invalid values' }
+  - { fr: 'traiter les manquants par une règle explicite', en: 'handle missing values with an explicit rule' }
+  - { fr: 'retirer les doublons en gardant l''ordre', en: 'remove duplicates while keeping the order' }
 sources:
   - { titre: 'Python — méthodes de chaînes (strip, isdigit)', url: 'https://docs.python.org/3/library/stdtypes.html#string-methods', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'scikit-learn — Imputation of missing values', url: 'https://scikit-learn.org/stable/modules/impute.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
@@ -13,7 +17,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       print(" ana  ".strip().title())
@@ -51,8 +55,8 @@ cartes:
     etapes:
       - { code: 'valeurs = ["15", " 16", "", "abc", "-3", "17"]', fr: 'Une colonne d’âges en texte, avec des défauts.', en: 'A column of ages as text, with flaws.' }
       - { code: 'propres = []', fr: 'On prépare la liste des valeurs propres.', en: 'We prepare the list of clean values.' }
-      - { code: 'for v in valeurs:\n    v = v.strip()', fr: 'Pour chaque valeur, on retire d’abord les espaces : `" 16"` devient `"16"`.', en: 'For each value, we first remove spaces: `" 16"` becomes `"16"`.' }
-      - { code: '    if v.isdigit() and 0 <= int(v) <= 120:\n        propres.append(int(v))', fr: '`isdigit()` n’accepte que des chiffres : `""`, `"abc"` et `"-3"` sont écartés. On borne aussi l’âge entre 0 et 120.', en: '`isdigit()` accepts only digits: `""`, `"abc"` and `"-3"` are rejected. We also bound the age between 0 and 120.' }
+      - { code: "for v in valeurs:\n    v = v.strip()", fr: 'Pour chaque valeur, on retire d’abord les espaces : `" 16"` devient `"16"`.', en: 'For each value, we first remove spaces: `" 16"` becomes `"16"`.' }
+      - { code: "    if v.isdigit() and 0 <= int(v) <= 120:\n        propres.append(int(v))", fr: '`isdigit()` n’accepte que des chiffres : `""`, `"abc"` et `"-3"` sont écartés. On borne aussi l’âge entre 0 et 120.', en: '`isdigit()` accepts only digits: `""`, `"abc"` and `"-3"` are rejected. We also bound the age between 0 and 120.' }
       - { code: 'print(propres)', fr: 'On affiche `[15, 16, 17]`.', en: 'We display `[15, 16, 17]`.' }
     verif: |-
       valeurs = ["15", " 16", "", "abc", "-3", "17"]

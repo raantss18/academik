@@ -4,6 +4,10 @@ module: 2
 duree_min: 22
 titre: { fr: 'Le chatbot à règles', en: 'The rule-based chatbot' }
 ia: { fr: 'Kintana répond à des messages simples grâce à un dictionnaire de règles, et refuse les entrées mal formées.', en: 'Kintana answers simple messages with a dictionary of rules, and rejects malformed input.' }
+objectifs:
+  - { fr: 'normaliser une entrée avec `strip` et `lower`', en: 'normalise an input with `strip` and `lower`' }
+  - { fr: 'valider avant de répondre', en: 'validate before answering' }
+  - { fr: 'répondre avec un dictionnaire de règles', en: 'answer with a dictionary of rules' }
 sources:
   - { titre: 'Python — Tutoriel, méthodes de chaînes', url: 'https://docs.python.org/3/library/stdtypes.html#string-methods', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'Python — Tutoriel, dictionnaires', url: 'https://docs.python.org/3/tutorial/datastructures.html#dictionaries', licence: 'PSF License (documentation officielle, citée)' }
@@ -14,7 +18,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       regles = {"merci": "de rien"}

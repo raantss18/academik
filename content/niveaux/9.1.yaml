@@ -4,6 +4,10 @@ module: 9
 duree_min: 19
 titre: { fr: 'Ajuster une droite', en: 'Fitting a line' }
 ia: { fr: 'Kintana apprend ses premiers réglages : la droite qui passe au plus près d’un nuage de points.', en: 'Kintana learns her first settings: the line that passes closest to a cloud of points.' }
+objectifs:
+  - { fr: 'mesurer l''erreur d''une droite', en: 'measure the error of a line' }
+  - { fr: 'ajuster une droite par descente de gradient', en: 'fit a line by gradient descent' }
+  - { fr: 'lire un ajustement sans y voir une cause', en: 'read a fit without seeing a cause' }
 sources:
   - { titre: 'Stanford CS229 — Machine Learning (notes : régression linéaire)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
   - { titre: 'MIT 6.036 — Introduction to Machine Learning', url: 'https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/about', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
@@ -36,8 +40,8 @@ cartes:
     titre: { fr: 'Mesurer l’erreur d’une droite', en: 'Measuring the error of a line' }
     lang: python
     etapes:
-      - { code: 'xs = [0, 1, 2, 3]\nys = [1, 3, 5, 7]', fr: 'Quatre exemples : l’entrée `x` et la valeur vraie `y`.', en: 'Four examples: the input `x` and the true value `y`.' }
-      - { code: 'def eqm(w, b):\n    return sum((w * x + b - y) ** 2 for x, y in zip(xs, ys)) / len(xs)', fr: 'L’erreur quadratique moyenne d’une droite : on moyenne les carrés des écarts.', en: 'The mean squared error of a line: we average the squares of the gaps.' }
+      - { code: "xs = [0, 1, 2, 3]\nys = [1, 3, 5, 7]", fr: 'Quatre exemples : l’entrée `x` et la valeur vraie `y`.', en: 'Four examples: the input `x` and the true value `y`.' }
+      - { code: "def eqm(w, b):\n    return sum((w * x + b - y) ** 2 for x, y in zip(xs, ys)) / len(xs)", fr: 'L’erreur quadratique moyenne d’une droite : on moyenne les carrés des écarts.', en: 'The mean squared error of a line: we average the squares of the gaps.' }
       - { code: 'print(eqm(0, 0), eqm(2, 1))', fr: 'La droite plate $y=0$ se trompe beaucoup (`21.0`) ; la droite $y=2x+1$ ne se trompe pas du tout (`0.0`).', en: 'The flat line $y=0$ is very wrong (`21.0`); the line $y=2x+1$ is not wrong at all (`0.0`).' }
     verif: |-
       xs = [0, 1, 2, 3]
@@ -98,8 +102,8 @@ cartes:
     titre: { fr: 'Entraîner pendant 2000 pas', en: 'Training for 2000 steps' }
     lang: python
     etapes:
-      - { code: 'xs = [0, 1, 2, 3]\nys = [1, 3, 5, 7]\nw, b = 0, 0', fr: 'Mêmes données, et on part d’une droite plate : $w=0$, $b=0$.', en: 'Same data, and we start from a flat line: $w=0$, $b=0$.' }
-      - { code: 'for _ in range(2000):\n    n = len(xs)\n    gw = 2 / n * sum((w * x + b - y) * x for x, y in zip(xs, ys))\n    gb = 2 / n * sum((w * x + b - y) for x, y in zip(xs, ys))\n    w, b = w - 0.05 * gw, b - 0.05 * gb', fr: 'On répète le pas de descente avec $\eta=0{,}05$.', en: 'We repeat the descent step with $\eta=0.05$.' }
+      - { code: "xs = [0, 1, 2, 3]\nys = [1, 3, 5, 7]\nw, b = 0, 0", fr: 'Mêmes données, et on part d’une droite plate : $w=0$, $b=0$.', en: 'Same data, and we start from a flat line: $w=0$, $b=0$.' }
+      - { code: "for _ in range(2000):\n    n = len(xs)\n    gw = 2 / n * sum((w * x + b - y) * x for x, y in zip(xs, ys))\n    gb = 2 / n * sum((w * x + b - y) for x, y in zip(xs, ys))\n    w, b = w - 0.05 * gw, b - 0.05 * gb", fr: 'On répète le pas de descente avec $\eta=0{,}05$.', en: 'We repeat the descent step with $\eta=0.05$.' }
       - { code: 'print(round(w, 2), round(b, 2))', fr: 'On affiche `2.0 1.0` : Kintana a **retrouvé** la droite cachée dans les données, par simple descente.', en: 'We display `2.0 1.0`: Kintana has **recovered** the line hidden in the data, by simple descent.' }
     verif: |-
       xs = [0, 1, 2, 3]

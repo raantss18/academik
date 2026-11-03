@@ -4,6 +4,10 @@ module: 9
 duree_min: 19
 titre: { fr: 'Classer', en: 'Classifying' }
 ia: { fr: 'Kintana apprend à répondre par une catégorie, avec une probabilité, grâce à la régression logistique.', en: 'Kintana learns to answer with a category, with a probability, thanks to logistic regression.' }
+objectifs:
+  - { fr: 'passer d''un score à une probabilité', en: 'go from a score to a probability' }
+  - { fr: 'entraîner un classifieur logistique', en: 'train a logistic classifier' }
+  - { fr: 'trouver la frontière de décision', en: 'find the decision boundary' }
 sources:
   - { titre: 'Stanford CS229 — Machine Learning (régression logistique)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
   - { titre: 'MIT 6.036 — Introduction to Machine Learning', url: 'https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/about', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
@@ -37,7 +41,7 @@ cartes:
     titre: { fr: 'De la droite à la probabilité', en: 'From the line to the probability' }
     lang: python
     etapes:
-      - { code: 'import math\nsigmoide = lambda z: 1 / (1 + math.exp(-z))', fr: 'La sigmoïde, en une ligne.', en: 'The sigmoid, in one line.' }
+      - { code: "import math\nsigmoide = lambda z: 1 / (1 + math.exp(-z))", fr: 'La sigmoïde, en une ligne.', en: 'The sigmoid, in one line.' }
       - { code: 'w, b = 2, -6', fr: 'Un modèle : score $z=2x-6$. Le score est nul quand $x=3$.', en: 'A model: score $z=2x-6$. The score is zero when $x=3$.' }
       - { code: 'print([round(sigmoide(w * x + b), 3) for x in (1, 3, 5)])', fr: 'En $x=1$, $z=-4$ : `0.018`. En $x=3$, $z=0$ : `0.5`. En $x=5$, $z=4$ : `0.982`.', en: 'At $x=1$, $z=-4$: `0.018`. At $x=3$, $z=0$: `0.5`. At $x=5$, $z=4$: `0.982`.' }
     verif: |-
@@ -110,8 +114,8 @@ cartes:
     titre: { fr: 'Entraîner un classifieur', en: 'Training a classifier' }
     lang: python
     etapes:
-      - { code: 'import math\nxs = [1, 2, 3, 4, 5, 6]\nys = [0, 0, 0, 1, 1, 1]\nw, b = 0.0, 0.0', fr: 'Six exemples : les petits `x` sont de classe 0, les grands de classe 1.', en: 'Six examples: small `x` are class 0, large ones class 1.' }
-      - { code: 'for _ in range(2000):\n    ps = [1 / (1 + math.exp(-(w * x + b))) for x in xs]\n    gw = sum((p - y) * x for p, y, x in zip(ps, ys, xs)) / len(xs)\n    gb = sum(p - y for p, y in zip(ps, ys)) / len(xs)\n    w, b = w - 0.5 * gw, b - 0.5 * gb', fr: 'On calcule les probabilités, les deux pentes, puis un pas de descente avec $\eta=0{,}5$.', en: 'We compute the probabilities, the two slopes, then a descent step with $\eta=0.5$.' }
+      - { code: "import math\nxs = [1, 2, 3, 4, 5, 6]\nys = [0, 0, 0, 1, 1, 1]\nw, b = 0.0, 0.0", fr: 'Six exemples : les petits `x` sont de classe 0, les grands de classe 1.', en: 'Six examples: small `x` are class 0, large ones class 1.' }
+      - { code: "for _ in range(2000):\n    ps = [1 / (1 + math.exp(-(w * x + b))) for x in xs]\n    gw = sum((p - y) * x for p, y, x in zip(ps, ys, xs)) / len(xs)\n    gb = sum(p - y for p, y in zip(ps, ys)) / len(xs)\n    w, b = w - 0.5 * gw, b - 0.5 * gb", fr: 'On calcule les probabilités, les deux pentes, puis un pas de descente avec $\eta=0{,}5$.', en: 'We compute the probabilities, the two slopes, then a descent step with $\eta=0.5$.' }
       - { code: 'print(round(w, 1), round(b, 1))', fr: 'On affiche `4.2 -14.4` : la frontière $z=0$ tombe en $x\approx14{,}39/4{,}16\approx3{,}46$, entre les deux classes.', en: 'We display `4.2 -14.4`: the boundary $z=0$ falls at $x\approx14.39/4.16\approx3.46$, between the two classes.' }
     verif: |-
       import math

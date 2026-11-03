@@ -4,6 +4,10 @@ module: 10
 duree_min: 19
 titre: { fr: 'Prévoir sans tricher', en: 'Forecasting without cheating' }
 ia: { fr: 'Kintana évalue ses prévisions comme dans la vraie vie : au fil du temps, sans jamais regarder le futur.', en: 'Kintana evaluates her forecasts as in real life: as time goes by, never looking at the future.' }
+objectifs:
+  - { fr: 'évaluer par walk-forward', en: 'evaluate with walk-forward' }
+  - { fr: 'réestimer à chaque tour avec le passé seul', en: 're-estimate each round with the past only' }
+  - { fr: 'battre une référence naïve, ou l''avouer', en: 'beat a naive baseline, or admit it' }
 sources:
   - { titre: 'scikit-learn — TimeSeriesSplit (validation de séries temporelles)', url: 'https://scikit-learn.org/stable/modules/cross_validation.html#time-series-split', licence: 'BSD-3-Clause (documentation officielle, citée)' }
   - { titre: 'scikit-learn — Common pitfalls and recommended practices', url: 'https://scikit-learn.org/stable/common_pitfalls.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
@@ -37,7 +41,7 @@ cartes:
     titre: { fr: 'Un tour de walk-forward', en: 'One walk-forward round' }
     lang: python
     etapes:
-      - { code: 'serie = [1, 2, 3, 4, 5, 6]\ndebut = 3', fr: 'Six valeurs ; on commence à prévoir à partir de l’indice 3.', en: 'Six values; we start forecasting from index 3.' }
+      - { code: "serie = [1, 2, 3, 4, 5, 6]\ndebut = 3", fr: 'Six valeurs ; on commence à prévoir à partir de l’indice 3.', en: 'Six values; we start forecasting from index 3.' }
       - { code: 'modele = lambda passe: passe[-1]', fr: 'Un modèle naïf : « la prochaine valeur sera égale à la dernière ».', en: 'A naive model: “the next value will equal the last”.' }
       - { code: 'erreurs = [abs(modele(serie[:t]) - serie[t]) for t in range(debut, len(serie))]', fr: 'Pour chaque `t`, le modèle ne voit que `serie[:t]` (le passé), puis on compare à `serie[t]`.', en: 'For each `t`, the model only sees `serie[:t]` (the past), then we compare with `serie[t]`.' }
       - { code: 'print(erreurs)', fr: 'On affiche `[1, 1, 1]` : le modèle naïf se trompe de 1 à chaque tour sur une tendance.', en: 'We display `[1, 1, 1]`: the naive model is off by 1 at each round on a trend.' }

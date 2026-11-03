@@ -4,6 +4,10 @@ module: 11
 duree_min: 13
 titre: { fr: 'Ton micrograd', en: 'Your micrograd' }
 ia: { fr: 'Kintana apprend seule : tu as construit le moteur qui entraîne un réseau, de la passe avant à la mise à jour.', en: 'Kintana learns on her own: you built the engine that trains a network, from forward pass to update.' }
+objectifs:
+  - { fr: 'entraîner ton propre petit réseau', en: 'train your own small network' }
+  - { fr: 'diagnostiquer une perte figée ou qui explose', en: 'diagnose a stuck or exploding loss' }
+  - { fr: 'vérifier sur plusieurs graines', en: 'check across several seeds' }
 sources:
   - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, chap. 6 (réseaux profonds)', url: 'https://www.deeplearningbook.org/contents/mlp.html', licence: 'Lecture en ligne ; texte non repris' }
   - { titre: 'A. Karpathy — Neural Networks: Zero to Hero (micrograd)', url: 'https://karpathy.ai/zero-to-hero.html', licence: 'Cours en ligne ; contenu cité, code non repris' }

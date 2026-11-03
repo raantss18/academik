@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana subit des attaques simulées, mesure leur succès et empile des défenses.
   en: Kintana undergoes simulated attacks, measures their success and stacks defences.
+objectifs:
+  - { fr: 'distinguer injection directe et indirecte', en: 'tell direct from indirect injection' }
+  - { fr: 'empiler les défenses', en: 'layer the defences' }
+  - { fr: 'mesurer une défense sur des attaques', en: 'measure a defence on attacks' }
 sources:
 - titre: 'OWASP — LLM01 : Prompt Injection'
   url: https://genai.owasp.org/llmrisk/llm01-prompt-injection/

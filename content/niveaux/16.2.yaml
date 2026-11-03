@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana simule un pas au hasard, puis des milliers, et mesure comment elle s’éloigne.
   en: Kintana simulates one random step, then thousands, and measures how she drifts away.
+objectifs:
+  - { fr: 'simuler une marche aléatoire', en: 'simulate a random walk' }
+  - { fr: 'calculer espérance et variance d''une marche', en: 'compute the mean and variance of a walk' }
+  - { fr: 'vérifier par Monte-Carlo', en: 'check by Monte Carlo' }
 sources:
 - titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
   url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/

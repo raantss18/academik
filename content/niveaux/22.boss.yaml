@@ -8,6 +8,10 @@ titre:
 ia:
   fr: 'Kintana livre une fonction spécifiée, testée et prouvée : elle sait ce qu’elle garantit, et ce qu’elle ne garantit pas.'
   en: 'Kintana delivers a function that is specified, tested and proved: she knows what she guarantees, and what she does not.'
+objectifs:
+  - { fr: 'spécifier, tester, prouver', en: 'specify, test, prove' }
+  - { fr: 'prouver qu''une fonction garde la longueur', en: 'prove that a function keeps the length' }
+  - { fr: 'repérer une spécification incomplète', en: 'spot an incomplete specification' }
 sources:
 - titre: Avigad, de Moura, Kong, Ullrich — Theorem Proving in Lean 4
   url: https://lean-lang.org/theorem_proving_in_lean4/

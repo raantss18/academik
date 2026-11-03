@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana teste une idée sur le passé sans tricher, et compte ses essais.
   en: Kintana tests an idea on the past without cheating, and counts her trials.
+objectifs:
+  - { fr: 'éviter l''anticipation dans un backtest', en: 'avoid look-ahead in a backtest' }
+  - { fr: 'compter les coûts et les essais', en: 'count costs and trials' }
+  - { fr: 'corriger pour le meilleur de N', en: 'correct for the best of N' }
 sources:
 - titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
   url: https://doi.org/10.3905/jpm.2014.40.5.094

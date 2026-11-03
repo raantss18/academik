@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana relit un raisonnement ligne par ligne et désigne le premier passage du vrai au faux.
   en: Kintana rereads an argument line by line and points to the first step from true to false.
+objectifs:
+  - { fr: 'tester chaque ligne d''une preuve avec des valeurs', en: 'test each line of a proof with values' }
+  - { fr: 'trouver le premier passage du vrai au faux', en: 'find the first step from true to false' }
+  - { fr: 'reconnaître quatre erreurs classiques', en: 'recognise four classic errors' }
 sources:
 - titre: Lehman, Leighton, Meyer — Mathematics for Computer Science (référence, rédaction originale)
   url: https://courses.csail.mit.edu/6.042/spring18/mcs.pdf

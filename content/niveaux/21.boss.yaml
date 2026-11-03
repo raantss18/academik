@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana mène une recherche de bout en bout et rejette la fausse découverte, même quand elle paraît significative.
   en: Kintana carries out research end to end and rejects the false discovery, even when it looks significant.
+objectifs:
+  - { fr: 'écrire un protocole avant les données', en: 'write a protocol before the data' }
+  - { fr: 'séparer exploration et confirmation', en: 'separate exploration and confirmation' }
+  - { fr: 'rédiger un rapport qui rejette ce qui ne tient pas', en: 'write a report that rejects what does not hold' }
 sources:
 - titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
   url: https://doi.org/10.3905/jpm.2014.40.5.094

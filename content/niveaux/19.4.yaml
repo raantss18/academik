@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana connaît les dix risques des applications LLM, et la combinaison qu’il ne faut jamais réunir.
   en: Kintana knows the ten risks of LLM applications, and the combination that must never be assembled.
+objectifs:
+  - { fr: 'citer les risques du Top 10 OWASP LLM', en: 'name the risks of the OWASP LLM Top 10' }
+  - { fr: 'repérer une fuite par une réponse', en: 'spot a leak through an answer' }
+  - { fr: 'reconnaître la triade mortelle', en: 'recognise the lethal trifecta' }
 sources:
 - titre: OWASP — Top 10 for LLM Applications (2025)
   url: https://genai.owasp.org/llm-top-10/

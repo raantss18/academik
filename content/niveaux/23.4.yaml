@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana démasque une performance qui vient d’une fuite d’information, de coûts oubliés ou d’un meilleur-de-cent.
   en: Kintana unmasks a performance that comes from an information leak, forgotten costs or a best-of-a-hundred.
+objectifs:
+  - { fr: 'décaler un signal pour ne pas voir le futur', en: 'lag a signal to avoid seeing the future' }
+  - { fr: 'retirer les coûts de transaction', en: 'subtract transaction costs' }
+  - { fr: 'dégonfler le meilleur de N essais', en: 'deflate the best of N trials' }
 sources:
 - titre: Bailey, López de Prado — The Deflated Sharpe Ratio (2014)
   url: https://doi.org/10.3905/jpm.2014.40.5.094

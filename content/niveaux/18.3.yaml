@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana ne refait jamais un calcul qu’elle connaît déjà.
   en: Kintana never redoes a computation she already knows.
+objectifs:
+  - { fr: 'mémoïser une fonction', en: 'memoise a function' }
+  - { fr: 'utiliser des sommes préfixes', en: 'use prefix sums' }
+  - { fr: 'tester l''appartenance avec un ensemble', en: 'test membership with a set' }
 sources:
 - titre: 'Python — documentation : functools.lru_cache'
   url: https://docs.python.org/3/library/functools.html#functools.lru_cache

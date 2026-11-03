@@ -4,6 +4,10 @@ module: 5
 duree_min: 15
 titre: { fr: 'Exponentielle et logarithme', en: 'Exponential and logarithm' }
 ia: { fr: 'Kintana transforme des produits en sommes avec le logarithme, pour ne plus perdre de petits nombres.', en: 'Kintana turns products into sums with the logarithm, so she stops losing small numbers.' }
+objectifs:
+  - { fr: 'utiliser les propriétés de l''exponentielle', en: 'use the properties of the exponential' }
+  - { fr: 'utiliser le logarithme comme réciproque', en: 'use the logarithm as the inverse' }
+  - { fr: 'additionner des logarithmes au lieu de multiplier', en: 'add logarithms instead of multiplying' }
 sources:
   - { titre: 'MIT 18.01 — Single Variable Calculus (exponentielle et logarithme)', url: 'https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
   - { titre: 'Python — module math (exp, log)', url: 'https://docs.python.org/3/library/math.html#power-and-logarithmic-functions', licence: 'PSF License (documentation officielle, citée)' }
@@ -13,7 +17,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       import math

@@ -4,6 +4,10 @@ module: 11
 duree_min: 16
 titre: { fr: 'Apprendre XOR', en: 'Learning XOR' }
 ia: { fr: 'Kintana entraîne un petit réseau qui apprend seul une règle qu’aucune droite ne peut représenter.', en: 'Kintana trains a small network that learns on its own a rule that no straight line can represent.' }
+objectifs:
+  - { fr: 'voir pourquoi une droite ne suffit pas pour XOR', en: 'see why one line is not enough for XOR' }
+  - { fr: 'écrire la boucle d''apprentissage', en: 'write the training loop' }
+  - { fr: 'remettre les pentes à zéro', en: 'reset the slopes to zero' }
 sources:
   - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, section 6.1 (apprendre XOR)', url: 'https://www.deeplearningbook.org/contents/mlp.html', licence: 'Lecture en ligne ; texte non repris' }
   - { titre: 'A. Karpathy — Neural Networks: Zero to Hero (micrograd)', url: 'https://karpathy.ai/zero-to-hero.html', licence: 'Cours en ligne ; contenu cité, code non repris' }
@@ -42,7 +46,7 @@ cartes:
     titre: { fr: 'La classe Valeur en action', en: 'The Valeur class in action' }
     lang: python
     etapes:
-      - { code: 'a, b = Valeur(2), Valeur(3)\ne = a * b + 4', fr: 'On écrit la formule normalement : `Valeur` construit le graphe.', en: 'We write the formula normally: `Valeur` builds the graph.' }
+      - { code: "a, b = Valeur(2), Valeur(3)\ne = a * b + 4", fr: 'On écrit la formule normalement : `Valeur` construit le graphe.', en: 'We write the formula normally: `Valeur` builds the graph.' }
       - { code: 'e.retropropager()', fr: 'Un seul appel parcourt le graphe à l’envers et remplit les pentes.', en: 'A single call walks the graph backwards and fills in the slopes.' }
       - { code: 'print(e.data, a.grad, b.grad)', fr: 'On affiche `10 3.0 2.0` : la valeur, puis les deux pentes.', en: 'We display `10 3.0 2.0`: the value, then the two slopes.' }
     verif: |-

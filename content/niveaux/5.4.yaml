@@ -3,6 +3,10 @@ module: 5
 duree_min: 9
 titre: { fr: 'Convexité', en: 'Convexity' }
 ia: { fr: 'Kintana reconnaît les erreurs convexes, pour lesquelles un point stationnaire est un minimum global.', en: 'Kintana recognizes convex losses, for which a stationary point is a global minimum.' }
+objectifs:
+  - { fr: 'vérifier la convexité par une corde', en: 'check convexity with a chord' }
+  - { fr: 'relier minimum local et global', en: 'link local and global minimum' }
+  - { fr: 'certifier un réglage optimal', en: 'certify an optimal setting' }
 sources:
   - { titre: 'Boyd et Vandenberghe — Convex Optimization, chapitre 3 (référence uniquement)', url: 'https://web.stanford.edu/~boyd/cvxbook/', licence: 'Copyright Cambridge University Press ; accès gratuit, aucune licence libre ; lien seulement' }
   - { titre: 'Boyd, Vandenberghe et Nobel — diapositives révisées en 2023 (référence uniquement)', url: 'https://web.stanford.edu/~boyd/cvxbook/bv_cvxslides.pdf', licence: 'Aucune licence libre indiquée ; lien seulement, aucun extrait repris' }

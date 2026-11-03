@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana réduit ses poids à quelques bits pour tenir dans la mémoire, en acceptant une petite erreur.
   en: Kintana shrinks her weights to a few bits to fit in memory, accepting a small error.
+objectifs:
+  - { fr: 'quantifier un poids à la main', en: 'quantise a weight by hand' }
+  - { fr: 'mesurer l''erreur de quantification', en: 'measure the quantisation error' }
+  - { fr: 'quantifier par blocs', en: 'quantise by blocks' }
 sources:
 - titre: 'Dettmers et al. — LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale'
   url: https://arxiv.org/abs/2208.07339

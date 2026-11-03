@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana combine plusieurs actifs et mesure ce que la diversification apporte.
   en: Kintana combines several assets and measures what diversification brings.
+objectifs:
+  - { fr: 'calculer le rendement d''un portefeuille', en: 'compute the return of a portfolio' }
+  - { fr: 'calculer son risque avec les covariances', en: 'compute its risk with covariances' }
+  - { fr: 'trouver la variance minimale à deux actifs', en: 'find the minimum variance with two assets' }
 sources:
 - titre: MIT OpenCourseWare — 15.401 Finance Theory I (portefeuilles)
   url: https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/

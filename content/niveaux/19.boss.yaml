@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana résiste à une série d’attaques et rend un rapport qui dit ce qui passe encore.
   en: Kintana withstands a series of attacks and returns a report saying what still gets through.
+objectifs:
+  - { fr: 'évaluer une défense sur une suite d''attaques', en: 'evaluate a defence on an attack suite' }
+  - { fr: 'compter faux positifs et faux négatifs', en: 'count false positives and false negatives' }
+  - { fr: 'transformer chaque faille en test', en: 'turn each flaw into a test' }
 sources:
 - titre: OWASP — Top 10 for LLM Applications (2025)
   url: https://genai.owasp.org/llm-top-10/

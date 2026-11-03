@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana distingue ce qui coûte des millions d’heures de calcul de ce qu’elle peut faire sur ton appareil.
   en: Kintana tells apart what costs millions of compute hours from what she can do on your device.
+objectifs:
+  - { fr: 'distinguer pré-entraînement, adaptation et inférence', en: 'tell pre-training, adaptation and inference apart' }
+  - { fr: 'estimer un coût de calcul par $6ND$', en: 'estimate a compute cost with $6ND$' }
+  - { fr: 'situer ce qu''on fait en local', en: 'place what runs locally' }
 sources:
 - titre: Hugging Face — LLM Course
   url: https://huggingface.co/learn/llm-course

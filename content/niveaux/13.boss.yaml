@@ -8,6 +8,10 @@ titre:
 ia:
   fr: 'Kintana choisit son propre modèle : assez petit pour tenir, assez libre pour servir, assez grand pour bien répondre.'
   en: 'Kintana chooses her own model: small enough to fit, free enough to use, large enough to answer well.'
+objectifs:
+  - { fr: 'filtrer des modèles par licence et mémoire', en: 'filter models by licence and memory' }
+  - { fr: 'choisir le plus grand qui tient', en: 'choose the largest one that fits' }
+  - { fr: 'documenter ton choix', en: 'document your choice' }
 sources:
 - titre: llama.cpp — dépôt officiel
   url: https://github.com/ggml-org/llama.cpp

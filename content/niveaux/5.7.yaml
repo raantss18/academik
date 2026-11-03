@@ -4,6 +4,10 @@ module: 5
 duree_min: 15
 titre: { fr: 'Règle de chaîne', en: 'Chain rule' }
 ia: { fr: 'Kintana sait dériver une fonction construite en plusieurs étapes, ce qui permettra d’apprendre à travers plusieurs couches.', en: 'Kintana can differentiate a function built in several steps, which will allow learning through several layers.' }
+objectifs:
+  - { fr: 'dériver une fonction composée', en: 'differentiate a composite function' }
+  - { fr: 'multiplier les pentes le long d''un chemin', en: 'multiply slopes along a path' }
+  - { fr: 'vérifier par une différence centrée', en: 'check with a central difference' }
 sources:
   - { titre: 'MIT 18.01 — Single Variable Calculus (chain rule)', url: 'https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
   - { titre: 'MIT 18.02 — Multivariable Calculus', url: 'https://ocw.mit.edu/courses/18-02-multivariable-calculus-fall-2007/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
@@ -38,7 +42,7 @@ cartes:
     etapes:
       - { fr: 'L’intérieur est $g(x)=x^2+1$, de pente $g''(x)=2x$. L’extérieur est $f(u)=u^3$, de pente $f''(u)=3u^2$.', en: 'The inside is $g(x)=x^2+1$, with slope $g''(x)=2x$. The outside is $f(u)=u^3$, with slope $f''(u)=3u^2$.' }
       - { fr: 'La règle donne $h''(x)=3(x^2+1)^2\times2x$. En $x=1$ : $3\times4\times2=24$.', en: 'The rule gives $h''(x)=3(x^2+1)^2\times2x$. At $x=1$: $3\times4\times2=24$.' }
-      - { code: 'h = lambda x: (x * x + 1) ** 3\neps = 1e-6', fr: 'On vérifie numériquement avec un petit pas `eps`.', en: 'We check numerically with a small step `eps`.' }
+      - { code: "h = lambda x: (x * x + 1) ** 3\neps = 1e-6", fr: 'On vérifie numériquement avec un petit pas `eps`.', en: 'We check numerically with a small step `eps`.' }
       - { code: 'print(round((h(1 + eps) - h(1 - eps)) / (2 * eps), 2))', fr: 'La pente mesurée vaut `24.0` : le calcul et la mesure concordent.', en: 'The measured slope is `24.0`: calculation and measurement agree.' }
     verif: |-
       h = lambda x: (x * x + 1) ** 3
@@ -95,7 +99,7 @@ cartes:
     etapes:
       - { fr: 'Kintana prédit $w\times x$ et se trompe de $w x - y$. L’erreur au carré est $L(w)=(wx-y)^2$, avec $x=3$ et $y=5$.', en: 'Kintana predicts $w\times x$ and is off by $wx-y$. The squared error is $L(w)=(wx-y)^2$, with $x=3$ and $y=5$.' }
       - { fr: 'Extérieur : le carré, pente $2(wx-y)$. Intérieur : $wx-y$ vu comme fonction de $w$, pente $x$. Règle : $L''(w)=2(wx-y)\,x$.', en: 'Outside: the square, slope $2(wx-y)$. Inside: $wx-y$ seen as a function of $w$, slope $x$. Rule: $L''(w)=2(wx-y)\,x$.' }
-      - { code: 'w, x, y = 2, 3, 5\nprint(2 * (w * x - y) * x)', fr: 'En $w=2$ : $2\times(6-5)\times3=6$. On affiche `6`.', en: 'At $w=2$: $2\times(6-5)\times3=6$. We display `6`.' }
+      - { code: "w, x, y = 2, 3, 5\nprint(2 * (w * x - y) * x)", fr: 'En $w=2$ : $2\times(6-5)\times3=6$. On affiche `6`.', en: 'At $w=2$: $2\times(6-5)\times3=6$. We display `6`.' }
     verif: |-
       w, x, y = 2, 3, 5
       print(2 * (w * x - y) * x)

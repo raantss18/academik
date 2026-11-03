@@ -3,6 +3,10 @@ module: 0
 duree_min: 12
 titre: { fr: 'Démontrer', en: 'Proving' }
 ia: { fr: 'Kintana justifie une règle et sait réfuter une généralisation abusive.', en: 'Kintana justifies a rule and can refute an unjustified generalisation.' }
+objectifs:
+  - { fr: 'écrire une preuve directe', en: 'write a direct proof' }
+  - { fr: 'raisonner par contraposée', en: 'reason by contrapositive' }
+  - { fr: 'raisonner par l''absurde', en: 'reason by contradiction' }
 sources:
   - { titre: 'COMIMa — Exemples et contre-exemples, chapitre 0', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
   - { titre: 'Oscar Levin — Proofs', url: 'https://discrete.openmathbooks.org/dmoi3/sec_logic-proofs.html', licence: 'CC BY-SA 4.0' }

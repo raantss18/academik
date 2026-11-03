@@ -3,6 +3,10 @@ module: 3
 duree_min: 11
 titre: { fr: 'Dichotomie', en: 'Binary search' }
 ia: { fr: 'Kintana retrouve un identifiant dans une liste triée sans tout parcourir.', en: 'Kintana finds an ID in a sorted list without scanning every item.' }
+objectifs:
+  - { fr: 'expliquer pourquoi la liste doit être triée', en: 'explain why the list must be sorted' }
+  - { fr: 'faire rétrécir une fenêtre de recherche', en: 'shrink a search window' }
+  - { fr: 'chercher en log n comparaisons', en: 'search in log n comparisons' }
 sources:
   - { titre: 'Python — bisect', url: 'https://docs.python.org/3/library/bisect.html', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }
 cartes:

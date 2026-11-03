@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana comprend ce qui voyage sur le réseau, et comment TLS le protège.
   en: Kintana understands what travels on the network, and how TLS protects it.
+objectifs:
+  - { fr: 'suivre le chemin nom, IP, port, TLS, HTTP', en: 'follow the path name, IP, port, TLS, HTTP' }
+  - { fr: 'dire ce que TLS protège', en: 'say what TLS protects' }
+  - { fr: 'se défendre contre une SSRF', en: 'defend against SSRF' }
 sources:
 - titre: Cloudflare Learning Center — What happens in a TLS handshake ?
   url: https://www.cloudflare.com/learning/ssl/what-happens-in-a-tls-handshake/

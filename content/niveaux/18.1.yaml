@@ -8,6 +8,10 @@ titre:
 ia:
   fr: 'Kintana ne se fie pas au chronomètre : elle compte ce que son programme fait vraiment.'
   en: 'Kintana does not trust the stopwatch: she counts what her program really does.'
+objectifs:
+  - { fr: 'compter les opérations au lieu du temps', en: 'count operations instead of time' }
+  - { fr: 'comparer recherche linéaire et dichotomie', en: 'compare linear search and binary search' }
+  - { fr: 'estimer un ordre de grandeur', en: 'estimate an order of magnitude' }
 sources:
 - titre: 'Python — documentation : Time complexity'
   url: https://wiki.python.org/moin/TimeComplexity

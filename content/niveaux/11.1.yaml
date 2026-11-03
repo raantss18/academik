@@ -4,6 +4,10 @@ module: 11
 duree_min: 16
 titre: { fr: 'Le neurone', en: 'The neuron' }
 ia: { fr: 'Kintana calcule la sortie d’un neurone artificiel : une somme pondérée, puis une activation.', en: 'Kintana computes the output of an artificial neuron: a weighted sum, then an activation.' }
+objectifs:
+  - { fr: 'calculer une somme pondérée plus un biais', en: 'compute a weighted sum plus a bias' }
+  - { fr: 'appliquer une activation', en: 'apply an activation' }
+  - { fr: 'enchaîner des neurones en couches', en: 'chain neurons into layers' }
 sources:
   - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, chap. 6 (réseaux profonds)', url: 'https://www.deeplearningbook.org/contents/mlp.html', licence: 'Lecture en ligne ; texte non repris' }
   - { titre: 'A. Karpathy — Neural Networks: Zero to Hero', url: 'https://karpathy.ai/zero-to-hero.html', licence: 'Cours en ligne ; contenu cité, code non repris' }
@@ -34,9 +38,9 @@ cartes:
     titre: { fr: 'Un neurone en Python', en: 'A neuron in Python' }
     lang: python
     etapes:
-      - { code: 'import math\nx, w, b = [3, 4], [2, -1], 1', fr: 'Les entrées, les poids et le biais de la carte d’amorce.', en: 'The inputs, weights and bias from the opening card.' }
+      - { code: "import math\nx, w, b = [3, 4], [2, -1], 1", fr: 'Les entrées, les poids et le biais de la carte d’amorce.', en: 'The inputs, weights and bias from the opening card.' }
       - { code: 'z = sum(wi * xi for wi, xi in zip(w, x)) + b', fr: 'La somme pondérée : `3`.', en: 'The weighted sum: `3`.' }
-      - { code: 'a = math.tanh(z)\nprint(round(z, 3), round(a, 3))', fr: 'L’activation `tanh` écrase `3` en `0.995`. On affiche `3 0.995`.', en: 'The `tanh` activation squashes `3` into `0.995`. We display `3 0.995`.' }
+      - { code: "a = math.tanh(z)\nprint(round(z, 3), round(a, 3))", fr: 'L’activation `tanh` écrase `3` en `0.995`. On affiche `3 0.995`.', en: 'The `tanh` activation squashes `3` into `0.995`. We display `3 0.995`.' }
     verif: |-
       import math
       x, w, b = [3, 4], [2, -1], 1

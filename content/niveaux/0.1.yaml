@@ -3,6 +3,10 @@ module: 0
 duree_min: 12
 titre: { fr: 'Vrai ou faux ?', en: 'True or false?' }
 ia: { fr: 'Kintana distingue une règle générale, un témoin et un contre-exemple.', en: 'Kintana distinguishes a general rule, a witness and a counterexample.' }
+objectifs:
+  - { fr: 'distinguer une affirmation d''une question', en: 'tell a statement from a question' }
+  - { fr: 'lire « pour tout » et « il existe »', en: 'read “for all” and “there exists”' }
+  - { fr: 'réfuter une règle par un contre-exemple', en: 'refute a rule with a counterexample' }
 sources:
   - { titre: 'COMIMa — Exemples et contre-exemples, chapitre 0', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
   - { titre: 'Oscar Levin — Mathematical Statements', url: 'https://discrete.openmathbooks.org/dmoi3/sec_intro-statements.html', licence: 'CC BY-SA 4.0' }

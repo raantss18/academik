@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana estime un prix moyen et une probabilité, et annonce toujours l’incertitude.
   en: Kintana estimates an average price and a probability, and always states the uncertainty.
+objectifs:
+  - { fr: 'estimer par Monte-Carlo', en: 'estimate by Monte Carlo' }
+  - { fr: 'donner un intervalle de confiance', en: 'give a confidence interval' }
+  - { fr: 'distinguer erreur de simulation et erreur de modèle', en: 'tell simulation error from model error' }
 sources:
 - titre: Glasserman — Monte Carlo Methods in Financial Engineering (lien)
   url: https://link.springer.com/book/10.1007/978-0-387-21617-1

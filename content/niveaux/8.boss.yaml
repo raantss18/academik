@@ -4,6 +4,10 @@ module: 8
 duree_min: 19
 titre: { fr: 'La fuite d’information', en: 'The information leak' }
 ia: { fr: 'Kintana traque les fuites qui rendent un test trop beau pour être vrai : avant, pendant et après le découpage.', en: 'Kintana hunts the leaks that make a test too good to be true: before, during and after the split.' }
+objectifs:
+  - { fr: 'reconnaître une fuite d''information', en: 'recognise an information leak' }
+  - { fr: 'calculer les statistiques sur le train seul', en: 'compute statistics on the training set only' }
+  - { fr: 'se méfier d''un score trop beau', en: 'distrust a score that is too good' }
 sources:
   - { titre: 'scikit-learn — Common pitfalls and recommended practices (data leakage)', url: 'https://scikit-learn.org/stable/common_pitfalls.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
   - { titre: 'Python — opérations sur les ensembles', url: 'https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset', licence: 'PSF License (documentation officielle, citée)' }
@@ -39,7 +43,7 @@ cartes:
     etapes:
       - { code: 'donnees = [1, 2, 3, 4, 100]', fr: 'Cinq valeurs ; la dernière est mise de côté pour le test.', en: 'Five values; the last one is set aside for testing.' }
       - { code: 'moyenne_fausse = sum(donnees) / len(donnees)', fr: 'Moyenne de **toutes** les valeurs : elle contient déjà le `100`. Elle vaut 22.', en: 'Mean of **all** the values: it already contains the `100`. It is 22.' }
-      - { code: 'train = donnees[:4]\nmoyenne_juste = sum(train) / len(train)', fr: 'Moyenne de l’entraînement seul : 2,5. Elle ignore le test, comme en vrai usage.', en: 'Mean of the training set alone: 2.5. It ignores the test set, as in real use.' }
+      - { code: "train = donnees[:4]\nmoyenne_juste = sum(train) / len(train)", fr: 'Moyenne de l’entraînement seul : 2,5. Elle ignore le test, comme en vrai usage.', en: 'Mean of the training set alone: 2.5. It ignores the test set, as in real use.' }
       - { code: 'print(moyenne_fausse, moyenne_juste)', fr: 'On affiche `22.0 2.5` : l’écart montre à quel point le test a influencé le premier calcul.', en: 'We display `22.0 2.5`: the gap shows how much the test set influenced the first computation.' }
     verif: |-
       donnees = [1, 2, 3, 4, 100]

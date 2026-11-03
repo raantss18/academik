@@ -3,6 +3,10 @@ module: 3
 duree_min: 13
 titre: { fr: 'Hachage', en: 'Hashing' }
 ia: { fr: 'Kintana associe chaque mot aux identifiants de ses documents.', en: 'Kintana maps each word to its document IDs.' }
+objectifs:
+  - { fr: 'transformer une clé en numéro de seau', en: 'turn a key into a bucket number' }
+  - { fr: 'gérer les collisions', en: 'handle collisions' }
+  - { fr: 'construire un index mot → documents', en: 'build a word → documents index' }
 sources:
   - titre: Pat Morin — Open Data Structures, Hash Tables
     url: https://opendatastructures.org/ods-python/5_Hash_Tables.html

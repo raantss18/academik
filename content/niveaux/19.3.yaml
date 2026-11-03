@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana ne mélange jamais les données et le code, et protège ses secrets.
   en: Kintana never mixes data and code, and protects her secrets.
+objectifs:
+  - { fr: 'reconnaître une injection', en: 'recognise an injection' }
+  - { fr: 'utiliser des requêtes paramétrées', en: 'use parameterised queries' }
+  - { fr: 'garder les secrets hors du code', en: 'keep secrets out of the code' }
 sources:
 - titre: OWASP — Top 10 Web Application Security Risks
   url: https://owasp.org/www-project-top-ten/

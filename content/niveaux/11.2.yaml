@@ -4,6 +4,10 @@ module: 11
 duree_min: 16
 titre: { fr: 'Le graphe de calcul', en: 'The computation graph' }
 ia: { fr: 'Kintana représente un calcul comme un graphe de petites opérations, qu’elle peut parcourir dans les deux sens.', en: 'Kintana represents a computation as a graph of small operations, which she can walk through in both directions.' }
+objectifs:
+  - { fr: 'représenter un calcul par un graphe', en: 'represent a computation as a graph' }
+  - { fr: 'évaluer dans l''ordre topologique', en: 'evaluate in topological order' }
+  - { fr: 'suivre un nœud réutilisé', en: 'track a reused node' }
 sources:
   - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, section 6.5 (graphes de calcul)', url: 'https://www.deeplearningbook.org/contents/mlp.html', licence: 'Lecture en ligne ; texte non repris' }
   - { titre: 'A. Karpathy — Neural Networks: Zero to Hero (micrograd)', url: 'https://karpathy.ai/zero-to-hero.html', licence: 'Cours en ligne ; contenu cité, code non repris' }
@@ -36,7 +40,7 @@ cartes:
     etapes:
       - { code: 'graphe = [("d", "mul", "a", "b"), ("e", "add", "d", "c")]', fr: 'Chaque nœud : (nom, opération, parent 1, parent 2). L’ordre compte : `d` vient avant `e`.', en: 'Each node: (name, operation, parent 1, parent 2). Order matters: `d` comes before `e`.' }
       - { code: 'v = {"a": 2, "b": 3, "c": 4}', fr: 'Les valeurs des entrées.', en: 'The values of the inputs.' }
-      - { code: 'for nom, op, p, q in graphe:\n    v[nom] = v[p] * v[q] if op == "mul" else v[p] + v[q]', fr: 'On calcule chaque nœud à partir de ses parents, déjà connus.', en: 'We compute each node from its parents, already known.' }
+      - { code: "for nom, op, p, q in graphe:\n    v[nom] = v[p] * v[q] if op == \"mul\" else v[p] + v[q]", fr: 'On calcule chaque nœud à partir de ses parents, déjà connus.', en: 'We compute each node from its parents, already known.' }
       - { code: 'print(v["d"], v["e"])', fr: 'On affiche `6 10`.', en: 'We display `6 10`.' }
     verif: |-
       graphe = [("d", "mul", "a", "b"), ("e", "add", "d", "c")]

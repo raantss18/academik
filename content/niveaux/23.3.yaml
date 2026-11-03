@@ -8,6 +8,10 @@ titre:
 ia:
   fr: 'Kintana questionne un chiffre avant de le croire : échantillon, mesure, dénominateur, nombre de comparaisons.'
   en: 'Kintana questions a number before believing it: sample, measure, denominator, number of comparisons.'
+objectifs:
+  - { fr: 'comparer moyenne et médiane', en: 'compare mean and median' }
+  - { fr: 'recalculer des taux à groupe égal', en: 'recompute rates group by group' }
+  - { fr: 'compter les comparaisons', en: 'count the comparisons' }
 sources:
 - titre: Stanford Encyclopedia of Philosophy — Simpson’s Paradox
   url: https://plato.stanford.edu/entries/paradox-simpson/

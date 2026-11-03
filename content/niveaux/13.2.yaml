@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana sait calculer si un modèle tient dans la mémoire de ton appareil.
   en: Kintana can calculate whether a model fits in your device’s memory.
+objectifs:
+  - { fr: 'calculer la mémoire des poids', en: 'compute the memory of the weights' }
+  - { fr: 'ajouter le cache KV et une marge', en: 'add the KV cache and a margin' }
+  - { fr: 'dire si un modèle tient en mémoire', en: 'tell whether a model fits in memory' }
 sources:
 - titre: llama.cpp — dépôt officiel (quantification, mémoire, formats GGUF)
   url: https://github.com/ggml-org/llama.cpp

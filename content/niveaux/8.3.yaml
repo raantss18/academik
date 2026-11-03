@@ -4,6 +4,10 @@ module: 8
 duree_min: 15
 titre: { fr: 'Résumer', en: 'Summarising' }
 ia: { fr: 'Kintana résume une colonne de nombres en quelques chiffres et compare des groupes.', en: 'Kintana summarises a column of numbers in a few figures and compares groups.' }
+objectifs:
+  - { fr: 'calculer moyenne et médiane', en: 'compute mean and median' }
+  - { fr: 'mesurer la dispersion', en: 'measure spread' }
+  - { fr: 'comparer des groupes', en: 'compare groups' }
 sources:
   - { titre: 'Python — module statistics', url: 'https://docs.python.org/3/library/statistics.html', licence: 'PSF License (documentation officielle, citée)' }
 cartes:
@@ -12,7 +16,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       import statistics
@@ -117,7 +121,7 @@ cartes:
     lang: python
     etapes:
       - { code: 'ventes = [("tana", 10), ("fia", 7), ("tana", 14)]', fr: 'Trois ventes dans deux villes.', en: 'Three sales in two towns.' }
-      - { code: 'groupes = {}\nfor ville, montant in ventes:\n    groupes.setdefault(ville, []).append(montant)', fr: '`setdefault` crée la liste vide si la clé est nouvelle, puis on ajoute le montant.', en: '`setdefault` creates the empty list if the key is new, then we append the amount.' }
+      - { code: "groupes = {}\nfor ville, montant in ventes:\n    groupes.setdefault(ville, []).append(montant)", fr: '`setdefault` crée la liste vide si la clé est nouvelle, puis on ajoute le montant.', en: '`setdefault` creates the empty list if the key is new, then we append the amount.' }
       - { code: 'moyennes = {v: sum(m) / len(m) for v, m in groupes.items()}', fr: 'Pour chaque ville, la somme divisée par le nombre de ventes.', en: 'For each town, the sum divided by the number of sales.' }
       - { code: 'print(moyennes)', fr: "On affiche `{'tana': 12.0, 'fia': 7.0}`.", en: "We display `{'tana': 12.0, 'fia': 7.0}`." }
     verif: |-

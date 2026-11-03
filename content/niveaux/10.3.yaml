@@ -4,6 +4,10 @@ module: 10
 duree_min: 16
 titre: { fr: 'Autocorrélation', en: 'Autocorrelation' }
 ia: { fr: 'Kintana mesure à quel point une série ressemble à elle-même quelques pas plus tôt : sa mémoire.', en: 'Kintana measures how much a series resembles itself a few steps earlier: its memory.' }
+objectifs:
+  - { fr: 'calculer une autocorrélation', en: 'compute an autocorrelation' }
+  - { fr: 'lire la bande de significativité', en: 'read the significance band' }
+  - { fr: 'repérer la mémoire d''une série', en: 'spot the memory of a series' }
 sources:
   - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (autocorrélation)', url: 'https://otexts.com/fpp3/acf.html', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
   - { titre: 'Python — module math', url: 'https://docs.python.org/3/library/math.html', licence: 'PSF License (documentation officielle, citée)' }
@@ -41,9 +45,9 @@ cartes:
     titre: { fr: 'Calculer une autocorrélation', en: 'Computing an autocorrelation' }
     lang: python
     etapes:
-      - { code: 'x = [1, 2, 3, 4, 5]\nm = sum(x) / len(x)', fr: 'La série et sa moyenne, `3.0`.', en: 'The series and its mean, `3.0`.' }
-      - { code: 'k = 1\nnum = sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x)))', fr: 'Pour chaque `t` à partir de `k`, le produit des écarts à la moyenne de `x[t]` et de `x[t-k]`.', en: 'For each `t` from `k`, the product of the deviations from the mean of `x[t]` and `x[t-k]`.' }
-      - { code: 'den = sum((v - m) ** 2 for v in x)\nprint(round(num / den, 3))', fr: 'Le dénominateur est la somme des carrés des écarts. On affiche `0.4`.', en: 'The denominator is the sum of the squared deviations. We display `0.4`.' }
+      - { code: "x = [1, 2, 3, 4, 5]\nm = sum(x) / len(x)", fr: 'La série et sa moyenne, `3.0`.', en: 'The series and its mean, `3.0`.' }
+      - { code: "k = 1\nnum = sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x)))", fr: 'Pour chaque `t` à partir de `k`, le produit des écarts à la moyenne de `x[t]` et de `x[t-k]`.', en: 'For each `t` from `k`, the product of the deviations from the mean of `x[t]` and `x[t-k]`.' }
+      - { code: "den = sum((v - m) ** 2 for v in x)\nprint(round(num / den, 3))", fr: 'Le dénominateur est la somme des carrés des écarts. On affiche `0.4`.', en: 'The denominator is the sum of the squared deviations. We display `0.4`.' }
     verif: |-
       x = [1, 2, 3, 4, 5]
       m = sum(x) / len(x)

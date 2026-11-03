@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana sait combien de temps elle mettra à répondre et si elle a le droit d’utiliser son modèle.
   en: Kintana knows how long she will take to answer and whether she may use her model.
+objectifs:
+  - { fr: 'estimer la vitesse de génération', en: 'estimate generation speed' }
+  - { fr: 'distinguer prefill et decode', en: 'tell prefill from decode' }
+  - { fr: 'lire une licence de poids', en: 'read a weights licence' }
 sources:
 - titre: llama.cpp — dépôt officiel (inférence locale)
   url: https://github.com/ggml-org/llama.cpp

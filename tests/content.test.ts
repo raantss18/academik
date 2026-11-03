@@ -112,3 +112,18 @@ describe.skipIf(!lean)('contenu : chaque preuve Lean compile (E43)', () => {
   }
   it('au moins une preuve Lean est vérifiée', () => { expect(levels.flatMap(x => x.L.cartes).filter((c: any) => c.lang === 'lean').length).toBeGreaterThan(5); });
 });
+
+describe('R4 · sorties des exemples : exécutées, jamais inventées', () => {
+  it('cumule les étapes, attend la fin d’un bloc, refuse le hasard non fixé et s’arrête sur une erreur', async () => {
+    // @ts-expect-error module JS sans types
+    const { addOutputs } = await import('../scripts/sorties.mjs');
+    const ex = (...codes: (string | undefined)[]) => ({ type: 'exemple', lang: 'python', etapes: codes.map(code => ({ code, fr: '', en: '' })) });
+    const L = { a: { cartes: [ex('x = 2', 'print(x)', 'if x > 1:', '    print("grand")'), ex('import random', 'print(random.random())'), ex('print(1)', 'print(1 / 0)', 'print(3)'), { type: 'exemple', lang: 'bash', etapes: [{ code: 'ls', fr: '', en: '' }] }] } };
+    addOutputs(L);
+    const s = L.a.cartes.map(c => (c.etapes as { sortie?: string }[]).map(e => e.sortie));
+    expect(s[0]).toEqual([undefined, '2', undefined, 'grand']);
+    expect(s[1]).toEqual([undefined, undefined]);
+    expect(s[2]).toEqual(['1', undefined, undefined]);
+    expect(s[3]).toEqual([undefined]);
+  });
+});

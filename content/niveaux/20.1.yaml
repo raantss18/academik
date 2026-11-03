@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana mesure ses erreurs de la bonne façon, au-delà de la simple exactitude.
   en: Kintana measures her errors the right way, beyond mere accuracy.
+objectifs:
+  - { fr: 'calculer précision et rappel', en: 'compute precision and recall' }
+  - { fr: 'choisir un seuil selon les coûts', en: 'choose a threshold by the costs' }
+  - { fr: 'évaluer un modèle de langage', en: 'evaluate a language model' }
 sources:
 - titre: Hugging Face — LLM Course (évaluation)
   url: https://huggingface.co/learn/llm-course

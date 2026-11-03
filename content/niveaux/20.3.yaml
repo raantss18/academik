@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana regarde son propre fonctionnement avec des journaux, des métriques et des percentiles.
   en: Kintana watches her own operation with logs, metrics and percentiles.
+objectifs:
+  - { fr: 'écrire un journal structuré', en: 'write a structured log' }
+  - { fr: 'lire des percentiles p95 et p99', en: 'read p95 and p99 percentiles' }
+  - { fr: 'régler une alerte utile', en: 'set a useful alert' }
 sources:
 - titre: Google SRE Book — Monitoring Distributed Systems
   url: https://sre.google/sre-book/monitoring-distributed-systems/

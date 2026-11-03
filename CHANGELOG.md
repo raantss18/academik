@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Barre des références (R1–R8) : objectifs de chaque niveau annoncés et cochés en fin, sortie réelle sous les exemples Python, consignes en étapes, bouton « Niveau suivant » ; 59 codes d'exemple corrigés (`\n` littéral), fautes d'élision corrigées.
+
 ## [0.3.31] — 2026-11-03
 
 ### Message fr

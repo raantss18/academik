@@ -3,6 +3,10 @@ module: 4
 duree_min: 10
 titre: { fr: 'Vecteurs', en: 'Vectors' }
 ia: { fr: 'Kintana représente un texte par un vecteur de comptage, première brique de la similarité.', en: 'Kintana represents a text as a count vector, the first building block of similarity.' }
+objectifs:
+  - { fr: 'représenter un texte par un vecteur', en: 'represent a text as a vector' }
+  - { fr: 'additionner des vecteurs', en: 'add vectors' }
+  - { fr: 'multiplier un vecteur par un nombre', en: 'multiply a vector by a number' }
 sources:
   - { titre: 'Gilbert Strang — MIT 18.06, espaces vectoriels', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
 cartes:

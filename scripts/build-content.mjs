@@ -3,6 +3,7 @@ import { readFileSync, readdirSync, writeFileSync, mkdirSync, rmSync } from 'nod
 import { parse } from 'yaml';
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
+import { addOutputs } from './sorties.mjs';
 
 const TYPES = new Set(['tentative', 'idee', 'exemple', 'qcm', 'saisie', 'parsons', 'terminal', 'code', 'retenir', 'piege', 'plus']);
 
@@ -36,6 +37,9 @@ export function validateLevel(L, file) {
   const w = (s = '') => `${file}${s}`;
   for (const k of ['id', 'module', 'duree_min']) if (L[k] == null) err(w(), `champ « ${k} » manquant`);
   both(w(), L, 'titre'); both(w(), L, 'ia');
+  // R1 (barre des références) : 2 à 4 objectifs annoncés en tête et cochés à la fin, chacun court et commençant par un verbe.
+  if (!Array.isArray(L.objectifs) || L.objectifs.length < 2 || L.objectifs.length > 4) err(w(), 'objectifs : 2 à 4 (R1)');
+  (L.objectifs ?? []).forEach((o, i) => { bi(w(`.objectif${i}`), o); if (o?.fr && (o.fr.split(/\s+/).length > 12 || !/^[a-zà-ÿ]/.test(o.fr))) err(w(`.objectif${i}`), 'objectif : un verbe en minuscule, 12 mots au plus'); });
   if (!Array.isArray(L.sources) || !L.sources.length) err(w(), 'au moins une source (contenu sourcé)');
   const ids = new Set(); let scored = 0;
   if ((L.cartes ?? []).filter(c => c.defi === 2).length > 1) err(w('cartes'), 'au plus un défi ★★ par niveau');
@@ -109,6 +113,7 @@ export const revNow = () => Number(new Date().toISOString().replace(/\D/g, '').s
 if (process.argv[1] && process.argv[1].endsWith('build-content.mjs')) {
   let out;
   try { out = buildContent('.'); } catch (e) { console.error(e.message); process.exit(1); }
+  const sorties = addOutputs(out.levels);
   mkdirSync('src/generated', { recursive: true });
   const compat = JSON.parse(readFileSync('content/compat.json', 'utf8'));
   const pack = writePacks(out, Number(process.env.CONTENT_REV) || revNow(), compat.minBuild);
@@ -121,5 +126,5 @@ if (process.argv[1] && process.argv[1].endsWith('build-content.mjs')) {
   for (const [id, lvl] of Object.entries(levels)) { const m = String(lvl.module ?? id.split('.')[0]); (parModule[m] ??= { levels: {}, sha: {} }).levels[id] = lvl; parModule[m].sha[id] = sha[id]; }
   writeFileSync('src/generated/pack/tete.json', JSON.stringify(tete));
   for (const [m, part] of Object.entries(parModule)) writeFileSync(`src/generated/pack/module-${m.padStart(2, '0')}.json`, JSON.stringify(part));
-  console.log(`content.json (rév. ${pack.rev}) : ${Object.keys(out.levels).length} niveau(x), ${(json.length / 1024).toFixed(1)} Ko, ${(gzipSync(json).length / 1024).toFixed(1)} Ko gzip`);
+  console.log(`content.json (rév. ${pack.rev}) : ${Object.keys(out.levels).length} niveau(x), ${(json.length / 1024).toFixed(1)} Ko, ${(gzipSync(json).length / 1024).toFixed(1)} Ko gzip ; ${sorties} sortie(s) d’exemples exécutées`);
 }

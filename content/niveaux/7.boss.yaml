@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana sait séparer un vrai signal du hasard, et refuse les faux positifs."
   en: "Kintana can tell a real signal from chance, and rejects false positives."
+objectifs:
+  - { fr: 'fabriquer un faux signal reproductible', en: 'create a reproducible false signal' }
+  - { fr: 'quantifier l''incertitude', en: 'quantify uncertainty' }
+  - { fr: 'rejeter un signal après correction', en: 'reject a signal after correction' }
 sources:
   - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
     url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/

@@ -7,6 +7,10 @@ ia:
     fr: 'Kintana ordonne ses documents pour préparer la recherche.',
     en: 'Kintana orders its documents to prepare for searching.'
   }
+objectifs:
+  - { fr: 'trier selon une clé', en: 'sort by a key' }
+  - { fr: 'fusionner deux listes triées', en: 'merge two sorted lists' }
+  - { fr: 'distinguer tri stable et tri rapide', en: 'tell a stable sort from a fast one' }
 sources:
   - {
       titre: 'Python — Sorting HOWTO',

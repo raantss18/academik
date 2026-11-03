@@ -8,6 +8,10 @@ titre:
 ia:
   fr: 'Kintana choisit le mot suivant : sûr ou audacieux, selon un réglage de température.'
   en: 'Kintana chooses the next word: safe or bold, depending on a temperature setting.'
+objectifs:
+  - { fr: 'régler la température', en: 'set the temperature' }
+  - { fr: 'filtrer avec le top-k', en: 'filter with top-k' }
+  - { fr: 'tirer un token au hasard', en: 'draw a token at random' }
 sources:
 - titre: Holtzman et al. — The Curious Case of Neural Text Degeneration (top-p)
   url: https://arxiv.org/abs/1904.09751

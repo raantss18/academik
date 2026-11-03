@@ -3,6 +3,10 @@ module: 0
 duree_min: 12
 titre: { fr: 'Tiroirs', en: 'The pigeonhole principle' }
 ia: { fr: 'Kintana détecte quand une collision de codes est inévitable.', en: 'Kintana detects when a code collision is unavoidable.' }
+objectifs:
+  - { fr: 'nommer les objets et les tiroirs', en: 'name the objects and the boxes' }
+  - { fr: 'appliquer le principe des tiroirs', en: 'apply the pigeonhole principle' }
+  - { fr: 'prévoir une collision de codes', en: 'predict a collision of codes' }
 sources:
   - titre: MIT — Mathematics for Computer Science, counting
     url: https://courses.csail.mit.edu/6.042/spring18/mcs.pdf

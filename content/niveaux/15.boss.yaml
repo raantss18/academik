@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana agit avec des outils, sous la garde de ton programme, et sait refuser.
   en: Kintana acts with tools, under your program’s guard, and knows how to refuse.
+objectifs:
+  - { fr: 'garder chaque action avant exécution', en: 'guard every action before execution' }
+  - { fr: 'renvoyer les refus comme observations', en: 'return refusals as observations' }
+  - { fr: 'tester l''agent contre des attaques prévues', en: 'test the agent against planned attacks' }
 sources:
 - titre: Hugging Face — Agents Course
   url: https://huggingface.co/learn/agents-course

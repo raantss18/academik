@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana cite ses sources, vérifie ses citations et dit « je ne sais pas » quand elle ne trouve rien.
   en: Kintana cites her sources, checks her citations and says “I don’t know” when she finds nothing.
+objectifs:
+  - { fr: 'citer ses sources par numéro', en: 'cite sources by number' }
+  - { fr: 'vérifier chaque citation', en: 'check every citation' }
+  - { fr: 's''abstenir sous un seuil', en: 'abstain below a threshold' }
 sources:
 - titre: Lewis et al. — Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks
   url: https://arxiv.org/abs/2005.11401
@@ -217,8 +221,8 @@ cartes:
   note:
     kind: quiz
     poids: 1
-  fr: 'Défi. **Écris `repondre(question, resultats, seuil)`** : `resultats` est une liste de couples `(identifiant, score)` triée du meilleur au pire. Si elle est vide ou si le premier score est inférieur à `seuil`, renvoie `{"abstention": True, "reponse": "Je ne sais pas d''après les cours.", "sources": []}`. Sinon renvoie `{"abstention": False, "reponse": "À partir de " + ", ".join(ids), "sources": ids}` où `ids` sont les identifiants de score `>= seuil`.'
-  en: 'Challenge. **Write `repondre(question, resultats, seuil)`**: `resultats` is a list of `(identifier, score)` pairs sorted best to worst. If it is empty or if the first score is below `seuil`, return `{"abstention": True, "reponse": "Je ne sais pas d''après les cours.", "sources": []}`. Otherwise return `{"abstention": False, "reponse": "À partir de " + ", ".join(ids), "sources": ids}` where `ids` are the identifiers with score `>= seuil`.'
+  fr: "Défi. **Écris `repondre(question, resultats, seuil)`**. `resultats` est une liste de couples `(identifiant, score)`, triée du meilleur au pire.\n1. Si la liste est vide ou si le premier score est inférieur à `seuil`, renvoie `{\"abstention\": True, \"reponse\": \"Je ne sais pas d'après les cours.\", \"sources\": []}`.\n2. Sinon, garde dans `ids` les identifiants de score `>= seuil`.\n3. Renvoie `{\"abstention\": False, \"reponse\": \"À partir de \" + \", \".join(ids), \"sources\": ids}`."
+  en: "Challenge. **Write `repondre(question, resultats, seuil)`**. `resultats` is a list of `(identifier, score)` pairs, sorted best to worst.\n1. If the list is empty or if the first score is below `seuil`, return `{\"abstention\": True, \"reponse\": \"Je ne sais pas d'après les cours.\", \"sources\": []}`.\n2. Otherwise, keep in `ids` the identifiers with score `>= seuil`.\n3. Return `{\"abstention\": False, \"reponse\": \"À partir de \" + \", \".join(ids), \"sources\": ids}`."
   depart: |
     # écris ta fonction repondre ici
   tests: |-

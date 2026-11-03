@@ -3,6 +3,10 @@ module: 0
 duree_min: 13
 titre: { fr: 'Congruences', en: 'Congruences' }
 ia: { fr: 'Kintana calcule sur un alphabet circulaire et retrouve une lettre grâce à un inverse modulaire.', en: 'Kintana computes on a circular alphabet and recovers a letter using a modular inverse.' }
+objectifs:
+  - { fr: 'calculer un reste modulo n', en: 'compute a remainder modulo n' }
+  - { fr: 'réduire avant de calculer', en: 'reduce before computing' }
+  - { fr: 'défaire une opération avec un inverse modulaire', en: 'undo an operation with a modular inverse' }
 sources:
   - { titre: 'COMIMa — Théorie des nombres, chapitre 5, congruences et Bézout', url: 'https://www.comima.mg', licence: 'Textes Antsa : autorisation du 2026-11-01 ; tiers exclus' }
   - { titre: 'Szabolcs Tengely — Classical ciphers, Université de Debrecen', url: 'https://shrek.unideb.hu/~tengely/crypto/section-2.html', licence: 'Licence non vérifiée : référence en lien seulement, aucun extrait repris' }

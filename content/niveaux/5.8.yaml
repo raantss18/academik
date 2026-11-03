@@ -4,6 +4,10 @@ module: 5
 duree_min: 16
 titre: { fr: 'Intégrales', en: 'Integrals' }
 ia: { fr: 'Kintana mesure une aire sous une courbe, ce qui lui servira à calculer des probabilités et des moyennes continues.', en: 'Kintana measures an area under a curve, which will serve her to compute probabilities and continuous averages.' }
+objectifs:
+  - { fr: 'approcher une aire par des rectangles', en: 'approximate an area with rectangles' }
+  - { fr: 'calculer une intégrale avec une primitive', en: 'compute an integral with an antiderivative' }
+  - { fr: 'calculer une valeur moyenne', en: 'compute a mean value' }
 sources:
   - { titre: 'MIT 18.01 — Single Variable Calculus (intégrales)', url: 'https://ocw.mit.edu/courses/18-01-single-variable-calculus-fall-2006/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
 cartes:
@@ -48,7 +52,7 @@ cartes:
     lang: python
     etapes:
       - { code: 'f = lambda x: x', fr: 'La fonction $f(x)=x$, écrite en une ligne.', en: 'The function $f(x)=x$, written in one line.' }
-      - { code: 'a, b, n = 0, 1, 4\nh = (b - a) / n', fr: 'On découpe $[0,1]$ en 4 bandes de largeur $h=0{,}25$.', en: 'We cut $[0,1]$ into 4 strips of width $h=0.25$.' }
+      - { code: "a, b, n = 0, 1, 4\nh = (b - a) / n", fr: 'On découpe $[0,1]$ en 4 bandes de largeur $h=0{,}25$.', en: 'We cut $[0,1]$ into 4 strips of width $h=0.25$.' }
       - { code: 'total = sum(f(a + i * h) for i in range(n)) * h', fr: 'Pour chaque bande `i`, la hauteur est `f(a + i * h)` ; on additionne puis on multiplie par la largeur.', en: 'For each strip `i`, the height is `f(a + i * h)`; we add up then multiply by the width.' }
       - { code: 'print(total)', fr: 'On affiche `0.375`, un peu moins que l’aire exacte $0{,}5$ : les rectangles sont sous la droite.', en: 'We display `0.375`, a bit less than the exact area $0.5$: the rectangles lie under the line.' }
     verif: |-

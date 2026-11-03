@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana simule le hasard continu d’un prix, un pas après l’autre.
   en: Kintana simulates the continuous randomness of a price, one step at a time.
+objectifs:
+  - { fr: 'simuler un accroissement brownien', en: 'simulate a Brownian increment' }
+  - { fr: 'simuler un prix par Euler-Maruyama', en: 'simulate a price with Euler-Maruyama' }
+  - { fr: 'appliquer la correction d''Itô', en: 'apply the Itô correction' }
 sources:
 - titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
   url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/

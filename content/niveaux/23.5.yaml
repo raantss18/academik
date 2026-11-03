@@ -8,6 +8,10 @@ titre:
 ia:
   fr: 'Kintana audite la trace d’un agent : outils hors liste, boucles et triade mortelle.'
   en: 'Kintana audits an agent’s trace: off-list tools, loops and the lethal trifecta.'
+objectifs:
+  - { fr: 'lire une trace d''agent', en: 'read an agent trace' }
+  - { fr: 'auditer outils, boucles et triade', en: 'audit tools, loops and trifecta' }
+  - { fr: 'retirer une jambe de la triade', en: 'remove one leg of the trifecta' }
 sources:
 - titre: 'Willison — The lethal trifecta for AI agents: private data, untrusted content, and external communication (2025)'
   url: https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/

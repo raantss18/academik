@@ -4,6 +4,10 @@ module: 3
 duree_min: 16
 titre: { fr: 'Récursivité', en: 'Recursion' }
 ia: { fr: 'Kintana résout un problème en le ramenant à un problème plus petit de même forme.', en: 'Kintana solves a problem by reducing it to a smaller problem of the same shape.' }
+objectifs:
+  - { fr: 'écrire un cas de base et un appel plus petit', en: 'write a base case and a smaller call' }
+  - { fr: 'suivre la pile d''appels', en: 'follow the call stack' }
+  - { fr: 'éviter les recalculs par mémoïsation', en: 'avoid recomputing with memoisation' }
 sources:
   - { titre: 'Python — Tutoriel, définir des fonctions', url: 'https://docs.python.org/3/tutorial/controlflow.html#defining-functions', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'Python — sys.getrecursionlimit', url: 'https://docs.python.org/3/library/sys.html#sys.getrecursionlimit', licence: 'PSF License (documentation officielle, citée)' }
@@ -14,7 +18,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       def f(n):
@@ -61,7 +65,7 @@ cartes:
     lang: python
     etapes:
       - { code: 'def fact(n):', fr: 'On définit `fact`, qui doit renvoyer $n!=1\times2\times\dots\times n$.', en: 'We define `fact`, which must return $n!=1\times2\times\dots\times n$.' }
-      - { code: '    if n <= 1:\n        return 1', fr: 'Cas de base : `fact(0)` et `fact(1)` valent 1. Rien d’autre à calculer.', en: 'Base case: `fact(0)` and `fact(1)` are 1. Nothing else to compute.' }
+      - { code: "    if n <= 1:\n        return 1", fr: 'Cas de base : `fact(0)` et `fact(1)` valent 1. Rien d’autre à calculer.', en: 'Base case: `fact(0)` and `fact(1)` are 1. Nothing else to compute.' }
       - { code: '    return n * fact(n - 1)', fr: 'Cas général : $n!=n\times(n-1)!$. Le problème est plus petit d’un cran.', en: 'General case: $n!=n\times(n-1)!$. The problem is smaller by one step.' }
       - { code: 'print(fact(4))', fr: '`fact(4)` = 4 × 3 × 2 × 1 = 24, calculé en remontant les appels.', en: '`fact(4)` = 4 × 3 × 2 × 1 = 24, computed by going back up the calls.' }
     verif: |-
@@ -143,8 +147,8 @@ cartes:
     lang: python
     etapes:
       - { code: 'memo = {}', fr: 'Un dictionnaire garde les résultats déjà calculés : c’est la **mémoïsation**.', en: 'A dictionary keeps results already computed: this is **memoisation**.' }
-      - { code: 'def fib(n):\n    if n < 2:\n        return n', fr: 'Cas de base : $F(0)=0$ et $F(1)=1$.', en: 'Base case: $F(0)=0$ and $F(1)=1$.' }
-      - { code: '    if n not in memo:\n        memo[n] = fib(n - 1) + fib(n - 2)\n    return memo[n]', fr: 'On ne calcule `n` que s’il n’est pas déjà dans `memo`. Chaque valeur est donc calculée une seule fois.', en: 'We only compute `n` if it is not already in `memo`. Each value is thus computed only once.' }
+      - { code: "def fib(n):\n    if n < 2:\n        return n", fr: 'Cas de base : $F(0)=0$ et $F(1)=1$.', en: 'Base case: $F(0)=0$ and $F(1)=1$.' }
+      - { code: "    if n not in memo:\n        memo[n] = fib(n - 1) + fib(n - 2)\n    return memo[n]", fr: 'On ne calcule `n` que s’il n’est pas déjà dans `memo`. Chaque valeur est donc calculée une seule fois.', en: 'We only compute `n` if it is not already in `memo`. Each value is thus computed only once.' }
       - { code: 'print(fib(30))', fr: '`fib(30)` répond tout de suite : `832040`. Sans mémoire, cela ferait plus d’un million d’appels.', en: '`fib(30)` answers at once: `832040`. Without memory, that would be over a million calls.' }
     verif: |-
       memo = {}

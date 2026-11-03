@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana demande des actions, et ton programme les valide et les exécute.
   en: Kintana requests actions, and your program validates and executes them.
+objectifs:
+  - { fr: 'valider un appel d''outil', en: 'validate a tool call' }
+  - { fr: 'renvoyer une observation', en: 'return an observation' }
+  - { fr: 'refuser `eval` sur un argument', en: 'refuse `eval` on an argument' }
 sources:
 - titre: Hugging Face — Agents Course
   url: https://huggingface.co/learn/agents-course

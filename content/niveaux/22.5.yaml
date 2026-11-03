@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana mesure à quel point son modèle est surpris par un vrai texte, avec la perte qu’elle minimise à l’entraînement.
   en: Kintana measures how surprised her model is by a real text, using the loss she minimises during training.
+objectifs:
+  - { fr: 'calculer une entropie croisée', en: 'compute a cross-entropy' }
+  - { fr: 'calculer une divergence KL', en: 'compute a KL divergence' }
+  - { fr: 'mesurer une perplexité', en: 'measure a perplexity' }
 sources:
 - titre: Shannon — A Mathematical Theory of Communication (1948)
   url: https://people.math.harvard.edu/~ctm/home/text/others/shannon/entropy/entropy.pdf

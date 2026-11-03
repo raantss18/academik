@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana découpe le texte en morceaux numérotés, comme le font tous les modèles de langage.
   en: Kintana cuts text into numbered pieces, as every language model does.
+objectifs:
+  - { fr: 'découper un texte en tokens', en: 'split a text into tokens' }
+  - { fr: 'fusionner les paires fréquentes (BPE)', en: 'merge frequent pairs (BPE)' }
+  - { fr: 'encoder et décoder', en: 'encode and decode' }
 sources:
 - titre: Sennrich, Haddow, Birch — Neural Machine Translation of Rare Words with Subword Units (BPE)
   url: https://arxiv.org/abs/1508.07909

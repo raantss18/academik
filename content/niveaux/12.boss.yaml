@@ -8,6 +8,10 @@ titre:
 ia:
   fr: 'Kintana génère du texte : tu as assemblé la boucle complète d’un transformer.'
   en: 'Kintana generates text: you assembled the complete loop of a transformer.'
+objectifs:
+  - { fr: 'enchaîner les étapes d''une génération', en: 'chain the steps of a generation' }
+  - { fr: 'choisir le prochain token', en: 'choose the next token' }
+  - { fr: 'comparer glouton et tirage', en: 'compare greedy and sampling' }
 sources:
 - titre: Vaswani et al. — Attention Is All You Need
   url: https://arxiv.org/abs/1706.03762

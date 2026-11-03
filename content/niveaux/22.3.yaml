@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana écrit la spécification d’une de ses fonctions et la prouve en Lean pour toutes les listes.
   en: Kintana writes the specification of one of her functions and proves it in Lean for every list.
+objectifs:
+  - { fr: 'écrire une spécification', en: 'write a specification' }
+  - { fr: 'prouver une propriété sur les listes', en: 'prove a property about lists' }
+  - { fr: 'distinguer tester et prouver', en: 'tell testing from proving' }
 sources:
 - titre: Avigad, de Moura, Kong, Ullrich — Theorem Proving in Lean 4, « Inductive Types » et « Tactics »
   url: https://lean-lang.org/theorem_proving_in_lean4/

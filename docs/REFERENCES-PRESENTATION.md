@@ -14,8 +14,8 @@
 | **3Blue1Brown** | l'intuition d'abord, par l'image animée, puis la formule | non | figure d'intuition avant toute formule ; animations douces ; **aucune équation dans l'image** |
 | **Math Academy** | graphe de prérequis, révisions qui tiennent compte de ce qui est acquis | non | prérequis affichés ; réparation de 2 min si un prérequis est raté (T-001) |
 | **Duolingo** | chemin unique, micro-leçons, série, célébration brève | non | carte, série, XP (fait) ; célébration sobre, pas de vies |
-| **TryHackMe** | tâches avec questions intégrées au texte, terminal à côté | non | missions à flag local, terminal simulé (phase 3) |
-| **Linux Journey** | leçons très courtes avec un petit quiz | non | idem (modules 1) |
+| **TryHackMe** | tâches avec questions intégrées au texte, terminal à côté, étapes numérotées « You'll need to… », durée affichée | **oui** (3 nov. 2026, « Linux Fundamentals Pt1 ») | missions à flag local, terminal simulé (phase 3) |
+| **Linux Journey** | leçons très courtes, une question après chaque section, sortie montrée sous chaque commande, points retenus en fin | **oui** (3 nov. 2026, « stdout », site redirigé vers labex.io) | idem (modules 1) |
 | **The Rust Book** | encadrés typés (astuce, avertissement), extraits exécutables, très bonne typographie | non | encadrés « À retenir / Piège / Plus loin », code coloré et exécutable |
 | **freeCodeCamp / Exercism** | exercices de code testés automatiquement, un test à la fois | non | tests unitaires par exercice (Pyodide, phase 3) |
 | **CS50 / MIT OCW** | rigueur, sources ouvertes, notes de cours très propres | non | contenu sourcé, licences vérifiées (fait) |

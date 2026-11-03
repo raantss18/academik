@@ -22,7 +22,7 @@
   import { python, type PyResult } from '../lib/python';
   import { newTerm, run as runCmd, check as checkTerm, type Term } from '../lib/terminal';
 
-  let { level, onexit, onreplay, startAt = 0 }: { level: Level; onexit: () => void; onreplay: () => void; startAt?: number } = $props();
+  let { level, onexit, onreplay, startAt = 0, nextLevel, onnext }: { level: Level; onexit: () => void; onreplay: () => void; startAt?: number; nextLevel?: string; onnext?: (id: string) => void } = $props();
 
   // `level` ne change pas pendant une leçon (le parent recrée le composant avec {#key}) : lecture initiale voulue.
   /* svelte-ignore state_referenced_locally */
@@ -60,9 +60,11 @@
   });
   /* svelte-ignore state_referenced_locally */
   const total = level.cartes.length, noted = level.cartes.filter(c => c.note && c.defi !== 2).length;
+  /* svelte-ignore state_referenced_locally */
   const defi2 = level.cartes.find(c => c.defi === 2);
   const t = (x: Partial<{ fr: string; en: string }> | undefined) => i18n.t(x);
   const exLines = $derived(card.type === 'exemple' ? card.etapes!.map((e, k) => ({ k, code: e.code })).filter((x): x is { k: number; code: string } => !!x.code && x.k <= step) : []);
+  const exOut = $derived(card.type === 'exemple' ? card.etapes!.slice(0, step + 1).map(e => e.sortie).filter(Boolean).join('\n') : '');
   const body = $derived(i18n.t(card as { fr?: string; en?: string }));
   const choices = $derived(card.choix ? shuffled(card.choix.map((c, i) => ({ c, i })), `${run}${card.id}`) : []);
   const pool = $derived(card.lignes ? shuffled(card.lignes.map((l, i) => ({ l, i })), `${run}${card.id}`, true) : []);
@@ -123,12 +125,17 @@
       <span class="muted">{idx + 1}/{total}</span>
     </header>
 
+    {#if idx === 0 && !level.review && level.objectifs?.length}
+      <section class="goals" aria-label={ui('goals_title')}><strong>{ui('goals_title')}</strong>
+        <ul>{#each level.objectifs as o}<li>{@html md(t(o))}</li>{/each}</ul></section>
+    {/if}
     <article class="card" aria-live="polite" use:typeset={[idx, step, !!result, showHint, i18n.lang]}>
       {#if card.defi}<p class="tag" class:two={card.defi === 2}>{card.defi === 2 ? ui('challenge2') : ui('challenge')}</p>{/if}
       {#if card.type === 'exemple'}
         <h2>{@html md(t(card.titre))}</h2>
         <div class="ex">
           {#if exLines.length}<pre class="code"><code>{#each exLines as ln}<span class="ln" class:cur={ln.k === step}>{@html highlight(ln.code, card.lang ?? 'python')}</span>{'\n'}{/each}</code></pre>{/if}
+          {#if exOut}<div class="out"><span class="out-l">{ui('output')}</span><pre>{exOut}</pre></div>{/if}
           <ol class="steps">
             {#each card.etapes!.slice(0, step + 1) as e, k}<li class:cur={k === step}>{@html md(t(e))}</li>{/each}
           </ol>
@@ -221,8 +228,15 @@
       {#if defi2 && (progress.best(level.id).get(defi2.id) ?? 0) > 0}<p class="mon"><span aria-hidden="true">🏅</span> {ui('challenge2_done')}</p>{/if}
       {#if monument}<p class="mon"><span aria-hidden="true">🏛️</span> {monument}</p>{/if}
       <p>{score + 1e-9 >= UNLOCK_THRESHOLD ? ui('unlocked') : ui('need')}</p>
+      {#if level.objectifs?.length}
+        {@const ok = score + 1e-9 >= UNLOCK_THRESHOLD}
+        <section class="goals end" aria-label={ok ? ui('goals_done') : ui('goals_todo')}><strong>{ok ? ui('goals_done') : ui('goals_todo')}</strong>
+          <ul class:done={ok}>{#each level.objectifs as o}<li>{@html md(t(o))}</li>{/each}</ul></section>
+      {/if}
       <div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(t(level.ia))}</div>
-      <div class="foot"><button class="btn" onclick={replay}>{ui('replay')}</button><button class="btn primary" onclick={onexit}>{ui('back')}</button></div>
+      <div class="foot"><button class="btn" onclick={replay}>{ui('replay')}</button>
+        {#if nextLevel && onnext && score + 1e-9 >= UNLOCK_THRESHOLD}<button class="btn" onclick={onexit}>{ui('back')}</button><button class="btn primary" onclick={() => onnext(nextLevel)}>{ui('next_level')} · {nextLevel}</button>
+        {:else}<button class="btn primary" onclick={onexit}>{ui('back')}</button>{/if}</div>
       {/if}
     </section>
   {/if}
@@ -252,6 +266,10 @@
   .conf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
   .chipbtn { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; cursor: pointer; } .chipbtn.on { background: var(--c-primary); color: var(--c-on-primary); border-color: var(--c-primary); } .chipbtn:disabled { cursor: default; }
   .cn { font-weight: 600; }
+  .out { margin-top: -6px; border-radius: 0 0 14px 14px; background: #0f1411; color: #d7e5d9; padding: 8px 14px 10px; } .out pre { margin: 0; padding: 0; border: 0; background: none; color: inherit; white-space: pre-wrap; overflow-wrap: anywhere; font: .92rem/1.45 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; } .out-l { display: block; font-size: .72rem; letter-spacing: .5px; text-transform: uppercase; color: #9fb8a6; }
+  .goals { margin: 0 0 12px; padding: 12px 16px; border-radius: 16px; background: var(--c-surface); border: 1px solid var(--c-border); }
+  .goals ul { margin: 6px 0 0; padding-left: 1.2em; } .goals li { margin: 2px 0; }
+  .goals.end { text-align: left; margin: 12px 0; } .goals ul.done { list-style: none; padding-left: 0; } .goals ul.done li::before { content: '✓ '; color: var(--c-primary); font-weight: 800; }
   .fb { margin-top: 16px; padding: 12px 16px; border-radius: 16px; background: var(--c-accent-soft); border: 1px solid var(--c-accent); }
   .fb.good { background: var(--c-primary-soft); border-color: var(--c-primary); } .fb p { margin: 6px 0 0; } .small { font-size: .9rem; }
   .foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; position: sticky; bottom: 0; padding: 10px 0 calc(var(--sab) + 10px); background: linear-gradient(transparent, color-mix(in srgb, var(--c-bg) 60%, transparent) 70%); }
