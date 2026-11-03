@@ -156,6 +156,40 @@ cartes:
           return total / (b - a)
     indice: { fr: 'Même boucle que `trapeze`, puis une division finale par `b - a`.', en: 'Same loop as `trapeze`, then a final division by `b - a`.' }
     explication: { fr: 'Pour $x^2$ sur $[0,3]$ : l’intégrale vaut $9$, la moyenne $3$.', en: 'For $x^2$ on $[0,3]$: the integral is $9$, the mean $3$.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `simpson(f, a, b, n)`** avec `n` pair : $h=(b-a)/n$ et $\frac{h}{3}\,(f_0 + 4f_1 + 2f_2 + 4f_3 + \dots + 4f_{n-1} + f_n)$, où $f_i = f(a + ih)$. Les points d’indice impair ont le poids 4.'
+    en: 'Challenge. **Write `simpson(f, a, b, n)`** with `n` even: $h=(b-a)/n$ and $\frac{h}{3}\,(f_0 + 4f_1 + 2f_2 + 4f_3 + \dots + 4f_{n-1} + f_n)$, where $f_i = f(a + ih)$. Points with an odd index have weight 4.'
+    depart: |
+      import math
+
+      # écris ta fonction simpson ici
+    tests: |
+      import math
+      assert abs(simpson(lambda x: x ** 3, 0, 2, 2) - 4) < 1e-12
+      assert abs(simpson(lambda x: x ** 2, 0, 3, 4) - 9) < 1e-12
+      assert abs(simpson(math.sin, 0, math.pi, 10) - 2) < 2e-4
+      assert abs(simpson(math.sin, 0, math.pi, 10) - 2) > 1e-6
+    solutionCode: |
+      def simpson(f, a, b, n):
+          h = (b - a) / n
+          total = f(a) + f(b)
+          for i in range(1, n):
+              if i % 2 == 1:
+                  total = total + 4 * f(a + i * h)
+              else:
+                  total = total + 2 * f(a + i * h)
+          return h / 3 * total
+    indice:
+      fr: Commence par `f(a) + f(b)`. Pour `i` de 1 à `n - 1`, ajoute `4 * f(a + i * h)` si `i` est impair, `2 * f(a + i * h)` sinon.
+      en: Start with `f(a) + f(b)`. For `i` from 1 to `n - 1`, add `4 * f(a + i * h)` if `i` is odd, `2 * f(a + i * h)` otherwise.
+    explication:
+      fr: 'Simpson remplace la courbe par des morceaux de paraboles : il est exact pour les polynômes de degré 3, et bien plus précis que les trapèzes à nombre de points égal.'
+      en: 'Simpson replaces the curve by pieces of parabolas: it is exact for polynomials of degree 3, and much more accurate than trapezoids for the same number of points.'
   - id: c8
     type: retenir
     fr: 'Intégrale = aire signée sous la courbe, approchée par des rectangles ou des trapèzes ; $\int_a^bf=F(b)-F(a)$ si $F''=f$ ; une densité intégrée donne une probabilité ; divisée par $b-a$, une moyenne.'

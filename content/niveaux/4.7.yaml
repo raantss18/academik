@@ -168,6 +168,54 @@ cartes:
           return r
     indice: { fr: 'Pour chaque colonne, cherche un pivot non nul sous la ligne `r` ; échange, annule en dessous, et compte un pivot de plus.', en: 'For each column, look for a non-zero pivot below row `r`; swap, clear below, and count one more pivot.' }
     explication: { fr: 'Les lignes dépendantes deviennent des lignes nulles : elles ne fournissent aucun pivot, donc ne comptent pas.', en: 'Dependent rows become zero rows: they supply no pivot, hence do not count.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: Défi. **Écris `determinant(M)`** pour une matrice carrée, par élimination de Gauss avec des `Fraction`. Le déterminant est le produit des pivots, et chaque échange de deux lignes change son signe. Sans pivot dans une colonne, il vaut 0.
+    en: Challenge. **Write `determinant(M)`** for a square matrix, by Gaussian elimination with `Fraction`. The determinant is the product of the pivots, and each swap of two rows changes its sign. With no pivot in a column, it is 0.
+    depart: |
+      from fractions import Fraction
+
+      # écris ta fonction determinant ici
+    tests: |
+      assert determinant([[5]]) == 5
+      assert determinant([[1, 2], [3, 4]]) == -2
+      assert determinant([[0, 1], [1, 0]]) == -1
+      assert determinant([[1, 2], [2, 4]]) == 0
+      assert determinant([[2, 0, 1], [1, 3, 2], [1, 1, 2]]) == 6
+      assert determinant([[0, 2, 1], [3, 0, 0], [0, 0, 4]]) == -24
+    solutionCode: |
+      from fractions import Fraction
+
+      def determinant(M):
+          A = [[Fraction(x) for x in ligne] for ligne in M]
+          n = len(A)
+          det = Fraction(1)
+          for c in range(n):
+              p = None
+              for i in range(c, n):
+                  if A[i][c] != 0:
+                      p = i
+                      break
+              if p is None:
+                  return 0
+              if p != c:
+                  A[c], A[p] = A[p], A[c]
+                  det = -det
+              det = det * A[c][c]
+              for i in range(c + 1, n):
+                  f = A[i][c] / A[c][c]
+                  A[i] = [a - f * b for a, b in zip(A[i], A[c])]
+          return det
+    indice:
+      fr: 'Reprends `rang` : cherche un pivot non nul dans la colonne `c`. Après un échange, fais `det = -det`, puis multiplie `det` par le pivot.'
+      en: 'Start from `rang`: look for a non-zero pivot in column `c`. After a swap, do `det = -det`, then multiply `det` by the pivot.'
+    explication:
+      fr: 'Ajouter à une ligne un multiple d’une autre ne change pas le déterminant : il ne reste qu’un triangle, dont le déterminant est le produit de la diagonale.'
+      en: 'Adding a multiple of one row to another does not change the determinant: only a triangle remains, whose determinant is the product of the diagonal.'
   - id: c8
     type: retenir
     fr: 'Rang = nombre de directions indépendantes ; noyau = ce qui est écrasé en 0 ; rang + dimension du noyau = nombre de colonnes. Une base : des vecteurs indépendants qui donnent chaque vecteur d’une seule façon.'

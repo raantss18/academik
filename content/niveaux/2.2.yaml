@@ -336,6 +336,40 @@ cartes:
           print("normale")
     indice: { fr: 'Teste d’abord la règle la plus rare : la divisibilité par 400. Puis 100, puis 4. Le reste de la division se calcule avec `%`.', en: 'Test the rarest rule first: divisibility by 400. Then 100, then 4. The remainder of a division is computed with `%`.' }
     explication: { fr: 'Du plus rare au plus courant : 400, puis 100, puis 4. La première condition vraie décide.', en: 'From rarest to most common: 400, then 100, then 4. The first true condition decides.' }
+  - id: c10b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: Défi. Les variables `annee` et `mois` sont écrites. **Affiche le nombre de jours** de ce mois. Avril, juin, septembre et novembre ont 30 jours ; février en a 29 les années bissextiles, 28 sinon ; les autres mois en ont 31.
+    en: Challenge. The variables `annee` and `mois` are written. **Print the number of days** of this month. April, June, September and November have 30 days; February has 29 in leap years, 28 otherwise; the other months have 31.
+    depart: |
+      annee = 2024
+      mois = 2
+
+      # écris tes conditions ici
+    tests: |
+      for a, m, attendu in [(2024, 2, "29"), (2023, 2, "28"), (1900, 2, "28"), (2000, 2, "29"), (2023, 4, "30"), (2023, 11, "30"), (2023, 1, "31"), (2023, 12, "31"), (2023, 7, "31")]:
+          assert _essai(annee=a, mois=m) == attendu
+    solutionCode: |
+      annee = 2024
+      mois = 2
+      if mois == 2:
+          if annee % 400 == 0 or (annee % 4 == 0 and annee % 100 != 0):
+              print(29)
+          else:
+              print(28)
+      elif mois == 4 or mois == 6 or mois == 9 or mois == 11:
+          print(30)
+      else:
+          print(31)
+    indice:
+      fr: Traite février à part, avec la règle du défi précédent. Pour les mois de 30 jours, relie les quatre tests par `or`.
+      en: Handle February separately, with the rule of the previous challenge. For the 30-day months, join the four tests with `or`.
+    explication:
+      fr: 'Une condition dans une condition : on décide d’abord le mois, puis, seulement pour février, l’année.'
+      en: 'A condition inside a condition: first decide the month, then, only for February, the year.'
   - id: d_lien
     type: idee
     fr: 'Les conditions servent partout. Tu les mettras dans des boucles au niveau 2.3, et dans la validation d’entrées du boss 2.boss.'
