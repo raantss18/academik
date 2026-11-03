@@ -116,7 +116,7 @@ describe('refonte immersive, étape 2 : ruban doré, rapport de mission, écran 
 describe('E50 · critique de design : carte lisible, liste et leçon au langage de la carte', () => {
   it('carte dessinée assez grand (zone tactile ≥ 44 px sur la vraie carte complète)', () => {
     const c = readFileSync('src/ui/City.svelte', 'utf8');
-    expect(c).toContain('const BASE = 2300;'); expect(c).toContain('min-width: 2300px'); expect(c).toContain('svg.style.minWidth = `${BASE * nz}px`');
+    expect(c).toContain('const BASE = 2300;'); expect(c).toContain('min-width: 2300px'); expect(c).toContain('el.style.minWidth = `${BASE * nz}px`');
     // zone tactile r = 30 → 60 × BASE / largeur de la vue ≥ 44 px, mesurée sur la vraie carte complète
     const p = JSON.parse(readFileSync('src/generated/content.json', 'utf8')), sc: Record<string, number> = {}; for (const id of Object.keys(p.levels)) sc[id] = .9;
     const vb = renderCity(buildDistricts({ modules: p.cursus.modules, levels: p.levels, scores: sc, open: new Set(Object.keys(p.levels)), current: '2.2', t: (x: { fr: string }) => x.fr, fr: true }), { reduce: true }).svg.match(/viewBox="[^ ]+ [^ ]+ ([^ ]+) /)!;
@@ -196,5 +196,39 @@ describe('E54 · relief sur les îles et îlots déserts pour le décor', () => 
     expect(ilots.length).toBeGreaterThanOrEqual(Math.ceil(d.length / 2));
     for (const i of ilots) expect(i).not.toContain('class="pin"');
     expect((out.svg.match(/class="pin"/g) ?? []).length).toBe(d.reduce((s, x) => s + x.levels.length, 0));
+  });
+});
+
+describe('E55 · accueil qui clignotait : décor en image fixe ; relief en plateaux et rivières', () => {
+  const d = buildDistricts(input({ scores: { '0.1': 1 }, open: new Set(['0.1', '0.2']), current: '0.2' }));
+  const out = renderCity(d, { seed: 7 }), c = readFileSync('src/ui/City.svelte', 'utf8'), g = readFileSync('src/lib/city/gen.js', 'utf8');
+  it('le décor est une image sans animation ; repères, enseignes et légendes restent dans un calque léger', () => {
+    expect(out.decor).not.toMatch(/<animate|class="pin"|class="legende"|var\(--font\)/);
+    expect(out.decor).toMatch(/^<svg viewBox="[^"]+" width="[\d.]+" height="[\d.]+" xmlns/);
+    expect((out.over.match(/class="pin"/g) ?? []).length).toBe(d.reduce((s, x) => s + x.levels.length, 0));
+    expect((out.over.match(/class="legende"/g) ?? []).length).toBe(d.length);
+    // le calque reste petit : moins d'un dixième des formes du décor
+    const formes = (s: string) => (s.match(/<(polygon|polyline|path|ellipse|circle|rect|line|text)\b/g) ?? []).length;
+    expect(formes(out.over) * 10).toBeLessThan(formes(out.decor));
+  });
+  it('l’écran affiche l’image et le calque, et garde le générateur et l’adresse de l’image entre deux visites', () => {
+    expect(c).toContain('<img src={out.url} alt=""'); expect(c).toContain('{@html out.out.over}');
+    expect(c).toContain('let gen = $state<Gen | null>(genMod)'); expect(c).toContain('if (memo) URL.revokeObjectURL(memo.url);');
+    expect(c).not.toContain('{@html out.svg}');
+  });
+  it('chaque île a un haut plateau ou une rivière qui tombe en cascade, et des ponts sur la rivière', () => {
+    expect(g).toContain('function mesa('); expect(g).toContain('function eau('); expect(g).toContain('function cascade('); expect(g).toContain('croise(rd.pts[i - 1], rd.pts[i], sg.a, sg.b)');
+    expect((out.decor.match(/stroke="#e8fbff"/g) ?? []).length).toBeGreaterThanOrEqual(d.length);   // au moins une chute d'eau par île
+    expect(out.decor).toContain('fill="url(#dome)"');
+  });
+});
+
+describe('E55 · aucun îlot plat', () => {
+  it('chaque îlot porte un plateau ou un pic rocheux', () => {
+    const out = renderCity(buildDistricts(input()), { seed: 7 });
+    const ilots = out.decor.split('<g class="ilot">').slice(1).map(x => x.slice(0, x.indexOf('</g>')));
+    expect(ilots.length).toBeGreaterThan(0);
+    // un pic ou un plateau = au moins 5 facettes de roche (polygones cernés d'un trait de .6) sur le dessus de l'îlot ; les arbres n'en ont pas
+    for (const i of ilots) expect((i.split('fill="url(#dome)"')[1].match(/<polygon [^>]*stroke-width="\.6"/g) ?? []).length).toBeGreaterThanOrEqual(5);
   });
 });

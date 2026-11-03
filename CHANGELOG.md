@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Accueil plus fluide et sans clignotement (la carte est dessinée une fois) ; îles en relief avec hauts plateaux, rivières, ponts et cascades. / Smoother home screen without flicker (the map is drawn once); islands with highlands, rivers, bridges and waterfalls.
+
 ## [0.3.35] — 2026-11-03
 
 ### Message fr

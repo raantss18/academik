@@ -190,3 +190,9 @@
 
 - **Fait** : ressources (E48 ville figée au repos, fond WebGL robuste ; E49 Python libéré, ville mémorisée) ; refonte d'après les images d'Antsa (dossier et rapport de mission, ruban doré, en-tête en duel, carte fantastique : îles flottantes, ponts, relief, îlots, chemin des leçons, légendes) ; critique de design (E50 : carte lisible au doigt, contraste AA) ; 888 tests.
 - **Non vérifié** : vrai téléphone (carte ≈ 27 000 éléments : fluidité du défilement), lecteur d'écran, vrais élèves.
+
+### Accueil sans clignotement, relief et rivières (2026-11-03, E55)
+
+- **Fait** : la carte devient une image SVG fixe (sans animation) + un calque léger pour les repères, enseignes et légendes (≈ 2 000 formes dans la page au lieu de ≈ 28 000, 1 animation au lieu de 368) ; générateur et image gardés entre deux visites ; hauts plateaux en falaise avec pics, rivière qui en descend, traverse la ville (ponts) et tombe en cascade ; modelé des îles et îlots.
+- **Vérifié** : navigateur 375 px et bureau ; retour sur l'accueil 26 ms (avant ≈ 220 ms et « … ») ; repères cliquables ; zoom aligné (image et calque) ; `npm run verify`.
+- **Non vérifié** : vrai téléphone (fluidité du défilement attendue bien meilleure, à confirmer).
