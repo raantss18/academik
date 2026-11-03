@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Refonte au plus près des images de référence (E51) : cartes de joueur (toi et Kintana), pastille « Mission », grands titres jaunes, carte topographique avec chemin pointillé, coches vertes, cible et plaques de progression ; liens lisibles en sombre.
+
 - Critique de design (E50) : carte lisible au doigt (repères plus grands, texte des bannières lisible), bannières au contraste AA, liste en bannières et médaillons, briefing de mission au début des leçons.
 
 - Refonte immersive, étape 2 : ruban doré pour les points et la série, rapport de mission en fin de leçon, écran de chargement aux couleurs de la carte.

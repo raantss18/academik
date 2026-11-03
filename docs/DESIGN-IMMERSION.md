@@ -110,3 +110,16 @@ On reprend des **principes visuels**, aucune image.
 - **Ruban doré** dans l'en-tête (1re référence) : points et série réunis sur un ruban à queues, sur la ville comme dans la liste.
 - **Rapport de mission** en fin de leçon : même papier que le dossier, onglet, tampon « Mission accomplie » ou « À reprendre », étoiles dorées.
 - **Écran de chargement** (site et apps) : la nuit de la carte, le logo, un ruban doré animé (fixe si l'on demande moins d'animations).
+
+## Refonte immersive, étape 3 : au plus près des images de référence (3 nov. 2026)
+Demande d'Antsa : « en te basant sur les photos données ». Correspondance, élément par élément (transposée en vecteur, sans reprendre d'image) :
+
+| Référence | Élément | Dans academik |
+| --- | --- | --- |
+| 1 (chasse) | cartes de joueur à gauche et à droite, avatar et badge de niveau | ta carte (avatar, badge = niveaux réussis, gain du jour) et celle de Kintana (badge = modules terminés) ; sur téléphone, avatars seuls |
+| 1 | bandeau doré central « 1000 » + pastille « Round 1 » | ruban doré (points, série) + pastille « M Mission 1.2 » qui lance la mission |
+| 1 et 2 | grand titre jaune cerné de noir en bas | « Construis ton IA » au chargement ; « Mission accomplie ! » au-dessus du rapport |
+| 2 (missions) | carte topographique | courbes de niveau autour de chaque île |
+| 2 | chemin pointillé blanc, coches vertes, cible rouge | pointillés entre les niveaux d'un quartier (vifs entre niveaux réussis), coche verte sur les réussis, cible au sol sous le niveau à jouer |
+| 2 | fiche « Information » avec photo et tampon | dossier de mission (étape 1) |
+| 3 (fantastique) | médaillons, bannières avec texte descriptif | médaillons (étape 1) ; plaque « réussis/total · ★ » sous chaque bannière |
