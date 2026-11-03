@@ -201,6 +201,39 @@ cartes:
           return {"exactitude": (vp + vn) / total, "precision": precision, "rappel": rappel, "f1": f1}
     indice: { fr: 'Compte VP, FP, FN, VN, puis calcule les quatre mesures. Le $F_1$ est nul si précision et rappel sont nuls.', en: 'Count TP, FP, FN, TN, then compute the four measures. $F_1$ is zero if precision and recall are zero.' }
     explication: { fr: 'Dans le dernier test, le modèle n’annonce jamais « oui » : exactitude parfaite (1.0) mais précision, rappel et $F_1$ nuls. C’est exactement le piège de l’exactitude seule.', en: 'In the last test, the model never announces “yes”: perfect accuracy (1.0) but zero precision, recall and $F_1$. This is exactly the trap of accuracy alone.' }
+  - id: c8b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `meilleur_seuil(scores, vrais)`** : on prédit 1 quand `score >= seuil`. Parmi les valeurs de `scores`, renvoie le seuil qui donne le plus grand F1 ; en cas d’égalité, le plus petit.'
+    en: 'Challenge. **Write `meilleur_seuil(scores, vrais)`**: we predict 1 when `score >= seuil`. Among the values of `scores`, return the threshold that gives the largest F1; in case of a tie, the smallest.'
+    depart: |
+      # écris ta fonction meilleur_seuil ici
+    tests: |
+      assert meilleur_seuil([0.9, 0.8, 0.3, 0.2], [1, 1, 0, 0]) == 0.8
+      assert meilleur_seuil([0.9, 0.6, 0.5, 0.1], [1, 0, 1, 0]) == 0.5
+      assert meilleur_seuil([0.7, 0.4], [1, 1]) == 0.4
+      assert meilleur_seuil([0.2, 0.8, 0.5], [0, 1, 0]) == 0.8
+    solutionCode: |
+      def meilleur_seuil(scores, vrais):
+          meilleur, f1_max = None, -1
+          for s in sorted(set(scores)):
+              p = [1 if x >= s else 0 for x in scores]
+              vp = sum(1 for a, b in zip(vrais, p) if a == 1 and b == 1)
+              fp = sum(1 for a, b in zip(vrais, p) if a == 0 and b == 1)
+              fn = sum(1 for a, b in zip(vrais, p) if a == 1 and b == 0)
+              f1 = 2 * vp / (2 * vp + fp + fn) if vp else 0.0
+              if f1 > f1_max:
+                  meilleur, f1_max = s, f1
+          return meilleur
+    indice:
+      fr: Essaie chaque seuil de `sorted(set(scores))`. Compte vrais positifs, faux positifs et faux négatifs ; $F_1 = 2\,VP/(2\,VP+FP+FN)$. Garde seulement un F1 **strictement** meilleur.
+      en: Try each threshold of `sorted(set(scores))`. Count true positives, false positives and false negatives; $F_1 = 2\,TP/(2\,TP+FP+FN)$. Keep only a **strictly** better F1.
+    explication:
+      fr: 'Choisir le seuil sur les données de test, c’est tricher : en pratique, on le règle sur un jeu de validation, puis on mesure une seule fois sur le test.'
+      en: 'Choosing the threshold on the test data is cheating: in practice, it is tuned on a validation set, then measured once on the test.'
   - id: c9
     type: retenir
     fr: 'Matrice de confusion : VP, FP, FN, VN. Précision = VP/(VP+FP), rappel = VP/(VP+FN), $F_1$ = leur moyenne harmonique. Le seuil les arbitre ; l’exactitude seule trompe quand une classe est rare ; une mesure a une marge d’erreur.'

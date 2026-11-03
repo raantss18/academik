@@ -183,6 +183,33 @@ cartes:
           return math.sqrt(variance)
     indice: { fr: 'Trois étapes : la moyenne `m`, la moyenne des `(v - m) ** 2`, puis `math.sqrt`.', en: 'Three steps: the mean `m`, the mean of the `(v - m) ** 2`, then `math.sqrt`.' }
     explication: { fr: 'On retrouve la définition du niveau 6.4 : variance puis racine carrée.', en: 'We find the definition from level 6.4: variance then square root.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `aberrants(valeurs, seuil)`** : la liste des positions où la valeur est **à plus de `seuil` écarts-types** de la moyenne. Cet écart, divisé par l’écart-type, s’appelle le score $z$. Utilise l’écart-type de la population.'
+    en: 'Challenge. **Write `aberrants(valeurs, seuil)`**: the list of positions where the value is **more than `seuil` standard deviations** from the mean. This gap, divided by the standard deviation, is called the $z$ score. Use the population standard deviation.'
+    depart: |
+      # écris ta fonction aberrants ici
+    tests: |
+      assert aberrants([10, 11, 9, 10, 50, 10, 11, 9], 2) == [4]
+      assert aberrants([1, 2, 3, 4, 5], 2) == []
+      assert aberrants([5, 5, 5, 5, 5, 5, 5, 5, 5, 0], 2) == [9]
+      assert aberrants([0, 0, 10, 10], 0.5) == [0, 1, 2, 3]
+    solutionCode: |
+      def aberrants(valeurs, seuil):
+          n = len(valeurs)
+          m = sum(valeurs) / n
+          s = (sum((x - m) ** 2 for x in valeurs) / n) ** 0.5
+          return [i for i, x in enumerate(valeurs) if abs(x - m) > seuil * s]
+    indice:
+      fr: 'Réutilise ton `ecart_type`. Compare `abs(x - m)` à `seuil * s` plutôt que de diviser : pas de souci si `s` vaut 0.'
+      en: 'Reuse your `ecart_type`. Compare `abs(x - m)` with `seuil * s` instead of dividing: no trouble if `s` is 0.'
+    explication:
+      fr: 'Une valeur extrême gonfle aussi l’écart-type : avec peu de données, elle peut se cacher. C’est pourquoi on regarde aussi la médiane et les quartiles.'
+      en: 'An extreme value also inflates the standard deviation: with little data, it can hide. That is why we also look at the median and the quartiles.'
   - id: c8
     type: retenir
     fr: 'Résumer = un centre (moyenne, médiane) et une dispersion (étendue, écart-type, quartiles). La médiane résiste aux valeurs extrêmes ; pour comparer des groupes : regrouper dans un dictionnaire, puis résumer chaque liste.'

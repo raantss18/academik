@@ -173,6 +173,39 @@ cartes:
           return math.log(2) / taux
     indice: { fr: 'Applique $\ln$ aux deux côtés de $e^{t\cdot taux}=2$ : $t\cdot taux=\ln2$.', en: 'Apply $\ln$ to both sides of $e^{t\cdot taux}=2$: $t\cdot taux=\ln2$.' }
     explication: { fr: 'Le logarithme défait l’exponentielle : $t=\ln2/taux$. À 5 %, il faut environ $13{,}9$ ans.', en: 'The logarithm undoes the exponential: $t=\ln2/taux$. At 5%, it takes about $13.9$ years.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `exp_serie(x, n)`** : la somme des `n` premiers termes $1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots$ Avec assez de termes, elle donne $e^x$. Calcule chaque terme à partir du précédent.'
+    en: 'Challenge. **Write `exp_serie(x, n)`**: the sum of the first `n` terms $1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \dots$ With enough terms, it gives $e^x$. Compute each term from the previous one.'
+    depart: |
+      import math
+
+      # écris ta fonction exp_serie ici
+    tests: |
+      import math
+      assert exp_serie(1, 1) == 1
+      assert exp_serie(1, 3) == 2.5
+      assert exp_serie(5, 0) == 0
+      assert abs(exp_serie(1, 30) - math.e) < 1e-12
+      assert abs(exp_serie(-2, 40) - math.exp(-2)) < 1e-12
+    solutionCode: |
+      def exp_serie(x, n):
+          total = 0
+          terme = 1
+          for k in range(n):
+              total = total + terme
+              terme = terme * x / (k + 1)
+          return total
+    indice:
+      fr: Le terme suivant vaut le terme courant fois $x/(k+1)$. Pars de `terme = 1` et ajoute-le à `total` avant de le mettre à jour.
+      en: The next term is the current term times $x/(k+1)$. Start from `terme = 1` and add it to `total` before updating it.
+    explication:
+      fr: 'Les factorielles grandissent bien plus vite que $x^k$ : les termes s’effondrent, et 30 termes suffisent pour $e$ à $10^{-12}$ près.'
+      en: 'Factorials grow much faster than $x^k$: the terms collapse, and 30 terms are enough for $e$ to within $10^{-12}$.'
   - id: c8
     type: retenir
     fr: '$e^x>0$ et $e^{a+b}=e^ae^b$ ; $\ln$ est sa réciproque, défini pour $x>0$, et $\ln(ab)=\ln a+\ln b$. Les logarithmes évitent de perdre de petits produits : on additionne des $\ln$.'

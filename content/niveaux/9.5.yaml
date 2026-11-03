@@ -199,6 +199,37 @@ cartes:
           return (m, math.sqrt(v))
     indice: { fr: 'La moyenne, puis la racine de la moyenne des carrés des écarts (niveau 8.3).', en: 'The mean, then the root of the mean of the squared gaps (level 8.3).' }
     explication: { fr: 'Un score moyen de 0,8 avec un écart-type de 0,2 est bien moins fiable qu’un 0,8 avec 0,01.', en: 'A mean score of 0.8 with a standard deviation of 0.2 is far less reliable than 0.8 with 0.01.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `plis(n, k)`** : découpe les positions `0` à `n - 1` en `k` blocs consécutifs, de tailles qui diffèrent d’au plus 1, les plus grands d’abord. Renvoie la liste des couples `(entrainement, test)`.'
+    en: 'Challenge. **Write `plis(n, k)`**: cut the positions `0` to `n - 1` into `k` consecutive blocks, whose sizes differ by at most 1, the largest first. Return the list of pairs `(entrainement, test)`.'
+    depart: |
+      # écris ta fonction plis ici
+    tests: |
+      assert plis(4, 2) == [([2, 3], [0, 1]), ([0, 1], [2, 3])]
+      assert plis(5, 2) == [([3, 4], [0, 1, 2]), ([0, 1, 2], [3, 4])]
+      assert [t for _, t in plis(7, 3)] == [[0, 1, 2], [3, 4], [5, 6]]
+      assert all(sorted(a + t) == list(range(10)) for a, t in plis(10, 4))
+    solutionCode: |
+      def plis(n, k):
+          tailles = [n // k + (1 if i < n % k else 0) for i in range(k)]
+          resultat, debut = [], 0
+          for t in tailles:
+              test = list(range(debut, debut + t))
+              entrainement = [i for i in range(n) if i < debut or i >= debut + t]
+              resultat.append((entrainement, test))
+              debut = debut + t
+          return resultat
+    indice:
+      fr: Chaque bloc a `n // k` positions, et les `n % k` premiers en ont une de plus. L’entraînement, c’est tout ce qui n’est pas dans le bloc de test.
+      en: Each block has `n // k` positions, and the first `n % k` have one more. The training set is everything that is not in the test block.
+    explication:
+      fr: 'Chaque position sert exactement une fois au test : la moyenne des `k` scores utilise toutes les données sans jamais tester sur ce qui a servi à apprendre.'
+      en: 'Each position is used exactly once for testing: the mean of the `k` scores uses all the data without ever testing on what was used for learning.'
   - id: c8
     type: retenir
     fr: 'Régularisation : perte + $\lambda w^2$, pente + $2\lambda w$ ; $\lambda$ trop grand détruit le modèle. Validation croisée : $k$ blocs tour à tour en validation, moyenne des scores ; tout apprentissage dans chaque tour ; test scellé jusqu’à la fin.'
