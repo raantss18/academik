@@ -4,12 +4,14 @@
   import { theme, type Theme } from '../lib/theme.svelte';
   import { updates } from '../lib/updates.svelte';
   import { progress } from '../lib/progress.svelte';
+  import { weekSummary } from '../engine/week';
   import { APP_VERSION, APP_BUILD, DOWNLOAD_APK, DOWNLOAD_APPIMAGE, platform } from '../lib/platform';
 
   let { onrules, onhome, compact = false }: { onrules?: () => void; onhome?: () => void; compact?: boolean } = $props();
   let open = $state(false), root: HTMLElement;
   const fr = $derived(i18n.lang === 'fr');
   const themes: { v: Theme; fr: string; en: string }[] = [{ v: 'auto', fr: 'Auto', en: 'Auto' }, { v: 'light', fr: 'Clair', en: 'Light' }, { v: 'dark', fr: 'Sombre', en: 'Dark' }];
+  const week = $derived(open ? weekSummary(progress.events, Date.now(), new Date().getTimezoneOffset()) : null);
   const close = () => { open = false; };
   function key(e: KeyboardEvent) { if (e.key === 'Escape') close(); }
   function outside(e: PointerEvent) { if (open && root && !root.contains(e.target as Node)) close(); }
@@ -31,6 +33,13 @@
         <a role="menuitem" class="item" href={DOWNLOAD_APPIMAGE} rel="noopener noreferrer" onclick={close}><span>🐧</span> {fr ? 'Télécharger pour Linux' : 'Download for Linux'}</a>
       {/if}
       <button role="menuitem" onclick={() => updates.checkAll(true)} disabled={updates.checking}><span>🔄</span> {updates.checking ? (fr ? 'Vérification…' : 'Checking…') : (fr ? 'Vérifier les mises à jour' : 'Check for updates')}</button>
+      {#if week}
+        <div class="row" role="group" aria-label={fr ? 'Ma semaine' : 'My week'}>
+          <span>📅</span>
+          <div class="txt"><strong>{fr ? 'Ma semaine' : 'My week'}</strong>
+            <small>{#if week.reponses === 0}{fr ? 'Aucune réponse ces 7 derniers jours : un petit niveau aujourd’hui ?' : 'No answers in the last 7 days: a short level today?'}{:else if fr}{week.jours} jour{week.jours > 1 ? 's' : ''} actif{week.jours > 1 ? 's' : ''} sur 7 · {week.reponses} réponse{week.reponses > 1 ? 's' : ''} · {week.niveaux} niveau{week.niveaux > 1 ? 'x' : ''} · {Math.round(week.reussite * 100)} % de réussite · {week.xp} XP ({week.xp >= week.xpAvant ? '+' : '−'}{Math.abs(week.xp - week.xpAvant)} sur la semaine d’avant). Calculé ici, rien n’est envoyé.{:else}{week.jours} active day{week.jours > 1 ? 's' : ''} of 7 · {week.reponses} answer{week.reponses > 1 ? 's' : ''} · {week.niveaux} level{week.niveaux > 1 ? 's' : ''} · {Math.round(week.reussite * 100)}% success · {week.xp} XP ({week.xp >= week.xpAvant ? '+' : '−'}{Math.abs(week.xp - week.xpAvant)} vs the week before). Computed here, nothing is sent.{/if}</small></div>
+        </div>
+      {/if}
       <div class="row" role="group" aria-label={fr ? 'Synchronisation' : 'Sync'}>
         <span>☁️</span>
         <div class="txt"><strong>{fr ? 'Synchronisation' : 'Sync'}</strong>

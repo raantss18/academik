@@ -64,7 +64,7 @@
 - ⏳ **Service worker réel** : test réseau coupé et rechargement automatique du site dans Chrome/Chromium (le navigateur de test n'a pas de service worker fiable)
 - ⏳ Accessibilité au-delà de l'automatique : lecteur d'écran (TalkBack, Orca), navigation clavier complète dans l'éditeur de code, zoom 200 %
 - ⏳ Lecteur de leçon v2 sur tablette/bureau (deux volets), fil d'Ariane ; cartes interactives (curseur, glisser) ; difficulté adaptative (Elo) ; réglage de la rétention FSRS ; rappel de révision
-- ⏳ Récapitulatif hebdomadaire local, curseur de confiance, défis ★/★★ (idées de la revue pédagogique)
+- ✅ Récapitulatif hebdomadaire local (menu du logo « Ma semaine », `src/engine/week.ts`, testé : fenêtres, doublons, futur, fuseau) ; ⏳ curseur de confiance, défis ★/★★ (idées de la revue pédagogique)
 - ⏳ Tutorat par Kintana (LLM local) : seulement en option téléchargeable, jamais embarqué (poids, D-030)
 - ❓ Mettre `/tmp` sur le disque (`sudo systemctl mask tmp.mount` puis redémarrage) : à faire par Antsa
 
