@@ -9,6 +9,7 @@
   import { i18n, ui } from '../lib/i18n.svelte';
   import { progress } from '../lib/progress.svelte';
   import { xpFor } from '../engine/journal';
+  import { confidenceNote, type Confidence } from '../engine/confidence';
   import { levelScore, stars } from '../engine/score';
   import { scoredItems, type Level } from '../lib/level';
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
@@ -28,7 +29,7 @@
   const run = crypto.randomUUID().slice(0, 6);
   /* svelte-ignore state_referenced_locally */
   let idx = $state(clampIndex(startAt, level.cartes.length)), step = $state(0), selected = $state<number | null>(null), text = $state(level.cartes[clampIndex(startAt, level.cartes.length)].depart ?? ''), chosen = $state<number[]>([]);
-  let hints = $state(0), showHint = $state(false), result = $state<null | { ok: boolean; credit: number }>(null), earned = $state(0);
+  let conf = $state<Confidence | null>(null), hints = $state(0), showHint = $state(false), result = $state<null | { ok: boolean; credit: number }>(null), earned = $state(0);
   // Le monument du niveau (le bâtiment de la carte) : on dit lequel s'allume et de combien. Le générateur de la ville est chargé à la demande.
   let monument = $state<string | null>(null);
   $effect(() => { if (!finished || level.review) return; void import('../lib/city/gen.js').then(g => {
@@ -84,17 +85,17 @@
     const prev = Math.max(startBest.get(card.id) ?? 0, 0), xp = xpFor(credit, prev);
     startBest.set(card.id, Math.max(prev, credit));
     const src = source(card.id);
-    progress.add({ level: src.level, item: src.item, credit, hints, xp: level.review ? 0 : xp });
+    progress.add({ level: src.level, item: src.item, credit, hints, xp: level.review ? 0 : xp, ...(card.type === 'qcm' && conf !== null ? { conf } : {}) });
     earned += level.review ? 0 : xp; if (ok) { rightCount++; serie++; if (serie % 3 === 0) eclat++; } else serie = 0; result = { ok, credit };
   }
   // État de chaque carte déjà vue : « Précédent » la remet comme elle était (réponse, correction, étape).
-  interface Snap { pyOut: PyResult | null; term: Term | null; ran: number; step: number; selected: number | null; text: string; chosen: number[]; hints: number; showHint: boolean; result: null | { ok: boolean; credit: number } }
+  interface Snap { conf: Confidence | null; pyOut: PyResult | null; term: Term | null; ran: number; step: number; selected: number | null; text: string; chosen: number[]; hints: number; showHint: boolean; result: null | { ok: boolean; credit: number } }
   const snaps: Record<number, Snap> = {};
   function goto(i: number) {
-    snaps[idx] = { pyOut, term, ran, step, selected, text, chosen: [...chosen], hints, showHint, result };
+    snaps[idx] = { conf, pyOut, term, ran, step, selected, text, chosen: [...chosen], hints, showHint, result };
     idx = i; const s = snaps[i];
     term = s ? s.term : freshTerm(level.cartes[i]); ran = s?.ran ?? 0; cmd = '';
-    pyOut = s?.pyOut ?? null; pyNote = '';
+    pyOut = s?.pyOut ?? null; pyNote = ''; conf = s?.conf ?? null;
     step = s?.step ?? 0; selected = s?.selected ?? null; text = s ? s.text : level.cartes[i].depart ?? ''; chosen = s ? [...s.chosen] : []; hints = s?.hints ?? 0; showHint = s?.showHint ?? false; result = s?.result ?? null;
     if (!level.review) resume.set(level.id, i);
     window.scrollTo(0, 0);
@@ -145,6 +146,11 @@
             <button class="choice" class:sel={selected === i} class:ok={result?.ok && selected === i} class:bad={result && selected === i && !c.juste} role="radio" aria-checked={selected === i} disabled={!!result} onclick={() => (selected = i)}><span class="opt">{@html md(t(c))}</span></button>
           {/each}
         </div>
+        {#if card.type === 'qcm' && selected !== null && (!result || conf !== null)}
+          <div class="conf" role="radiogroup" aria-label={ui('conf_q')}><span class="muted small">{ui('conf_q')}</span>
+            {#each [0, 1, 2] as const as v}<button class="chipbtn" class:on={conf === v} role="radio" aria-checked={conf === v} disabled={!!result} onclick={() => (conf = conf === v ? null : v)}>{ui(`conf_${v}`)}</button>{/each}
+          </div>
+        {/if}
       {:else if card.type === 'saisie'}
         <input class="field" bind:value={text} onkeydown={key} placeholder={ui('type_here')} disabled={!!result} autocomplete="off" autocapitalize="off" spellcheck="false" aria-label={ui('type_here')} />
       {:else if card.type === 'parsons'}
@@ -179,6 +185,7 @@
       {#if result}
         <div class="fb" class:good={result.ok} role="status">
           <strong>{result.ok ? ui('right') : ui('notyet')}</strong>{result.ok && earned ? ` +${earned} ${ui('xp')}` : ''}
+          {#if card.type === 'qcm' && confidenceNote(conf, result.ok)}<p class="cn">{ui(confidenceNote(conf, result.ok)!)}</p>{/if}
           {#if result.ok}
             <p>{@html md(t(card.explication))}</p>
           {:else}
@@ -239,6 +246,9 @@
   .ed:focus { outline: none; border-color: var(--c-primary); } .pyout { margin-top: 10px; max-height: 30vh; white-space: pre-wrap; } .pyout .err { color: #ff9d8f; }
   .tty:focus-within { outline: 2px solid var(--c-primary); } .ttybar { display: flex; gap: 10px; margin-top: 10px; }
   .hint { background: var(--c-surface-2); padding: 10px 14px; border-radius: 14px; }
+  .conf { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+  .chipbtn { min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; cursor: pointer; } .chipbtn.on { background: var(--c-primary); color: var(--c-on-primary); border-color: var(--c-primary); } .chipbtn:disabled { cursor: default; }
+  .cn { font-weight: 600; }
   .fb { margin-top: 16px; padding: 12px 16px; border-radius: 16px; background: var(--c-accent-soft); border: 1px solid var(--c-accent); }
   .fb.good { background: var(--c-primary-soft); border-color: var(--c-primary); } .fb p { margin: 6px 0 0; } .small { font-size: .9rem; }
   .foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; position: sticky; bottom: 0; padding: 10px 0 calc(var(--sab) + 10px); background: linear-gradient(transparent, color-mix(in srgb, var(--c-bg) 60%, transparent) 70%); }

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { bestCredits, levelScore, stars } from '../src/engine/score';
 import { unlockedLevels, UNLOCK_THRESHOLD, emptyLevels } from '../src/engine/unlock';
 import { mergeJournals, totalXp, xpFor, streak } from '../src/engine/journal';
+import { confidenceNote } from '../src/engine/confidence';
 import { weekSummary } from '../src/engine/week';
 import { createSrs, gradeFrom, Rating } from '../src/engine/srs';
 import { schedule, dueNow } from '../src/engine/reviews';
@@ -147,5 +148,13 @@ describe('récapitulatif hebdomadaire', () => {
     const t = 20 * D + 30 * 60000; // 00:30 UTC
     expect(weekSummary([ev('a', 'a', 1, t)], 19 * D + 23 * 3600000, 0).reponses).toBe(0);
     expect(weekSummary([ev('a', 'a', 1, t)], 19 * D + 23 * 3600000, -120).reponses).toBe(1);
+  });
+});
+
+describe('confiance déclarée', () => {
+  it('signale l’erreur sûre et la réussite au hasard, rien sinon', () => {
+    expect(confidenceNote(2, false)).toBe('conf_sure_wrong');
+    expect(confidenceNote(0, true)).toBe('conf_lucky');
+    expect([confidenceNote(2, true), confidenceNote(1, false), confidenceNote(1, true), confidenceNote(0, false), confidenceNote(null, false), confidenceNote(null, true)]).toEqual([null, null, null, null, null, null]);
   });
 });
