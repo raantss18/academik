@@ -2,7 +2,13 @@
 
 ## [Non publié]
 
-- Barre des références (R1–R8) : objectifs de chaque niveau annoncés et cochés en fin, sortie réelle sous les exemples Python, consignes en étapes, bouton « Niveau suivant » ; 59 codes d'exemple corrigés (`\n` littéral), fautes d'élision corrigées.
+## [0.3.32] — 2026-11-03
+
+### Message fr
+Chaque niveau annonce maintenant ce que tu vas apprendre, et l'écran de fin le coche. Sous les exemples Python, tu vois ce que le programme affiche vraiment. Les longues consignes sont découpées en étapes, et un bouton t'emmène au niveau suivant. Une soixantaine d'exemples de code mal affichés et quelques fautes ont été corrigés.
+
+### Message en
+Each level now announces what you will learn, and the end screen ticks it off. Under Python examples, you see what the program really prints. Long instructions are split into steps, and a button takes you to the next level. About sixty badly displayed code examples and a few typos were fixed.
 
 ## [0.3.31] — 2026-11-03
 
