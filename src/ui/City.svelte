@@ -148,7 +148,7 @@
 {/if}
 
 <style>
-  .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / .22) transparent; background: radial-gradient(120% 50% at 50% 0%, #3b2d5c, #18214a 45%, #0b1026 100%); }
+  .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / .22) transparent; background: radial-gradient(120% 50% at 50% 0%, #1f2f36, #0d171b 45%, #05090b 100%); }   /* nuit noire et bleutée de la carte fantastique */
   .city :global(svg) { display: block; min-width: 1500px; width: 100%; height: auto; }   /* = BASE (E50) */
   .zoom { position: fixed; right: calc(var(--sar) + 12px); top: 50%; z-index: 6; display: grid; gap: 6px; transform: translateY(-50%); }
   .zoom button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .22); background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); color: #f2f4ff; font-size: 1.4rem; line-height: 1; cursor: pointer; } .zoom button:disabled { opacity: .35; }

@@ -5,7 +5,7 @@ import { stars } from '../../engine/score';
 
 /** done = 100 % (tout s'allume) ; started = commencé (s'allume petit à petit) ; current = le niveau à jouer (repère rouge). */
 export type PinState = 'done' | 'started' | 'current' | 'open' | 'locked' | 'soon';
-export interface CityLevel { id: string; short: string; aria: string; st: PinState; stars: number; score: number; boss?: boolean }
+export interface CityLevel { id: string; short: string; aria: string; st: PinState; stars: number; score: number; boss?: boolean; titre?: string }
 export interface CityDistrict { n: number; theme: number; name: string; label: string; color: string; reached: boolean; progress: number; levels: CityLevel[] }
 
 /** Couleur de chaque module (panneau du quartier, épingles réussies), reprise de la maquette. */
@@ -56,7 +56,7 @@ export function buildDistricts({ modules, levels, scores, open, current, t, fr }
       const has = !!levels[n.id], s = scores[n.id] ?? 0, full = s >= 1 - 1e-9, st: PinState = !has ? 'soon' : !open.has(n.id) ? 'locked' : n.id === current && !full ? 'current' : full ? 'done' : s > 0 ? 'started' : 'open';
       const title = t(has ? levels[n.id].titre : (n.titre as { fr: string }));
       const state = { done: fr ? 'terminé, 3 étoiles' : 'completed, 3 stars', started: fr ? `commencé : ${Math.round(s * 100)} %` : `started: ${Math.round(s * 100)}%`, current: fr ? 'à jouer maintenant' : 'play now', open: fr ? 'ouvert' : 'open', locked: fr ? 'fermé' : 'locked', soon: fr ? 'bientôt' : 'soon' }[st];
-      return { id: n.id, short: n.boss ? '' : n.id, aria: `${n.boss ? 'Boss' : (fr ? 'Niveau' : 'Level')} ${n.boss ? '' : n.id + ' '}: ${title} — ${state}`, st, stars: stars(s), score: has ? s : 0, boss: !!n.boss };
+      return { id: n.id, short: n.boss ? '' : n.id, aria: `${n.boss ? 'Boss' : (fr ? 'Niveau' : 'Level')} ${n.boss ? '' : n.id + ' '}: ${title} — ${state}`, st, stars: stars(s), score: has ? s : 0, boss: !!n.boss, titre: title };
     });
     const withContent = lv.filter(l => l.st !== 'soon');
     return {
