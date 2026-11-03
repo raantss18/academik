@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { bestCredits, levelScore, stars } from '../src/engine/score';
 import { unlockedLevels, UNLOCK_THRESHOLD, emptyLevels } from '../src/engine/unlock';
 import { mergeJournals, totalXp, xpFor, streak } from '../src/engine/journal';
+import { weekSummary } from '../src/engine/week';
 import { createSrs, gradeFrom, Rating } from '../src/engine/srs';
 import { schedule, dueNow } from '../src/engine/reviews';
 import { update, nextQuestion, pRight } from '../src/engine/elo';
@@ -127,4 +128,24 @@ describe('révisions espacées (journal → échéances)', () => {
     expect(dueNow(items, t0 + 400 * day, 2).length).toBe(2);
   });
   it('une carte de deux niveaux différents reste deux cartes', async () => { expect((await schedule([ev('a', 'c1', 1, t0, '1.1'), ev('b', 'c1', 1, t0, '1.2')])).length).toBe(2); });
+});
+
+describe('récapitulatif hebdomadaire', () => {
+  const D = 86400000, now = 20 * D + 3600000;
+  const e = (id: string, jours: number, credit: number, level: string, xp: number) => ev(id, id, credit, now - jours * D, level, xp);
+  it('compte les 7 derniers jours et sépare la semaine précédente', () => {
+    const w = weekSummary([e('a', 0, 1, '1.1', 10), e('b', 0, .5, '1.2', 5), e('c', 6, 1, '1.1', 10), e('d', 7, 1, '1.1', 99), e('f', 13, 1, '1.1', 7), e('g', 14, 1, '1.1', 50)], now);
+    expect(w).toMatchObject({ jours: 2, reponses: 3, xp: 25, niveaux: 2, xpAvant: 106, reponsesAvant: 2 });
+    expect(w.reussite).toBeCloseTo(2.5 / 3);
+  });
+  it('semaine vide : zéros, pas de NaN', () => expect(weekSummary([], now)).toEqual({ jours: 0, reponses: 0, xp: 0, reussite: 0, niveaux: 0, xpAvant: 0, reponsesAvant: 0 }));
+  it('ignore les événements du futur et les doublons', () => {
+    const x = e('a', 0, 1, '1.1', 10);
+    expect(weekSummary([x, x, e('z', -2, 1, '1.1', 10)], now).reponses).toBe(1);
+  });
+  it('respecte le fuseau horaire', () => {
+    const t = 20 * D + 30 * 60000; // 00:30 UTC
+    expect(weekSummary([ev('a', 'a', 1, t)], 19 * D + 23 * 3600000, 0).reponses).toBe(0);
+    expect(weekSummary([ev('a', 'a', 1, t)], 19 * D + 23 * 3600000, -120).reponses).toBe(1);
+  });
 });
