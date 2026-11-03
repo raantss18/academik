@@ -174,3 +174,4 @@
 ### Tests sur appareils réels (2026-11-03)
 
 - **Fait (Antsa)** : tests sur vrai appareil, téléphone et tablette, confirmés le 3 nov. 2026. **Reste** : AppImage sur Linux Mint / EndeavourOS à confirmer, lecteur d'écran, vrais élèves.
+- **AppImage 0.3.32 sur EndeavourOS (Claude, 3 nov.)** : empreinte conforme au `release.json` signé ; l'application démarre et affiche la ville ; elle démarre aussi dans un espace sans réseau (`unshare -r -n`). Non fait : clics dans une leçon et Python (pas d'outil de clic sur le bureau dans cette session), Linux Mint.
