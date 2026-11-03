@@ -336,6 +336,53 @@ cartes:
   explication:
     fr: 'Avec `k = 1`, quel que soit `u`, on retrouve le décodage glouton : toujours le favori.'
     en: 'With `k = 1`, whatever `u`, we recover greedy decoding: always the favourite.'
+- id: c10b
+  type: code
+  defi: 2
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `entropie(z, T)`** : l’entropie en bits, $-\sum p\log_2 p$, des probabilités obtenues avec la température `T`. Ignore les probabilités nulles. `avec_temperature` est fournie.'
+  en: 'Challenge. **Write `entropie(z, T)`**: the entropy in bits, $-\sum p\log_2 p$, of the probabilities obtained with temperature `T`. Ignore zero probabilities. `avec_temperature` is provided.'
+  depart: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def avec_temperature(z, T):
+        return softmax([v / T for v in z])
+
+    # écris ta fonction entropie ici
+  tests: |
+    assert abs(entropie([1, 1, 1, 1], 1) - 2) < 1e-12
+    assert abs(entropie([2, 1, 0], 1) - 1.2008929779783633) < 1e-9
+    assert entropie([2, 1, 0], 0.1) < 0.01
+    assert entropie([2, 1, 0], 10) > 1.58
+  solutionCode: |
+    import math
+
+    def softmax(z):
+        m = max(z)
+        e = [math.exp(v - m) for v in z]
+        s = sum(e)
+        return [v / s for v in e]
+
+    def avec_temperature(z, T):
+        return softmax([v / T for v in z])
+
+    def entropie(z, T):
+        p = avec_temperature(z, T)
+        return -sum(q * math.log2(q) for q in p if q > 0)
+  indice:
+    fr: '`math.log2(q)` donne le logarithme en base 2. Le filtre `if q > 0` évite `log2(0)`.'
+    en: '`math.log2(q)` gives the base-2 logarithm. The filter `if q > 0` avoids `log2(0)`.'
+  explication:
+    fr: 'La température règle l’hésitation du modèle : vers 0, une seule réponse (0 bit) ; très haute, presque l’uniforme ($\log_2 3\approx1{,}58$ bit pour trois mots).'
+    en: 'Temperature sets how much the model hesitates: near 0, a single answer (0 bits); very high, almost uniform ($\log_2 3\approx1.58$ bits for three words).'
 - id: c11
   type: idee
   fr: 'Dans la pratique, `u` vient d’un générateur aléatoire. Avec la même **graine**, on obtient les mêmes tirages, donc le même texte : c’est utile pour reproduire un résultat ou déboguer.'

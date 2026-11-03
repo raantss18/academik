@@ -251,6 +251,53 @@ cartes:
   explication:
     fr: Cette méthode s’appelle l’**itération de la puissance** ; elle est la base de l’algorithme PageRank des moteurs de recherche.
     en: This method is called **power iteration**; it is the basis of the PageRank algorithm of search engines.
+- id: c10b
+  type: code
+  defi: 2
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `retour_moyen(P, i)`** : le nombre moyen de pas pour revenir à l’état `i` en partant de `i`. Pour une chaîne où chaque état peut atteindre chaque autre, il vaut $1/\pi_i$. `stationnaire` est fournie.'
+  en: 'Challenge. **Write `retour_moyen(P, i)`**: the mean number of steps to come back to state `i` starting from `i`. For a chain where every state can reach every other, it equals $1/\pi_i$. `stationnaire` is provided.'
+  depart: |
+    def pas_markov(dist, P):
+        n = len(dist)
+        return [sum(dist[i] * P[i][j] for i in range(n)) for j in range(n)]
+
+    def stationnaire(P, iterations=500):
+        n = len(P)
+        dist = [1 / n] * n
+        for _ in range(iterations):
+            dist = pas_markov(dist, P)
+        return dist
+
+    # écris ta fonction retour_moyen ici
+  tests: |
+    P = [[0.8, 0.2], [0.4, 0.6]]
+    assert abs(retour_moyen(P, 0) - 1.5) < 1e-9
+    assert abs(retour_moyen(P, 1) - 3) < 1e-9
+    Q = [[0.5, 0.5], [0.5, 0.5]]
+    assert abs(retour_moyen(Q, 1) - 2) < 1e-9
+  solutionCode: |
+    def pas_markov(dist, P):
+        n = len(dist)
+        return [sum(dist[i] * P[i][j] for i in range(n)) for j in range(n)]
+
+    def stationnaire(P, iterations=500):
+        n = len(P)
+        dist = [1 / n] * n
+        for _ in range(iterations):
+            dist = pas_markov(dist, P)
+        return dist
+
+    def retour_moyen(P, i):
+        return 1 / stationnaire(P)[i]
+  indice:
+    fr: Calcule `stationnaire(P)`, puis prends l’inverse de sa composante `i`.
+    en: Compute `stationnaire(P)`, then take the inverse of its component `i`.
+  explication:
+    fr: 'Un état visité un tiers du temps revient en moyenne tous les 3 pas : c’est le lemme de Kac.'
+    en: 'A state visited a third of the time comes back every 3 steps on average: this is Kac’s lemma.'
 - id: c11
   type: idee
   fr: En finance, on modélise parfois les **régimes de marché** (calme, agité) par une chaîne de Markov. La matrice dit combien de temps un régime dure, et la distribution stationnaire dit la part du temps passée dans chacun. Le modèle de langage à bigrammes du module 6 est aussi une chaîne de Markov.

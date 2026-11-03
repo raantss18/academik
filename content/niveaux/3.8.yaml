@@ -1,7 +1,7 @@
 # Niveau 3.8 — Algorithmes 8 : plus courts chemins. Original academik ; notions vérifiées dans la documentation officielle Python (module heapq) et dans Mon_livre_d_algo (graphes pondérés, Dijkstra, notions reprises et réécrites).
 id: '3.8'
 module: 3
-duree_min: 16
+duree_min: 17
 titre: { fr: 'Plus courts chemins', en: 'Shortest paths' }
 ia: { fr: 'Kintana trouve le chemin le moins coûteux entre deux documents, quand chaque lien a un poids.', en: 'Kintana finds the cheapest path between two documents, when each link has a weight.' }
 objectifs:

@@ -170,6 +170,33 @@ cartes:
           return x
     indice: { fr: 'Une boucle sur les couches : à chaque tour, remplace `x` par la sortie de la couche.', en: 'A loop over the layers: at each turn, replace `x` with the layer’s output.' }
     explication: { fr: 'C’est la **passe avant** d’un réseau : une simple boucle qui enchaîne les couches.', en: 'This is the **forward pass** of a network: a simple loop chaining the layers.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `nb_parametres(tailles)`** : le nombre de poids et de biais d’un réseau dont les couches ont les tailles données, entrée comprise. Une couche de `a` vers `b` neurones a `a * b` poids et `b` biais.'
+    en: 'Challenge. **Write `nb_parametres(tailles)`**: the number of weights and biases of a network whose layers have the given sizes, input included. A layer from `a` to `b` neurons has `a * b` weights and `b` biases.'
+    depart: |
+      # écris ta fonction nb_parametres ici
+    tests: |
+      assert nb_parametres([3, 4, 2]) == 26
+      assert nb_parametres([2, 1]) == 3
+      assert nb_parametres([784, 128, 10]) == 101770
+      assert nb_parametres([5]) == 0
+    solutionCode: |
+      def nb_parametres(tailles):
+          total = 0
+          for a, b in zip(tailles, tailles[1:]):
+              total = total + a * b + b
+          return total
+    indice:
+      fr: '`zip(tailles, tailles[1:])` donne les couples de couches voisines. Pour `[3, 4, 2]` : $3\times4+4$, puis $4\times2+2$.'
+      en: '`zip(tailles, tailles[1:])` gives the pairs of neighbouring layers. For `[3, 4, 2]`: $3\times4+4$, then $4\times2+2$.'
+    explication:
+      fr: 'Un petit réseau pour des images de 28 × 28 pixels compte déjà plus de 100 000 réglages : on ne les règle pas à la main, on les apprend.'
+      en: 'A small network for 28 × 28 pixel images already has over 100,000 settings: you do not tune them by hand, you learn them.'
   - id: c8
     type: retenir
     fr: 'Neurone = somme pondérée $w\cdot x+b$ puis activation ($\text{ReLU}$, $\sigma$, $\tanh$). Une couche = plusieurs neurones sur les mêmes entrées ; un réseau = des couches enchaînées. Sans activation, tout reste linéaire ; jamais de poids tous égaux.'

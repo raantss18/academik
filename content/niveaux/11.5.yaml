@@ -121,6 +121,49 @@ cartes:
           return p, m, v
     indice: { fr: 'Suis les trois étapes de l’exemple : moyennes `m` et `v`, valeurs corrigées `mh` et `vh`, puis le déplacement de `p`.', en: 'Follow the three steps of the example: averages `m` and `v`, corrected values `mh` and `vh`, then the move of `p`.' }
     explication: { fr: 'Remarque : avec une pente de `100` ou de `0.5`, le premier pas vaut `0.1` dans les deux cas. Adam **normalise** l’échelle des pentes.', en: 'Note: with a slope of `100` or `0.5`, the first step is `0.1` in both cases. Adam **normalizes** the scale of the slopes.' }
+  - id: c8b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `minimiser(grad, p0, eta, pas)`** : pars de `p0` avec `m = v = 0`, fais `pas` pas d’Adam en numérotant `t` à partir de 1, et renvoie `p`. `grad(p)` donne la pente ; `pas_adam` est fournie.'
+    en: 'Challenge. **Write `minimiser(grad, p0, eta, pas)`**: start from `p0` with `m = v = 0`, take `pas` Adam steps numbering `t` from 1, and return `p`. `grad(p)` gives the slope; `pas_adam` is provided.'
+    depart: |
+      def pas_adam(p, m, v, g, t, eta):
+          m = 0.9 * m + 0.1 * g
+          v = 0.999 * v + 0.001 * g * g
+          mh = m / (1 - 0.9 ** t)
+          vh = v / (1 - 0.999 ** t)
+          p -= eta * mh / (vh ** 0.5 + 1e-8)
+          return p, m, v
+
+      # écris ta fonction minimiser ici
+    tests: |
+      assert abs(minimiser(lambda p: 2 * (p - 3), 0.0, 0.1, 500) - 3) < 1e-6
+      assert abs(minimiser(lambda p: 2 * (p + 1), 5.0, 0.05, 2000) + 1) < 1e-6
+      assert abs(minimiser(lambda p: 2 * (p - 3), 0.0, 0.1, 1) - 0.1) < 1e-6
+      assert abs(minimiser(lambda p: 200 * (p - 3), 0.0, 0.1, 1) - 0.1) < 1e-6
+    solutionCode: |
+      def pas_adam(p, m, v, g, t, eta):
+          m = 0.9 * m + 0.1 * g
+          v = 0.999 * v + 0.001 * g * g
+          mh = m / (1 - 0.9 ** t)
+          vh = v / (1 - 0.999 ** t)
+          p -= eta * mh / (vh ** 0.5 + 1e-8)
+          return p, m, v
+
+      def minimiser(grad, p0, eta, pas):
+          p, m, v = p0, 0.0, 0.0
+          for t in range(1, pas + 1):
+              p, m, v = pas_adam(p, m, v, grad(p), t, eta)
+          return p
+    indice:
+      fr: Une boucle `for t in range(1, pas + 1)` ; à chaque tour, `p, m, v = pas_adam(p, m, v, grad(p), t, eta)`.
+      en: A loop `for t in range(1, pas + 1)`; each turn, `p, m, v = pas_adam(p, m, v, grad(p), t, eta)`.
+    explication:
+      fr: 'Les deux derniers tests le montrent : le premier pas d’Adam vaut environ `eta`, que la pente soit 6 ou 600. Adam règle la taille du pas, pas seulement sa direction.'
+      en: 'The last two tests show it: Adam’s first step is about `eta`, whether the slope is 6 or 600. Adam sets the size of the step, not only its direction.'
   - id: d_pourquoi
     type: idee
     fr: 'Pourquoi corriger le biais ? Au premier pas, $m$ et $v$ partent de zéro, donc ils sont trop petits. Diviser par $1-\beta^t$ les remet à l’échelle ; l’effet disparaît quand $t$ grandit.'
