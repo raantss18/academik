@@ -271,6 +271,54 @@ cartes:
   explication:
     fr: 'C’est exactement la recherche sémantique du module 14 : on compare des vecteurs, pas des mots.'
     en: 'This is exactly the semantic search of module 14: we compare vectors, not words.'
+- id: c10b
+  type: code
+  defi: 2
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `analogie(a, b, c, table)`** : le mot `d` tel que « `a` est à `b` ce que `c` est à `d` ». Calcule `table[b] - table[a] + table[c]` coordonnée par coordonnée, puis le mot le plus proche par le cosinus, hors `a`, `b` et `c`.'
+  en: 'Challenge. **Write `analogie(a, b, c, table)`**: the word `d` such that “`a` is to `b` what `c` is to `d`”. Compute `table[b] - table[a] + table[c]` coordinate by coordinate, then the closest word by cosine, excluding `a`, `b` and `c`.'
+  depart: |
+    import math
+
+    def cosinus(u, v):
+        num = sum(a * b for a, b in zip(u, v))
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        return num / (nu * nv)
+
+    # écris ta fonction analogie ici
+  tests: |
+    t = {"homme": [1, 0, 0], "femme": [1, 1, 0], "roi": [1, 0, 1], "reine": [1, 1, 1], "pomme": [0, -1, 0.2]}
+    assert analogie("homme", "roi", "femme", t) == "reine"
+    assert analogie("homme", "femme", "roi", t) == "reine"
+    assert analogie("femme", "reine", "homme", t) == "roi"
+  solutionCode: |
+    import math
+
+    def cosinus(u, v):
+        num = sum(a * b for a, b in zip(u, v))
+        nu = math.sqrt(sum(a * a for a in u))
+        nv = math.sqrt(sum(b * b for b in v))
+        return num / (nu * nv)
+
+    def analogie(a, b, c, table):
+        cible = [y - x + z for x, y, z in zip(table[a], table[b], table[c])]
+        meilleur, m = None, -2.0
+        for mot, vec in table.items():
+            if mot in (a, b, c):
+                continue
+            s = cosinus(cible, vec)
+            if s > m:
+                meilleur, m = mot, s
+        return meilleur
+  indice:
+    fr: '`zip(table[a], table[b], table[c])` donne les coordonnées ensemble. Reprends ensuite la boucle de `plus_proche`, en sautant les trois mots donnés.'
+    en: '`zip(table[a], table[b], table[c])` gives the coordinates together. Then reuse the loop of `plus_proche`, skipping the three given words.'
+  explication:
+    fr: 'Ici les vecteurs sont fabriqués à la main pour que ça marche. Sur de vrais plongements, l’analogie réussit souvent mais pas toujours : c’est une tendance, pas une loi.'
+    en: 'Here the vectors are built by hand so that it works. On real embeddings, the analogy often succeeds but not always: it is a tendency, not a law.'
 - id: c11
   type: idee
   fr: Le softmax et le cosinus reviendront dans le niveau 12.3. L’**attention** compare des vecteurs avec un produit scalaire, puis applique un softmax pour obtenir des poids.

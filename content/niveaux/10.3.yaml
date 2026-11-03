@@ -164,6 +164,53 @@ cartes:
           return [sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x))) / den for k in range(1, kmax + 1)]
     indice: { fr: 'Calcule la moyenne et le dénominateur une seule fois ; traite le dénominateur nul avant la boucle.', en: 'Compute the mean and the denominator only once; handle the zero denominator before the loop.' }
     explication: { fr: 'Pour `1, 2, 3, 4, 5`, le pas 2 donne `-0.1` : on le lit sur la liste complète.', en: 'For `1, 2, 3, 4, 5`, lag 2 gives `-0.1`: read it on the full list.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `premier_retard(x, kmax)`** : le plus petit retard `k` (de 1 à `kmax`) dont l’autocorrélation sort de la bande $\pm1{,}96/\sqrt n$, ou `None` s’il n’y en a pas. `acf` est fournie.'
+    en: 'Challenge. **Write `premier_retard(x, kmax)`**: the smallest lag `k` (from 1 to `kmax`) whose autocorrelation leaves the band $\pm1.96/\sqrt n$, or `None` if there is none. `acf` is provided.'
+    depart: |
+      import math
+
+      def acf(x, kmax):
+          m = sum(x) / len(x)
+          den = sum((v - m) ** 2 for v in x)
+          if den == 0:
+              return [0.0] * kmax
+          return [sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x))) / den for k in range(1, kmax + 1)]
+
+      # écris ta fonction premier_retard ici
+    tests: |
+      assert premier_retard([1, -1] * 10, 3) == 1
+      z = [0, 0, 0, 1] * 5
+      assert premier_retard(z, 5) == 4
+      assert premier_retard([5, 5, 5, 5, 5], 3) is None
+      assert premier_retard(z, 3) is None
+    solutionCode: |
+      import math
+
+      def acf(x, kmax):
+          m = sum(x) / len(x)
+          den = sum((v - m) ** 2 for v in x)
+          if den == 0:
+              return [0.0] * kmax
+          return [sum((x[t] - m) * (x[t - k] - m) for t in range(k, len(x))) / den for k in range(1, kmax + 1)]
+
+      def premier_retard(x, kmax):
+          bande = 1.96 / math.sqrt(len(x))
+          for k, r in enumerate(acf(x, kmax), start=1):
+              if abs(r) > bande:
+                  return k
+          return None
+    indice:
+      fr: Calcule la bande une fois. Parcours `acf(x, kmax)` avec `enumerate(..., start=1)` et compare `abs(r)` à la bande.
+      en: Compute the band once. Go through `acf(x, kmax)` with `enumerate(..., start=1)` and compare `abs(r)` with the band.
+    explication:
+      fr: 'Un pic au retard 4 trahit un cycle de longueur 4 : c’est ainsi qu’on retrouve une saison qu’on ne connaissait pas.'
+      en: 'A spike at lag 4 reveals a cycle of length 4: this is how you find a season you did not know about.'
   - id: c8
     type: retenir
     fr: 'L’autocorrélation $r_k$ mesure la mémoire d’une série à $k$ pas. Formule : écarts à la moyenne, produit par paires, divisé par la variation totale. Bande $\pm1{,}96/\sqrt n$ ; différencie une série à tendance avant.'

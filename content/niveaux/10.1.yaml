@@ -170,6 +170,45 @@ cartes:
           return resultat
     indice: { fr: '`serie[phase::periode]` prend une valeur sur `periode`, en partant de `phase`.', en: '`serie[phase::periode]` takes one value out of `periode`, starting at `phase`.' }
     explication: { fr: 'On voit la saisonnalité en comparant les moyennes de chaque phase : `1.0` et `5.0` révèlent un cycle.', en: 'Seasonality shows by comparing the means of each phase: `1.0` and `5.0` reveal a cycle.' }
+  - id: c8b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `desaisonnaliser(serie, periode)`** : retire à chaque valeur l’effet de sa phase, c’est-à-dire la moyenne de sa phase moins la moyenne générale. `moyenne_par_phase` est fournie.'
+    en: 'Challenge. **Write `desaisonnaliser(serie, periode)`**: remove from each value the effect of its phase, that is, the mean of its phase minus the overall mean. `moyenne_par_phase` is provided.'
+    depart: |
+      def moyenne_par_phase(serie, periode):
+          resultat = []
+          for phase in range(periode):
+              valeurs = serie[phase::periode]
+              resultat.append(sum(valeurs) / len(valeurs))
+          return resultat
+
+      # écris ta fonction desaisonnaliser ici
+    tests: |
+      assert desaisonnaliser([1, 5, 1, 5], 2) == [3.0, 3.0, 3.0, 3.0]
+      assert desaisonnaliser([1, 5, 2, 6], 2) == [3.0, 3.0, 4.0, 4.0]
+      assert desaisonnaliser([4, 4, 4], 3) == [4.0, 4.0, 4.0]
+    solutionCode: |
+      def moyenne_par_phase(serie, periode):
+          resultat = []
+          for phase in range(periode):
+              valeurs = serie[phase::periode]
+              resultat.append(sum(valeurs) / len(valeurs))
+          return resultat
+
+      def desaisonnaliser(serie, periode):
+          phases = moyenne_par_phase(serie, periode)
+          m = sum(serie) / len(serie)
+          return [v - (phases[i % periode] - m) for i, v in enumerate(serie)]
+    indice:
+      fr: La phase de l’indice `i` est `i % periode`. Calcule une fois `phases` et la moyenne `m`, puis `v - (phases[i % periode] - m)`.
+      en: The phase of index `i` is `i % periode`. Compute `phases` and the mean `m` once, then `v - (phases[i % periode] - m)`.
+    explication:
+      fr: 'La saison retirée, il reste la tendance et le bruit : une hausse de décembre ne se confond plus avec une vraie progression.'
+      en: 'With the season removed, trend and noise remain: a December rise is no longer mistaken for real growth.'
   - id: c9
     type: retenir
     fr: 'Une série a une tendance, une saisonnalité et du bruit ; l’ordre compte. Moyenne mobile : lisser. Différence : retirer la tendance. Rendement : changement en proportion. Ne jamais mélanger.'
