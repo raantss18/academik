@@ -2,7 +2,17 @@
 
 ## [Non publié]
 
-- Accueil plus fluide et sans clignotement (la carte est dessinée une fois) ; îles en relief avec hauts plateaux, rivières, ponts et cascades. / Smoother home screen without flicker (the map is drawn once); islands with highlands, rivers, bridges and waterfalls.
+## [0.3.36] — 2026-11-03
+
+### Message fr
+L'accueil devient plus fluide et ne clignote plus : la carte n'est dessinée qu'une fois, et le retour sur l'accueil est immédiat. Les îles prennent du relief : un haut plateau en falaise coiffé de pics, une rivière qui en descend, traverse la ville sous des ponts et tombe en cascade du bord de l'île ; chaque îlot a son plateau ou son pic.
+
+### Message en
+The home screen is smoother and no longer flickers: the map is drawn only once, and returning home is instant. Islands gain relief: a cliff-edged highland topped with peaks, and a river that flows down from it, runs under bridges through the town and falls as a waterfall from the island's edge; every islet has its own highland or peak.
+
+### Détails
+- Accueil (E55) : décor en image fixe sans animation, repères dans un calque léger (≈ 2 000 formes au lieu de ≈ 28 000) ; générateur et image gardés entre deux visites (retour 26 ms au lieu de ≈ 220 ms).
+- Relief (E55) : hauts plateaux, rivières, ponts, cascades, modelé des îles ; plus aucun îlot plat.
 
 ## [0.3.35] — 2026-11-03
 
