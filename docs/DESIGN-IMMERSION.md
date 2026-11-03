@@ -92,3 +92,16 @@ Chaque étape est publiée seule (version d'application), avec une mesure d'imag
 - Mesures faites sur un seul GPU de bureau, pas sur un téléphone d'entrée de gamme : le vrai test est sur appareil (Xiaomi, Samsung S20+).
 - Le prototype montre le principe du fond et de la silhouette ; il n'est pas encore branché sur les vraies données du niveau.
 - Le gain de l'étape 1 est une estimation fondée sur la cause identifiée (zoom par `width`) ; il sera **mesuré** avant/après.
+
+## Refonte immersive, étape 1 (3 nov. 2026, demande d'Antsa avec trois images de référence)
+
+Références : un jeu de chasse (fond peint, bandeau doré central), une carte de missions militaire (fiche « Information » punaisée, photo,
+tampon « REWARD », chemin pointillé validé), une carte fantastique (îles reliées par des chemins lumineux, médaillons, bannières).
+On reprend des **principes visuels**, aucune image.
+
+- **Dossier de mission** (fiche du niveau) : papier ivoire, trombone, onglet doré, « photo » du niveau aux couleurs du quartier, fiche
+  signalétique (quartier, lieu, durée, difficulté, récompense), tampon d'état sous la photo (Réussi ★, En cours, Nouveau, Verrouillé).
+  - **Récompense** = celle que le jeu donne vraiment : 10 XP par carte notée réussie du premier coup (+ mention du défi ★★ s'il existe).
+  - **Difficulté** = règle fixe par tranche du parcours : modules 0–3 Découverte, 4–9 Intermédiaire, 10–17 Avancé, 18 et plus Expert ; un boss monte d'un cran.
+- **Carte** : repères en médaillons (anneau doré, ou de fer s'ils sont fermés), enseignes en bannières à queues échancrées, chemin
+  principal lumineux dans les quartiers atteints. Emprises inchangées : le garde-fou E42 (rien ne se chevauche) reste valable.
