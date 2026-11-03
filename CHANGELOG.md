@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.33] — 2026-11-03
+
+### Message fr
+Treize nouveaux défis ★★ facultatifs, du traitement des séries au calcul sécurisé : désaisonnaliser une série, retrouver un cycle caché, minimiser avec Adam, analogies entre mots, quantification par blocs, Diffie-Hellman jouet… Il y en a maintenant 26. Un fil d'Ariane en haut de chaque leçon te dit où tu es.
+
+### Message en
+Thirteen new optional ★★ challenges, from time series to secure computing: deseasonalise a series, find a hidden cycle, minimise with Adam, word analogies, block quantisation, toy Diffie-Hellman… There are now 26 of them. A breadcrumb at the top of each lesson tells you where you are.
+
 ## [0.3.32] — 2026-11-03
 
 ### Message fr
