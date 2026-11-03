@@ -170,3 +170,7 @@
 
 - **Fait** : critères R1–R8 tirés de Linux Journey, TryHackMe et OpenClassrooms (D-045) ; 3 objectifs par niveau (fiche, ouverture, fin cochée) ; sorties Python exécutées à la construction (157 exemples sur 165) ; 59 codes au `\n` littéral, 8.1 et 1.1 corrigés ; 14 élisions corrigées ; consignes longues en étapes ; bouton « Niveau suivant » ; 850 tests.
 - **Vérifié à l'écran** : 2.1 et 2.2, sombre et clair, téléphone (375 px). **Non vérifié** : appareils réels, lecteur d'écran, vrais élèves.
+
+### Tests sur appareils réels (2026-11-03)
+
+- **Fait (Antsa)** : tests sur vrai appareil, téléphone et tablette, confirmés le 3 nov. 2026. **Reste** : AppImage sur Linux Mint / EndeavourOS à confirmer, lecteur d'écran, vrais élèves.

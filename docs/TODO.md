@@ -61,7 +61,7 @@
 - ✅ Carte « ville qui s'allume » (panorama, zoom GPU, 23 quartiers, un monument nommé par niveau), leçon immersive (fond par quartier, chemin, silhouette, lucioles, fête du boss), révisions espacées, éditeur Python (Pyodide), terminal simulé
 - ✅ **Téléchargement des apps depuis le site** (E36), **CSP stricte** site et AppImage (E37), **audit d'accessibilité automatique** à 0 violation sur les écrans principaux (E38), **réponses numériques tolérantes** (E39)
 - ⏳ **Synchronisation et comptes** : écran de connexion, RxDB + `replication-supabase` (schéma `academik` en ligne, D-019) ; exécuter `supabase/tests/academik_rls.sql`
-- ⏳ **Tests sur appareils réels** : APK sur Xiaomi Pad 7 et Samsung S20+, AppImage sur Linux Mint ; Python (Pyodide) dans la WebView Android ; mise à jour 0.3.x → 0.3.y en conservant la progression
+- ✅ **Tests sur appareils réels** : faits par Antsa (confirmé le 3 nov. 2026 : téléphone et tablette) ; ⏳ AppImage sur Linux Mint à confirmer ; Python (Pyodide) dans la WebView Android ; mise à jour 0.3.x → 0.3.y en conservant la progression
 - ⏳ **Service worker réel** : test réseau coupé et rechargement automatique du site dans Chrome/Chromium (le navigateur de test n'a pas de service worker fiable)
 - ⏳ Accessibilité au-delà de l'automatique : lecteur d'écran (TalkBack, Orca), navigation clavier complète dans l'éditeur de code, zoom 200 %
 - ⏳ Lecteur de leçon v2 sur tablette/bureau (deux volets), fil d'Ariane ; cartes interactives (curseur, glisser) ; difficulté adaptative (Elo) ; réglage de la rétention FSRS ; rappel de révision
@@ -104,7 +104,7 @@
 ## 5. Publication
 ### Jalon 0.4.0 — « prête pour de vrais élèves » (proposition, à valider par Antsa)
 Le contenu (modules 0 à 23) et le moteur sont complets ; la 0.4.0 marque le passage du développement à l'**usage réel**. Elle sort quand **toutes** ces cases sont cochées :
-- [ ] APK testé sur Xiaomi Pad 7 et Samsung S20+ : installation, hors ligne, Python (Pyodide), mise à jour 0.3.x → 0.4.0 en gardant la progression *(Antsa)*
+- [x] APK testé sur appareil réel, téléphone et tablette (Antsa, confirmé le 3 nov. 2026) — Xiaomi Pad 7 et Samsung S20+ : installation, hors ligne, Python (Pyodide), mise à jour 0.3.x → 0.4.0 en gardant la progression *(Antsa)*
 - [ ] AppImage testée sur Linux Mint et EndeavourOS *(Antsa)*
 - [ ] Service worker réel : réseau coupé puis rechargement dans Chrome *(Antsa ou Claude avec un vrai Chrome)*
 - [ ] `release-keys/` sauvegardées hors de la machine *(Antsa)*
