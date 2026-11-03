@@ -644,6 +644,20 @@ function pont(pts, d, allume) {
   if (allume) for (let i = 6; i < n - 3; i += 12) { const q = avant[i]; s += `<circle cx="${fx(q[0])}" cy="${fx(q[1] - 24)}" r="13" fill="url(#halo)"/><circle cx="${fx(q[0])}" cy="${fx(q[1] - 24)}" r="2.8" fill="#ffcf80"/>`; }
   return s;
 }
+/** Pic rocheux à facettes (relief sur l'île) : faces éclairées de la gauche, plus sombres à droite, neige au sommet des plus hauts. */
+function drawPeak(x, y, z, R, th, w, dd) {
+  const base = blob(x, y, w / 2, dd / 2, z, R, 9, .22).map(q => iso(q[0], q[1], z)), h = rr(R, 40, 86) * Math.min(1.4, w / 1.4), ap = iso(x + rr(R, -.12, .12), y + rr(R, -.12, .12), z + h);
+  const faces = base.map((p, i) => { const q = base[(i + 1) % base.length], mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2; return { p, q, my, k: (mx < ap[0] ? 1.12 : .7) + (R() - .5) * .12 }; }).sort((a, b) => a.my - b.my);
+  let s = `<ellipse cx="${fx(ap[0])}" cy="${fx((base.reduce((t, p) => t + p[1], 0) / base.length) + 4)}" rx="${fx(w * 22)}" ry="${fx(dd * 9)}" fill="rgb(0 0 0 / .25)"/>`;
+  for (const f of faces) s += `<polygon points="${[f.p, f.q, ap].map(q => q.map(fx).join(',')).join(' ')}" fill="${C(shade(th.cliff, f.k))}" stroke="${C(shade(th.cliff, f.k * .9))}" stroke-width=".6"/>`;
+  if (h > 66) { const neige = base.map(p => [ap[0] + (p[0] - ap[0]) * .22, ap[1] + (p[1] - ap[1]) * .22]); s += `<polygon points="${neige.map(q => q.map(fx).join(',')).join(' ')}" fill="#e9eef5" opacity=".92"/>`; }
+  return s;
+}
+/** Colline herbeuse (relief doux sur l'île). */
+function colline(x, y, z, R, th, w) {
+  const [a, b] = iso(x, y, z), rx = w * 26, ry = w * 11, hh = rr(R, 8, 16) * w;
+  return `<ellipse cx="${fx(a)}" cy="${fx(b)}" rx="${fx(rx)}" ry="${fx(ry)}" fill="${C(shade(th.lip, .8))}"/><ellipse cx="${fx(a - rx * .08)}" cy="${fx(b - hh * .5)}" rx="${fx(rx * .86)}" ry="${fx(ry * .8 + hh * .3)}" fill="${C(th.lip)}"/><ellipse cx="${fx(a - rx * .25)}" cy="${fx(b - hh * .8)}" rx="${fx(rx * .4)}" ry="${fx(ry * .35)}" fill="${C(shade(th.lip, 1.18))}" opacity=".8"/>`;
+}
 function falaise(g, th, R, d) {
   const sc = outline(g, 1.07, 48).map(q => iso(q[0], q[1], 0)), n = sc.length;
   let L = 0, Rr = 0; sc.forEach((p, i) => { if (p[0] < sc[L][0]) L = i; if (p[0] > sc[Rr][0]) Rr = i; });
@@ -731,10 +745,15 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   }
   const segD = (x, y, a, b) => { const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy || 1, t = Math.max(0, Math.min(1, ((x - a[0]) * dx + (y - a[1]) * dy) / L)); return Math.hypot(x - a[0] - t * dx, y - a[1] - t * dy); };
   const roadInfo = (x, y) => { let best = 1e9, ang = 0; for (const rd of roads) for (let i = 1; i < rd.pts.length; i++) { const dd = segD(x, y, rd.pts[i - 1], rd.pts[i]) - rd.hw; if (dd < best) { best = dd; ang = Math.atan2(rd.pts[i][1] - rd.pts[i - 1][1], rd.pts[i][0] - rd.pts[i - 1][0]); } } return { d: best, ang }; };
+  // Placement (E54, profilé : la distance aux routes prenait un tiers du temps) : obstacles d'abord (bon marché), puis un test « près d'une
+  // route ? » qui écarte les segments lointains par leur boîte et s'arrête au premier trop proche. Mêmes réponses qu'avant, donc même carte.
+  const segs = roads.flatMap(rd => rd.pts.slice(1).map((b, i) => { const a = rd.pts[i]; return { a, b, hw: rd.hw, x0: Math.min(a[0], b[0]) - rd.hw, x1: Math.max(a[0], b[0]) + rd.hw, y0: Math.min(a[1], b[1]) - rd.hw, y1: Math.max(a[1], b[1]) + rd.hw }; }));
+  const presRoute = (x, y, rc) => { for (const s of segs) { if (x < s.x0 - rc || x > s.x1 + rc || y < s.y0 - rc || y > s.y1 + rc) continue; if (segD(x, y, s.a, s.b) - s.hw < rc) return true; } return false; };
   const fits = (x, y, w, dd, ang, rc = .5, gap = .85) => {
     const cs = corners(x, y, w, dd, ang); for (const q of cs) if (!inb(q[0], q[1], .25)) return false;
-    for (const q of cs.concat([[x, y]])) if (roadInfo(q[0], q[1]).d < rc) return false;
-    const r = Math.hypot(w, dd) / 2 * gap; for (const o of obs) if (Math.hypot(o.x - x, o.y - y) < r + o.r) return false; return true;
+    const r = Math.hypot(w, dd) / 2 * gap; for (const o of obs) if (Math.hypot(o.x - x, o.y - y) < r + o.r) return false;
+    for (const q of cs) if (presRoute(q[0], q[1], rc)) return false;
+    return !presRoute(x, y, rc);
   };
   const addShadow = (c, topAbs) => { const hh = Math.max(0, topAbs - c.z), k = Math.min(2.2, hh / ZP * .9), cs = corners(c.x, c.y, c.w, c.d, c.ang); shadows.push(polyZ(hull(cs.concat(cs.map(q => [q[0] - k, q[1] - k * .35]))).map(q => [q[0], q[1], z]), 'rgb(0 0 0 / .27)')); };
 
@@ -782,6 +801,11 @@ function buildDistrict(d, SEED, pinsOut, lay) {
     if (boss) ground += polyZ(blob(c.x, c.y, Math.max(w, dd) * .95 + .5, Math.max(w, dd) * .8 + .4, z, R, 18, .08), C(mix(th.road, '#ffffff', .12)), ' opacity=".7"');
   }
   // ---- le reste du quartier : bâtiments tirés au hasard, orientés le long des rues, plus éclairés quand le quartier avance
+  // ---- relief de l'île (refonte : « les reliefs des îlots ») : pics rocheux et collines en bordure, le centre reste à la ville
+  for (let k = 0, tr = 0; k < 3 && tr < 160; tr++) { const w = rr(R, 1.3, 2.1), dd = w * rr(R, .8, 1), [x, y] = pt(.6), r0 = Math.hypot(x - g.cx, y - g.cy) / g.r(Math.atan2(y - g.cy, x - g.cx));
+    if (r0 < .55 || !fits(x, y, w, dd, 0, .7, .95)) continue; items.push({ k: x + y + w * .3, s: drawPeak(x, y, z, R, th, w, dd) }); obs.push({ x, y, r: Math.hypot(w, dd) / 2 * .9 }); k++; }
+  for (let k = 0, tr = 0; k < 4 && tr < 160; tr++) { const w = rr(R, .9, 1.6), [x, y] = pt(.5);
+    if (!fits(x, y, w, w * .8, 0, .55, .9)) continue; items.push({ k: x + y - .4, s: colline(x, y, z, R, th, w) }); obs.push({ x, y, r: w * .5 }); k++; }
   let n = 0, att = 0; const count = Math.round(th.count * 1.1);   // plus de bâtiments sur des îles plus grandes
   while (n < count && att < count * 40) {
     att++; const kind = wpick(R, { ...th.kinds, spire: 1.3 }), sz = K[kind].size(R), [x, y] = pt(.4), ri = roadInfo(x, y);
@@ -882,11 +906,33 @@ export function renderCity(districts, opts = {}) {
     const ax = cote > 0 ? Math.max(...xs) - 20 : Math.min(...xs) + 20, ay = (Math.min(...ys) + Math.max(...ys)) / 2;
     return { d, x0, y0, W, H, ax, ay, cote, lignes };
   });
+  // ---- îlots déserts pour le décor (refonte : « des îlots sans habitants ») : du côté opposé à la légende, sans bâtiment ni repère,
+  // jamais sur une île, une légende ou un autre îlot ; certains ont une cascade.
+  const boites = lay.map(g => { const sc = outline(g, 1.07, 32).map(q => iso(q[0], q[1], 0)), xs = sc.map(p => p[0]), ys = sc.map(p => p[1]); return [Math.min(...xs) - 30, Math.min(...ys) - 200, Math.max(...xs) + 30, Math.max(...ys) + 330]; })
+    .concat(legendes.map(L => [L.x0 - 30, L.y0 - 30, L.x0 + L.W + 30, L.y0 + L.H + 30]));
+  const xMin = Math.min(...boites.map(b => b[0])), xMax = Math.max(...boites.map(b => b[2]));   // les îlots n'élargissent pas la carte (lisibilité, E50)
+  const RI = rng(SEED * 7 + 5), touche = (a, b) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3], ilots = [];
+  for (let d = 0; d < n; d++) for (let j = 0; j < (RI() < .55 ? 2 : 1); j++) for (let tr = 0; tr < 28; tr++) {
+    const g = lay[d], [cxs, cys] = toScreen(g.cx, g.cy), cote = (tr < 14 ? -1 : 1) * legendes[d].cote, rad = rr(RI, 1.8, 3.0), demi = rad * TW * 1.5;
+    const sx = cxs + cote * (g.base * TW * 1.45 + demi + rr(RI, 40, 460)), sy = cys + rr(RI, -320, 220), bx = [sx - demi - 10, sy - demi * .6 - 90, sx + demi + 10, sy + demi * .6 + rad * 40 + 60];
+    if (bx[0] < xMin || bx[2] > xMax || boites.some(b => touche(b, bx))) continue;
+    boites.push(bx); const [wx, wy] = toWorld(sx, sy), p1 = RI() * 6.28, p2 = RI() * 6.28;
+    ilots.push({ d, g: { cx: wx, cy: wy, base: rad, r: t => rad * (1 + .16 * Math.sin(2 * t + p1) + .09 * Math.sin(3 * t + p2)) }, cascade: RI() < .45, box: bx }); break; }
+  let decor = ''; cur.reached = true;
+  for (const I of ilots) { const th = THEMES[DATA[I.d].theme % THEMES.length], R3 = rng(SEED * 31 + I.d * 97 + Math.round(I.g.cx * 10)), z = 0;
+    decor += '<g class="ilot">' + falaise(I.g, th, R3, I.d + 1) + polyZ(outline(I.g, 1.07), C(mix(th.lip, th.top, .5))) + polyZ(outline(I.g, 1), C(shade(th.lip, .9)));
+    const parts = []; if (R3() < .6) parts.push({ k: I.g.cx + I.g.cy, s: drawPeak(I.g.cx + rr(R3, -.3, .3), I.g.cy + rr(R3, -.3, .3), z, R3, th, I.g.base * .8, I.g.base * .7) });
+    for (let t = 0; t < 2 + Math.floor(R3() * 3); t++) { const a = R3() * 6.28, r = I.g.base * rr(R3, .25, .7), x = I.g.cx + Math.cos(a) * r, y = I.g.cy + Math.sin(a) * r; parts.push({ k: x + y, s: tree(wpick(R3, th.trees), x, y, z, R3, th) }); }
+    decor += parts.sort((a, b) => a.k - b.k).map(q => q.s).join('');
+    if (I.cascade) { const e = iso(I.g.cx + I.g.base * .7, I.g.cy + I.g.base * .7, 0); decor += `<path d="M${fx(e[0])} ${fx(e[1])}q4 60 -2 150" fill="none" stroke="#3ad6ff" stroke-opacity=".18" stroke-width="16" stroke-linecap="round"/><path d="M${fx(e[0])} ${fx(e[1])}q4 60 -2 150" fill="none" stroke="#9ff0ff" stroke-opacity=".85" stroke-width="3.4" stroke-linecap="round"/><ellipse cx="${fx(e[0] - 2)}" cy="${fx(e[1] + 152)}" rx="14" ry="5" fill="#9ff0ff" opacity=".25"/>`; }
+    decor += '</g>';
+  }
   // ---- bornes de la vue
   let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9; const grow = (x, y) => { minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y); };
   lay.forEach(g => outline(g, 1.35, 24).forEach(q => { const [x, y] = toScreen(q[0], q[1]); grow(x, y - 190); grow(x, y + 30); }));
   pins.forEach(p => grow(p.px, p.py - 90)); const e0 = toScreen(lay[0].E[0], lay[0].E[1]), x1 = toScreen(lay[n - 1].X[0], lay[n - 1].X[1]); grow(e0[0] - 240, e0[1] + 230); grow(e0[0] + 240, e0[1] + 120); grow(x1[0], x1[1] - 330);
   legendes.forEach(L => { grow(L.x0 - 20, L.y0 - 20); grow(L.x0 + L.W + 20, L.y0 + L.H + 20); });
+  ilots.forEach(I => { grow(I.box[0], I.box[1]); grow(I.box[2], I.box[3]); });
   minX -= 130; maxX += 130; const VW = maxX - minX, VH = maxY - minY;
   let sky = ''; for (let i = 0; i < 100; i++) sky += `<circle class="${i % 5 ? '' : 'twinkle'}" style="animation-delay:${fx(RS() * 3)}s" cx="${fx(minX + RS() * VW)}" cy="${fx(minY + RS() * VH * .5)}" r="${fx(RS() * 1.3 + .3)}" fill="#fff" opacity="${fx(.35 + RS() * .6)}"/>`;
   sky += `<circle cx="${fx(maxX - 90)}" cy="${fx(minY + 120)}" r="26" fill="#f4ecd2"/><circle cx="${fx(maxX - 80)}" cy="${fx(minY + 114)}" r="24" fill="#2b2a55" opacity=".9"/>`;
@@ -902,7 +948,7 @@ export function renderCity(districts, opts = {}) {
 
   // ---- assemblage : du fond vers l'avant ; tous les objets sont triés ensemble pour que les arbres et bâtiments se recouvrent juste
   const all = [...built.flatMap(b => b.items), ...country].sort((a, b) => a.k - b.k);
-  let body = land; for (let d = n - 1; d >= 0; d--) body += built[d].pad; body += link; for (let d = n - 1; d >= 0; d--) body += built[d].road; for (let d = n - 1; d >= 0; d--) body += built[d].shadows;
+  let body = land + decor; for (let d = n - 1; d >= 0; d--) body += built[d].pad; body += link; for (let d = n - 1; d >= 0; d--) body += built[d].road; for (let d = n - 1; d >= 0; d--) body += built[d].shadows;   // îlots déserts (decor) derrière les grandes îles
   body += all.map(i => i.s).join('');
 
   // ---- épingles : cercle numéroté par niveau, anneau de progression, repère rouge « position » façon carte pour le niveau à jouer

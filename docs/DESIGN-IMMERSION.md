@@ -138,3 +138,8 @@ Demande d'Antsa : « les ponts mieux présentés, fantaisistes et réalistes ; l
 - **Ponts** entre les îles, en alternance : suspendu (planches, poteaux, rambardes de corde qui ploient, lanternes) ou de pierre (parapets, flanc, arches et piles qui plongent dans le vide).
 - **Relief** : la roche s'effile en montagne renversée sous l'île (pointe sous le centre, aiguilles), facettes éclairées de la gauche, trois strates, fissures, racines qui pendent, liseré lumineux.
 - Coût mesuré : génération ≈ 230–360 ms (mémorisée), SVG ≈ 3,5 Mo, ≈ 27 000 éléments ; la ville se fige toujours au repos (E48).
+
+## Étape 6 : relief sur les îles, îlots déserts (3 nov. 2026)
+Demande d'Antsa : « les reliefs des îlots, avec des îlots sans habitants pour le décor ».
+- **Relief** : 2 à 3 pics rocheux à facettes par île (neige au sommet des plus hauts) et quelques collines herbeuses, en bordure ; posés après les bâtiments des niveaux (aucun repère ne bouge), les autres bâtiments les évitent.
+- **Îlots déserts** (≈ 1 par quartier, 23 sur la carte complète) : falaise en pointe, pic ou arbres, parfois une cascade cyan ; aucun bâtiment ni repère ; jamais sur une île, une légende ou un autre îlot ; ils restent dans la largeur de la carte pour ne pas réduire la zone tactile (garde-fou E50 vérifié : 46 px).

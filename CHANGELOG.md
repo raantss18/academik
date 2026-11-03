@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Carte (E54) : pics rocheux et collines sur les îles, îlots déserts avec cascades autour des quartiers.
+
 - Carte (E53) : îles plus grandes sur des montagnes renversées, ponts suspendus ou de pierre, et sur chaque île un chemin qui passe par chaque niveau, la partie parcourue brillant en or.
 
 - Carte fantastique (E52) : îles flottantes sur falaises lumineuses, route blanche, rivière cyan, flèches gothiques, et à côté de chaque quartier la liste de ses niveaux.
