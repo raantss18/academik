@@ -160,3 +160,8 @@
 
 - **Fait** : 23.3 statistiques trompeuses, 23.4 fuite dans le backtest (gain brut 133 %, honnête −2 %, net −15 % sur données simulées ; meilleur de 100 : Sharpe 1,88), 23.5 faille dans l'agent (triade mortelle d'après Willison, audit de trace) ; manifeste mis à jour ; 835 tests.
 - **Non vérifié** : appareils réels, lecteur d'écran, vrais élèves, relecture par Codex.
+
+### Ma semaine, confiance, défis ★★ (2026-11-03, 0.3.31)
+
+- **Fait** : récapitulatif « Ma semaine » local (D-043) ; confiance facultative sur les QCM avec retour d'hypercorrection (D-043) ; défis ★★ facultatifs hors score, hors révisions et hors durée (D-044), 13 défis dans les modules 2 à 9, solutions exécutées ; 841 tests.
+- **Non vérifié** : appareils réels, lecteur d'écran, vrais élèves ; badge « Défi ★★ réussi » pas encore vu à l'écran.

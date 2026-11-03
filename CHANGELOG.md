@@ -2,6 +2,14 @@
 
 ## [Non publié]
 
+## [0.3.31] — 2026-11-03
+
+### Message fr
+Nouveaux défis ★★ facultatifs dans 13 niveaux (Syracuse, zéros de n!, anagrammes, permutations, notation polonaise inverse, déterminant, méthode de Simpson…) : ils ne comptent pas dans le score et tu peux les passer. Sur les QCM, tu peux dire si tu es sûr·e avant de vérifier. Le menu du logo affiche « Ma semaine », calculée sur ton appareil.
+
+### Message en
+New optional ★★ challenges in 13 levels (Collatz, zeros of n!, anagrams, permutations, reverse Polish notation, determinant, Simpson's rule…): they don't count towards the score and you can skip them. On multiple-choice questions, you can say whether you are sure before checking. The logo menu shows “My week”, computed on your device.
+
 ## [0.3.30] — 2026-11-02
 
 ### Message fr
