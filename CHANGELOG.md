@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Carte fantastique (E52) : îles flottantes sur falaises lumineuses, route blanche, rivière cyan, flèches gothiques, et à côté de chaque quartier la liste de ses niveaux.
+
 - Refonte au plus près des images de référence (E51) : cartes de joueur (toi et Kintana), pastille « Mission », grands titres jaunes, carte topographique avec chemin pointillé, coches vertes, cible et plaques de progression ; liens lisibles en sombre.
 
 - Critique de design (E50) : carte lisible au doigt (repères plus grands, texte des bannières lisible), bannières au contraste AA, liste en bannières et médaillons, briefing de mission au début des leçons.

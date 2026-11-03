@@ -136,8 +136,7 @@ describe('E50 · critique de design : carte lisible, liste et leçon au langage 
 
 describe('E51 · refonte d’après les images de référence d’Antsa', () => {
   const g = readFileSync('src/lib/city/gen.js', 'utf8'), m = readFileSync('src/ui/Map.svelte', 'utf8');
-  it('carte (2e réf.) : courbes de niveau, chemin pointillé entre niveaux, coche verte, cible au sol ; (3e réf.) plaque de progression sous la bannière', () => {
-    expect(g).toContain('Courbes de niveau'); expect(g).toContain('stroke-dasharray="5 6"'); expect(g).toContain('coche verte'); expect(g).toContain('cible au sol'); expect(g).toContain('const plaque =');
+  it('carte (2e réf.) : chemin pointillé entre niveaux, coche verte, cible au sol ; (3e réf.) plaque de progression sous la bannière', () => { expect(g).toContain('stroke-dasharray="5 6"'); expect(g).toContain('coche verte'); expect(g).toContain('cible au sol'); expect(g).toContain('const plaque =');
   });
   it('la plaque dit vrai : réussis / total et étoiles des niveaux réussis', () => {
     const d = buildDistricts(input({ scores: { '0.1': 1, '0.2': 0.6 }, open: new Set(['0.1', '0.2', '0.3']), current: '0.3' }));
@@ -152,5 +151,19 @@ describe('E51 · refonte d’après les images de référence d’Antsa', () => 
   it('grands titres jaunes cernés (1re et 2e réf.) ; liens lisibles en sombre', () => {
     expect(readFileSync('index.html', 'utf8')).toContain('class="cap"'); expect(readFileSync('src/ui/Lesson.svelte', 'utf8')).toContain('class="legende"');
     expect(readFileSync('src/app.css', 'utf8')).toContain('a { color: var(--c-link);');
+  });
+});
+
+describe('E52 · carte fantastique (référence d’Antsa) : îles flottantes, route et rivière lumineuses, flèches, légendes', () => {
+  const out = renderCity(buildDistricts(input({ scores: { '0.1': 1 }, open: new Set(['0.1', '0.2']), current: '0.2' })), { reduce: true });
+  it('îles sur falaises éclairées, route blanche lumineuse, rivière cyan, flèches gothiques', () => {
+    const g = readFileSync('src/lib/city/gen.js', 'utf8');
+    expect(out.svg).toContain('fill="url(#ombre)"'); expect(out.svg).toContain('id="ombre"'); expect(g).toContain('route blanche lumineuse'); expect(g).toContain('rivière lumineuse');
+    expect(g).toContain('function drawSpire'); expect(g).toContain('spire: 1.3');
+  });
+  it('chaque légende liste les vrais niveaux du quartier, dans l’ordre, avec leur titre', () => {
+    const d = buildDistricts(input({ scores: { '0.1': 1 }, open: new Set(['0.1', '0.2']), current: '0.2' }));
+    expect((out.svg.match(/class="legende"/g) ?? []).length).toBe(d.length);
+    for (const l of d[0].levels) expect(out.svg).toContain(`${l.boss ? '♛' : l.id} ${(l.titre ?? '').slice(0, 26).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;')}`);
   });
 });

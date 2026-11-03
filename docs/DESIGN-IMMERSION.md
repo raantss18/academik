@@ -123,3 +123,10 @@ Demande d'Antsa : « en te basant sur les photos données ». Correspondance, é
 | 2 | chemin pointillé blanc, coches vertes, cible rouge | pointillés entre les niveaux d'un quartier (vifs entre niveaux réussis), coche verte sur les réussis, cible au sol sous le niveau à jouer |
 | 2 | fiche « Information » avec photo et tampon | dossier de mission (étape 1) |
 | 3 (fantastique) | médaillons, bannières avec texte descriptif | médaillons (étape 1) ; plaque « réussis/total · ★ » sous chaque bannière |
+
+## Étape 4 : la carte fantastique (3 nov. 2026, image renvoyée par Antsa : « exactement comme celle-ci, la route et les bâtiments »)
+- **Îles flottantes** : sous chaque île, une masse rocheuse en pointe (dégradé d'ombre), striée, avec un liseré lumineux violet ou orangé ; les courbes de niveau de l'étape 3 sont retirées (elles ne vont pas avec des îles suspendues).
+- **Fond** : nuit noire et bleutée ; rochers sombres à la place des collines vertes ; **rivière cyan lumineuse**.
+- **Route** : chemin blanc lumineux entre les îles (halo, bord, cœur clair).
+- **Bâtiments** : **flèches gothiques** (tour élancée, toit en aiguille, deux tourelles, fenêtres orangées) dans tous les quartiers.
+- **Légendes** comme les colonnes de texte de l'image : bannière du quartier + liste de ses niveaux (coche verte réussi, point rouge à jouer, doré ouvert, gris fermé), reliée à l'île par un fil.

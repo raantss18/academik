@@ -411,6 +411,17 @@ function drawHouse(c, o = {}) {
   } else s += rooftop(c, B.T, h, R);
   return { s, top };
 }
+/** Flèche gothique (refonte d'après la carte fantastique) : tour élancée, toit en aiguille, deux tourelles, fenêtres orangées. */
+function drawSpire(c) {
+  const R = c.R, th = c.th, sc = c.sc || 1, wall = C(pick(R, th.walls)), roof = C(shade(pick(R, th.roofs), .8)), h = rr(R, 62, 96) * sc, ch = rr(R, 34, 48) * sc;
+  let s = '';
+  for (const [dx, dy, k] of [[-.32, .1, .55], [.3, -.12, .62]]) s += cyl(c.x + dx, c.y + dy, .12, c.z, h * k, wall, { cap: 'cone', ch: ch * .5, capCol: roof, rings: 1 });
+  s += cyl(c.x, c.y, .2, c.z, h, wall, { cap: 'cone', ch, capCol: roof, rings: 2 });
+  const [sx, sy] = iso(c.x, c.y, c.z);
+  for (let k = 0; k < 3; k++) { const y = sy - h * (.3 + k * .22); s += `<rect x="${fx(sx + 1)}" y="${fx(y - 6)}" width="3" height="6" rx="1.4" fill="${c.lit > R() * 1.4 ? '#ffb347' : '#2a2a38'}"/>`; }
+  s += `<line x1="${fx(sx)}" y1="${fx(sy - h - ch)}" x2="${fx(sx)}" y2="${fx(sy - h - ch - 10)}" stroke="#d8b66a" stroke-width="1.2"/>`;
+  return { s, top: c.z + h + ch + 10 };
+}
 function drawTower(c, o = {}) {
   const R = c.R, th = c.th, sc = c.sc || 1, tiers = o.tiers || (2 + (R() < .4 ? 1 : 0)), col = C(pick(R, th.walls));
   let s = '', z = c.z, w = c.w, d = c.d, B;
@@ -560,6 +571,7 @@ const K = {
   hotel: { size: R => [rr(R, 1.2, 1.5), rr(R, .8, 1)], draw: c => drawHouse(c, { floors: 3, roof: 'hip' }) },
   farm: { size: R => [rr(R, 1.1, 1.4), rr(R, .8, 1)], draw: c => drawHouse(c, { floors: 2, roof: 'gable' }) },
   tower: { size: R => [rr(R, .55, .8), rr(R, .5, .7)], draw: drawTower },
+  spire: { size: () => [.75, .75], draw: drawSpire },
   hall: { size: R => [rr(R, 1.3, 2.1), rr(R, .75, 1)], draw: drawHall },
   containers: { size: () => [.95, 1.3], draw: drawContainers },
   silo: { size: () => [.7, .7], draw: drawSilo },
@@ -603,6 +615,19 @@ function hull(Pp) {
   up.pop(); lo.pop(); return lo.concat(up);
 }
 function blob(x, y, rx, ry, z, R, n = 16, jit = .18) { const out = []; for (let i = 0; i < n; i++) { const a = i / n * 2 * Math.PI, k = 1 + (R() - .5) * 2 * jit; out.push([x + Math.cos(a) * rx * k, y + Math.sin(a) * ry * k, z]); } return out; }
+function falaise(g, th, R, d) {
+  const sc = outline(g, 1.07, 48).map(q => iso(q[0], q[1], 0)), n = sc.length;
+  let L = 0, Rr = 0; sc.forEach((p, i) => { if (p[0] < sc[L][0]) L = i; if (p[0] > sc[Rr][0]) Rr = i; });
+  const arc = i0 => { const out = []; for (let i = L; ; i = (i + i0 + n) % n) { out.push(sc[i]); if (i === Rr) break; } return out; };
+  const a1 = arc(1), a2 = arc(-1), front = a1.reduce((s, p) => s + p[1], 0) / a1.length > a2.reduce((s, p) => s + p[1], 0) / a2.length ? a1 : a2;
+  const w = sc[Rr][0] - sc[L][0], DEP = w * rr(R, .42, .55), m = front.length - 1;
+  const bas = front.map((p, i) => { const t = i / m, k = Math.pow(Math.sin(Math.PI * t), .7), pic = i % 3 === 1 ? 1.18 : i % 3 === 2 ? .82 : 1; return [p[0] + (R() - .5) * 10, p[1] + 14 + DEP * k * pic * rr(R, .85, 1.1)]; });
+  const lueur = d % 2 ? '#c27dff' : '#ff9a3c', pts = front.concat(bas.reverse()).map(q => q.map(fx).join(',')).join(' ');
+  let s = `<polygon points="${pts}" fill="${C(shade(th.cliff, .8))}"/><polygon points="${pts}" fill="url(#ombre)"/>`;
+  for (let i = 2; i < m - 1; i += 3) { const p = front[i], q = bas[m - i]; s += `<line x1="${fx(p[0])}" y1="${fx(p[1] + 10)}" x2="${fx(p[0] + (q[0] - p[0]) * .2)}" y2="${fx(p[1] + (q[1] - p[1]) * .7)}" stroke="rgb(0 0 0 / .28)" stroke-width="2"/>`; }
+  s += `<polyline points="${front.map(q => q.map(fx).join(',')).join(' ')}" fill="none" stroke="${lueur}" stroke-opacity=".55" stroke-width="5" stroke-linejoin="round"/><polyline points="${front.map(q => [q[0], q[1] + 8].map(fx).join(',')).join(' ')}" fill="none" stroke="${lueur}" stroke-opacity=".18" stroke-width="12" stroke-linejoin="round"/>`;
+  return s;
+}
 const polyZ = (pts, fill, extra = '') => `<polygon points="${pts.map(P).join(' ')}" fill="${fill}"${extra}/>`;
 
 // =====================================================================================================
@@ -654,9 +679,8 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   let ground = '';
 
   // ---- terrain du quartier : plusieurs couches de contour qui s'estompent vers l'extérieur, puis des taches de sol
-  // Courbes de niveau autour de l'île, comme sur une carte topographique (refonte d'après la 2e référence).
-  for (const k of [1.82, 1.62, 1.44]) ground += `<polyline points="${outline(g, k, 40).concat([outline(g, k, 40)[0]]).map(P).join(' ')}" fill="none" stroke="#9fd2c0" stroke-opacity="${fx(.1 + (1.82 - k) * .12)}" stroke-width="1.4" stroke-linejoin="round"/>`;
-  ground += polyZ(outline(g, 1.28), C(th.lip), ' opacity=".22"') + polyZ(outline(g, 1.14), C(mix(th.lip, th.top, .5)), ' opacity=".5"') + polyZ(outline(g, 1), C(th.top));
+  // Île flottante (refonte d'après la carte fantastique) : une masse rocheuse en pointe pend sous l'île, éclairée d'un liseré violet ou orangé.
+  ground += falaise(g, th, R, d) + polyZ(outline(g, 1.07), C(mix(th.lip, th.top, .5)), ' opacity=".9"') + polyZ(outline(g, 1), C(th.top));
   ground += `<polyline points="${outline(g, 1, 44).concat([outline(g, 1, 44)[0]]).map(P).join(' ')}" fill="none" stroke="rgb(0 0 0 / .18)" stroke-width="2" stroke-linejoin="round"/>`;
   for (let i = 0; i < 16; i++) { const rx = rr(R, .5, 1.6), ry = rr(R, .5, 1.6), [x, y] = pt(); if (inb(x, y, .3)) ground += polyZ(blob(x, y, rx, ry, z, R, 14), C(pick(R, th.patches)), ' opacity=".55"'); }
 
@@ -711,7 +735,7 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   // ---- le reste du quartier : bâtiments tirés au hasard, orientés le long des rues, plus éclairés quand le quartier avance
   let n = 0, att = 0; const count = Math.round(th.count * .75);
   while (n < count && att < count * 40) {
-    att++; const kind = wpick(R, th.kinds), sz = K[kind].size(R), [x, y] = pt(.4), ri = roadInfo(x, y);
+    att++; const kind = wpick(R, { ...th.kinds, spire: 1.3 }), sz = K[kind].size(R), [x, y] = pt(.4), ri = roadInfo(x, y);
     const ang = R() < th.align ? ri.ang + (R() < .3 ? Math.PI / 2 : 0) + rr(R, -.07, .07) : R() * Math.PI;
     if (!fits(x, y, sz[0], sz[1], ang)) continue;
     const c = { x, y, ang, w: sz[0], d: sz[1], z, R, th, lit: litBase * rr(R, .45, 1.2), sc: 1 }, res = K[kind].draw(c);
@@ -785,7 +809,8 @@ export function renderCity(districts, opts = {}) {
   for (let d = 0; d < n; d++) roadPts.push(toScreen(lay[d].E[0], lay[d].E[1]), toScreen(lay[d].X[0], lay[d].X[1]));
   for (let d = 0; d < n - 1; d++) {
     const th = THEMES[DATA[d].theme % THEMES.length], pts = spline(wiggle(lay[d].X, lay[lay.length > d + 1 ? d + 1 : d].E, R2, 2.4, 2), 9), pl = pts.map(q => P([q[0], q[1], 0])).join(' ');
-    link += `<polyline points="${pl}" fill="none" stroke="${shade(th.road, .55)}" stroke-width="${19}" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pl}" fill="none" stroke="${th.road}" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pl}" fill="none" stroke="${th.roadHi}" stroke-width="1.2" stroke-dasharray="1 6" opacity=".6" stroke-linecap="round"/>`;
+    link += `<polyline points="${pl}" fill="none" stroke="#fff4d6" stroke-opacity=".12" stroke-width="40" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pl}" fill="none" stroke="#cbbf9a" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pl}" fill="none" stroke="#f6efd9" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>`   // route blanche lumineuse (carte fantastique)
+      + `<polyline points="${pl}" fill="none" stroke="${th.roadHi}" stroke-width="1.2" stroke-dasharray="1 6" opacity=".6" stroke-linecap="round"/>`;
     const M2 = measure(pts), reachedLink = DATA[d + 1].reached;
     for (let i = 0; i < 9; i++) { const p = M2.at(rr(R2, .08, .92)), side = R2() < .5 ? 1 : -1, off = rr(R2, .9, 2.6), x = p[0] - p[3] * side * off, y = p[1] + p[2] * side * off; country.push({ k: x + y, s: tree(wpick(R2, THEMES[DATA[R2() < .5 ? d : d + 1].theme % THEMES.length].trees), x, y, 0, R2, { leaf: ['#2f6b3a', '#3f8a4b', '#5aa55a'] }) }); }
     if (reachedLink) for (let i = 0; i < 3; i++) { const p = M2.at((i + 1) / 4), [a, b] = iso(p[0], p[1], 0); link += `<line x1="${fx(a)}" y1="${fx(b)}" x2="${fx(a)}" y2="${fx(b - 15)}" stroke="#555b6e" stroke-width="1.4"/><circle cx="${fx(a)}" cy="${fx(b - 16)}" r="9" fill="url(#halo)"/><circle cx="${fx(a)}" cy="${fx(b - 16)}" r="2.2" fill="#ffe7a3"/>`; }
@@ -795,14 +820,25 @@ export function renderCity(districts, opts = {}) {
   let land = ''; for (const [w, o] of [[760, .1], [700, .1], [640, .1], [580, .1], [520, .1], [460, .1], [400, .12], [340, .14]]) land += `<polyline points="${sm}" fill="none" stroke="${w > 520 ? '#14243a' : '#1f3a36'}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${o}"/>`;
   const spts = spline(roadPts, 6);
   for (let i = 0; i < n * 5; i++) { const q = spts[Math.floor(RS() * spts.length)], side = RS() < .5 ? 1 : -1, ox = side * rr(RS, 150, 300), oy = rr(RS, -60, 60), rx = rr(RS, 60, 130), ry = rx * rr(RS, .35, .5), cx = q[0] + ox, cy = q[1] + oy;
-    land += `<ellipse cx="${fx(cx)}" cy="${fx(cy)}" rx="${fx(rx)}" ry="${fx(ry)}" fill="#26453d" opacity=".75"/><ellipse cx="${fx(cx - rx * .12)}" cy="${fx(cy - ry * .2)}" rx="${fx(rx * .8)}" ry="${fx(ry * .7)}" fill="#315a49" opacity=".8"/><ellipse cx="${fx(cx - rx * .25)}" cy="${fx(cy - ry * .4)}" rx="${fx(rx * .38)}" ry="${fx(ry * .3)}" fill="#3f7059" opacity=".7"/>`; }
+    land += `<ellipse cx="${fx(cx)}" cy="${fx(cy)}" rx="${fx(rx)}" ry="${fx(ry)}" fill="#121c22" opacity=".85"/><ellipse cx="${fx(cx - rx * .12)}" cy="${fx(cy - ry * .2)}" rx="${fx(rx * .8)}" ry="${fx(ry * .7)}" fill="#1a272e" opacity=".85"/><ellipse cx="${fx(cx - rx * .25)}" cy="${fx(cy - ry * .4)}" rx="${fx(rx * .38)}" ry="${fx(ry * .3)}" fill="#24343c" opacity=".7"/>`; }
   const side = RS() < .5 ? 1 : -1, river = spts.filter((_, i) => i % 3 === 0).map((q, i) => [q[0] + side * (330 + 60 * Math.sin(i * .7)), q[1] + 18 * Math.cos(i * .5)]);
-  if (river.length > 3) { const rv = spline(river, 5).map(q => q.map(fx).join(',')).join(' '); land += `<polyline points="${rv}" fill="none" stroke="#0a1c34" stroke-width="26" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${rv}" fill="none" stroke="#11365a" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${rv}" fill="none" stroke="#5aa9d9" stroke-width="2" stroke-dasharray="2 14" stroke-linecap="round" opacity=".45"/>`; }
+  if (river.length > 3) { const rv = spline(river, 5).map(q => q.map(fx).join(',')).join(' '); land += `<polyline points="${rv}" fill="none" stroke="#0a1c34" stroke-width="26" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${rv}" fill="none" stroke="#11365a" stroke-width="18" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${rv}" fill="none" stroke="#5aa9d9" stroke-width="2" stroke-dasharray="2 14" stroke-linecap="round" opacity=".45"/>`
+    + `<polyline points="${rv}" fill="none" stroke="#3ad6ff" stroke-opacity=".16" stroke-width="54" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${rv}" fill="none" stroke="#7fe8ff" stroke-opacity=".75" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>`; }   // rivière lumineuse
 
+  // ---- légendes latérales (carte fantastique) : bannière du quartier + liste de ses niveaux, reliées à l'île par un fil.
+  const legendes = built.map((_, d) => {
+    const g = lay[d], sc = outline(g, 1.07, 40).map(q => iso(q[0], q[1], 0)), xs = sc.map(p => p[0]), ys = sc.map(p => p[1]);
+    const D = DATA[d], cote = g.sx >= 0 ? 1 : -1, lignes = D.levels.map(l => ({ l, txt: `${l.boss ? '♛' : l.id} ${(l.titre ?? '').slice(0, 26)}${(l.titre ?? '').length > 26 ? '…' : ''}` }));
+    const W = Math.min(330, 44 + 7.4 * Math.max(D.label.length + 2, ...lignes.map(x => x.txt.length))), H = 46 + lignes.length * 19;
+    const x0 = cote > 0 ? Math.max(...xs) + 60 : Math.min(...xs) - 60 - W, y0 = (Math.min(...ys) + Math.max(...ys)) / 2 - H / 2 - 30;
+    const ax = cote > 0 ? Math.max(...xs) - 20 : Math.min(...xs) + 20, ay = (Math.min(...ys) + Math.max(...ys)) / 2;
+    return { d, x0, y0, W, H, ax, ay, cote, lignes };
+  });
   // ---- bornes de la vue
   let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9; const grow = (x, y) => { minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y); };
   lay.forEach(g => outline(g, 1.35, 24).forEach(q => { const [x, y] = toScreen(q[0], q[1]); grow(x, y - 190); grow(x, y + 30); }));
   pins.forEach(p => grow(p.px, p.py - 90)); const e0 = toScreen(lay[0].E[0], lay[0].E[1]), x1 = toScreen(lay[n - 1].X[0], lay[n - 1].X[1]); grow(e0[0] - 240, e0[1] + 230); grow(e0[0] + 240, e0[1] + 120); grow(x1[0], x1[1] - 330);
+  legendes.forEach(L => { grow(L.x0 - 20, L.y0 - 20); grow(L.x0 + L.W + 20, L.y0 + L.H + 20); });
   minX -= 130; maxX += 130; const VW = maxX - minX, VH = maxY - minY;
   let sky = ''; for (let i = 0; i < 100; i++) sky += `<circle class="${i % 5 ? '' : 'twinkle'}" style="animation-delay:${fx(RS() * 3)}s" cx="${fx(minX + RS() * VW)}" cy="${fx(minY + RS() * VH * .5)}" r="${fx(RS() * 1.3 + .3)}" fill="#fff" opacity="${fx(.35 + RS() * .6)}"/>`;
   sky += `<circle cx="${fx(maxX - 90)}" cy="${fx(minY + 120)}" r="26" fill="#f4ecd2"/><circle cx="${fx(maxX - 80)}" cy="${fx(minY + 114)}" r="24" fill="#2b2a55" opacity=".9"/>`;
@@ -835,6 +871,16 @@ export function renderCity(districts, opts = {}) {
   built.forEach(b => { let best = null, bestA = Infinity;
     for (const [ga, gb] of b.sign.spots) { const r = [ga - 12, gb - 62, ga + b.sign.tw, gb], cost = taken.reduce((t, q) => t + overlap(r, q), 0); if (cost < bestA) { bestA = cost; best = [ga, gb, r]; } if (cost === 0) break; }
     taken.push(best[2]); signBoxes.push(best[2]); signs += b.sign.at(best[0], best[1]); });
+  let leg = '';
+  legendes.forEach(L => { const D = DATA[L.d], atteint = D.reached, bx = L.cote > 0 ? L.x0 : L.x0 + L.W, by = L.y0 + 22;
+    leg += `<g class="legende" opacity="${atteint ? 1 : .55}"><path d="M${fx(L.ax)} ${fx(L.ay)}C${fx((L.ax + bx) / 2)} ${fx(L.ay)} ${fx((L.ax + bx) / 2)} ${fx(by)} ${fx(bx)} ${fx(by)}" fill="none" stroke="#e8e0c8" stroke-opacity=".45" stroke-width="1.6"/><circle cx="${fx(L.ax)}" cy="${fx(L.ay)}" r="4" fill="#e8e0c8" fill-opacity=".7"/>`
+      + `<rect x="${fx(L.x0)}" y="${fx(L.y0)}" width="${fx(L.W)}" height="${fx(L.H)}" rx="8" fill="#0d1418" fill-opacity=".78" stroke="#3c5a5a" stroke-opacity=".6"/>`
+      + `<path d="M${fx(L.x0 + 10)} ${fx(L.y0 - 10)}h${fx(L.W - 20)}l-8 13l8 13h${fx(-(L.W - 20))}l8 -13z" fill="${shade(D.color, .7)}" stroke="#d8b66a" stroke-width="1.2"/><text x="${fx(L.x0 + L.W / 2)}" y="${fx(L.y0 + 8)}" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="14" fill="#fff">${D.label}</text>`;
+    L.lignes.forEach(({ l, txt }, i) => { const y = L.y0 + 38 + i * 19, ic = l.st === 'done' ? '#2f9e44' : l.st === 'current' ? '#ea4335' : l.st === 'started' || l.st === 'open' ? '#d8b66a' : '#59607a';
+      leg += `<circle cx="${fx(L.x0 + 16)}" cy="${fx(y - 4)}" r="5.5" fill="${ic}"/>` + (l.st === 'done' ? `<path d="M${fx(L.x0 + 13)} ${fx(y - 4)}l2 2.2 3.6 -4" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>` : '')
+        + `<text x="${fx(L.x0 + 28)}" y="${fx(y)}" font-family="var(--font)" font-size="12.5" font-weight="${l.st === 'current' ? 800 : 600}" fill="${l.st === 'locked' || l.st === 'soon' ? '#8a90a8' : '#e8e0c8'}">${esc(txt)}</text>`; });
+    leg += '</g>'; });
+  pinSvg += leg;
   // Chemin pointillé qui relie les niveaux d'un quartier dans l'ordre : blanc vif entre niveaux réussis, pâle ensuite (2e référence).
   const parQuartier = new Map(); pins.forEach(p => { if (!parQuartier.has(p.d)) parQuartier.set(p.d, []); parQuartier.get(p.d).push(p); });
   for (const liste of parQuartier.values()) { liste.sort((a, b) => a.l - b.l);
@@ -866,7 +912,7 @@ export function renderCity(districts, opts = {}) {
   });
   const svg = `<svg viewBox="${fx(minX)} ${fx(minY)} ${fx(VW)} ${fx(VH)}" xmlns="http://www.w3.org/2000/svg" role="group">`
     + `<defs><radialGradient id="halo"><stop offset="0" stop-color="#ffe7a3" stop-opacity=".55"/><stop offset="1" stop-color="#ffe7a3" stop-opacity="0"/></radialGradient>`
-    + `<filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${sky}${body}${signs}${brandSvg}${pinSvg}</svg>`;
+    + `<linearGradient id="ombre" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".05"/><stop offset=".55" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#05070b" stop-opacity=".92"/></linearGradient><filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${sky}${body}${signs}${brandSvg}${pinSvg}</svg>`;
   return { svg, width: VW, boxes: { signs: signBoxes, pins: pins.map(pinBox) } };
 }
 /** Thèmes disponibles (place = nom du quartier, blurb = ambiance), pour la fiche d'un niveau. */
