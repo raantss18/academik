@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 36,
-  "version": "0.3.33",
+  "build": 37,
+  "version": "0.3.34",
   "notes": {
-   "fr": "Treize nouveaux défis ★★ facultatifs, du traitement des séries au calcul sécurisé : désaisonnaliser une série, retrouver un cycle caché, minimiser avec Adam, analogies entre mots, quantification par blocs, Diffie-Hellman jouet… Il y en a maintenant 26. Un fil d'Ariane en haut de chaque leçon te dit où tu es.",
-   "en": "Thirteen new optional ★★ challenges, from time series to secure computing: deseasonalise a series, find a hidden cycle, minimise with Adam, word analogies, block quantisation, toy Diffie-Hellman… There are now 26 of them. A breadcrumb at the top of each lesson tells you where you are."
+   "fr": "Les nouvelles versions de l'application s'annoncent tout de suite, sans attendre la fin du téléchargement des cours. « Vérifier les mises à jour » te dit clairement si tu as la dernière version, si le serveur est injoignable, ou quelle version est disponible. Les cours se téléchargent aussi plus vite.",
+   "en": "New app versions are announced right away, without waiting for the lessons to finish downloading. “Check for updates” now tells you clearly whether you have the latest version, whether the server is unreachable, or which version is available. Lessons also download faster."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.33/academik-0.3.33.apk",
-    "sha256": "762c1990d941db81d2145c1f8599a6d8b333fd68178e2a0aca3a919cd77fd42f",
-    "bytes": 11541978
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.34/academik-0.3.34.apk",
+    "sha256": "a1db4410fa50383cf4d5e506431b3249ca7f4f9038afd01a5f3f7d8548669ff3",
+    "bytes": 11542646
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.33/academik-0.3.33-x86_64.AppImage",
-    "sha256": "92a9ad71df5bcaa50fbecc5d8552e0dcdecfcd2760e122bd4c0b71dfd2fb4a1b",
-    "bytes": 115988984
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.34/academik-0.3.34-x86_64.AppImage",
+    "sha256": "832936e7c88b1c3c28fd3b0ad16ab60b25fb37597c569af480329988283cd2da",
+    "bytes": 115984888
    }
   }
  },
  "history": [
+  {
+   "build": 36,
+   "version": "0.3.33",
+   "notes": {
+    "fr": "Treize nouveaux défis ★★ facultatifs, du traitement des séries au calcul sécurisé : désaisonnaliser une série, retrouver un cycle caché, minimiser avec Adam, analogies entre mots, quantification par blocs, Diffie-Hellman jouet… Il y en a maintenant 26. Un fil d'Ariane en haut de chaque leçon te dit où tu es.",
+    "en": "Thirteen new optional ★★ challenges, from time series to secure computing: deseasonalise a series, find a hidden cycle, minimise with Adam, word analogies, block quantisation, toy Diffie-Hellman… There are now 26 of them. A breadcrumb at the top of each lesson tells you where you are."
+   }
+  },
   {
    "build": 35,
    "version": "0.3.32",
@@ -252,14 +260,6 @@
    "notes": {
     "fr": "Tu reprends maintenant une leçon là où tu l'avais laissée, et « Continuer » te mène au niveau suivant dès que tu as 50 %. Le bouton ← et le bouton retour du téléphone te ramènent à la carte d'avant ; le logo te ramène à l'accueil. Si tu te trompes, la réponse n'est plus montrée.",
     "en": "You now resume a lesson where you left it, and “Continue” takes you to the next level once you reach 50%. The ← button and the phone's back button take you to the previous card; the logo takes you home. If you get it wrong, the answer is no longer shown."
-   }
-  },
-  {
-   "build": 4,
-   "version": "0.3.1",
-   "notes": {
-    "fr": "Les boutons du haut ne sont plus cachés par la barre d'état du téléphone. Les réglages, la langue, le thème, la synchronisation et les mises à jour sont dans le logo academik. Nouvelle icône : le « e » rouge.",
-    "en": "The buttons at the top are no longer hidden by the phone's status bar. Settings, language, theme, sync and updates are in the academik logo. New icon: the red “e”."
    }
   }
  ]
