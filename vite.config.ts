@@ -18,7 +18,7 @@ const pyodideFiles = () => ({
 
 // Politique de sécurité du contenu du site publié (la même que l'AppImage, voir src-tauri/tauri.conf.json) :
 // aucun script ni réseau hors du site lui-même. Ajoutée seulement à la construction (le serveur de dev a besoin d'un WebSocket).
-const CSP = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://raantss18.github.io; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; base-uri 'self'";
+const CSP = "default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://raantss18.github.io; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; object-src 'none'; base-uri 'self'";
 const cspMeta = (): Plugin => ({ name: 'academik-csp', apply: 'build', transformIndexHtml: html => html.replace('<head>', `<head>\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`) });
 
 export default defineConfig({

@@ -16,13 +16,10 @@
   #splash .r { width: 120px; height: 6px; margin: 18px auto 0; border-radius: 3px; background: linear-gradient(90deg, #c98a1f, #ffe08a, #c98a1f); background-size: 200% 100%; animation: academik-r 1.4s linear infinite; }
   @keyframes academik-r { to { background-position: -200% 0; } }
   @media (prefers-reduced-motion: reduce) { #splash .r { animation: none; } }
-  /* Grand titre jaune cerné de noir sur un bandeau sombre, comme les légendes des références 1 et 2. */
-  #splash .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 28px 16px calc(env(safe-area-inset-bottom) + 34px); background: linear-gradient(transparent, rgb(0 0 0 / .65) 40%); text-align: center;
-    font: italic 900 clamp(1.6rem, 7vw, 2.6rem) system-ui, sans-serif; letter-spacing: .5px; text-transform: uppercase; color: #ffd84a; -webkit-text-stroke: 2px #1b1204; paint-order: stroke fill; text-shadow: 0 4px 0 #1b1204; }
 </style>
 </head>
 <body>
-<div id="splash" aria-hidden="true"><div class="m"><img src="./icon.svg" width="72" height="72" alt="">acad<b>e</b>mik<div class="r"></div></div><div class="cap">Construis ton IA</div></div>
+<div id="splash" aria-hidden="true"><div class="m"><img src="./icon.svg" width="72" height="72" alt="">acad<b>e</b>mik<div class="r"></div></div></div>
 <div id="app"></div>
 <script type="module" src="/src/main.ts"></script>
 </body>

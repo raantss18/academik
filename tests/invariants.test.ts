@@ -218,6 +218,10 @@ describe('E18 · panorama libre, en-tête dans le décor, allumage progressif, r
     for (const f of [vite, tauri]) { expect(f).toContain("font-src 'self' data:"); expect(f).toContain("script-src 'self' 'wasm-unsafe-eval'"); expect(f).not.toContain("'unsafe-eval'"); expect(f).toContain("connect-src 'self' https://raantss18.github.io"); }
     expect(vite).toContain("object-src 'none'");
   });
+  it('E56 : le décor de l\'accueil est une image blob: (E55), donc la CSP du site, de l\'APK et de l\'AppImage autorise img-src blob:', () => {
+    expect(read('src/ui/City.svelte')).toContain('URL.createObjectURL(new Blob(');
+    for (const f of [read('vite.config.ts'), read('src-tauri/tauri.conf.json')]) expect(f).toContain("img-src 'self' data: blob:;");
+  });
   it('E38 : le code coloré reste lisible (contraste ≥ 4,5:1) sur fond de code et sur la ligne courante, en clair et en sombre ; aucune ligne atténuée', () => {
     const css = read('src/app.css');
     const lum = (h: string) => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(x => x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
