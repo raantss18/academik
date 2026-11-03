@@ -130,3 +130,11 @@ Demande d'Antsa : « en te basant sur les photos données ». Correspondance, é
 - **Route** : chemin blanc lumineux entre les îles (halo, bord, cœur clair).
 - **Bâtiments** : **flèches gothiques** (tour élancée, toit en aiguille, deux tourelles, fenêtres orangées) dans tous les quartiers.
 - **Légendes** comme les colonnes de texte de l'image : bannière du quartier + liste de ses niveaux (coche verte réussi, point rouge à jouer, doré ouvert, gris fermé), reliée à l'île par un fil.
+
+## Étape 5 : ponts, relief, grandes îles, chemin des leçons (3 nov. 2026)
+Demande d'Antsa : « les ponts mieux présentés, fantaisistes et réalistes ; le relief des îles réaliste ; des îles plus grandes avec un chemin à suivre pour chaque cours, leçon ».
+- **Îles plus grandes** (rayon × 1,4, quartiers plus espacés, un peu plus de bâtiments) ; la largeur de base de la carte passe à 2 300 px pour garder des repères tactiles ≥ 44 px (mesuré : 46 px).
+- **Chemin des leçons** : la route de chaque île passe par une étape numérotée par niveau, dans l'ordre ; la partie parcourue (jusqu'au dernier niveau réussi) brille en or ; l'étape à jouer est rouge.
+- **Ponts** entre les îles, en alternance : suspendu (planches, poteaux, rambardes de corde qui ploient, lanternes) ou de pierre (parapets, flanc, arches et piles qui plongent dans le vide).
+- **Relief** : la roche s'effile en montagne renversée sous l'île (pointe sous le centre, aiguilles), facettes éclairées de la gauche, trois strates, fissures, racines qui pendent, liseré lumineux.
+- Coût mesuré : génération ≈ 230–360 ms (mémorisée), SVG ≈ 3,5 Mo, ≈ 27 000 éléments ; la ville se fige toujours au repos (E48).

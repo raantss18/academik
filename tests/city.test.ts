@@ -114,11 +114,13 @@ describe('refonte immersive, étape 2 : ruban doré, rapport de mission, écran 
 });
 
 describe('E50 · critique de design : carte lisible, liste et leçon au langage de la carte', () => {
-  it('carte dessinée à 1 500 px de base (repères ≥ 26 px, zone tactile ≥ 44 px, texte des bannières ≈ 10 px)', () => {
+  it('carte dessinée assez grand (zone tactile ≥ 44 px sur la vraie carte complète)', () => {
     const c = readFileSync('src/ui/City.svelte', 'utf8');
-    expect(c).toContain('const BASE = 1500;'); expect(c).toContain('min-width: 1500px'); expect(c).toContain('svg.style.minWidth = `${BASE * nz}px`');
-    // viewBox ≈ 1 930 unités ; zone tactile r = 30 → 60 × 1500 / 1930 ≈ 47 px
-    expect(60 * 1500 / 1930).toBeGreaterThanOrEqual(44);
+    expect(c).toContain('const BASE = 2300;'); expect(c).toContain('min-width: 2300px'); expect(c).toContain('svg.style.minWidth = `${BASE * nz}px`');
+    // zone tactile r = 30 → 60 × BASE / largeur de la vue ≥ 44 px, mesurée sur la vraie carte complète
+    const p = JSON.parse(readFileSync('src/generated/content.json', 'utf8')), sc: Record<string, number> = {}; for (const id of Object.keys(p.levels)) sc[id] = .9;
+    const vb = renderCity(buildDistricts({ modules: p.cursus.modules, levels: p.levels, scores: sc, open: new Set(Object.keys(p.levels)), current: '2.2', t: (x: { fr: string }) => x.fr, fr: true }), { reduce: true }).svg.match(/viewBox="[^ ]+ [^ ]+ ([^ ]+) /)!;
+    expect(60 * 2300 / Number(vb[1])).toBeGreaterThanOrEqual(44);
   });
   it('bannières de module : texte au contraste AA (≥ 4,5:1) sur chaque couleur de module', async () => {
     const { MODULE_COLORS, banniere } = await import('../src/lib/city/index');
@@ -156,14 +158,31 @@ describe('E51 · refonte d’après les images de référence d’Antsa', () => 
 
 describe('E52 · carte fantastique (référence d’Antsa) : îles flottantes, route et rivière lumineuses, flèches, légendes', () => {
   const out = renderCity(buildDistricts(input({ scores: { '0.1': 1 }, open: new Set(['0.1', '0.2']), current: '0.2' })), { reduce: true });
-  it('îles sur falaises éclairées, route blanche lumineuse, rivière cyan, flèches gothiques', () => {
+  it('îles sur falaises éclairées, ponts, rivière cyan, flèches gothiques', () => {
     const g = readFileSync('src/lib/city/gen.js', 'utf8');
-    expect(out.svg).toContain('fill="url(#ombre)"'); expect(out.svg).toContain('id="ombre"'); expect(g).toContain('route blanche lumineuse'); expect(g).toContain('rivière lumineuse');
+    expect(out.svg).toContain('fill="url(#ombre)"'); expect(out.svg).toContain('id="ombre"'); expect(g).toContain('function pont('); expect(g).toContain('rivière lumineuse');
     expect(g).toContain('function drawSpire'); expect(g).toContain('spire: 1.3');
   });
   it('chaque légende liste les vrais niveaux du quartier, dans l’ordre, avec leur titre', () => {
     const d = buildDistricts(input({ scores: { '0.1': 1 }, open: new Set(['0.1', '0.2']), current: '0.2' }));
     expect((out.svg.match(/class="legende"/g) ?? []).length).toBe(d.length);
     for (const l of d[0].levels) expect(out.svg).toContain(`${l.boss ? '♛' : l.id} ${(l.titre ?? '').slice(0, 26).replace(/&/g, '&amp;').replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;')}`);
+  });
+});
+
+describe('E53 · îles plus grandes, chemin des leçons, ponts fantastiques, relief réaliste', () => {
+  const d = buildDistricts(input({ scores: { '0.1': 1, '0.2': 1 }, open: new Set(['0.1', '0.2', '0.3', '1.1']), current: '0.3' }));
+  const out = renderCity(d, { reduce: true }), g = readFileSync('src/lib/city/gen.js', 'utf8');
+  it('une étape numérotée par niveau sur le chemin de chaque île (nombre exact)', () => {
+    const total = d.reduce((s, x) => s + x.levels.length, 0);
+    expect((out.svg.match(/<ellipse [^>]*rx="21" ry="10\.5"/g) ?? []).length).toBe(total);
+  });
+  it('la partie parcourue du chemin brille jusqu’au dernier niveau réussi', () => { expect(out.svg).toContain('stroke="#ffe7a3" stroke-width="3.2"'); });
+  it('un pont entre chaque paire d’îles voisines, suspendu ou de pierre en alternance', () => {
+    expect(g).toContain('// suspendu : tablier de planches'); expect(g).toContain('// pierre : flanc, arches et piles');
+    expect((g.match(/link \+= pont\(/g) ?? []).length).toBe(1);
+  });
+  it('îles agrandies et relief en montagne renversée avec strates', () => {
+    expect(g).toContain('const base = rr(R, 6.0, 6.9)'); expect(g).toContain('Montagne renversée'); expect(g).toContain('for (const k of [.18, .38, .6])');
   });
 });

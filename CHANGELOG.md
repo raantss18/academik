@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Carte (E53) : îles plus grandes sur des montagnes renversées, ponts suspendus ou de pierre, et sur chaque île un chemin qui passe par chaque niveau, la partie parcourue brillant en or.
+
 - Carte fantastique (E52) : îles flottantes sur falaises lumineuses, route blanche, rivière cyan, flèches gothiques, et à côté de chaque quartier la liste de ses niveaux.
 
 - Refonte au plus près des images de référence (E51) : cartes de joueur (toi et Kintana), pastille « Mission », grands titres jaunes, carte topographique avec chemin pointillé, coches vertes, cible et plaques de progression ; liens lisibles en sombre.

@@ -72,8 +72,8 @@
   // ~17 000 formes du SVG à chaque image, même sans personne devant l'écran. Elles tournent pendant qu'on touche la carte, puis se figent
   // après REPOS ms sans geste (l'image reste la même, seule l'animation s'arrête) ; un geste, un défilement ou une touche les relance.
   const REPOS = 8000;
-  /** Largeur de base de la carte (px) : 1 500 px ≈ 78 % de la taille réelle. À 900 px, les repères faisaient 15 px, la zone tactile 28 px et le texte des bannières 6 px (critique de design, E50). */
-  const BASE = 1500;
+  /** Largeur de base de la carte (px) : 2 300 px ≈ 78 % de la taille réelle (îles agrandies : vue de ≈ 2 970 unités, E53). À 900 px, les repères faisaient 15 px, la zone tactile 28 px et le texte des bannières 6 px (critique de design, E50). */
+  const BASE = 2300;
   let still = $state(false), repos = 0;
   function reveil() {
     clearTimeout(repos);
@@ -149,7 +149,7 @@
 
 <style>
   .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / .22) transparent; background: radial-gradient(120% 50% at 50% 0%, #1f2f36, #0d171b 45%, #05090b 100%); }   /* nuit noire et bleutée de la carte fantastique */
-  .city :global(svg) { display: block; min-width: 1500px; width: 100%; height: auto; }   /* = BASE (E50) */
+  .city :global(svg) { display: block; min-width: 2300px; width: 100%; height: auto; }   /* = BASE (E50, E53) */
   .zoom { position: fixed; right: calc(var(--sar) + 12px); top: 50%; z-index: 6; display: grid; gap: 6px; transform: translateY(-50%); }
   .zoom button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .22); background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); color: #f2f4ff; font-size: 1.4rem; line-height: 1; cursor: pointer; } .zoom button:disabled { opacity: .35; }
   .msg { color: #cfd3ec; text-align: center; padding: 40px 16px; }
