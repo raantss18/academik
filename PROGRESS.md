@@ -175,3 +175,8 @@
 
 - **Fait (Antsa)** : tests sur vrai appareil, téléphone et tablette, confirmés le 3 nov. 2026. **Reste** : AppImage sur Linux Mint / EndeavourOS à confirmer, lecteur d'écran, vrais élèves.
 - **AppImage 0.3.32 sur EndeavourOS (Claude, 3 nov.)** : empreinte conforme au `release.json` signé ; l'application démarre et affiche la ville ; elle démarre aussi dans un espace sans réseau (`unshare -r -n`). Non fait : clics dans une leçon et Python (pas d'outil de clic sur le bureau dans cette session), Linux Mint.
+
+### Défis ★★, fil d'Ariane, audit en CI (2026-11-03, 0.3.33)
+
+- **Fait** : 13 défis ★★ de plus (26, modules 2 à 20) ; fil d'Ariane en leçon (R9) ; audit KaTeX / options / indices dans les tests (E46) ; AppImage 0.3.32 testée sur EndeavourOS (démarrage, hors ligne).
+- **Vérifié à l'écran** : défi ★★ de 2.2 résolu avec Python dans le navigateur, badge de fin, fil d'Ariane à 375 px. **Non vérifié** : leçon avec Python dans l'AppImage, Linux Mint, lecteur d'écran, vrais élèves.
