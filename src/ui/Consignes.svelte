@@ -2,7 +2,7 @@
   import { i18n } from '../lib/i18n.svelte';
   import { progress } from '../lib/progress.svelte';
   import { UNLOCK_THRESHOLD } from '../engine/unlock';
-  import { updates } from '../lib/updates.svelte';
+  import { updates, appStatusText } from '../lib/updates.svelte';
   import LogoMenu from './LogoMenu.svelte';
   import { content } from '../lib/content.svelte';
   import { APP_BUILD, APP_VERSION, DOWNLOAD_APK, DOWNLOAD_APPIMAGE, platform } from '../lib/platform';
@@ -48,7 +48,8 @@
     </ul>
     <p class="muted">{fr ? `Contenu : révision ${content.pack.rev}` : `Content: revision ${content.pack.rev}`}{platform() !== 'web' ? ` · ${fr ? 'application' : 'app'} ${APP_VERSION} (${APP_BUILD})` : ''}</p>
     <button class="btn" disabled={updates.checking} onclick={() => updates.checkAll(true)}>{updates.checking ? (fr ? 'Vérification…' : 'Checking…') : (fr ? 'Vérifier les mises à jour' : 'Check for updates')}</button>
-    {#if updates.status === 'ok'}<p class="muted">{fr ? 'Tout est à jour.' : 'Everything is up to date.'}</p>{:else if updates.status === 'offline'}<p class="muted">{fr ? 'Pas de réseau : rien n’a changé.' : 'No network: nothing changed.'}</p>{:else if updates.status === 'needs-app'}<p class="muted">{fr ? 'Du contenu plus récent attend une version plus récente de l’application.' : 'Newer content is waiting for a newer app version.'}</p>{:else if updates.status === 'invalid'}<p class="muted">{fr ? 'Un fichier reçu a été refusé (non conforme) : tu gardes ton contenu actuel.' : 'A received file was rejected (invalid): you keep your current content.'}</p>{/if}
+    {#if !updates.checking && appStatusText(updates.appStatus, fr, APP_VERSION, updates.appFound)}<p class="muted" role="status">{appStatusText(updates.appStatus, fr, APP_VERSION, updates.appFound)}</p>{/if}
+    {#if updates.status === 'ok'}<p class="muted">{fr ? 'Contenu à jour.' : 'Content up to date.'}</p>{:else if updates.status === 'offline'}<p class="muted">{fr ? 'Pas de réseau : rien n’a changé.' : 'No network: nothing changed.'}</p>{:else if updates.status === 'needs-app'}<p class="muted">{fr ? 'Du contenu plus récent attend une version plus récente de l’application.' : 'Newer content is waiting for a newer app version.'}</p>{:else if updates.status === 'invalid'}<p class="muted">{fr ? 'Un fichier reçu a été refusé (non conforme) : tu gardes ton contenu actuel.' : 'A received file was rejected (invalid): you keep your current content.'}</p>{/if}
   </section>
 
   <section class="card">

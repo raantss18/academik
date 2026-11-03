@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Correctif (E47) : la nouvelle version s'annonce sans attendre le téléchargement du contenu ; « Vérifier les mises à jour » dit clairement si l'app est à jour, si le serveur est injoignable ou quelle version est disponible ; contenu téléchargé plus vite.
+
 ## [0.3.33] — 2026-11-03
 
 ### Message fr

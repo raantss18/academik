@@ -65,11 +65,19 @@ export async function updateContent(o: UpdateOptions): Promise<UpdateResult> {
 
   const levels: Record<string, unknown> = { ...o.current.levels }, sha: Record<string, string> = { ...o.current.sha }, changed: string[] = [];
   let skipped = 0;
+  const todo: [string, FileRef][] = [];
   for (const [id, ref] of Object.entries(index.levels)) {
     if (o.current.sha[id] === ref.sha256) continue;
     // Un niveau qui exige une app plus récente (nouveau type de carte…) est ignoré ; les autres sont installés quand même.
     if ((ref.minBuild ?? 1) > o.appBuild) { skipped++; continue; }
-    const bytes = await get(`levels/${ref.file}`);
+    todo.push([id, ref]);
+  }
+  // Téléchargements en parallèle (6 à la fois) : un contenu entier prenait une minute fichier par fichier (E47). Rien n'est écrit avant la fin.
+  const got: (Uint8Array | null)[] = new Array(todo.length).fill(null);
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(6, todo.length) }, async () => { while (next < todo.length) { const k = next++; got[k] = await get(`levels/${todo[k][1].file}`); } }));
+  for (let k = 0; k < todo.length; k++) {
+    const [id, ref] = todo[k], bytes = got[k];
     if (!bytes) return { status: 'offline' };
     if (bytes.byteLength !== ref.bytes || (await sha256Hex(bytes)) !== ref.sha256) return { status: 'invalid', reason: `empreinte incorrecte pour ${id}` };
     let lvl: { id?: string };

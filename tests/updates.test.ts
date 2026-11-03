@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import * as ed from '@noble/ed25519';
 import { sha256Hex, updateContent, choosePack, parseIndex, type Pack } from '../src/lib/content-pack';
 import { memoryPackStore } from '../src/lib/pack-store';
-import { checkAppUpdate, verifyRelease, revalidate, RELEASE_URL_PREFIX } from '../src/lib/app-update';
+import { checkAppUpdate, checkAppDetailed, verifyRelease, revalidate, RELEASE_URL_PREFIX } from '../src/lib/app-update';
 
 const enc = (s: string) => new TextEncoder().encode(s);
 /** Faux serveur : { chemin: texte } ; tout le reste = 404 ; `down` = réseau coupé. */
@@ -183,4 +183,16 @@ describe('mise à jour mémorisée entre deux lancements (E11)', () => {
     for (const bad of [null, undefined, 'x', 42, {}, { ...ok, notes: [] }, { ...ok, build: 'x' }, { ...ok, notes: [{ version: 1 }] }]) expect(revalidate(bad, 4)).toBeNull();
   });
   it('sans archive (site) : acceptée seulement si asset est null', () => { expect(revalidate({ ...ok, asset: null }, 4)).not.toBeNull(); });
+});
+
+describe('E47 · vérification détaillée de l’app : la raison quand il n’y a rien', () => {
+  const det = (s: { body: string; sig: string; pubHex: string }, build: number, over?: Partial<{ body: string; sig: string }>) =>
+    checkAppDetailed({ baseUrl: 'https://x.test', build, platform: 'android', pubHex: s.pubHex, fetchFn: fakeFetch({ '/app/release.json': over?.body ?? s.body, '/app/release.json.sig': over?.sig ?? s.sig }) });
+  it('trouvée, à jour, hors ligne, refusée', async () => {
+    const s = await signed(REL());
+    expect((await det(s, 1)).status).toBe('found');
+    expect((await det(s, 4)).status).toBe('up-to-date');
+    expect((await checkAppDetailed({ baseUrl: 'https://x.test', build: 1, platform: 'android', fetchFn: fakeFetch({}) })).status).toBe('offline');
+    expect((await det(s, 1, { sig: 'a'.repeat(128) })).status).toBe('invalid');
+  });
 });
