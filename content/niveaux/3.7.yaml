@@ -209,6 +209,44 @@ cartes:
           return len(pile) == 0
     indice: { fr: 'Un dictionnaire relie chaque fermante à son ouvrante. Dépile et compare dès qu’une fermante arrive.', en: 'A dictionary links each closing bracket to its opening one. Pop and compare as soon as a closing one arrives.' }
     explication: { fr: 'Dans `([)]`, la `)` arrive alors que la dernière ouvrante en attente est `[` : mal formé, ce que seule une pile détecte.', en: 'In `([)]`, the `)` arrives while the last pending opening is `[`: ill-formed, which only a stack detects.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `npi(expr)`** : la valeur d’une expression en notation polonaise inverse, où l’opération suit ses deux nombres. `"3 4 + 2 *"` vaut $(3+4)\times2 = 14$. Les opérations sont `+`, `-` et `*`.'
+    en: 'Challenge. **Write `npi(expr)`**: the value of an expression in reverse Polish notation, where the operation follows its two numbers. `"3 4 + 2 *"` is $(3+4)\times2 = 14$. The operations are `+`, `-` and `*`.'
+    depart: |
+      # écris ta fonction npi ici
+    tests: |
+      assert npi("3 4 + 2 *") == 14
+      assert npi("5 1 2 + 4 * + 3 -") == 14
+      assert npi("10 3 -") == 7
+      assert npi("7") == 7
+      assert npi("2 3 4 * -") == -10
+    solutionCode: |
+      def npi(expr):
+          pile = []
+          for jeton in expr.split():
+              if jeton in '+-*':
+                  b = pile.pop()
+                  a = pile.pop()
+                  if jeton == '+':
+                      pile.append(a + b)
+                  elif jeton == '-':
+                      pile.append(a - b)
+                  else:
+                      pile.append(a * b)
+              else:
+                  pile.append(int(jeton))
+          return pile.pop()
+    indice:
+      fr: 'Découpe avec `expr.split()`. Un nombre : empile-le. Une opération : dépile `b`, puis `a`, et empile `a op b`. Attention à l’ordre pour `-`.'
+      en: 'Split with `expr.split()`. A number: push it. An operation: pop `b`, then `a`, and push `a op b`. Mind the order for `-`.'
+    explication:
+      fr: 'La pile garde l’ordre des calculs : plus besoin de parenthèses. Des calculatrices HP utilisent cette notation depuis les années 1970.'
+      en: 'The stack keeps the order of the computations: no more brackets needed. HP calculators have used this notation since the 1970s.'
   - id: c8
     type: retenir
     fr: 'Pile = LIFO : `append` empile, `pop()` dépile par la fin ; le dernier entré sort le premier. Utile pour apparier des parenthèses, annuler, évaluer du postfixe, remplacer une récursion.'

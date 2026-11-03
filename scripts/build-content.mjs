@@ -38,6 +38,7 @@ export function validateLevel(L, file) {
   both(w(), L, 'titre'); both(w(), L, 'ia');
   if (!Array.isArray(L.sources) || !L.sources.length) err(w(), 'au moins une source (contenu sourcé)');
   const ids = new Set(); let scored = 0;
+  if ((L.cartes ?? []).filter(c => c.defi === 2).length > 1) err(w('cartes'), 'au plus un défi ★★ par niveau');
   for (const c of L.cartes ?? []) {
     const at = w(`#${c.id}`);
     if (!c.id || ids.has(c.id)) err(at, 'identifiant manquant ou en double'); ids.add(c.id);
@@ -47,6 +48,8 @@ export function validateLevel(L, file) {
     else bi(at, c);
     if (c.figure) validateFigure(`${at}.figure`, c.figure);
     if (c.exemple) bi(`${at}.exemple`, c.exemple);
+    if (c.defi !== undefined && c.defi !== true && c.defi !== 2) err(at, 'defi : true (★) ou 2 (★★)');
+    if (c.defi === 2 && !c.note) err(at, 'un défi ★★ doit avoir une réponse notée');
     if (c.note) { if (!['exercise', 'quiz'].includes(c.note.kind) || !(c.note.poids > 0)) err(at, 'note invalide'); scored++; }
     if (['qcm', 'saisie', 'parsons', 'terminal', 'code'].includes(c.type) && !c.note) err(at, 'une carte à réponse doit être notée');
     if (c.type === 'qcm') {

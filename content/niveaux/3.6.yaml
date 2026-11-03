@@ -201,6 +201,37 @@ cartes:
           return s[0] == s[-1] and palindrome(s[1:-1])
     indice: { fr: '`s[0]` est le premier, `s[-1]` le dernier, `s[1:-1]` le milieu. Le `and` ne rappelle la fonction que si les extrémités sont égales.', en: '`s[0]` is the first, `s[-1]` the last, `s[1:-1]` the middle. The `and` only calls the function again if the ends are equal.' }
     explication: { fr: 'Chaque appel retire deux caractères : le texte rétrécit jusqu’au cas de base.', en: 'Each call removes two characters: the text shrinks down to the base case.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `permutations(s)`** récursive : la liste **triée et sans doublon** de toutes les façons d’ordonner les lettres de `s`. Pour chaque lettre, place-la en tête et permute le reste.'
+    en: 'Challenge. **Write a recursive `permutations(s)`**: the **sorted list without duplicates** of all the ways to order the letters of `s`. For each letter, put it first and permute the rest.'
+    depart: |
+      # écris ta fonction permutations ici
+    tests: |
+      assert permutations("") == [""]
+      assert permutations("ab") == ["ab", "ba"]
+      assert permutations("abc") == ["abc", "acb", "bac", "bca", "cab", "cba"]
+      assert permutations("aab") == ["aab", "aba", "baa"]
+      assert len(permutations("abcde")) == 120
+    solutionCode: |
+      def permutations(s):
+          if s == '':
+              return ['']
+          resultat = set()
+          for i in range(len(s)):
+              for fin in permutations(s[:i] + s[i + 1:]):
+                  resultat.add(s[i] + fin)
+          return sorted(resultat)
+    indice:
+      fr: 'Cas de base : `""` donne `[""]`. Sinon, colle `s[i]` devant chaque permutation de `s[:i] + s[i + 1:]`. Un `set` retire les doublons.'
+      en: 'Base case: `""` gives `[""]`. Otherwise, put `s[i]` in front of each permutation of `s[:i] + s[i + 1:]`. A `set` removes duplicates.'
+    explication:
+      fr: 'Un texte de $n$ lettres distinctes a $n!$ ordres : 120 pour 5 lettres, déjà 3 628 800 pour 10.'
+      en: 'A text of $n$ distinct letters has $n!$ orders: 120 for 5 letters, already 3,628,800 for 10.'
   - id: c8
     type: retenir
     fr: 'Récursivité = un cas de base + un appel sur un problème plus petit. La pile d’appels grandit avec la profondeur ; deux appels par niveau explosent, la mémoïsation les évite.'

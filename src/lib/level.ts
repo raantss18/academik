@@ -12,7 +12,9 @@ export interface Figure {
 export interface Choice { fr: string; en: string; juste?: boolean }
 export interface Card {
   id: string; type: 'tentative' | 'idee' | 'exemple' | 'qcm' | 'saisie' | 'parsons' | 'terminal' | 'code' | 'retenir' | 'piege' | 'plus';
-  fr?: string; en?: string; lang?: string; titre?: { fr: string; en: string }; defi?: boolean;
+  fr?: string; en?: string; lang?: string; titre?: { fr: string; en: string };
+  /** Défi du niveau : `true` = ★ (compte dans le score), `2` = ★★ facultatif, hors score et hors révisions. */
+  defi?: boolean | 2;
   note?: { kind: 'exercise' | 'quiz'; poids: number };
   choix?: Choice[]; reponses?: string[]; lignes?: string[];
   etapes?: { code?: string; fr: string; en: string }[];
@@ -28,4 +30,4 @@ export interface Level { review?: boolean; id: string; module: number; duree_min
 export interface CursusLevel { id: string; boss?: boolean; titre: { fr: string; en?: string } }
 export interface CursusModule { id: number; titre: { fr: string; en: string }; niveaux: CursusLevel[] }
 
-export const scoredItems = (l: Level): ScoredItem[] => l.cartes.filter(c => c.note).map(c => ({ id: c.id, kind: c.note!.kind, weight: c.note!.poids }));
+export const scoredItems = (l: Level): ScoredItem[] => l.cartes.filter(c => c.note && c.defi !== 2).map(c => ({ id: c.id, kind: c.note!.kind, weight: c.note!.poids }));

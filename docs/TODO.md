@@ -64,7 +64,7 @@
 - ⏳ **Service worker réel** : test réseau coupé et rechargement automatique du site dans Chrome/Chromium (le navigateur de test n'a pas de service worker fiable)
 - ⏳ Accessibilité au-delà de l'automatique : lecteur d'écran (TalkBack, Orca), navigation clavier complète dans l'éditeur de code, zoom 200 %
 - ⏳ Lecteur de leçon v2 sur tablette/bureau (deux volets), fil d'Ariane ; cartes interactives (curseur, glisser) ; difficulté adaptative (Elo) ; réglage de la rétention FSRS ; rappel de révision
-- ✅ Récapitulatif hebdomadaire local (menu du logo « Ma semaine », `src/engine/week.ts`, testé : fenêtres, doublons, futur, fuseau) ; ✅ confiance facultative sur les QCM (D-043 ; ⏳ colonne `conf` dans Supabase avec la synchro) ; ⏳ défis ★/★★ (idées de la revue pédagogique)
+- ✅ Récapitulatif hebdomadaire local (menu du logo « Ma semaine », `src/engine/week.ts`, testé : fenêtres, doublons, futur, fuseau) ; ✅ confiance facultative sur les QCM (D-043 ; ⏳ colonne `conf` dans Supabase avec la synchro) ; ✅ défis ★★ facultatifs (`defi: 2`, hors score, hors révisions, hors durée, bouton « Passer » ; premier lot de 6 : 2.3, 2.4, 2.5, 3.6, 3.7, 3.8, solutions exécutées) ; ⏳ étendre les ★★ aux autres modules à code
 - ⏳ Tutorat par Kintana (LLM local) : seulement en option téléchargeable, jamais embarqué (poids, D-030)
 - ❓ Mettre `/tmp` sur le disque (`sudo systemctl mask tmp.mount` puis redémarrage) : à faire par Antsa
 
@@ -86,7 +86,7 @@
 - ✅ 179 liens contrôlés le 2 nov. (nouveaux liens du module 23 tous joignables ; 3 DOI renvoient 429 = limite de débit de Crossref, déjà confirmés plus tôt)
 - ⏳ Liens non joignables depuis la machine de vérification (à recontrôler d'un autre réseau) : `nlp.stanford.edu/IR-book`, `otexts.com/fpp3` ; bloqués aux robots (pages réelles) : Cloudflare Learning
 - ✅ `content/manifest.json` complet (196 sources, garde-fou E44) ; reste à vérifier la licence exacte de chaque source avant tout embarquement (aucune n'est embarquée : mode `lien`)
-- ✅ Niveaux « enquête » : module 23 complet (5 niveaux) ; ⏳ défis ★★ facultatifs, paquet NumPy/pandas facultatif téléchargé à la demande
+- ✅ Niveaux « enquête » : module 23 complet (5 niveaux) ; ✅ défis ★★ facultatifs (premier lot), ⏳ paquet NumPy/pandas facultatif téléchargé à la demande
 - ⏳ Données publiques redistribuables pour le volet quant (aujourd'hui : synthétiques, générateur reproductible)
 
 ## 3. Qualité de la présentation (`docs/QUALITE-COURS.md`)
