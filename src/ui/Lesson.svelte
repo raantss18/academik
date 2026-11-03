@@ -64,6 +64,12 @@
   const defi2 = level.cartes.find(c => c.defi === 2);
   const t = (x: Partial<{ fr: string; en: string }> | undefined) => i18n.t(x);
   const exLines = $derived(card.type === 'exemple' ? card.etapes!.map((e, k) => ({ k, code: e.code })).filter((x): x is { k: number; code: string } => !!x.code && x.k <= step) : []);
+  /** La barre des boutons n'a un fond que lorsqu'elle est collée en bas (texte qui défile dessous) : sinon elle dessinait un rectangle sous les cartes courtes. */
+  function colle(node: HTMLElement) {
+    if (typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([e]) => node.classList.toggle('stuck', e.intersectionRatio < 1), { threshold: [1], rootMargin: '0px 0px -1px 0px' });
+    io.observe(node); return { destroy: () => io.disconnect() };
+  }
   const crumbModule = $derived.by(() => { const m = content.modules.find(x => x.id === level.module); return m ? `${m.id} · ${i18n.t(m.titre)}` : ''; });
   const exOut = $derived(card.type === 'exemple' ? card.etapes!.slice(0, step + 1).map(e => e.sortie).filter(Boolean).join('\n') : '');
   const body = $derived(i18n.t(card as { fr?: string; en?: string }));
@@ -181,7 +187,7 @@
         <div class="tty" role="log" aria-label={ui('terminal')}>
           {#each term.log as l}<div><span class="ps">{prompt(l.cwd)}</span> {l.cmd}</div>{#if l.out}<pre>{l.out}</pre>{/if}{/each}
           <label class="inl"><span class="ps">{prompt(term.cwd)}</span>
-            <input class="cmd" bind:value={cmd} onkeydown={e => { if (e.key === 'Enter') { e.preventDefault(); submit(); } }} disabled={!!result} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label={ui('type_cmd')} enterkeyhint="send" /></label>
+            <input class="cmd" bind:value={cmd} onkeydown={e => { if (e.key === 'Enter') { e.preventDefault(); submit(); } }} disabled={!!result} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label={ui('type_cmd')} placeholder={ui('type_cmd')} enterkeyhint="send" /></label>
         </div>
         {#if !result}<div class="ttybar"><button class="btn" onclick={submit} disabled={!cmd.trim()}>{ui('run')}</button><button class="btn" onclick={restart} disabled={!ran}>{ui('restart')}</button></div>{/if}
       {/if}
@@ -210,7 +216,7 @@
       {/if}
     </article>
 
-    <footer class="foot">
+    <footer class="foot" use:colle>
       {#if card.type === 'exemple' && step + 1 < card.etapes!.length}
         <button class="btn primary" onclick={() => step++}>{ui('next_step')}</button>
       {:else if hasAnswer && !result}
@@ -265,7 +271,7 @@
   .field { width: 100%; min-height: 52px; margin-top: 14px; padding: 0 16px; border-radius: 16px; border: 2px solid var(--c-border); background: var(--c-surface-2); color: var(--c-text); font: 1.05rem var(--font); }
   .tty { margin-top: 14px; padding: 12px; border-radius: 14px; background: #0f1411; color: #d7e5d9; font: .95rem/1.5 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; max-height: 46vh; overflow: auto; overflow-wrap: anywhere; }
   .tty pre { margin: 0; padding: 0; background: none; border: 0; white-space: pre-wrap; color: #d7e5d9; } .ps { color: #7ed197; }
-  .inl { display: flex; gap: .5ch; align-items: center; } .cmd { flex: 1; min-width: 0; min-height: 44px; background: transparent; border: 0; outline: 0; color: #fff; font: inherit; caret-color: #fff; }
+  .inl { display: flex; gap: .5ch; align-items: center; } .cmd { flex: 1; min-width: 0; min-height: 44px; background: transparent; border: 0; outline: 0; color: #fff; font: inherit; caret-color: #fff; } .cmd::placeholder { color: #7f9a88; opacity: 1; } .inl { border-radius: 6px; } .inl:focus-within { box-shadow: inset 0 -2px 0 #7ed197; }
   .ed { width: 100%; margin-top: 14px; padding: 12px; border-radius: 14px; border: 2px solid var(--c-border); background: var(--c-surface-2); color: var(--c-text); font: .95rem/1.5 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; tab-size: 4; resize: vertical; }
   .ed:focus { outline: none; border-color: var(--c-primary); } .pyout { margin-top: 10px; max-height: 30vh; white-space: pre-wrap; } .pyout .err { color: #ff9d8f; }
   .tty:focus-within { outline: 2px solid var(--c-primary); } .ttybar { display: flex; gap: 10px; margin-top: 10px; }
@@ -279,7 +285,8 @@
   .goals.end { text-align: left; margin: 12px 0; } .goals ul.done { list-style: none; padding-left: 0; } .goals ul.done li::before { content: '✓ '; color: var(--c-primary); font-weight: 800; }
   .fb { margin-top: 16px; padding: 12px 16px; border-radius: 16px; background: var(--c-accent-soft); border: 1px solid var(--c-accent); }
   .fb.good { background: var(--c-primary-soft); border-color: var(--c-primary); } .fb p { margin: 6px 0 0; } .small { font-size: .9rem; }
-  .foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; position: sticky; bottom: 0; padding: 10px 0 calc(var(--sab) + 10px); background: linear-gradient(transparent, color-mix(in srgb, var(--c-bg) 60%, transparent) 70%); }
+  .foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; position: sticky; bottom: 0; padding: 10px 0 calc(var(--sab) + 10px); }
+  .foot:global(.stuck) { background: linear-gradient(transparent, color-mix(in srgb, var(--c-bg) 60%, transparent) 70%); }
   .prev { margin-right: auto; }
   .end { text-align: center; } .end .foot { justify-content: center; position: static; background: none; }
   .end h1 :global(p), .ia :global(p) { margin: 0; } .big { font-size: 3rem; font-weight: 800; margin: 0; } .off { opacity: .25; } .ia { background: var(--c-surface-2); border-radius: 16px; padding: 12px 16px; margin: 14px 0; text-align: left; }
