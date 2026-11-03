@@ -11,6 +11,7 @@ export interface AnswerEvent {
   credit: number;    // 0 à 1 (1 = juste du premier coup sans indice)
   hints: number;     // indices demandés
   xp: number;        // points gagnés par CET événement (calculés à la création)
+  conf?: 0 | 1 | 2;  // confiance déclarée (facultative, cartes QCM) : 0 au hasard, 1 pas sûr, 2 sûr
 }
 
 /** Un élément noté d'un niveau (les cartes d'explication ne sont pas notées). */
