@@ -71,6 +71,7 @@ Méthode de réécriture d'une carte obscure : (1) quelle est **la** phrase à r
 | R5 | **Une question tôt et souvent** : au plus 5 cartes d'explication d'affilée (E30) | 🤖 E30 | conforme | inchangé |
 | R6 | **Consignes en étapes** : une consigne d'exercice fait au plus 60 mots hors code ; au-delà, ses actions sont numérotées (`1.`, `2.`…) | 🤖 E45 | 3 consignes de 65 à 68 mots | 0 (14.5, 15.4, 15.5 réécrites en étapes, tests et solutions inchangés) |
 | R7 | **Durée honnête et courte** : `duree_min` = estimation (E25), au plus 25 min | 🤖 E45 | max 23 min | inchangé |
+| R9 | **Où suis-je ?** Un fil d'Ariane « module › niveau › carte » sous la barre de la leçon (Linux Journey : « Text-Fu · Lesson 1 ») | 🤖 E45 | absent | présent (vérifié à 375 px) |
 | R8 | **Suite immédiate** : la fin d'un niveau réussi propose « Niveau suivant » | 🤖 E45 | retour à la carte seulement | bouton « Niveau suivant · x.y » |
 
 Ce qui reste à la relecture humaine (pas mesurable automatiquement) : que chaque intertitre et chaque objectif soit compris d'un

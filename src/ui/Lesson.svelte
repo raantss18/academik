@@ -64,6 +64,7 @@
   const defi2 = level.cartes.find(c => c.defi === 2);
   const t = (x: Partial<{ fr: string; en: string }> | undefined) => i18n.t(x);
   const exLines = $derived(card.type === 'exemple' ? card.etapes!.map((e, k) => ({ k, code: e.code })).filter((x): x is { k: number; code: string } => !!x.code && x.k <= step) : []);
+  const crumbModule = $derived.by(() => { const m = content.modules.find(x => x.id === level.module); return m ? `${m.id} · ${i18n.t(m.titre)}` : ''; });
   const exOut = $derived(card.type === 'exemple' ? card.etapes!.slice(0, step + 1).map(e => e.sortie).filter(Boolean).join('\n') : '');
   const body = $derived(i18n.t(card as { fr?: string; en?: string }));
   const choices = $derived(card.choix ? shuffled(card.choix.map((c, i) => ({ c, i })), `${run}${card.id}`) : []);
@@ -124,6 +125,11 @@
       <Route valeur={idx / Math.max(1, total - 1)} module={level.module ?? 0} max={total} now={idx} />
       <span class="muted">{idx + 1}/{total}</span>
     </header>
+    <!-- Fil d'Ariane (références : Module › Niveau › carte) : on sait toujours où l'on est dans le parcours. -->
+    <nav class="crumb" aria-label={ui('crumb')}>
+      {#if level.review}{ui('review_title')}{:else}{#if crumbModule}<span>{@html md(crumbModule)}</span><span class="sep" aria-hidden="true">›</span>{/if}<span>{level.id} · {@html md(t(level.titre))}</span>{/if}
+      <span class="sep" aria-hidden="true">›</span><span>{ui('card')} {idx + 1}</span>
+    </nav>
 
     {#if idx === 0 && !level.review && level.objectifs?.length}
       <section class="goals" aria-label={ui('goals_title')}><strong>{ui('goals_title')}</strong>
@@ -244,7 +250,8 @@
 
 <style>
   .mon { font-weight: 700; margin: 4px 0; }
-  .top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .crumb { margin: 0 0 12px; font-size: .82rem; color: var(--c-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .crumb :global(p) { display: inline; } .crumb .sep { margin: 0 6px; }
   .x { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--c-border); background: var(--c-surface); cursor: pointer; }
   .bar { flex: 1; height: 10px; background: var(--c-surface-2); border-radius: 99px; overflow: hidden; }
   .bar div { height: 100%; background: var(--c-primary); transition: width .3s; }
