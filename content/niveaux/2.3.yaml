@@ -202,6 +202,37 @@ cartes:
       print(p)
     indice: { fr: 'Pars de `p = 1` et double `p` tant qu’il n’est pas encore plus grand que `n`.', en: 'Start from `p = 1` and double `p` as long as it is not yet greater than `n`.' }
     explication: { fr: 'La boucle double `p` tant que `p <= n` ; elle s’arrête au premier `p` strictement plus grand.', en: 'The loop doubles `p` as long as `p <= n`; it stops at the first `p` strictly greater.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. La variable `n` est écrite. Tant que `n` ne vaut pas 1 : s’il est pair, divise-le par 2 ; sinon, remplace-le par `3 * n + 1`. **Affiche le nombre d’étapes** pour arriver à 1.'
+    en: 'Challenge. The variable `n` is written. While `n` is not 1: if it is even, divide it by 2; otherwise, replace it with `3 * n + 1`. **Print the number of steps** to reach 1.'
+    depart: |
+      n = 6
+
+      # compte les étapes ici
+    tests: |
+      for n, attendu in [(1, "0"), (6, "8"), (7, "16"), (27, "111")]:
+          assert _essai(n=n) == attendu
+    solutionCode: |
+      n = 6
+      etapes = 0
+      while n != 1:
+          if n % 2 == 0:
+              n = n // 2
+          else:
+              n = 3 * n + 1
+          etapes = etapes + 1
+      print(etapes)
+    indice:
+      fr: Un compteur `etapes = 0` augmente de 1 à chaque tour. `n % 2 == 0` teste si `n` est pair ; `n // 2` garde un entier.
+      en: A counter `etapes = 0` goes up by 1 each turn. `n % 2 == 0` tests whether `n` is even; `n // 2` keeps an integer.
+    explication:
+      fr: 'Personne ne sait prouver que cette boucle s’arrête pour tout `n` : c’est la conjecture de Syracuse, vérifiée par ordinateur sur d’immenses plages de nombres mais toujours sans preuve.'
+      en: 'Nobody can prove that this loop stops for every `n`: it is the Collatz conjecture, checked by computer over huge ranges of numbers but still unproven.'
   - id: c8
     type: retenir
     fr: '`for` quand on connaît les tours (`range` s’arrête avant la fin), `while` quand une condition décide ; un accumulateur part de `0` (somme) ou `1` (produit) ; `break` sort.'

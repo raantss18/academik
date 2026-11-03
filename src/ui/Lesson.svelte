@@ -59,7 +59,8 @@
     return ui('hint_reread_generic');
   });
   /* svelte-ignore state_referenced_locally */
-  const total = level.cartes.length, noted = level.cartes.filter(c => c.note).length;
+  const total = level.cartes.length, noted = level.cartes.filter(c => c.note && c.defi !== 2).length;
+  const defi2 = level.cartes.find(c => c.defi === 2);
   const t = (x: Partial<{ fr: string; en: string }> | undefined) => i18n.t(x);
   const exLines = $derived(card.type === 'exemple' ? card.etapes!.map((e, k) => ({ k, code: e.code })).filter((x): x is { k: number; code: string } => !!x.code && x.k <= step) : []);
   const body = $derived(i18n.t(card as { fr?: string; en?: string }));
@@ -86,7 +87,7 @@
     startBest.set(card.id, Math.max(prev, credit));
     const src = source(card.id);
     progress.add({ level: src.level, item: src.item, credit, hints, xp: level.review ? 0 : xp, ...(card.type === 'qcm' && conf !== null ? { conf } : {}) });
-    earned += level.review ? 0 : xp; if (ok) { rightCount++; serie++; if (serie % 3 === 0) eclat++; } else serie = 0; result = { ok, credit };
+    earned += level.review ? 0 : xp; if (ok) { if (card.defi !== 2) rightCount++; serie++; if (serie % 3 === 0) eclat++; } else serie = 0; result = { ok, credit };
   }
   // État de chaque carte déjà vue : « Précédent » la remet comme elle était (réponse, correction, étape).
   interface Snap { conf: Confidence | null; pyOut: PyResult | null; term: Term | null; ran: number; step: number; selected: number | null; text: string; chosen: number[]; hints: number; showHint: boolean; result: null | { ok: boolean; credit: number } }
@@ -123,7 +124,7 @@
     </header>
 
     <article class="card" aria-live="polite" use:typeset={[idx, step, !!result, showHint, i18n.lang]}>
-      {#if card.defi}<p class="tag">{ui('challenge')}</p>{/if}
+      {#if card.defi}<p class="tag" class:two={card.defi === 2}>{card.defi === 2 ? ui('challenge2') : ui('challenge')}</p>{/if}
       {#if card.type === 'exemple'}
         <h2>{@html md(t(card.titre))}</h2>
         <div class="ex">
@@ -200,6 +201,7 @@
       {#if card.type === 'exemple' && step + 1 < card.etapes!.length}
         <button class="btn primary" onclick={() => step++}>{ui('next_step')}</button>
       {:else if hasAnswer && !result}
+        {#if card.defi === 2}<button class="btn" onclick={next}>{ui('skip')}</button>{/if}
         {#if !showHint}<button class="btn" onclick={() => { showHint = true; hints++; }}>{ui('hint')}</button>{/if}
         <button class="btn primary" disabled={!canCheck} onclick={check}>{ui('check')}</button>
       {:else}
@@ -216,6 +218,7 @@
       {:else}
       <p class="big">{Math.round(score * 100)} %</p>
       <p class="stars" aria-label={`${stars(score)} / 3`}>{'★'.repeat(stars(score))}<span class="off">{'★'.repeat(3 - stars(score))}</span></p>
+      {#if defi2 && (progress.best(level.id).get(defi2.id) ?? 0) > 0}<p class="mon"><span aria-hidden="true">🏅</span> {ui('challenge2_done')}</p>{/if}
       {#if monument}<p class="mon"><span aria-hidden="true">🏛️</span> {monument}</p>{/if}
       <p>{score + 1e-9 >= UNLOCK_THRESHOLD ? ui('unlocked') : ui('need')}</p>
       <div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(t(level.ia))}</div>
@@ -232,7 +235,7 @@
   .bar { flex: 1; height: 10px; background: var(--c-surface-2); border-radius: 99px; overflow: hidden; }
   .bar div { height: 100%; background: var(--c-primary); transition: width .3s; }
   .opt :global(p) { margin: 0; } .opt { font-size: 1.05rem; line-height: 1.5; } .choice, .line { display: flex; align-items: center; }
-  .q { font-size: 1.1rem; margin-top: 0; max-width: 62ch; } .tag { color: var(--c-accent); font-weight: 800; text-transform: uppercase; font-size: .8rem; letter-spacing: .6px; margin: 0 0 6px; }
+  .q { font-size: 1.1rem; margin-top: 0; max-width: 62ch; } .tag { color: var(--c-accent); font-weight: 800; text-transform: uppercase; font-size: .8rem; letter-spacing: .6px; margin: 0 0 6px; } .tag.two { color: var(--c-text-muted); }
   .ex { display: grid; gap: 12px; } .steps { margin: 0; padding-left: 1.3em; display: grid; gap: 8px; } .steps li { color: var(--c-text-muted); } .steps li.cur { color: var(--c-text); font-weight: 600; } .steps :global(p) { margin: 0; }
   .choices, .lines { display: grid; gap: 10px; margin-top: 14px; }
   .choice, .line { min-height: 52px; text-align: left; padding: 10px 16px; border-radius: 16px; border: 2px solid var(--c-border); background: var(--c-surface); cursor: pointer; }

@@ -4,6 +4,8 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { parse } from 'yaml';
 // @ts-expect-error module JS sans types
 import { validateLevel, buildContent, requiredBuild } from '../scripts/build-content.mjs';
+import { scoredItems, type Level } from '../src/lib/level';
+import { standalone } from '../src/lib/review';
 
 const files = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml'));
 const levels = files.map(f => ({ f, L: parse(readFileSync(`content/niveaux/${f}`, 'utf8')) }));
@@ -26,6 +28,15 @@ describe('contenu : schéma', () => {
     expect(validateLevel(carte({ figure: { kind: 'image', legende: { fr: 'l', en: 'l' } } }), 't').join()).toContain('kind inconnu');
     expect(validateLevel(carte({ figure: { kind: 'tableau', entetes: ['a', 'b'], cellules: [['x']], legende: { fr: 'l', en: 'l' } } }), 't').join()).toContain('colonnes');
     expect(validateLevel(carte({ figure: { kind: 'tableau', cellules: [['a', 'b', 'c', 'd']], legende: { fr: 'l', en: 'l' } } }), 't').join()).toContain('3 colonnes au plus');
+  });
+  it('défis : true (★) ou 2 (★★), un seul ★★ par niveau, hors score et hors révisions', () => {
+    expect(validateLevel(carte({ defi: 3 }), 't').join()).toContain('defi');
+    expect(validateLevel(carte({ defi: 2 }), 't').join()).not.toContain('defi');
+    const deux = { ...base, cartes: [carte({ defi: 2 }).cartes[0], { ...carte({ defi: 2 }).cartes[0], id: 'y' }] };
+    expect(validateLevel(deux, 't').join()).toContain('au plus un défi ★★');
+    const L = { ...carte({}), id: '0.1', module: 0, duree_min: 1, ia: { fr: '', en: '' }, cartes: [carte({}).cartes[0], { ...carte({ defi: 2 }).cartes[0], id: 'y' }] } as unknown as Level;
+    expect(scoredItems(L).map(i => i.id)).toEqual(['x']);
+    expect(standalone(L.cartes[1])).toBe(false);
   });
   it('refuse une carte à réponse non notée', () => { expect(validateLevel(carte({ note: undefined }), 't').join()).toContain('doit être notée'); });
   it('refuse un niveau sans source', () => { expect(validateLevel({ ...carte({}), sources: [] }, 't').join()).toContain('source'); });

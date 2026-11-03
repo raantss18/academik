@@ -5,6 +5,7 @@ const mots = s => (s ? String(s).split(/\s+/).filter(Boolean).length : 0);
 export function estimerDuree(niveau) {
   let t = 0;
   for (const c of niveau.cartes) {
+    if (c.defi === 2) continue;   // défi ★★ facultatif : hors de la durée annoncée
     const lu = [c.fr, c.exemple?.fr, ...(c.etapes ?? []).map(e => `${e.fr ?? ''} ${e.code ?? ''}`)].map(mots).reduce((a, b) => a + b, 0);
     t += lu / 180 + (REPONSE[c.type] ?? 0) + (c.figure ? .4 : 0);
   }

@@ -194,6 +194,53 @@ cartes:
           return chemin[::-1]
     indice: { fr: 'À chaque mise à jour de `dist[v]`, note aussi `precedent[v] = u`. Reconstruis en remontant de `cible` à `depart`, puis inverse la liste.', en: 'At each update of `dist[v]`, also record `precedent[v] = u`. Rebuild by walking back from `cible` to `depart`, then reverse the list.' }
     explication: { fr: 'On retrouve le chemin en remontant les « précédents » : c’est l’arbre des plus courts chemins.', en: 'We recover the path by walking back through the “predecessors”: this is the tree of shortest paths.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `nb_plus_courts(g, depart, cible)`** : le **nombre** de chemins de coût minimal de `depart` à `cible`, ou 0 si `cible` est inatteignable. Les coûts sont positifs.'
+    en: 'Challenge. **Write `nb_plus_courts(g, depart, cible)`**: the **number** of minimum-cost paths from `depart` to `cible`, or 0 if `cible` is unreachable. The costs are positive.'
+    depart: |
+      # écris ta fonction nb_plus_courts ici
+    tests: |
+      g = {"A": {"B": 1, "C": 1}, "B": {"D": 1}, "C": {"D": 1}, "D": {"E": 2}, "E": {}, "Z": {}}
+      assert nb_plus_courts(g, "A", "E") == 2
+      assert nb_plus_courts(g, "A", "A") == 1
+      assert nb_plus_courts(g, "A", "Z") == 0
+      h = {"A": {"B": 1, "C": 1, "E": 4}, "B": {"D": 1}, "C": {"D": 1}, "D": {"E": 2}, "E": {}}
+      assert nb_plus_courts(h, "A", "E") == 3
+      k = {"S": {"A": 1, "B": 2}, "A": {"B": 1, "T": 5}, "B": {"T": 1}, "T": {}}
+      assert nb_plus_courts(k, "S", "T") == 2
+    solutionCode: |
+      import heapq
+
+      def nb_plus_courts(g, depart, cible):
+          dist = {depart: 0}
+          nb = {depart: 1}
+          file = [(0, depart)]
+          fini = set()
+          while file:
+              d, u = heapq.heappop(file)
+              if u in fini:
+                  continue
+              fini.add(u)
+              for v, cout in g[u].items():
+                  nd = d + cout
+                  if v not in dist or nd < dist[v]:
+                      dist[v] = nd
+                      nb[v] = nb[u]
+                      heapq.heappush(file, (nd, v))
+                  elif nd == dist[v]:
+                      nb[v] = nb[v] + nb[u]
+          return nb.get(cible, 0)
+    indice:
+      fr: 'Garde `dist` et `nb`. Un chemin plus court arrive à `v` : `nb[v] = nb[u]`. Un chemin **aussi** court : `nb[v] += nb[u]`.'
+      en: 'Keep `dist` and `nb`. A shorter path reaches `v`: `nb[v] = nb[u]`. An **equally** short path: `nb[v] += nb[u]`.'
+    explication:
+      fr: 'Dijkstra traite les sommets par distance croissante : quand `u` sort de la file, tous ses plus courts chemins sont déjà comptés.'
+      en: 'Dijkstra handles vertices by increasing distance: when `u` leaves the queue, all its shortest paths have already been counted.'
   - id: c8
     type: retenir
     fr: 'Graphe pondéré : coût = somme des poids. Dijkstra développe toujours le sommet le plus proche, avec un tas ; poids positifs seulement. Le BFS en est le cas où tous les poids valent 1.'

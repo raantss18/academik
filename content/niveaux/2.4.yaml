@@ -194,6 +194,37 @@ cartes:
           return p
     indice: { fr: 'Un produit part de 1 (niveau 2.3). Pour `n = 0`, la boucle ne tourne pas et le résultat reste 1.', en: 'A product starts at 1 (level 2.3). For `n = 0`, the loop does not run and the result stays 1.' }
     explication: { fr: 'L’accumulateur `p` multiplie 2, 3, …, `n` ; le cas 0 donne 1 sans tour de boucle.', en: 'The accumulator `p` multiplies 2, 3, …, `n`; the case 0 gives 1 with no loop turn.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `zeros(n)`** : le nombre de zéros à la fin de $n!$. Les tests vont jusqu’à $n = 10^{12}$ : calculer $n!$ prendrait bien trop longtemps.'
+    en: 'Challenge. **Write `zeros(n)`**: the number of zeros at the end of $n!$. The tests go up to $n = 10^{12}$: computing $n!$ would take far too long.'
+    depart: |
+      # écris ta fonction zeros ici
+    tests: |
+      assert zeros(4) == 0
+      assert zeros(5) == 1
+      assert zeros(10) == 2
+      assert zeros(25) == 6
+      assert zeros(100) == 24
+      assert zeros(10**12) == 249999999997
+    solutionCode: |
+      def zeros(n):
+          total = 0
+          p = 5
+          while p <= n:
+              total = total + n // p
+              p = p * 5
+          return total
+    indice:
+      fr: Un zéro final vient d’un facteur $10 = 2\times5$, et les 5 sont plus rares que les 2. Compte les multiples de 5, puis de 25, puis de 125…
+      en: A final zero comes from a factor $10 = 2\times5$, and 5s are rarer than 2s. Count the multiples of 5, then of 25, then of 125…
+    explication:
+      fr: 'C’est la formule de Legendre : $\lfloor n/5\rfloor + \lfloor n/25\rfloor + \lfloor n/125\rfloor + \dots$ Un multiple de 25 apporte deux facteurs 5, d’où le deuxième terme.'
+      en: 'This is Legendre’s formula: $\lfloor n/5\rfloor + \lfloor n/25\rfloor + \lfloor n/125\rfloor + \dots$ A multiple of 25 brings two factors 5, hence the second term.'
   - id: c8
     type: retenir
     fr: '`def nom(paramètres):` définit, `return` renvoie (≠ `print`), un appel donne le résultat. Les variables créées dans la fonction restent locales.'

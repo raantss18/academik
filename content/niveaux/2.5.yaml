@@ -202,6 +202,34 @@ cartes:
           return meilleur
     indice: { fr: 'Compte d’abord comme avant, puis parcours `compte.items()` en retenant le mot au plus grand nombre.', en: 'Count first as before, then go through `compte.items()` keeping the word with the highest number.' }
     explication: { fr: 'Deux étapes : compter, puis chercher le maximum en gardant le meilleur mot rencontré.', en: 'Two steps: count, then find the maximum by keeping the best word seen.' }
+  - id: c7b
+    type: code
+    defi: 2
+    note:
+      kind: quiz
+      poids: 1
+    fr: 'Défi. **Écris `anagrammes(mots)`** : regroupe les mots qui ont exactement les mêmes lettres, comme « chien » et « niche ». Renvoie les groupes d’au moins deux mots, chaque groupe trié, la liste des groupes triée.'
+    en: 'Challenge. **Write `anagrammes(mots)`**: group the words that have exactly the same letters, like « chien » and « niche ». Return the groups of at least two words, each group sorted, the list of groups sorted.'
+    depart: |
+      # écris ta fonction anagrammes ici
+    tests: |
+      assert anagrammes(["chien", "niche", "chine", "rat", "art", "seul"]) == [["art", "rat"], ["chien", "chine", "niche"]]
+      assert anagrammes(["a", "b"]) == []
+      assert anagrammes([]) == []
+      assert anagrammes(["ab", "ba", "ab"]) == [["ab", "ab", "ba"]]
+    solutionCode: |
+      def anagrammes(mots):
+          groupes = {}
+          for mot in mots:
+              cle = ''.join(sorted(mot))
+              groupes.setdefault(cle, []).append(mot)
+          return sorted(sorted(g) for g in groupes.values() if len(g) >= 2)
+    indice:
+      fr: '`''''.join(sorted(mot))` donne la même clé à deux anagrammes. Range chaque mot dans un dictionnaire `clé → liste de mots`.'
+      en: '`''''.join(sorted(mot))` gives the same key to two anagrams. Put each word in a dictionary `key → list of words`.'
+    explication:
+      fr: 'La clé « lettres triées » évite de comparer toutes les paires de mots : un seul passage sur la liste suffit.'
+      en: 'The « sorted letters » key avoids comparing every pair of words: a single pass over the list is enough.'
   - id: c8
     type: retenir
     fr: 'Liste : ordonnée, indices dès 0, modifiable (`b = a` ne copie pas). Dictionnaire : clé → valeur, `.get(cle, défaut)` pour éviter l’erreur, `.items()` pour parcourir.'
