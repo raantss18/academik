@@ -1,3 +1,9 @@
+<script module lang="ts">
+  // E49 : la ville coûte ~300 ms à générer (SVG de 2 Mo, ~17 000 formes) et était refaite à chaque retour sur l'accueil. On garde la
+  // dernière, et on ne régénère que si la progression, la langue ou les réglages ont changé.
+  let memo: { key: string; out: { svg: string; width: number } } | null = null;
+</script>
+
 <script lang="ts">
   // Accueil « ville qui s'allume » (E9, D-018) : chaque quartier est un module, chaque bâtiment un niveau.
   // Le générateur est chargé à la demande (hors du premier chargement) ; la vue liste reste toujours disponible.
@@ -14,7 +20,12 @@
   onMount(() => { import('../lib/city/gen.js').then(m => (gen = m), () => (failed = true)); });
   const fr = $derived(i18n.lang === 'fr');
   const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const out = $derived(gen ? gen.renderCity(districts, { reduce, brand: 'academik', top: fr ? 'Le Rova — Recherche' : 'The Rova — Research' }) : null);
+  const out = $derived.by(() => {
+    if (!gen) return null;
+    const opts = { reduce, brand: 'academik', top: fr ? 'Le Rova — Recherche' : 'The Rova — Research' }, key = JSON.stringify([districts, opts]);
+    if (memo?.key !== key) memo = { key, out: gen.renderCity(districts, opts) };
+    return memo.out;
+  });
 
   // Au premier affichage, on centre la ville sur le niveau à jouer.
   let centered = false;
@@ -115,7 +126,7 @@
 {/if}
 
 <style>
-  .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; background: radial-gradient(120% 50% at 50% 0%, #3b2d5c, #18214a 45%, #0b1026 100%); }
+  .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / .22) transparent; background: radial-gradient(120% 50% at 50% 0%, #3b2d5c, #18214a 45%, #0b1026 100%); }
   .city :global(svg) { display: block; min-width: 900px; width: 100%; height: auto; }
   .zoom { position: fixed; right: calc(var(--sar) + 12px); top: 50%; z-index: 6; display: grid; gap: 6px; transform: translateY(-50%); }
   .zoom button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .22); background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); color: #f2f4ff; font-size: 1.4rem; line-height: 1; cursor: pointer; } .zoom button:disabled { opacity: .35; }

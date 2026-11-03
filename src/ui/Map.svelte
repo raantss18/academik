@@ -96,6 +96,8 @@
   .hudlayer { position: fixed; inset: 0 0 auto 0; z-index: 6; padding: calc(var(--sat) + 10px) calc(var(--sar) + 12px) 0 calc(var(--sal) + 12px); pointer-events: none; display: flex; flex-direction: column; gap: 8px; max-width: 760px; margin: 0 auto; }
   .hudlayer > :global(*) { pointer-events: auto; } .hudlayer .hud { margin: 0; pointer-events: none; } .hudlayer .hud > :global(*) { pointer-events: auto; }
   .hudlayer .chip { background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); border-color: rgb(255 255 255 / .18); text-shadow: 0 1px 2px rgb(0 0 0 / .5); }
+  /* Le logo flotte sur la ville comme les pastilles : même fond translucide, sinon il se perdait sur les immeubles clairs. */
+  .hudlayer :global(.menu .logo) { background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); border-color: rgb(255 255 255 / .18); color: #f2f4ff; }
   .dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: flex; justify-content: space-between; align-items: center; gap: 10px; max-width: 760px; margin: 0 auto; padding: 0 calc(var(--sar) + 14px) calc(var(--sab) + 14px) calc(var(--sal) + 14px); pointer-events: none; }
   .dock > :global(*) { pointer-events: auto; margin: 0; box-shadow: 0 8px 28px rgb(0 0 0 / .45); }
   .dock .go { margin-left: auto; width: auto; min-height: 48px; padding: 0 20px; border-radius: 99px; }

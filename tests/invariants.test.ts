@@ -413,3 +413,14 @@ describe('E48 · ressources et visuel : rien ne tourne pour rien, le fond ne dev
     expect(lesson).toContain("placeholder={ui('type_cmd')}"); expect(lesson).toContain('use:colle'); expect(lesson).toContain('.foot:global(.stuck)');
   });
 });
+
+describe('E49 · ressources : la ville n’est pas régénérée pour rien, Python est libéré', () => {
+  it('ville mémorisée (régénérée seulement si la progression, la langue ou les réglages changent)', () => {
+    const city = read('src/ui/City.svelte');
+    expect(city).toContain('<script module lang="ts">'); expect(city).toMatch(/if \(memo\?\.key !== key\) memo = \{ key, out: gen\.renderCity\(districts, opts\) \};/);
+  });
+  it('Python libéré après IDLE_MS sans exécution', () => { const py = read('src/lib/python.ts'); expect(py).toContain('export const IDLE_MS'); expect(py).toContain('this.idle = setTimeout(() => this.release(), IDLE_MS)'); });
+  it('sur la ville, le logo a le même fond que les pastilles ; barres de défilement discrètes', () => {
+    expect(read('src/ui/Map.svelte')).toContain('.hudlayer :global(.menu .logo) { background:'); expect(read('src/ui/City.svelte')).toContain('scrollbar-width: thin');
+  });
+});
