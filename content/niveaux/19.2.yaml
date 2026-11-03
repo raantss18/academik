@@ -296,6 +296,33 @@ cartes:
   explication:
     fr: 'Un espion voit $p$, $g$, $A$ et $B$ mais doit résoudre un **logarithme discret** pour retrouver le secret : très difficile pour de grands $p$. Les petits nombres de ce défi ne protègent rien.'
     en: 'A spy sees $p$, $g$, $A$ and $B$ but must solve a **discrete logarithm** to recover the secret: very hard for large $p$. The small numbers in this challenge protect nothing.'
+- id: c11b
+  type: code
+  defi: 2
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. Toujours en version **jouet** : **écris `retrouver_secret(g, p, pub)`**, le plus petit `s` entre 1 et `p - 1` tel que `pow(g, s, p) == pub`, ou `None`. Avec de petits nombres, l’espion retrouve le secret.'
+  en: 'Challenge. Still a **toy** version: **write `retrouver_secret(g, p, pub)`**, the smallest `s` between 1 and `p - 1` such that `pow(g, s, p) == pub`, or `None`. With small numbers, the spy finds the secret.'
+  depart: |
+    # écris ta fonction retrouver_secret ici
+  tests: |
+    assert retrouver_secret(5, 23, 8) == 6
+    assert retrouver_secret(2, 101, pow(2, 57, 101)) == 57
+    assert pow(5, retrouver_secret(5, 23, 19), 23) == 19
+    assert retrouver_secret(4, 7, 3) is None
+  solutionCode: |
+    def retrouver_secret(g, p, pub):
+        for s in range(1, p):
+            if pow(g, s, p) == pub:
+                return s
+        return None
+  indice:
+    fr: Une boucle `for s in range(1, p)` qui teste `pow(g, s, p) == pub`. Si rien ne convient, renvoie `None` après la boucle.
+    en: A loop `for s in range(1, p)` that tests `pow(g, s, p) == pub`. If nothing fits, return `None` after the loop.
+  explication:
+    fr: 'Cette recherche essaie jusqu’à `p` valeurs. Avec un `p` de centaines de chiffres, c’est hors de portée : la sécurité vient de la taille, d’où l’usage de vraies bibliothèques.'
+    en: 'This search tries up to `p` values. With a `p` of hundreds of digits, it is out of reach: security comes from size, hence the use of real libraries.'
 - id: c12
   type: piege
   fr: 'Ne jamais utiliser `random` pour générer des clés, jetons ou sels : il est **prévisible**. Le module `secrets` (ou `os.urandom`) fournit un aléa de qualité cryptographique. Autres erreurs fréquentes : réutiliser un nonce avec AES-GCM, coder sa propre cryptographie, mettre une clé dans le code source.'

@@ -236,6 +236,37 @@ cartes:
   explication:
     fr: Un modèle de 7 milliards en 16 bits (14 Go) ne tient pas dans 16 Go avec une marge de 20 % ; en 4 bits, il tient dans 8 Go.
     en: A 7-billion model at 16 bits (14 GB) does not fit in 16 GB with a 20% margin; at 4 bits, it fits in 8 GB.
+- id: c9b
+  type: code
+  defi: 2
+  note:
+    kind: quiz
+    poids: 1
+  fr: 'Défi. **Écris `plus_grand(tailles, bits, ram_go, marge=1.2)`** : parmi les tailles de modèles (en milliards de paramètres), la plus grande dont les poids, multipliés par `marge`, tiennent dans `ram_go` ; `None` si aucune. `memoire_go` est fournie.'
+  en: 'Challenge. **Write `plus_grand(tailles, bits, ram_go, marge=1.2)`**: among the model sizes (in billions of parameters), the largest whose weights, multiplied by `marge`, fit in `ram_go`; `None` if none. `memoire_go` is provided.'
+  depart: |
+    def memoire_go(n_params_milliards, bits):
+        return n_params_milliards * bits / 8
+
+    # écris ta fonction plus_grand ici
+  tests: |
+    assert plus_grand([1, 3, 7, 13], 4, 8) == 13
+    assert plus_grand([1, 3, 7, 13], 16, 8) == 3
+    assert plus_grand([13, 1, 7], 8, 8) == 1
+    assert plus_grand([7, 13], 16, 0.5) is None
+  solutionCode: |
+    def memoire_go(n_params_milliards, bits):
+        return n_params_milliards * bits / 8
+
+    def plus_grand(tailles, bits, ram_go, marge=1.2):
+        ok = [n for n in tailles if memoire_go(n, bits) * marge <= ram_go]
+        return max(ok) if ok else None
+  indice:
+    fr: Garde dans une liste les tailles qui tiennent, puis prends `max`. Une liste vide donne `None`.
+    en: Keep in a list the sizes that fit, then take `max`. An empty list gives `None`.
+  explication:
+    fr: 'Avec 8 Go, passer de 16 à 4 bits fait gagner un modèle plus de quatre fois plus grand : c’est tout l’intérêt de la quantification.'
+    en: 'With 8 GB, going from 16 to 4 bits gains a model more than four times larger: that is the whole point of quantisation.'
 - id: c10
   type: idee
   fr: 'Pour réduire la mémoire sans changer de modèle, on baisse la précision des poids : ce sera la **quantification**, objet du niveau 13.3. Elle fait passer un modèle de 14 Go à 4 Go, au prix d’une petite perte de qualité.'
