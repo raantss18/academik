@@ -26,21 +26,28 @@ const okAsset = (a: unknown): a is Asset => !!a && typeof a === 'object' && type
 const okNotes = (n: unknown): n is Notes => !!n && typeof (n as Notes).fr === 'string' && typeof (n as Notes).en === 'string';
 
 export interface CheckOptions { baseUrl: string; build: number; platform: Platform; fetchFn?: typeof fetch; pubHex?: string; timeoutMs?: number }
+export type AppCheck = { status: 'found'; update: AppUpdate } | { status: 'up-to-date' | 'offline' | 'invalid' };
 /** Nouvelle version disponible, `null` (à jour, hors ligne, fichier refusé : on ne dérange jamais l'élève pour rien). */
 export async function checkAppUpdate(o: CheckOptions): Promise<AppUpdate | null> {
+  const r = await checkAppDetailed(o);
+  return r.status === 'found' ? r.update : null;
+}
+/** Même vérification, avec la raison quand il n'y a rien (pour répondre à « Vérifier les mises à jour »). */
+export async function checkAppDetailed(o: CheckOptions): Promise<AppCheck> {
   const f = o.fetchFn ?? fetch, base = o.baseUrl.replace(/\/$/, '') + '/app/release.json';
   const get = async (u: string) => { const c = new AbortController(), t = setTimeout(() => c.abort(), o.timeoutMs ?? 15000); try { const r = await f(u, { signal: c.signal, cache: 'no-store' }); return r.ok ? new Uint8Array(await r.arrayBuffer()) : null; } catch { return null; } finally { clearTimeout(t); } };
   const [body, sig] = await Promise.all([get(base), get(base + '.sig')]);
-  if (!body || !sig || !(await verifyRelease(body, new TextDecoder().decode(sig), o.pubHex))) return null;
+  if (!body || !sig) return { status: 'offline' };
+  if (!(await verifyRelease(body, new TextDecoder().decode(sig), o.pubHex))) return { status: 'invalid' };
   let r: ReleaseFile;
-  try { r = JSON.parse(new TextDecoder().decode(body)); } catch { return null; }
-  if (r.format !== 1 || !r.latest || !Number.isInteger(r.latest.build) || !okNotes(r.latest.notes)) return null;
+  try { r = JSON.parse(new TextDecoder().decode(body)); } catch { return { status: 'invalid' }; }
+  if (r.format !== 1 || !r.latest || !Number.isInteger(r.latest.build) || !okNotes(r.latest.notes)) return { status: 'invalid' };
   const mandatory = Number.isInteger(r.minBuild) && o.build < r.minBuild;
-  if (r.latest.build <= o.build) return null;
+  if (r.latest.build <= o.build) return { status: 'up-to-date' };
   const asset = o.platform === 'web' ? null : (okAsset(r.latest.assets?.[o.platform]) ? r.latest.assets[o.platform]! : null);
-  if (o.platform !== 'web' && !asset) return null;
+  if (o.platform !== 'web' && !asset) return { status: 'up-to-date' };   // pas d'archive pour cette plateforme : rien à installer
   const skipped = [{ version: r.latest.version, notes: r.latest.notes }, ...(r.history ?? []).filter(h => h.build > o.build && okNotes(h.notes)).map(h => ({ version: h.version, notes: h.notes }))];
-  return { build: r.latest.build, version: r.latest.version, notes: skipped, asset, mandatory };
+  return { status: 'found', update: { build: r.latest.build, version: r.latest.version, notes: skipped, asset, mandatory } };
 }
 
 /** Relit une mise à jour mémorisée localement (elle avait été vérifiée et signée) : écartée si elle est périmée ou mal formée. */

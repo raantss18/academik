@@ -2,7 +2,7 @@
   import Logo from './Logo.svelte';
   import { i18n } from '../lib/i18n.svelte';
   import { theme, type Theme } from '../lib/theme.svelte';
-  import { updates } from '../lib/updates.svelte';
+  import { updates, appStatusText } from '../lib/updates.svelte';
   import { progress } from '../lib/progress.svelte';
   import { weekSummary } from '../engine/week';
   import { APP_VERSION, APP_BUILD, DOWNLOAD_APK, DOWNLOAD_APPIMAGE, platform } from '../lib/platform';
@@ -33,6 +33,7 @@
         <a role="menuitem" class="item" href={DOWNLOAD_APPIMAGE} rel="noopener noreferrer" onclick={close}><span>🐧</span> {fr ? 'Télécharger pour Linux' : 'Download for Linux'}</a>
       {/if}
       <button role="menuitem" onclick={() => updates.checkAll(true)} disabled={updates.checking}><span>🔄</span> {updates.checking ? (fr ? 'Vérification…' : 'Checking…') : (fr ? 'Vérifier les mises à jour' : 'Check for updates')}</button>
+      {#if !updates.checking && appStatusText(updates.appStatus, fr, APP_VERSION, updates.appFound)}<small class="ver" role="status">{appStatusText(updates.appStatus, fr, APP_VERSION, updates.appFound)}</small>{/if}
       {#if week}
         <div class="row" role="group" aria-label={fr ? 'Ma semaine' : 'My week'}>
           <span>📅</span>

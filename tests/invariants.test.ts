@@ -80,7 +80,7 @@ describe('E13 · les mises à jour se font DANS l\u2019app, automatiquement, san
     for (const code of [banner, upd, read('src/lib/installer.ts'), read('src/lib/platform.ts')]) { expect(code).not.toContain('openExternal'); expect(code).not.toMatch(/window\.open|<a [^>]*href/); }
     expect(read('package.json')).not.toContain('plugin-opener');
   });
-  it('le téléchargement démarre tout seul dès qu\u2019une mise à jour est connue', () => { expect(upd).toMatch(/set\(APP, JSON\.stringify\(a\)\); void this\.autoPrepare\(\)/); expect(read('src/main.ts')).toContain('updates.autoPrepare()'); });
+  it('le téléchargement démarre tout seul dès qu\u2019une mise à jour est connue', () => { expect(upd).toMatch(/set\(APP, JSON\.stringify\(r\.update\)\); void this\.autoPrepare\(\)/); expect(read('src/main.ts')).toContain('updates.autoPrepare()'); });
   it('installation / rechargement automatiques seulement sur la carte, jamais en pleine leçon', () => { const app = read('src/ui/App.svelte'); expect(app).toMatch(/if \(view\.k !== 'map'\) return;/); expect(app).toContain('updates.applyWeb'); expect(app).toContain('updates.installNow()'); });
   it('le code natif vérifie lui aussi l\u2019empreinte et limite le lien aux releases du dépôt', () => {
     const java = read('android/app/src/main/java/app/academik/learn/UpdaterPlugin.java'), rust = read('src-tauri/src/main.rs');
@@ -386,4 +386,12 @@ describe('E45 · barre des références : objectifs, sorties exécutées, consig
   it('R7 : durée annoncée honnête et courte (25 min au plus)', () => { expect(niveaux.filter(n => n.duree_min > 25).map(n => n.id)).toEqual([]); });
   it('R8 : la fin d’un niveau réussi propose le niveau suivant', () => { expect(app).toContain('nextLevel={nextOf(view.id)}'); expect(lesson).toContain("ui('next_level')"); });
   it('R9 : un fil d’Ariane module › niveau › carte est toujours visible en leçon', () => { expect(lesson).toMatch(/<nav class="crumb" aria-label=\{ui\('crumb'\)\}>/); expect(lesson).toContain('crumbModule'); });
+});
+
+describe('E47 · l’annonce d’une nouvelle version ne dépend pas du contenu', () => {
+  it('app et contenu vérifiés séparément ; « Vérifier » ne prétend plus que tout est à jour', () => {
+    const upd = read('src/lib/updates.svelte.ts');
+    expect(upd).toContain('Promise.allSettled([this.checkApp(), this.checkContent()])'); expect(upd).not.toMatch(/Promise\.all\(\[content\.check\(\)/);
+    expect(rules).not.toContain('Tout est à jour'); expect(rules).toContain('appStatusText('); expect(menu).toContain('appStatusText(');
+  });
 });
