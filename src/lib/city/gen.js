@@ -654,6 +654,8 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   let ground = '';
 
   // ---- terrain du quartier : plusieurs couches de contour qui s'estompent vers l'extérieur, puis des taches de sol
+  // Courbes de niveau autour de l'île, comme sur une carte topographique (refonte d'après la 2e référence).
+  for (const k of [1.82, 1.62, 1.44]) ground += `<polyline points="${outline(g, k, 40).concat([outline(g, k, 40)[0]]).map(P).join(' ')}" fill="none" stroke="#9fd2c0" stroke-opacity="${fx(.1 + (1.82 - k) * .12)}" stroke-width="1.4" stroke-linejoin="round"/>`;
   ground += polyZ(outline(g, 1.28), C(th.lip), ' opacity=".22"') + polyZ(outline(g, 1.14), C(mix(th.lip, th.top, .5)), ' opacity=".5"') + polyZ(outline(g, 1), C(th.top));
   ground += `<polyline points="${outline(g, 1, 44).concat([outline(g, 1, 44)[0]]).map(P).join(' ')}" fill="none" stroke="rgb(0 0 0 / .18)" stroke-width="2" stroke-linejoin="round"/>`;
   for (let i = 0; i < 16; i++) { const rx = rr(R, .5, 1.6), ry = rr(R, .5, 1.6), [x, y] = pt(); if (inb(x, y, .3)) ground += polyZ(blob(x, y, rx, ry, z, R, 14), C(pick(R, th.patches)), ' opacity=".55"'); }
@@ -751,7 +753,10 @@ function buildDistrict(d, SEED, pinsOut, lay) {
     + `<path d="M-12 -62H-2V-34H-12L-6 -48Z" fill="${shade(bd, .6)}"/><path d="M${fx(tw)} -62H${fx(tw - 10)}V-34H${fx(tw)}L${fx(tw - 6)} -48Z" fill="${shade(bd, .6)}"/>`
     + `<rect x="-4" y="-64" width="${fx(tw - 4)}" height="28" rx="3" fill="${bd}" stroke="${reached ? '#e6c77a' : 'rgb(255 255 255 / .3)'}" stroke-width="1.5"/><path d="M-4 -59H${fx(tw - 8)}" stroke="rgb(255 255 255 / .22)" stroke-width="1"/><text x="${fx((tw - 12) / 2)}" y="-45" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="13" fill="${sg.encre}">${label}</text>`
     + (reached ? `<circle cx="-1" cy="-64" r="2.6" fill="#ffe7a3"/><circle cx="${fx(tw - 9)}" cy="-64" r="2.6" fill="#ffe7a3"/>` : '') + `</g>`;
-  const sign = { spots: signSpots, tw, at: signAt };
+  const fait = D.levels.filter(l => l.st === 'done').length, etoiles = D.levels.reduce((s, l) => s + (l.st === 'done' ? l.stars : 0), 0);
+  const plaque = `${fait}/${D.levels.length}${etoiles ? ` · ★ ${etoiles}` : ''}`, pw = 18 + 6.2 * plaque.length;
+  const signAt2 = (ga, gb) => signAt(ga, gb).replace(/<\/g>$/, `<rect x="${fx((tw - 12) / 2 - pw / 2)}" y="-31" width="${fx(pw)}" height="15" rx="3" fill="#1c1508" stroke="#d8b66a" stroke-width="1"/><text x="${fx((tw - 12) / 2)}" y="-20" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="10" fill="#f0cf7c">${plaque}</text></g>`);
+  const sign = { spots: signSpots, tw, at: signAt2 };
   items.sort((a, b) => a.k - b.k);
   return { pad: ground, road: roadSvg, shadows: shadows.join(''), items, sign };
 }
@@ -830,11 +835,17 @@ export function renderCity(districts, opts = {}) {
   built.forEach(b => { let best = null, bestA = Infinity;
     for (const [ga, gb] of b.sign.spots) { const r = [ga - 12, gb - 62, ga + b.sign.tw, gb], cost = taken.reduce((t, q) => t + overlap(r, q), 0); if (cost < bestA) { bestA = cost; best = [ga, gb, r]; } if (cost === 0) break; }
     taken.push(best[2]); signBoxes.push(best[2]); signs += b.sign.at(best[0], best[1]); });
+  // Chemin pointillé qui relie les niveaux d'un quartier dans l'ordre : blanc vif entre niveaux réussis, pâle ensuite (2e référence).
+  const parQuartier = new Map(); pins.forEach(p => { if (!parQuartier.has(p.d)) parQuartier.set(p.d, []); parQuartier.get(p.d).push(p); });
+  for (const liste of parQuartier.values()) { liste.sort((a, b) => a.l - b.l);
+    for (let i = 1; i < liste.length; i++) { const a = liste[i - 1], b = liste[i], vif = a.st === 'done' && (b.st === 'done' || b.st === 'current' || b.st === 'started');
+      pinSvg += `<line x1="${fx(a.px)}" y1="${fx(a.py)}" x2="${fx(b.px)}" y2="${fx(b.py)}" stroke="#fff" stroke-opacity="${vif ? .8 : .22}" stroke-width="2.2" stroke-dasharray="5 6" stroke-linecap="round"/>`; } }
   pins.slice().sort((a, b) => a.py - b.py).forEach(p => {
     const D = DATA[p.d], L = D.levels[p.l], r = p.isBoss ? 17 : 14, dim = p.st === 'locked' || p.st === 'soon', col = D.color;
     let g = `<g class="pin" tabindex="0" role="button" aria-label="${esc(L.aria)}" data-id="${esc(L.id)}" transform="translate(${fx(p.px)},${fx(p.py)})"><circle class="hit" r="30" fill="transparent"/>`;
     if (p.st === 'current') {
-      g += `<ellipse cx="0" cy="${r + 11}" rx="9" ry="3" fill="rgb(0 0 0 / .35)"/><g transform="translate(0,${r + 10})"><g class="drop"><path d="M0 0C-9 -14 -22 -26 -22 -41A22 22 0 1 1 22 -41C22 -26 9 -14 0 0Z" fill="#ea4335" stroke="#a52a20" stroke-width="2"/><circle cx="0" cy="-41" r="13.5" fill="#fff"/>`
+      g += `<g stroke="#ea4335" stroke-width="2" fill="none" opacity=".9"><ellipse cx="0" cy="${r + 11}" rx="17" ry="8"/><ellipse cx="0" cy="${r + 11}" rx="9" ry="4.2"/><path d="M-23 ${r + 11}h8M15 ${r + 11}h8M0 ${r + 1}v4M0 ${r + 17}v4"/></g>`   // cible au sol (2e référence)
+        + `<ellipse cx="0" cy="${r + 11}" rx="9" ry="3" fill="rgb(0 0 0 / .35)"/><g transform="translate(0,${r + 10})"><g class="drop"><path d="M0 0C-9 -14 -22 -26 -22 -41A22 22 0 1 1 22 -41C22 -26 9 -14 0 0Z" fill="#ea4335" stroke="#a52a20" stroke-width="2"/><circle cx="0" cy="-41" r="13.5" fill="#fff"/>`
         + `<text y="-36.5" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="${L.short.length > 3 ? 11 : 13}" fill="#a52a20">${p.isBoss ? '👑' : esc(L.short)}</text></g></g>`;
     } else {
       const fill = p.st === 'done' ? col : p.st === 'started' ? '#2c3358' : p.st === 'open' ? '#3a4266' : '#30354a', arc = 2 * Math.PI * (r + 4);
@@ -848,6 +859,7 @@ export function renderCity(districts, opts = {}) {
       if (p.st === 'locked') g += `<path d="M-4 -1v-3a4 4 0 0 1 8 0v3" fill="none" stroke="#8a90a8" stroke-width="2"/><rect x="-6" y="-1" width="12" height="9" rx="2" fill="#8a90a8"/>`;
       else if (p.isBoss) g += `<path d="M-8 4 l-2 -10 l6 5 l4 -8 l4 8 l6 -5 l-2 10z" fill="${dim ? '#8a90a8' : '#fff'}"/>`;
       else g += `<text y="5" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="${L.short.length > 3 ? 11 : 13}" fill="${dim ? '#8a90a8' : '#fff'}">${esc(L.short)}</text>`;
+      if (p.st === 'done') g += `<circle cx="${fx(r * .78)}" cy="${fx(-r * .78)}" r="7" fill="#2f9e44" stroke="#fff" stroke-width="1.6"/><path d="M${fx(r * .78 - 3.4)} ${fx(-r * .78)}l2.4 2.6 4.6 -5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;   // coche verte (2e référence)
       if (p.st === 'done' && !p.isBoss) g += `<text y="${-r - 5}" text-anchor="middle" font-size="11" fill="#ffd36b" letter-spacing="1">${'★'.repeat(L.stars)}<tspan fill="#5b6075">${'★'.repeat(3 - L.stars)}</tspan></text>`;
     }
     pinSvg += g + '</g>';

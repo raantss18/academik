@@ -228,6 +228,7 @@
       {/if}
     </footer>
   {:else}
+    {#if !level.review && score + 1e-9 >= UNLOCK_THRESHOLD}<p class="legende" aria-hidden="true">{i18n.lang === 'fr' ? 'Mission accomplie !' : 'Mission cleared!'}</p>{/if}
     <section class="card end" class:rapport={!level.review}>
       {#if !level.review}
         <!-- Rapport de mission (refonte immersive) : même papier que le dossier ouvert sur la carte, tampon du résultat. -->
@@ -313,4 +314,7 @@
   .briefing { position: relative; margin-top: 16px; padding-top: 20px; color: #2b2418; border: 1px solid #cdb98c; border-radius: 8px; background: linear-gradient(160deg, #f6eed8, #e9dcba); box-shadow: 0 6px 16px rgb(0 0 0 / .22); }
   .briefing .onglet { position: absolute; top: -11px; left: 14px; margin: 0; padding: 3px 12px; border-radius: 5px; background: linear-gradient(#f2b543, #d9902a); color: #3a2205; font-weight: 900; font-size: .72rem; letter-spacing: .8px; text-transform: uppercase; }
   .briefing :global(code) { background: rgb(80 60 30 / .1); color: #3b2c14; }
+
+  /* Grand titre jaune cerné de noir (références 1 et 2), au-dessus du rapport d'une mission réussie. */
+  .legende { margin: 8px 0 -4px; text-align: center; font: italic 900 clamp(1.7rem, 8vw, 2.6rem) var(--font); text-transform: uppercase; letter-spacing: .5px; color: #ffd84a; -webkit-text-stroke: 2px #1b1204; paint-order: stroke fill; text-shadow: 0 4px 0 #1b1204; }
 </style>

@@ -23,6 +23,11 @@
   const fr = $derived(i18n.lang === 'fr');
   const ready = $derived(content.modules.filter(m => m.niveaux.some(n => content.levels[n.id])));
   const upcoming = $derived(content.modules.filter(m => !m.niveaux.some(n => content.levels[n.id])));
+  // En-tête en « duel » (1re référence) : toi à gauche, Kintana à droite. Chiffres réels : niveaux réussis (≥ 50 %), XP gagnés aujourd'hui, modules terminés.
+  const reussis = $derived(content.order.filter(id => content.levels[id] && scores[id] >= 0.5).length);
+  const xpJour = $derived.by(() => { const j = new Date(); j.setHours(0, 0, 0, 0); return progress.events.filter(e => e.t >= j.getTime()).reduce((s, e) => s + e.xp, 0); });
+  const modulesFinis = $derived(ready.filter(m => m.niveaux.every(n => !content.levels[n.id] || scores[n.id] >= 0.5)).length);
+  const joueur = $derived({ nom: progress.profile.name || (fr ? 'Invité' : 'Guest'), ligne: `+${xpJour} XP ${fr ? 'auj.' : 'today'}`, badge: reussis });
   const districts = $derived(buildDistricts({ modules: content.modules, levels: content.levels, scores, open, current, t: x => i18n.t(x as { fr: string; en: string }), fr }));
 
   // Vue « ville » par défaut (E9) ; la liste reste un choix mémorisé sur cet appareil.
@@ -41,12 +46,20 @@
 <!-- Ville : l'en-tête flotte dans le décor (pas de bandeau) ; liste : en-tête classique. -->
 <div class={view === 'city' ? 'hudlayer' : 'wrap top'}>
   <header class="hud">
-    <LogoMenu {onrules} />
+    <LogoMenu {onrules} carte={joueur} />
     <!-- Bandeau doré (refonte immersive, d'après la 1re référence) : points et série réunis sur un ruban à queues. -->
-    <div class="ruban" role="group" aria-label={fr ? 'Ta progression' : 'Your progress'}>
-      <span title="{progress.xp} {ui('xp')}" aria-label="{progress.xp} {ui('xp')}">⭐ {progress.xp}{#if view === 'list'}<span class="lbl">&nbsp;{ui('xp')}</span>{/if}</span>
-      <span class="sep" aria-hidden="true"></span>
-      <span title="{progress.streak} {ui('streak')}" aria-label="{progress.streak} {ui('streak')}">🔥 {progress.streak}{#if view === 'list'}<span class="lbl">&nbsp;{progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>{/if}</span>
+    <div class="centre">
+      <div class="ruban" role="group" aria-label={fr ? 'Ta progression' : 'Your progress'}>
+        <span title="{progress.xp} {ui('xp')}" aria-label="{progress.xp} {ui('xp')}">⭐ {progress.xp}{#if view === 'list'}<span class="lbl">&nbsp;{ui('xp')}</span>{/if}</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span title="{progress.streak} {ui('streak')}" aria-label="{progress.streak} {ui('streak')}">🔥 {progress.streak}{#if view === 'list'}<span class="lbl">&nbsp;{progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>{/if}</span>
+      </div>
+      {#if current}<button class="manche" onclick={() => onplay(current!)} aria-label="{ui('continue')} · {current}"><b aria-hidden="true">M</b>{fr ? 'Mission' : 'Mission'} {current}</button>{/if}
+    </div>
+    <!-- Carte de Kintana, l'IA qu'on construit : modules terminés. -->
+    <div class="kintana" role="img" aria-label={fr ? `Kintana : ${modulesFinis} module(s) terminé(s) sur ${ready.length}` : `Kintana: ${modulesFinis} of ${ready.length} module(s) completed`}>
+      <span class="kt"><strong>Kintana</strong><small>{modulesFinis}/{ready.length} {fr ? 'modules' : 'modules'}</small></span>
+      <span class="av"><svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect x="6" y="9" width="20" height="16" rx="6" fill="#2b3a6b"/><circle cx="12.5" cy="17" r="2.6" fill="#7fe3ff"/><circle cx="19.5" cy="17" r="2.6" fill="#7fe3ff"/><path d="M16 9V5" stroke="#d8b66a" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="4" r="2" fill="#ff4d3d"/></svg><span class="badge">{modulesFinis}</span></span>
     </div>
     <button class="chip view" onclick={toggle} aria-pressed={view === 'list'} aria-label={view === 'city' ? (fr ? 'Vue liste' : 'List view') : (fr ? 'Vue ville' : 'City view')}>{#if view === 'city'}☰{:else}🏙<span class="lbl">&nbsp;{fr ? 'Ville' : 'City'}</span>{/if}</button>
   </header>
@@ -115,7 +128,14 @@
   .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }
   .hud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
   /* Téléphone : l'en-tête tient sur une ligne ; les mots « jours » et « XP » restent dans l'étiquette lue par les lecteurs d'écran. */
-  @media (max-width: 440px) { .hud { flex-wrap: nowrap; gap: 6px; } .ruban { margin: 0 10px; padding: 0 12px; gap: 8px; } .hud :global(.menu .logo) { padding: 0 8px 0 4px; font-size: 1.02rem; gap: 6px; } .lbl { display: none; } .chip { padding: 0 10px; white-space: nowrap; flex-shrink: 0; } }
+  @media (max-width: 440px) { .hud { flex-wrap: nowrap; gap: 6px; } .hud .kintana .kt { display: none; } .hud .kintana { padding: 4px; } .hud .ruban { padding: 0 10px; gap: 6px; font-size: .88rem; } .hud :global(.menu .txt2), .hud :global(.menu .chev) { display: none; } .hud :global(.menu .logo) { padding: 4px !important; } .ruban { margin: 0 10px; padding: 0 12px; gap: 8px; } .hud :global(.menu .logo) { padding: 0 8px 0 4px; font-size: 1.02rem; gap: 6px; } .lbl { display: none; } .chip { padding: 0 10px; white-space: nowrap; flex-shrink: 0; } }
+  .centre { display: grid; justify-items: center; gap: 2px; margin: 0 auto; }
+  .manche { display: inline-flex; align-items: center; gap: 5px; min-height: 26px; padding: 0 10px 0 3px; border-radius: 999px; border: 1px solid rgb(255 255 255 / .25); background: rgb(10 14 36 / .78); color: #f2f4ff; font-weight: 800; font-size: .74rem; cursor: pointer; white-space: nowrap; }
+  .manche b { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #e8e2d6; color: #2b2418; font-size: .68rem; }
+  .kintana { display: inline-flex; align-items: center; gap: 8px; padding: 3px 4px 3px 10px; min-height: 48px; border-radius: 999px; background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); border: 1px solid rgb(255 255 255 / .18); color: #f2f4ff; flex: none; }
+  .kintana .kt { display: grid; line-height: 1.15; text-align: right; } .kintana strong { font-size: .9rem; } .kintana small { font-size: .72rem; color: #b9bfe8; font-weight: 700; }
+  .kintana .av { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: #e9eefc; border: 2.5px solid #d8b66a; }
+  .kintana .badge { position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%); min-width: 20px; height: 17px; padding: 0 4px; border-radius: 4px; background: #2b5ea8; color: #fff; font-size: .68rem; font-weight: 900; line-height: 17px; text-align: center; border: 1.5px solid #fff; }
   .ruban { position: relative; z-index: 0; display: inline-flex; align-items: center; gap: 10px; height: 36px; padding: 0 16px; margin: 0 12px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
     background: linear-gradient(#ffe08a, #e8b24a 55%, #c98a1f); color: #3a2205; font-weight: 900; font-size: .95rem; text-shadow: 0 1px 0 rgb(255 255 255 / .45);
     box-shadow: 0 2px 0 #8a5a12, 0 6px 14px rgb(0 0 0 / .35), inset 0 1px 0 rgb(255 255 255 / .6); }

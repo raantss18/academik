@@ -7,7 +7,7 @@
   import { weekSummary } from '../engine/week';
   import { APP_VERSION, APP_BUILD, DOWNLOAD_APK, DOWNLOAD_APPIMAGE, platform } from '../lib/platform';
 
-  let { onrules, onhome, compact = false }: { onrules?: () => void; onhome?: () => void; compact?: boolean } = $props();
+  let { onrules, onhome, compact = false, carte }: { onrules?: () => void; onhome?: () => void; compact?: boolean; carte?: { nom: string; ligne: string; badge: number } } = $props();
   let open = $state(false), root: HTMLElement;
   const fr = $derived(i18n.lang === 'fr');
   const themes: { v: Theme; fr: string; en: string }[] = [{ v: 'auto', fr: 'Auto', en: 'Auto' }, { v: 'light', fr: 'Clair', en: 'Light' }, { v: 'dark', fr: 'Sombre', en: 'Dark' }];
@@ -22,7 +22,10 @@
 
 <div class="menu" class:compact bind:this={root}>
   <button class="logo" aria-label={fr ? 'academik : menu' : 'academik: menu'} aria-haspopup="menu" aria-expanded={open} onclick={() => (open = !open)}>
-    <Logo size={30} />{#if !compact}<span class="word">acad<span class="e">e</span>mik</span>{/if}<span class="chev" aria-hidden="true">▾</span>
+    {#if carte}
+      <!-- Carte de joueur (refonte d'après la 1re référence) : avatar, badge de niveaux réussis, nom et gain du jour. -->
+      <span class="av"><Logo size={26} /><span class="badge" aria-hidden="true">{carte.badge}</span></span><span class="txt2"><strong>{carte.nom}</strong><small>{carte.ligne}</small></span>
+    {:else}<Logo size={30} />{#if !compact}<span class="word">acad<span class="e">e</span>mik</span>{/if}{/if}<span class="chev" aria-hidden="true">▾</span>
   </button>
   {#if open}
     <div class="pop" role="menu" aria-label="academik">
@@ -63,6 +66,9 @@
   .menu { position: relative; margin-right: auto; } .menu.compact { margin-right: 0; }
   .logo { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px 0 6px; border-radius: 999px; border: 1px solid transparent; background: transparent; cursor: pointer; font-weight: 800; font-size: 1.15rem; }
   .logo:hover, .logo[aria-expanded='true'] { background: var(--c-surface-2); border-color: var(--c-border); }
+  .av { position: relative; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: #fff; border: 2.5px solid #d8b66a; box-shadow: 0 2px 6px rgb(0 0 0 / .3); flex: none; }
+  .badge { position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%); min-width: 20px; height: 17px; padding: 0 4px; border-radius: 4px; background: #2f7d3a; color: #fff; font-size: .68rem; font-weight: 900; line-height: 17px; text-align: center; border: 1.5px solid #fff; }
+  .txt2 { display: grid; line-height: 1.15; text-align: left; min-width: 0; } .txt2 strong { font-size: .9rem; max-width: 9ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .txt2 small { font-size: .72rem; color: #8fe39e; font-weight: 700; white-space: nowrap; }
   .e { color: var(--c-accent); } .chev { color: var(--c-text-muted); font-size: .8rem; }
   .pop { position: absolute; left: 0; top: calc(100% + 6px); z-index: 20; width: min(340px, calc(100vw - 32px)); display: grid; gap: 4px; padding: 8px; border-radius: 20px; background: var(--c-surface); border: 1px solid var(--c-border); box-shadow: 0 12px 40px rgb(0 0 0 / .25); }
   .menu.compact .pop { position: fixed; left: 16px; right: 16px; width: auto; top: calc(var(--sat) + 72px); }

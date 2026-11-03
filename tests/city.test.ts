@@ -133,3 +133,24 @@ describe('E50 · critique de design : carte lisible, liste et leçon au langage 
   });
   it('début de leçon en briefing de mission', () => { expect(readFileSync('src/ui/Lesson.svelte', 'utf8')).toContain('class="goals briefing"'); });
 });
+
+describe('E51 · refonte d’après les images de référence d’Antsa', () => {
+  const g = readFileSync('src/lib/city/gen.js', 'utf8'), m = readFileSync('src/ui/Map.svelte', 'utf8');
+  it('carte (2e réf.) : courbes de niveau, chemin pointillé entre niveaux, coche verte, cible au sol ; (3e réf.) plaque de progression sous la bannière', () => {
+    expect(g).toContain('Courbes de niveau'); expect(g).toContain('stroke-dasharray="5 6"'); expect(g).toContain('coche verte'); expect(g).toContain('cible au sol'); expect(g).toContain('const plaque =');
+  });
+  it('la plaque dit vrai : réussis / total et étoiles des niveaux réussis', () => {
+    const d = buildDistricts(input({ scores: { '0.1': 1, '0.2': 0.6 }, open: new Set(['0.1', '0.2', '0.3']), current: '0.3' }));
+    const out = renderCity(d, { reduce: true });
+    const n = d[0].levels.filter(l => l.st === 'done').length, s = d[0].levels.reduce((t, l) => t + (l.st === 'done' ? l.stars : 0), 0);
+    expect(out.svg).toContain(`${n}/${d[0].levels.length} · ★ ${s}`);
+  });
+  it('en-tête en duel (1re réf.) : carte joueur, ruban + mission, carte Kintana, chiffres réels', () => {
+    expect(m).toContain('<LogoMenu {onrules} carte={joueur} />'); expect(m).toContain('class="manche"'); expect(m).toContain('class="kintana"');
+    expect(m).toContain("scores[id] >= 0.5).length"); expect(m).toContain('.reduce((s, e) => s + e.xp, 0)');
+  });
+  it('grands titres jaunes cernés (1re et 2e réf.) ; liens lisibles en sombre', () => {
+    expect(readFileSync('index.html', 'utf8')).toContain('class="cap"'); expect(readFileSync('src/ui/Lesson.svelte', 'utf8')).toContain('class="legende"');
+    expect(readFileSync('src/app.css', 'utf8')).toContain('a { color: var(--c-link);');
+  });
+});

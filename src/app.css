@@ -1,6 +1,6 @@
 /* Jetons de DESIGN.md (COMIMa). Clair par défaut, sombre selon le système ou data-theme. */
 :root {
-  --c-primary: #1d7a33; --c-on-primary: #fff; --c-primary-strong: #145c26; --c-primary-soft: #e6f3e9; --c-accent: #d6362b; --c-accent-soft: #fdeae8;
+  --c-link: #1d5fb4; --c-primary: #1d7a33; --c-on-primary: #fff; --c-primary-strong: #145c26; --c-primary-soft: #e6f3e9; --c-accent: #d6362b; --c-accent-soft: #fdeae8;
   --c-bg: #f7f8f6; --c-surface: #fff; --c-surface-2: #eef1ec; --c-text: #1b211d; --c-text-muted: #55605a; --c-border: #dde2dc;
   --radius: 14px; --font: 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --sat: var(--safe-area-inset-top, env(safe-area-inset-top, 0px)); --sab: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
@@ -9,12 +9,12 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --c-primary: #53b96e; --c-on-primary: #0c130e; --c-primary-strong: #7ed197; --c-primary-soft: #17301d; --c-accent: #f0655a; --c-accent-soft: #3a1815;
+    --c-link: #8cc4ff; --c-primary: #53b96e; --c-on-primary: #0c130e; --c-primary-strong: #7ed197; --c-primary-soft: #17301d; --c-accent: #f0655a; --c-accent-soft: #3a1815;
     --c-bg: #0f1310; --c-surface: #171c18; --c-surface-2: #1f2620; --c-text: #e6eae5; --c-text-muted: #9aa69d; --c-border: #2b332c;
   }
 }
 :root[data-theme='dark'] {
-  --c-primary: #53b96e; --c-on-primary: #0c130e; --c-primary-strong: #7ed197; --c-primary-soft: #17301d; --c-accent: #f0655a; --c-accent-soft: #3a1815;
+  --c-link: #8cc4ff; --c-primary: #53b96e; --c-on-primary: #0c130e; --c-primary-strong: #7ed197; --c-primary-soft: #17301d; --c-accent: #f0655a; --c-accent-soft: #3a1815;
   --c-bg: #0f1310; --c-surface: #171c18; --c-surface-2: #1f2620; --c-text: #e6eae5; --c-text-muted: #9aa69d; --c-border: #2b332c;
 }
 * { box-sizing: border-box; }
@@ -47,3 +47,6 @@ pre code { background: none; padding: 0; }
 .stars { color: #e0a800; letter-spacing: 2px; }
 :focus-visible { outline: 3px solid var(--c-primary); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* Liens : la couleur par défaut du navigateur (bleu foncé) était presque invisible en sombre (critique de design, E50). */
+a { color: var(--c-link); text-underline-offset: 2px; }
