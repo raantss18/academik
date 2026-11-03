@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana fait travailler la machine en bloc, et sait quand ajouter des cœurs ne sert plus.
   en: Kintana makes the machine work in bulk, and knows when adding cores no longer helps.
+objectifs:
+  - { fr: 'remplacer une boucle par une expression', en: 'replace a loop with an expression' }
+  - { fr: 'partager un travail en parallèle', en: 'share work in parallel' }
+  - { fr: 'voir ce qui plafonne l''accélération', en: 'see what caps the speed-up' }
 sources:
 - titre: 'NumPy — documentation : What is NumPy ?'
   url: https://numpy.org/doc/stable/user/whatisnumpy.html

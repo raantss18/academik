@@ -4,6 +4,10 @@ module: 9
 duree_min: 19
 titre: { fr: 'Régularisation et validation croisée', en: 'Regularisation and cross-validation' }
 ia: { fr: 'Kintana retient ses réglages pour ne pas s’emballer, et choisit ses hyperparamètres sans jamais toucher au test.', en: 'Kintana holds her settings back so they do not run away, and chooses her hyperparameters without ever touching the test set.' }
+objectifs:
+  - { fr: 'freiner un modèle par régularisation', en: 'restrain a model with regularisation' }
+  - { fr: 'faire une validation croisée', en: 'run a cross-validation' }
+  - { fr: 'choisir $\lambda$ sans toucher au test', en: 'choose $\lambda$ without touching the test set' }
 sources:
   - { titre: 'Stanford CS229 — Machine Learning (régularisation)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
   - { titre: 'scikit-learn — Cross-validation: evaluating estimator performance', url: 'https://scikit-learn.org/stable/modules/cross_validation.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
@@ -56,8 +60,8 @@ cartes:
     titre: { fr: 'Freiner le classifieur', en: 'Restraining the classifier' }
     lang: python
     etapes:
-      - { code: 'import math\nxs = [1, 2, 3, 4, 5, 6]\nys = [0, 0, 0, 1, 1, 1]', fr: 'Les mêmes données séparables qu’au niveau 9.3.', en: 'The same separable data as in level 9.3.' }
-      - { code: 'def fit(lam):\n    w = b = 0.0\n    for _ in range(5000):\n        ps = [1 / (1 + math.exp(-(w * x + b))) for x in xs]\n        gw = sum((p - y) * x for p, y, x in zip(ps, ys, xs)) / 6 + 2 * lam * w\n        gb = sum(p - y for p, y in zip(ps, ys)) / 6\n        w, b = w - 0.5 * gw, b - 0.5 * gb\n    return round(w, 1), round(b, 1)', fr: 'Même descente qu’avant, avec la pénalité $2\lambda w$ ajoutée à la pente de `w`.', en: 'Same descent as before, with the penalty $2\lambda w$ added to the slope of `w`.' }
+      - { code: "import math\nxs = [1, 2, 3, 4, 5, 6]\nys = [0, 0, 0, 1, 1, 1]", fr: 'Les mêmes données séparables qu’au niveau 9.3.', en: 'The same separable data as in level 9.3.' }
+      - { code: "def fit(lam):\n    w = b = 0.0\n    for _ in range(5000):\n        ps = [1 / (1 + math.exp(-(w * x + b))) for x in xs]\n        gw = sum((p - y) * x for p, y, x in zip(ps, ys, xs)) / 6 + 2 * lam * w\n        gb = sum(p - y for p, y in zip(ps, ys)) / 6\n        w, b = w - 0.5 * gw, b - 0.5 * gb\n    return round(w, 1), round(b, 1)", fr: 'Même descente qu’avant, avec la pénalité $2\lambda w$ ajoutée à la pente de `w`.', en: 'Same descent as before, with the penalty $2\lambda w$ added to the slope of `w`.' }
       - { code: 'print(fit(0), fit(0.1))', fr: 'Sans pénalité, $w$ vaut `5.7` et continuerait de grandir. Avec $\lambda=0{,}1$, $w$ se stabilise à `1.0`. La frontière reste la même, près de 3,5, mais le modèle est bien moins catégorique.', en: 'Without penalty, $w$ is `5.7` and would keep growing. With $\lambda=0.1$, $w$ stabilises at `1.0`. The boundary stays the same, near 3.5, but the model is much less categorical.' }
     verif: |-
       import math

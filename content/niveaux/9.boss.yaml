@@ -4,6 +4,10 @@ module: 9
 duree_min: 22
 titre: { fr: 'Classer une demande', en: 'Classifying a request' }
 ia: { fr: 'Kintana comprend l’intention d’une demande (salut, heure, aide), et prouve son score sur un jeu de test gelé.', en: 'Kintana understands the intent of a request (greeting, time, help), and proves her score on a frozen test set.' }
+objectifs:
+  - { fr: 'transformer une demande en vecteur', en: 'turn a request into a vector' }
+  - { fr: 'classer par profil moyen et cosinus', en: 'classify by mean profile and cosine' }
+  - { fr: 'rendre un rapport honnête sur un test gelé', en: 'report honestly on a frozen test set' }
 sources:
   - { titre: 'scikit-learn — Common pitfalls and recommended practices', url: 'https://scikit-learn.org/stable/common_pitfalls.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
   - { titre: 'Python — module hashlib', url: 'https://docs.python.org/3/library/hashlib.html', licence: 'PSF License (documentation officielle, citée)' }
@@ -91,9 +95,9 @@ cartes:
     titre: { fr: 'Classer « quelle heure » à la main', en: 'Classifying “quelle heure” by hand' }
     lang: python
     etapes:
-      - { code: 'import math\nvocab = ["salut", "heure"]\nprofils = {"salut": [1.0, 0.5], "heure": [0.0, 3.0]}', fr: 'Un vocabulaire de deux mots et deux profils d’intention, comme dans la figure.', en: 'A two-word vocabulary and two intent profiles, as in the figure.' }
-      - { code: 'def cosinus(u, v):\n    return sum(a * b for a, b in zip(u, v)) / (math.sqrt(sum(a * a for a in u)) * math.sqrt(sum(b * b for b in v)))', fr: 'Le cosinus du niveau 4.2, écrit en une ligne.', en: 'The cosine from level 4.2, written in one line.' }
-      - { code: 'vec = [0, 1]\nprint({k: round(cosinus(vec, p), 2) for k, p in profils.items()})', fr: 'La demande « quelle heure » donne le vecteur `[0, 1]`. Cosinus avec `salut` : `0.45` ; avec `heure` : `1.0`. La plus proche est `heure`.', en: 'The request “quelle heure” gives the vector `[0, 1]`. Cosine with `salut`: `0.45`; with `heure`: `1.0`. The closest is `heure`.' }
+      - { code: "import math\nvocab = [\"salut\", \"heure\"]\nprofils = {\"salut\": [1.0, 0.5], \"heure\": [0.0, 3.0]}", fr: 'Un vocabulaire de deux mots et deux profils d’intention, comme dans la figure.', en: 'A two-word vocabulary and two intent profiles, as in the figure.' }
+      - { code: "def cosinus(u, v):\n    return sum(a * b for a, b in zip(u, v)) / (math.sqrt(sum(a * a for a in u)) * math.sqrt(sum(b * b for b in v)))", fr: 'Le cosinus du niveau 4.2, écrit en une ligne.', en: 'The cosine from level 4.2, written in one line.' }
+      - { code: "vec = [0, 1]\nprint({k: round(cosinus(vec, p), 2) for k, p in profils.items()})", fr: 'La demande « quelle heure » donne le vecteur `[0, 1]`. Cosinus avec `salut` : `0.45` ; avec `heure` : `1.0`. La plus proche est `heure`.', en: 'The request “quelle heure” gives the vector `[0, 1]`. Cosine with `salut`: `0.45`; with `heure`: `1.0`. The closest is `heure`.' }
     verif: |-
       import math
       vocab = ["salut", "heure"]

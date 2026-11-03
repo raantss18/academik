@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana trouve d’abord où son programme perd du temps, puis seulement le corrige.
   en: Kintana first finds where her program loses time, and only then fixes it.
+objectifs:
+  - { fr: 'chronométrer un morceau de code', en: 'time a piece of code' }
+  - { fr: 'trouver le goulot avec un profileur', en: 'find the bottleneck with a profiler' }
+  - { fr: 'appliquer la loi d''Amdahl', en: 'apply Amdahl''s law' }
 sources:
 - titre: 'Python — documentation : The Python Profilers'
   url: https://docs.python.org/3/library/profile.html

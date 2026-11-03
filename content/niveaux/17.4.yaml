@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana tarife un droit d’achat sans prédire l’avenir, par réplication.
   en: Kintana prices a right to buy without predicting the future, by replication.
+objectifs:
+  - { fr: 'lire le gain d''un call et d''un put', en: 'read the payoff of a call and a put' }
+  - { fr: 'utiliser la parité call-put', en: 'use put-call parity' }
+  - { fr: 'évaluer une option sur un arbre binomial', en: 'price an option on a binomial tree' }
 sources:
 - titre: MIT OpenCourseWare — 15.401 Finance Theory I (options et arbitrage)
   url: https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/

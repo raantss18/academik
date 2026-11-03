@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana compte les cas possibles pour savoir si un événement est probable."
   en: "Kintana counts the possible cases to tell whether an event is likely."
+objectifs:
+  - { fr: 'énumérer les issues possibles', en: 'list the possible outcomes' }
+  - { fr: 'tenir compte de l''ordre et des répétitions', en: 'account for order and repetitions' }
+  - { fr: 'calculer une probabilité par comptage', en: 'compute a probability by counting' }
 sources:
   - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
     url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf

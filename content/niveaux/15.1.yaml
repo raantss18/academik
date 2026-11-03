@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana fait dialoguer des programmes par des messages JSON sur des flux de texte.
   en: Kintana makes programs talk through JSON messages on text streams.
+objectifs:
+  - { fr: 'distinguer `stdin`, `stdout` et `stderr`', en: 'tell `stdin`, `stdout` and `stderr` apart' }
+  - { fr: 'lire un code de sortie', en: 'read an exit code' }
+  - { fr: 'échanger des messages JSON ligne par ligne', en: 'exchange JSON messages line by line' }
 sources:
 - titre: 'Model Context Protocol — Specification (transports : stdio)'
   url: https://modelcontextprotocol.io/specification

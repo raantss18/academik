@@ -345,3 +345,44 @@ describe('E44 · toute source citée par un niveau figure au manifeste (contenu 
     for (const s of man.sources) { expect(['embarque', 'lien', 'import-local', 'a-valider']).toContain(s.mode); expect(s.licence.length).toBeGreaterThanOrEqual(3); }
   });
 });
+
+// E45 : barre des références (Linux Journey, TryHackMe, OpenClassrooms ; docs/QUALITE-COURS.md, critères R1 à R8).
+describe('E45 · barre des références : objectifs, sorties exécutées, consignes en étapes, suite immédiate', () => {
+  const niveaux = readdirSync('content/niveaux').filter(f => f.endsWith('.yaml')).map(f => parse(read(`content/niveaux/${f}`)) as {
+    id: string; duree_min: number; objectifs?: { fr: string; en: string }[];
+    cartes: { id: string; type: string; lang?: string; fr?: string; note?: unknown; etapes?: { code?: string }[] }[] });
+  it('R1/R2 : chaque niveau annonce 2 à 4 objectifs, montrés sur la fiche, à l’ouverture et cochés à la fin', () => {
+    expect(niveaux.filter(n => !(n.objectifs && n.objectifs.length >= 2 && n.objectifs.length <= 4)).map(n => n.id)).toEqual([]);
+    expect(read('src/ui/City.svelte')).toContain('info.L?.objectifs'); expect(lesson).toContain("ui('goals_title')"); expect(lesson).toContain("ui('goals_done')");
+  });
+  it('R3 : chaque niveau s’ouvre sur une situation à tenter (carte « tentative »)', () => {
+    expect(niveaux.filter(n => n.cartes[0].type !== 'tentative').map(n => n.id)).toEqual([]);
+  });
+  it('R4 : tout exemple Python se compile (pas de « \\n » littéral, pas de shell sans lang) et la sortie affichée vient de l’exécution', async () => {
+    const { execFileSync } = await import('node:child_process');
+    const progs = niveaux.flatMap(n => n.cartes.filter(c => c.type === 'exemple' && (c.lang ?? 'python') === 'python' && c.etapes?.some(e => e.code))
+      .map(c => ({ at: `${n.id} ${c.id}`, code: c.etapes!.filter(e => e.code).map(e => e.code).join('\n') })));
+    const res: (string | null)[] = JSON.parse(execFileSync('python3', ['-I', '-c', 'import sys,json\nout=[]\nfor p in json.loads(sys.stdin.read()):\n    try: compile(p["code"], "x", "exec"); out.append(None)\n    except SyntaxError as e: out.append(p["at"] + " : " + str(e))\nprint(json.dumps(out))'], { input: JSON.stringify(progs), encoding: 'utf8' }));
+    expect(res.filter(Boolean)).toEqual([]);
+    expect(read('scripts/build-content.mjs')).toContain('addOutputs(out.levels)'); expect(lesson).toContain("ui('output')");
+  });
+  it('R6 : une consigne d’exercice fait au plus 60 mots hors code, sinon elle est découpée en étapes numérotées', () => {
+    const long: string[] = [];
+    for (const n of niveaux) for (const c of n.cartes) if (c.note && c.fr && !/\n1\. /.test(c.fr) && c.fr.replace(/```[\s\S]*?```/g, '').split(/\s+/).length > 60) long.push(`${n.id} ${c.id}`);
+    expect(long).toEqual([]);
+  });
+  it('français soigné : pas d’élision oubliée (« Que affiche », « de infimes »), même sous du gras', () => {
+    // « de A à B » : une lettre-nom, pas une élision oubliée.
+    const bad: string[] = [], ok = /^(je à|que oui|de onze|que un|que une)$/i;
+    const pat = /(?<![\p{L}\p{N}'’-])(que|de|je|ne|se|ce|me|te|jusque|lorsque|puisque) (a|à|e|é|è|ê|i|î|o|ô|u|y)\p{L}*/giu;
+    const walk = (x: unknown, k = ''): void => {
+      if (typeof x === 'string') { if (k === 'fr') for (const m of x.replace(/`[^`]*`|\$[^$]*\$/g, '').replace(/\*\*/g, '').matchAll(pat)) if (!ok.test(m[0]) && !/ [A-Z]$/.test(m[0])) bad.push(m[0]); }
+      else if (Array.isArray(x)) x.forEach(v => walk(v, k));
+      else if (x && typeof x === 'object') for (const [kk, v] of Object.entries(x)) walk(v, kk === 'fr' ? 'fr' : typeof v === 'string' ? kk : k);
+    };
+    for (const n of niveaux) walk(n);
+    expect(bad).toEqual([]);
+  });
+  it('R7 : durée annoncée honnête et courte (25 min au plus)', () => { expect(niveaux.filter(n => n.duree_min > 25).map(n => n.id)).toEqual([]); });
+  it('R8 : la fin d’un niveau réussi propose le niveau suivant', () => { expect(app).toContain('nextLevel={nextOf(view.id)}'); expect(lesson).toContain("ui('next_level')"); });
+});

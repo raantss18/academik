@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana teste si un résultat peut s’expliquer par le hasard (p-valeur)."
   en: "Kintana tests whether a result can be explained by chance (p-value)."
+objectifs:
+  - { fr: 'poser une hypothèse nulle', en: 'state a null hypothesis' }
+  - { fr: 'calculer une p-valeur par énumération', en: 'compute a p-value by enumeration' }
+  - { fr: 'distinguer faux positif et signal manqué', en: 'tell a false positive from a missed signal' }
 sources:
   - titre: MIT OCW — Philippe Rigollet, 18.650, Statistics for Applications (2016)
     url: https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/pages/lecture-slides/

@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana sait prédire le mot suivant : un modèle bigramme construit à la main."
   en: "Kintana can predict the next word: a bigram model built by hand."
+objectifs:
+  - { fr: 'compter les successeurs d''un mot', en: 'count the successors of a word' }
+  - { fr: 'estimer des probabilités de bigramme', en: 'estimate bigram probabilities' }
+  - { fr: 'calculer la probabilité d''une phrase', en: 'compute the probability of a sentence' }
 sources:
   - titre: Zhang, Lipton, Li et Smola — Dive into Deep Learning, Language Models
     url: https://d2l.ai/chapter_recurrent-neural-networks/language-model.html

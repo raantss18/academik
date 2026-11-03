@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana mesure la variabilité de son estimation en rééchantillonnant ses données (bootstrap)."
   en: "Kintana measures the variability of her estimate by resampling her data (bootstrap)."
+objectifs:
+  - { fr: 'rééchantillonner avec remise', en: 'resample with replacement' }
+  - { fr: 'estimer une variabilité par bootstrap', en: 'estimate variability by bootstrap' }
+  - { fr: 'ne pas confondre simulations et nouvelles données', en: 'not confuse simulations with new data' }
 sources:
   - titre: SciPy — scipy.stats.bootstrap, documentation actuelle
     url: https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html

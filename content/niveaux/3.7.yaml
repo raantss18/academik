@@ -4,6 +4,10 @@ module: 3
 duree_min: 16
 titre: { fr: 'Piles', en: 'Stacks' }
 ia: { fr: 'Kintana vérifie que les parenthèses de ses formules sont bien fermées, grâce à une pile.', en: 'Kintana checks that the brackets in her formulas are properly closed, using a stack.' }
+objectifs:
+  - { fr: 'empiler et dépiler une pile', en: 'push to and pop from a stack' }
+  - { fr: 'vérifier des parenthèses', en: 'check brackets' }
+  - { fr: 'reconnaître l''ordre LIFO', en: 'recognise LIFO order' }
 sources:
   - { titre: 'Python — Tutoriel, utiliser les listes comme des piles', url: 'https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'Python — Tutoriel, listes', url: 'https://docs.python.org/3/tutorial/datastructures.html#more-on-lists', licence: 'PSF License (documentation officielle, citée)' }
@@ -13,7 +17,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       p = []
@@ -74,8 +78,8 @@ cartes:
     lang: python
     etapes:
       - { code: 's = "(()"', fr: 'On veut savoir si chaque `(` est refermée par une `)`.', en: 'We want to know whether each `(` is closed by a `)`.' }
-      - { code: 'pile = []\nfor c in s:', fr: 'On lit les caractères un par un, avec une pile vide au départ.', en: 'We read characters one by one, with an empty stack at the start.' }
-      - { code: '    if c == "(":\n        pile.append(c)\n    elif pile:\n        pile.pop()', fr: 'Une `(` s’empile. Une `)` dépile une `(` en attente, s’il y en a une.', en: 'A `(` is pushed. A `)` pops a pending `(`, if there is one.' }
+      - { code: "pile = []\nfor c in s:", fr: 'On lit les caractères un par un, avec une pile vide au départ.', en: 'We read characters one by one, with an empty stack at the start.' }
+      - { code: "    if c == \"(\":\n        pile.append(c)\n    elif pile:\n        pile.pop()", fr: 'Une `(` s’empile. Une `)` dépile une `(` en attente, s’il y en a une.', en: 'A `(` is pushed. A `)` pops a pending `(`, if there is one.' }
       - { code: 'print(len(pile))', fr: 'Il reste une `(` jamais refermée : on affiche `1`. La chaîne est donc **mal** fermée.', en: 'One `(` is left never closed: we display `1`. The string is therefore **not** properly closed.' }
     verif: |-
       s = "(()"

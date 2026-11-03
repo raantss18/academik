@@ -17,7 +17,8 @@ export interface Card {
   defi?: boolean | 2;
   note?: { kind: 'exercise' | 'quiz'; poids: number };
   choix?: Choice[]; reponses?: string[]; lignes?: string[];
-  etapes?: { code?: string; fr: string; en: string }[];
+  /** `sortie` : ajoutée à la construction en exécutant le code (scripts/sorties.mjs), jamais écrite à la main. */
+  etapes?: { code?: string; sortie?: string; fr: string; en: string }[];
   /** terminal : système de fichiers de départ, dossier courant, état attendu et une solution (vérifiée à la compilation). */
   fs?: import('./terminal').Tree; cwd?: string; attendu?: import('./terminal').Checks; solution?: string[];
   /** code : programme de départ, tests Python (AssertionError si faux) et une solution vérifiée à la compilation. */
@@ -26,7 +27,7 @@ export interface Card {
   indice?: { fr: string; en: string }; explication?: { fr: string; en: string };
 }
 /** `review` : séance de révision assemblée à la volée ; les ids de cartes y sont « niveau|carte » (voir src/lib/review.ts). */
-export interface Level { review?: boolean; id: string; module: number; duree_min: number; titre: { fr: string; en: string }; ia: { fr: string; en: string }; cartes: Card[] }
+export interface Level { review?: boolean; id: string; module: number; duree_min: number; titre: { fr: string; en: string }; ia: { fr: string; en: string }; objectifs?: { fr: string; en: string }[]; cartes: Card[] }
 export interface CursusLevel { id: string; boss?: boolean; titre: { fr: string; en?: string } }
 export interface CursusModule { id: number; titre: { fr: string; en: string }; niveaux: CursusLevel[] }
 

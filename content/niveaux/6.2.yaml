@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana met à jour ce qu’elle croit quand elle apprend un nouvel indice (conditionnement, Bayes)."
   en: "Kintana updates what she believes when she learns a new clue (conditioning, Bayes)."
+objectifs:
+  - { fr: 'calculer une probabilité conditionnelle', en: 'compute a conditional probability' }
+  - { fr: 'reconnaître l''indépendance', en: 'recognise independence' }
+  - { fr: 'appliquer Bayes avec des effectifs', en: 'apply Bayes with counts' }
 sources:
   - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
     url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf

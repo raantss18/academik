@@ -3,6 +3,10 @@ module: 3
 duree_min: 13
 titre: { fr: 'Graphes : parcours en largeur', en: 'Graphs: breadth-first search' }
 ia: { fr: 'Kintana explore les liens entre documents par distance croissante.', en: 'Kintana explores links between documents in increasing distance order.' }
+objectifs:
+  - { fr: 'lire un graphe orienté', en: 'read a directed graph' }
+  - { fr: 'explorer en largeur avec une file', en: 'explore breadth-first with a queue' }
+  - { fr: 'éviter de tourner dans un cycle', en: 'avoid going round a cycle' }
 sources:
   - { titre: 'Pat Morin — Open Data Structures, Graph Traversal', url: 'https://opendatastructures.org/ods-python/12_3_Graph_Traversal.html', licence: 'CC BY 2.5 CA ; exemples originaux' }
   - { titre: 'Python — collections.deque', url: 'https://docs.python.org/3/library/collections.html#collections.deque', licence: 'PSF-2.0 ; exemples de la documentation également sous 0BSD' }

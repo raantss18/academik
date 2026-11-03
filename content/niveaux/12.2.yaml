@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana transforme des scores en probabilités et des mots en vecteurs qu’elle sait comparer.
   en: Kintana turns scores into probabilities and words into vectors she can compare.
+objectifs:
+  - { fr: 'calculer un softmax stable', en: 'compute a stable softmax' }
+  - { fr: 'comprendre un plongement', en: 'understand an embedding' }
+  - { fr: 'comparer deux plongements par le cosinus', en: 'compare two embeddings with the cosine' }
 sources:
 - titre: 'A. Karpathy — Neural Networks: Zero to Hero'
   url: https://karpathy.ai/zero-to-hero.html

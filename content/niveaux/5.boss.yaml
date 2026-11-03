@@ -3,6 +3,10 @@ module: 5
 duree_min: 11
 titre: { fr: 'La pente la plus raide', en: 'The steepest slope' }
 ia: { fr: 'Kintana règle un paramètre par descente de gradient sur une vraie erreur : les moindres carrés.', en: 'Kintana tunes a parameter by gradient descent on a real error: least squares.' }
+objectifs:
+  - { fr: 'dériver une perte', en: 'differentiate a loss' }
+  - { fr: 'ajuster des paramètres par descente', en: 'tune parameters by descent' }
+  - { fr: 'vérifier que la perte baisse', en: 'check that the loss decreases' }
 sources:
   - { titre: 'Boyd et Vandenberghe — Convex Optimization, chapitres 3 et 9', url: 'https://web.stanford.edu/~boyd/cvxbook/', licence: 'Copyright Cambridge University Press ; référence en lien seulement, aucun extrait repris' }
   - { titre: 'MIT OCW — 18.02SC, Partial Derivatives', url: 'https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/pages/2.-partial-derivatives/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }

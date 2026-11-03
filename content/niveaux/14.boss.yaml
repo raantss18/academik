@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana répond avec ses sources ou reconnaît qu’elle ne sait pas, et tu as mesuré sa recherche.
   en: Kintana answers with her sources or admits she does not know, and you measured her search.
+objectifs:
+  - { fr: 'mesurer le rappel de la recherche', en: 'measure the recall of retrieval' }
+  - { fr: 'mesurer la fidélité de la réponse', en: 'measure the faithfulness of the answer' }
+  - { fr: 'régler le seuil d''abstention', en: 'tune the abstention threshold' }
 sources:
 - titre: Lewis et al. — Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks
   url: https://arxiv.org/abs/2005.11401

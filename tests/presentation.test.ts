@@ -13,6 +13,10 @@ describe('texte des cartes (md)', () => {
     const h = md('Soit $x^2 + 1$ et $$\\sum_{k=1}^n k$$ donc');
     expect(h).toContain('class="math" data-tex="x^2 + 1"'); expect(h).toContain('data-display="1"'); expect(h).toContain('\\sum_{k=1}^n k');
   });
+  it('étapes numérotées → liste (R6), le reste garde ses retours à la ligne', () => {
+    expect(md('Écris f.\n1. **lire**\n2. renvoyer `x`\nFin')).toBe('Écris f.<ol class="steps"><li><strong>lire</strong></li><li>renvoyer <code>x</code></li></ol>Fin');
+    expect(md('a\nb')).toBe('a<br>b');
+  });
   it('ne prend pas un prix pour une formule ($5 et $7)', () => { expect(md('Il coûte $5 puis $ 7 euros')).not.toContain('class="math"'); });
   it('ne touche pas aux $ dans le code', () => { const h = md('Écris `echo $HOME` ici'); expect(h).toContain('<code>echo $HOME</code>'); expect(h).not.toContain('class="math"'); });
   it('un attribut ne peut pas être cassé par une formule piégée', () => { const h = md('$a" onmouseover="x$'); expect(h).toContain('data-tex="a&quot; onmouseover=&quot;x"'); expect(h.match(/<span [^>]*>/)![0]).not.toMatch(/onmouseover="/); });

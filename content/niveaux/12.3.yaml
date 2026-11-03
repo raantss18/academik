@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana regarde les bons mots du contexte en pesant chacun d’eux.
   en: Kintana looks at the right words of the context by weighing each of them.
+objectifs:
+  - { fr: 'calculer des scores d''attention', en: 'compute attention scores' }
+  - { fr: 'transformer les scores en poids', en: 'turn scores into weights' }
+  - { fr: 'combiner les valeurs', en: 'combine the values' }
 sources:
 - titre: Vaswani et al. — Attention Is All You Need (section 3.2)
   url: https://arxiv.org/abs/1706.03762

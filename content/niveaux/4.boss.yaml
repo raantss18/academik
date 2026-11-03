@@ -3,6 +3,10 @@ module: 4
 duree_min: 11
 titre: { fr: 'Le moteur de similarité', en: 'The similarity engine' }
 ia: { fr: 'Kintana sait mesurer la ressemblance de deux textes (vecteurs de comptage et cosinus).', en: 'Kintana can measure how similar two texts are using count vectors and cosine similarity.' }
+objectifs:
+  - { fr: 'construire des vecteurs de comptage', en: 'build count vectors' }
+  - { fr: 'calculer des similarités cosinus', en: 'compute cosine similarities' }
+  - { fr: 'classer des textes par ressemblance', en: 'rank texts by similarity' }
 sources:
   - { titre: 'Gilbert Strang — MIT 18.06, algèbre linéaire', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
   - { titre: 'scikit-learn — cosine_similarity', url: 'https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html', licence: 'BSD-3-Clause' }

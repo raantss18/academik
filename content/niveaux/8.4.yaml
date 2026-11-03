@@ -4,6 +4,10 @@ module: 8
 duree_min: 16
 titre: { fr: 'Voir les données', en: 'Seeing the data' }
 ia: { fr: 'Kintana dessine la forme d’une colonne de nombres, en texte, et sait repérer un graphique trompeur.', en: 'Kintana draws the shape of a column of numbers, in text, and knows how to spot a misleading chart.' }
+objectifs:
+  - { fr: 'ranger des valeurs en classes', en: 'sort values into bins' }
+  - { fr: 'dessiner un histogramme en texte', en: 'draw a text histogram' }
+  - { fr: 'lire un graphique sans conclure à une cause', en: 'read a chart without inferring a cause' }
 sources:
   - { titre: 'Python — collections.Counter', url: 'https://docs.python.org/3/library/collections.html#collections.Counter', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'Matplotlib — Histograms', url: 'https://matplotlib.org/stable/gallery/statistics/hist.html', licence: 'Matplotlib License (PSF-compatible, source citée)' }
@@ -13,7 +17,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       print("#" * 3)
@@ -51,7 +55,7 @@ cartes:
       - { code: 'from collections import Counter', fr: '`Counter` compte les éléments qui se répètent.', en: '`Counter` counts repeated elements.' }
       - { code: 'valeurs = [3, 7, 12, 15, 18, 22, 25, 29]', fr: 'La même colonne que dans la figure.', en: 'The same column as in the figure.' }
       - { code: 'classes = Counter(v // 10 for v in valeurs)', fr: 'Pour chaque valeur, on calcule sa classe (0, 1 ou 2) et on compte.', en: 'For each value, we compute its class (0, 1 or 2) and count.' }
-      - { code: 'for c in sorted(classes):\n    print(c * 10, "#" * classes[c])', fr: 'On parcourt les classes dans l’ordre, et on affiche le début de la classe puis une barre.', en: 'We go through the classes in order and display the class start, then a bar.' }
+      - { code: "for c in sorted(classes):\n    print(c * 10, \"#\" * classes[c])", fr: 'On parcourt les classes dans l’ordre, et on affiche le début de la classe puis une barre.', en: 'We go through the classes in order and display the class start, then a bar.' }
     verif: |-
       from collections import Counter
       valeurs = [3, 7, 12, 15, 18, 22, 25, 29]

@@ -4,6 +4,10 @@ module: 10
 duree_min: 16
 titre: { fr: 'Volatilité', en: 'Volatility' }
 ia: { fr: 'Kintana mesure l’agitation d’une série, c’est-à-dire le risque, même quand elle ne sait pas prévoir son sens.', en: 'Kintana measures the agitation of a series, that is, the risk, even when she cannot forecast its direction.' }
+objectifs:
+  - { fr: 'calculer une volatilité glissante', en: 'compute a rolling volatility' }
+  - { fr: 'suivre une volatilité exponentielle', en: 'track an exponential volatility' }
+  - { fr: 'repérer les grappes de volatilité', en: 'spot volatility clusters' }
 sources:
   - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd.', url: 'https://otexts.com/fpp3/', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
   - { titre: 'J.P. Morgan / Reuters — RiskMetrics Technical Document (1996), moyenne mobile exponentielle', url: 'https://www.msci.com/documents/10199/5915b101-4206-4ba0-aee2-3449d5c7e95a', licence: 'Lien seulement ; formule citée, texte non repris' }
@@ -40,9 +44,9 @@ cartes:
     titre: { fr: 'Suivre la volatilité', en: 'Tracking volatility' }
     lang: python
     etapes:
-      - { code: 'import math\nr = [0.01, -0.01, 0.02, -0.02, 0.0]\nk = 2', fr: 'Cinq rendements et une fenêtre de deux.', en: 'Five returns and a window of two.' }
-      - { code: 'def ecart_type(v):\n    m = sum(v) / len(v)\n    return math.sqrt(sum((a - m) ** 2 for a in v) / len(v))', fr: 'L’écart-type de la population (niveau 8.3).', en: 'The population standard deviation (level 8.3).' }
-      - { code: 'vol = [round(ecart_type(r[i:i + k]), 4) for i in range(len(r) - k + 1)]\nprint(vol)', fr: 'On l’applique à chaque fenêtre. On affiche `[0.01, 0.015, 0.02, 0.01]`.', en: 'We apply it to each window. We display `[0.01, 0.015, 0.02, 0.01]`.' }
+      - { code: "import math\nr = [0.01, -0.01, 0.02, -0.02, 0.0]\nk = 2", fr: 'Cinq rendements et une fenêtre de deux.', en: 'Five returns and a window of two.' }
+      - { code: "def ecart_type(v):\n    m = sum(v) / len(v)\n    return math.sqrt(sum((a - m) ** 2 for a in v) / len(v))", fr: 'L’écart-type de la population (niveau 8.3).', en: 'The population standard deviation (level 8.3).' }
+      - { code: "vol = [round(ecart_type(r[i:i + k]), 4) for i in range(len(r) - k + 1)]\nprint(vol)", fr: 'On l’applique à chaque fenêtre. On affiche `[0.01, 0.015, 0.02, 0.01]`.', en: 'We apply it to each window. We display `[0.01, 0.015, 0.02, 0.01]`.' }
     verif: |-
       import math
       r = [0.01, -0.01, 0.02, -0.02, 0.0]

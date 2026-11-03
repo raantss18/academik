@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana prouve en Lean qu’une formule vaut pour tous les entiers, et pas seulement pour ceux qu’elle a testés.
   en: Kintana proves in Lean that a formula holds for every integer, not only for those she tested.
+objectifs:
+  - { fr: 'prouver par récurrence en Lean', en: 'prove by induction in Lean' }
+  - { fr: 'utiliser `rw`, `simp` et `omega`', en: 'use `rw`, `simp` and `omega`' }
+  - { fr: 'prouver la somme de Gauss', en: 'prove Gauss''s sum' }
 sources:
 - titre: Avigad, de Moura, Kong, Ullrich — Theorem Proving in Lean 4, « Induction and Recursion »
   url: https://lean-lang.org/theorem_proving_in_lean4/

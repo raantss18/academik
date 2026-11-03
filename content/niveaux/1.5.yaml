@@ -4,6 +4,10 @@ module: 1
 duree_min: 9
 titre: { fr: 'Git', en: 'Git' }
 ia: { fr: 'Kintana garde l’historique de son travail : elle peut revenir en arrière et ne perd plus rien.', en: 'Kintana keeps the history of her work: she can go back and never loses anything again.' }
+objectifs:
+  - { fr: 'préparer et enregistrer avec `git add` et `git commit`', en: 'stage and record with `git add` and `git commit`' }
+  - { fr: 'relire l''historique avec `git log`', en: 'read the history with `git log`' }
+  - { fr: 'écarter les secrets avec `.gitignore`', en: 'keep secrets out with `.gitignore`' }
 sources:
   - { titre: 'Pro Git, 2e éd. — chap. 2, Les bases de Git (S. Chacon, B. Straub)', url: 'https://git-scm.com/book/fr/v2/Les-bases-de-Git-Démarrer-un-dépôt-Git', licence: 'CC BY-NC-SA 3.0 (source citée, texte non repris)' }
   - { titre: 'Documentation officielle de Git — gitignore', url: 'https://git-scm.com/docs/gitignore', licence: 'GPL-2.0 (documentation officielle, citée)' }

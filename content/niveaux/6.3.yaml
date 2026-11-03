@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana décrit un résultat incertain par une loi : Bernoulli, binomiale, uniforme."
   en: "Kintana describes an uncertain outcome with a law: Bernoulli, binomial, uniform."
+objectifs:
+  - { fr: 'décrire une loi de Bernoulli', en: 'describe a Bernoulli distribution' }
+  - { fr: 'calculer avec une loi binomiale', en: 'compute with a binomial distribution' }
+  - { fr: 'lire une densité', en: 'read a density' }
 sources:
   - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
     url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf

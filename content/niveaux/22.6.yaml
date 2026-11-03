@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana sait pourquoi un modèle à experts calcule peu mais pèse lourd en mémoire, et comment une image devient une suite de jetons.
   en: Kintana knows why an expert model computes little but weighs heavily in memory, and how an image becomes a sequence of tokens.
+objectifs:
+  - { fr: 'router des jetons vers des experts', en: 'route tokens to experts' }
+  - { fr: 'distinguer paramètres actifs et totaux', en: 'tell active from total parameters' }
+  - { fr: 'découper une image en patchs', en: 'split an image into patches' }
 sources:
 - titre: Jiang et al. — Mixtral of Experts (arXiv 2401.04088)
   url: https://arxiv.org/abs/2401.04088

@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana annonce un score avec son incertitude et sait quand une différence est réelle.
   en: Kintana announces a score with its uncertainty and knows when a difference is real.
+objectifs:
+  - { fr: 'donner un intervalle de Wilson', en: 'give a Wilson interval' }
+  - { fr: 'choisir la taille d''un jeu de test', en: 'choose the size of a test set' }
+  - { fr: 'comparer deux modèles par le test du signe', en: 'compare two models with the sign test' }
 sources:
 - titre: Wilson, E. B. — Probable inference, the law of succession, and statistical inference (1927)
   url: https://doi.org/10.1080/01621459.1927.10502953

@@ -4,6 +4,10 @@ module: 11
 duree_min: 12
 titre: { fr: 'Optimiseurs', en: 'Optimizers' }
 ia: { fr: 'Kintana descend plus vite et plus droit : elle garde la mémoire de ses pas précédents.', en: 'Kintana descends faster and straighter: it keeps a memory of its previous steps.' }
+objectifs:
+  - { fr: 'accélérer avec le momentum', en: 'speed up with momentum' }
+  - { fr: 'faire un pas d''Adam', en: 'take an Adam step' }
+  - { fr: 'choisir le pas d''apprentissage', en: 'choose the learning rate' }
 sources:
   - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, chap. 8 (optimisation)', url: 'https://www.deeplearningbook.org/contents/optimization.html', licence: 'Lecture en ligne ; texte non repris' }
   - { titre: 'Kingma, Ba — Adam: A Method for Stochastic Optimization', url: 'https://arxiv.org/abs/1412.6980', licence: 'Article en accès libre ; formules citées' }
@@ -81,8 +85,8 @@ cartes:
     titre: { fr: 'Un premier pas d’Adam', en: 'A first Adam step' }
     lang: python
     etapes:
-      - { code: 'g, m, v, t = 0.5, 0.0, 0.0, 1\nm = 0.9 * m + 0.1 * g\nv = 0.999 * v + 0.001 * g * g', fr: 'On met à jour les deux moyennes : `m` vaut `0.05`, `v` vaut `0.00025`.', en: 'We update the two averages: `m` is `0.05`, `v` is `0.00025`.' }
-      - { code: 'mh = m / (1 - 0.9 ** t)\nvh = v / (1 - 0.999 ** t)', fr: 'On corrige le biais du début : `mh` vaut `0.5`, `vh` vaut `0.25`.', en: 'We correct the early bias: `mh` is `0.5`, `vh` is `0.25`.' }
+      - { code: "g, m, v, t = 0.5, 0.0, 0.0, 1\nm = 0.9 * m + 0.1 * g\nv = 0.999 * v + 0.001 * g * g", fr: 'On met à jour les deux moyennes : `m` vaut `0.05`, `v` vaut `0.00025`.', en: 'We update the two averages: `m` is `0.05`, `v` is `0.00025`.' }
+      - { code: "mh = m / (1 - 0.9 ** t)\nvh = v / (1 - 0.999 ** t)", fr: 'On corrige le biais du début : `mh` vaut `0.5`, `vh` vaut `0.25`.', en: 'We correct the early bias: `mh` is `0.5`, `vh` is `0.25`.' }
       - { code: 'print(round(1.0 - 0.1 * mh / (vh ** 0.5 + 1e-8), 4))', fr: 'Le pas vaut $0{,}1\times0{,}5/0{,}5=0{,}1$ : on affiche `0.9`.', en: 'The step is $0.1\times0.5/0.5=0.1$: we display `0.9`.' }
     verif: |-
       g, m, v, t = 0.5, 0.0, 0.0, 1

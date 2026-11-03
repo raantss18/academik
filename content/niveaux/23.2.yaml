@@ -8,6 +8,10 @@ titre:
 ia:
   fr: 'Kintana enquête sur un bogue : elle le reproduit, le réduit, formule une hypothèse et la teste.'
   en: 'Kintana investigates a bug: she reproduces it, reduces it, forms a hypothesis and tests it.'
+objectifs:
+  - { fr: 'reproduire et réduire un bogue', en: 'reproduce and reduce a bug' }
+  - { fr: 'formuler une hypothèse et la tester', en: 'form a hypothesis and test it' }
+  - { fr: 'reconnaître des pièges classiques de Python', en: 'recognise classic Python traps' }
 sources:
 - titre: 'Python — documentation : définition de fonction (valeurs par défaut)'
   url: https://docs.python.org/3/reference/compound_stmts.html

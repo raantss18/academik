@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana sait qu’un test réussi ne prouve pas tout, et écrit ses premiers théorèmes vérifiés par Lean.
   en: Kintana knows a passing test does not prove everything, and writes her first theorems checked by Lean.
+objectifs:
+  - { fr: 'écrire une preuve comme un programme', en: 'write a proof as a program' }
+  - { fr: 'faire vérifier une preuve par Lean', en: 'have Lean check a proof' }
+  - { fr: 'prouver par table de vérité sur un domaine fini', en: 'prove by truth table on a finite domain' }
 sources:
 - titre: Avigad, de Moura, Kong, Ullrich — Theorem Proving in Lean 4
   url: https://lean-lang.org/theorem_proving_in_lean4/

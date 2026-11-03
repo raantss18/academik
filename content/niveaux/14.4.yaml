@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana combine la recherche par mots et la recherche par sens, puis réordonne les meilleurs candidats.
   en: Kintana combines search by words and search by meaning, then reorders the best candidates.
+objectifs:
+  - { fr: 'fusionner deux classements avec RRF', en: 'merge two rankings with RRF' }
+  - { fr: 'ajouter un reranking', en: 'add a reranking stage' }
+  - { fr: 'garder peu de passages pertinents', en: 'keep few relevant passages' }
 sources:
 - titre: Cormack, Clarke, Buettcher — Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods (SIGIR 2009)
   url: https://dl.acm.org/doi/10.1145/1571941.1572114

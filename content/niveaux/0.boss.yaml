@@ -3,6 +3,10 @@ module: 0
 duree_min: 15
 titre: { fr: 'Le message secret', en: 'The secret message' }
 ia: { fr: 'Kintana sait chiffrer et déchiffrer un message (César, affine).', en: 'Kintana can encrypt and decrypt a message (Caesar and affine ciphers).' }
+objectifs:
+  - { fr: 'chiffrer un message par César ou affine', en: 'encrypt a message with Caesar or affine' }
+  - { fr: 'déchiffrer avec l''inverse modulaire', en: 'decrypt with the modular inverse' }
+  - { fr: 'repérer des étiquettes trop courtes', en: 'spot labels that are too short' }
 sources:
   - titre: MIT — Pigeonhole Principle (2024)
     url: https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/resources/mit18_200_s24_lec01_pdf/

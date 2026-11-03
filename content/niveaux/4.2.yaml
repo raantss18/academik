@@ -3,6 +3,10 @@ module: 4
 duree_min: 11
 titre: { fr: 'Produit scalaire et norme', en: 'Dot product and norm' }
 ia: { fr: 'Kintana compare les directions des vecteurs de textes grâce au cosinus.', en: 'Kintana compares text vector directions using cosine similarity.' }
+objectifs:
+  - { fr: 'calculer un produit scalaire', en: 'compute a dot product' }
+  - { fr: 'calculer une norme', en: 'compute a norm' }
+  - { fr: 'comparer deux directions par le cosinus', en: 'compare two directions with the cosine' }
 sources:
   - { titre: 'Gilbert Strang — MIT 18.06, orthogonalité', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
   - { titre: 'scikit-learn — cosine_similarity', url: 'https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html', licence: 'BSD-3-Clause' }

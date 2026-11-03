@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana résume une loi par sa moyenne attendue et sa dispersion."
   en: "Kintana summarises a law by its expected mean and its spread."
+objectifs:
+  - { fr: 'calculer une espérance et une variance', en: 'compute an expectation and a variance' }
+  - { fr: 'dire si un jeu est favorable', en: 'tell whether a game is favourable' }
+  - { fr: 'énoncer la loi des grands nombres', en: 'state the law of large numbers' }
 sources:
   - titre: Jeremy Orloff et Jonathan Bloom — MIT 18.05, Probability (2022)
     url: https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_probability.pdf

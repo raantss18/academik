@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana parle aux outils par un protocole standard, en gardant ses garde-fous.
   en: Kintana talks to tools through a standard protocol, keeping her safeguards.
+objectifs:
+  - { fr: 'lister et appeler des outils par MCP', en: 'list and call tools over MCP' }
+  - { fr: 'lire une requête JSON-RPC', en: 'read a JSON-RPC request' }
+  - { fr: 'se méfier d''un serveur tiers', en: 'be wary of a third-party server' }
 sources:
 - titre: Model Context Protocol — Specification
   url: https://modelcontextprotocol.io/specification
@@ -152,8 +156,8 @@ cartes:
   note:
     kind: exercise
     poids: 1
-  fr: '**Écris `traiter(req, outils)`**, le cœur d’un serveur. `outils` associe un nom à `{"description": ..., "fonction": ...}`. Pour `"tools/list"` : renvoie `{"jsonrpc": "2.0", "id": id, "result": {"tools": [{"name": nom, "description": ...}, ...]}}`. Pour `"tools/call"` : appelle `fonction(**arguments)` et renvoie `result` avec `{"content": [{"type": "text", "text": str(valeur)}]}`, ou l’erreur `-32602` « outil inconnu » si le nom est absent. Toute autre méthode : erreur `-32601` « méthode inconnue ».'
-  en: '**Write `traiter(req, outils)`**, the heart of a server. `outils` maps a name to `{"description": ..., "fonction": ...}`. For `"tools/list"`: return `{"jsonrpc": "2.0", "id": id, "result": {"tools": [{"name": nom, "description": ...}, ...]}}`. For `"tools/call"`: call `fonction(**arguments)` and return `result` with `{"content": [{"type": "text", "text": str(valeur)}]}`, or error `-32602` “outil inconnu” if the name is absent. Any other method: error `-32601` “méthode inconnue”.'
+  fr: "**Écris `traiter(req, outils)`**, le cœur d’un serveur. `outils` associe un nom à `{\"description\": ..., \"fonction\": ...}`.\n1. Pour `\"tools/list\"` : renvoie `{\"jsonrpc\": \"2.0\", \"id\": id, \"result\": {\"tools\": [{\"name\": nom, \"description\": ...}, ...]}}`.\n2. Pour `\"tools/call\"` : appelle `fonction(**arguments)` et renvoie `result` avec `{\"content\": [{\"type\": \"text\", \"text\": str(valeur)}]}`.\n3. Si le nom de l’outil est absent : erreur `-32602` « outil inconnu ».\n4. Toute autre méthode : erreur `-32601` « méthode inconnue »."
+  en: "**Write `traiter(req, outils)`**, the heart of a server. `outils` maps a name to `{\"description\": ..., \"fonction\": ...}`.\n1. For `\"tools/list\"`: return `{\"jsonrpc\": \"2.0\", \"id\": id, \"result\": {\"tools\": [{\"name\": nom, \"description\": ...}, ...]}}`.\n2. For `\"tools/call\"`: call `fonction(**arguments)` and return `result` with `{\"content\": [{\"type\": \"text\", \"text\": str(valeur)}]}`.\n3. If the tool name is absent: error `-32602` “outil inconnu”.\n4. Any other method: error `-32601` “méthode inconnue”."
   depart: |
     OUTILS = {
         "somme": {"description": "Additionne deux nombres", "fonction": lambda a, b: a + b},

@@ -4,6 +4,10 @@ module: 10
 duree_min: 19
 titre: { fr: 'Lire une série', en: 'Reading a series' }
 ia: { fr: 'Kintana lisse une série de valeurs dans le temps et la transforme pour la rendre plus facile à étudier.', en: 'Kintana smooths a series of values over time and transforms it to make it easier to study.' }
+objectifs:
+  - { fr: 'repérer tendance, saison et bruit', en: 'spot trend, season and noise' }
+  - { fr: 'lisser avec une moyenne mobile', en: 'smooth with a moving average' }
+  - { fr: 'calculer des rendements', en: 'compute returns' }
 sources:
   - { titre: 'Hyndman et Athanasopoulos — Forecasting: Principles and Practice, 3e éd. (chap. 2-3)', url: 'https://otexts.com/fpp3/', licence: 'Lien seulement (licence non vérifiée) ; texte non repris' }
   - { titre: 'Python — tranches de listes et compréhensions', url: 'https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions', licence: 'PSF License (documentation officielle, citée)' }

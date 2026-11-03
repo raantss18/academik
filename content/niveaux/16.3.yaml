@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana suit un système sans mémoire et prévoit où il passera son temps à long terme.
   en: Kintana follows a memoryless system and predicts where it will spend its time in the long run.
+objectifs:
+  - { fr: 'écrire une matrice de transition', en: 'write a transition matrix' }
+  - { fr: 'faire avancer une distribution d''un pas', en: 'move a distribution one step' }
+  - { fr: 'trouver la distribution stationnaire', en: 'find the stationary distribution' }
 sources:
 - titre: MIT OpenCourseWare — 18.642 Topics in Mathematics with Applications in Finance
   url: https://ocw.mit.edu/courses/18-642-topics-in-mathematics-with-applications-in-finance-fall-2024/

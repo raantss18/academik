@@ -4,6 +4,10 @@ module: 1
 duree_min: 14
 titre: { fr: 'Droits', en: 'Permissions' }
 ia: { fr: 'Kintana protège ses fichiers : elle décide qui peut les lire, les modifier ou les lancer.', en: 'Kintana protects her files: she decides who may read, change or run them.' }
+objectifs:
+  - { fr: 'lire les droits d''une ligne de `ls -l`', en: 'read the permissions in an `ls -l` line' }
+  - { fr: 'convertir des droits en nombre', en: 'convert permissions to a number' }
+  - { fr: 'protéger un secret avec `chmod 600`', en: 'protect a secret with `chmod 600`' }
 sources:
   - { titre: 'GNU Coreutils — chmod (modes de fichier)', url: 'https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }
   - { titre: 'GNU Coreutils — ls -l', url: 'https://www.gnu.org/software/coreutils/manual/html_node/What-information-is-listed.html', licence: 'GNU FDL 1.3 (documentation officielle, citée)' }

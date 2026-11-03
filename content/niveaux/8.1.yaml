@@ -4,6 +4,10 @@ module: 8
 duree_min: 15
 titre: { fr: 'Lire un tableau', en: 'Reading a table' }
 ia: { fr: 'Kintana lit un tableau de données écrit en texte, pour pouvoir ensuite le nettoyer et le résumer.', en: 'Kintana reads a table of data written as text, so she can then clean and summarise it.' }
+objectifs:
+  - { fr: 'lire un CSV avec `csv.DictReader`', en: 'read a CSV with `csv.DictReader`' }
+  - { fr: 'convertir le texte en nombres', en: 'convert text to numbers' }
+  - { fr: 'filtrer des lignes', en: 'filter rows' }
 sources:
   - { titre: 'Python — module csv', url: 'https://docs.python.org/3/library/csv.html', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'Python — io.StringIO', url: 'https://docs.python.org/3/library/io.html#io.StringIO', licence: 'PSF License (documentation officielle, citée)' }
@@ -13,7 +17,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       ligne = "ana,15,12.5"
@@ -53,7 +57,7 @@ cartes:
     lang: python
     etapes:
       - { code: 'import csv, io', fr: 'Le module `csv` lit les tableaux ; `io.StringIO` fait passer un texte pour un fichier.', en: 'The `csv` module reads tables; `io.StringIO` makes a text pass for a file.' }
-      - { code: 'texte = "nom,age\\nana,15\\nrado,17"', fr: 'Notre tableau est un texte : `\n` sépare les lignes.', en: 'Our table is a text: `\n` separates the rows.' }
+      - { code: 'texte = "nom,age\nana,15\nrado,17"', fr: 'Notre tableau est un texte : `\n` sépare les lignes.', en: 'Our table is a text: `\n` separates the rows.' }
       - { code: 'lignes = list(csv.DictReader(io.StringIO(texte)))', fr: '`DictReader` lit la première ligne comme en-têtes, puis fabrique **un dictionnaire par ligne**.', en: '`DictReader` reads the first row as headers, then builds **one dictionary per row**.' }
       - { code: 'print(lignes[1]["nom"], len(lignes))', fr: 'La deuxième observation est Rado ; il y a 2 lignes de données. On affiche `rado 2`.', en: 'The second observation is Rado; there are 2 data rows. We display `rado 2`.' }
     verif: |-
@@ -114,7 +118,7 @@ cartes:
     lang: python
     etapes:
       - { code: 'import csv, io', fr: 'Même début que précédemment.', en: 'Same start as before.' }
-      - { code: 'texte = "nom,age\\nana,15\\nrado,17\\nsoa,16"', fr: 'Trois personnes.', en: 'Three people.' }
+      - { code: 'texte = "nom,age\nana,15\nrado,17\nsoa,16"', fr: 'Trois personnes.', en: 'Three people.' }
       - { code: 'lignes = list(csv.DictReader(io.StringIO(texte)))', fr: 'Une liste de trois dictionnaires.', en: 'A list of three dictionaries.' }
       - { code: 'grands = [l["nom"] for l in lignes if int(l["age"]) >= 16]', fr: 'On garde les noms des lignes dont l’âge converti vaut au moins 16.', en: 'We keep the names of the rows whose converted age is at least 16.' }
       - { code: 'print(grands)', fr: "On affiche `['rado', 'soa']`.", en: "We display `['rado', 'soa']`." }

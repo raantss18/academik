@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana lit la mémoire dans le bon ordre pour que le cache l’aide.
   en: Kintana reads memory in the right order so that the cache helps her.
+objectifs:
+  - { fr: 'décrire la hiérarchie mémoire', en: 'describe the memory hierarchy' }
+  - { fr: 'simuler un cache LRU', en: 'simulate an LRU cache' }
+  - { fr: 'parcourir dans l''ordre du rangement', en: 'traverse in storage order' }
 sources:
 - titre: Drepper — What Every Programmer Should Know About Memory
   url: https://people.freebsd.org/~lstewart/articles/cpumemory.pdf

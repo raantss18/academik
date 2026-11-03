@@ -4,6 +4,10 @@ module: 4
 duree_min: 16
 titre: { fr: 'Rang, noyau et bases', en: 'Rank, kernel and bases' }
 ia: { fr: 'Kintana sait combien de directions vraiment différentes une matrice produit, et ce qu’elle écrase.', en: 'Kintana knows how many truly different directions a matrix produces, and what it crushes.' }
+objectifs:
+  - { fr: 'calculer un rang par élimination', en: 'compute a rank by elimination' }
+  - { fr: 'trouver le noyau', en: 'find the kernel' }
+  - { fr: 'reconnaître une base', en: 'recognise a basis' }
 sources:
   - { titre: 'Gilbert Strang — MIT 18.06, Linear Algebra', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
   - { titre: 'Python — module fractions', url: 'https://docs.python.org/3/library/fractions.html', licence: 'PSF License (documentation officielle, citée)' }

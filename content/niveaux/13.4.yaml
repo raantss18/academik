@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana met en forme la conversation comme son modèle l’attend et surveille sa fenêtre de contexte.
   en: Kintana formats the conversation as her model expects and watches her context window.
+objectifs:
+  - { fr: 'assembler un prompt en messages', en: 'assemble a prompt from messages' }
+  - { fr: 'respecter le modèle de chat', en: 'respect the chat template' }
+  - { fr: 'compter les tokens du contexte', en: 'count the context tokens' }
 sources:
 - titre: Hugging Face — Chat Templates (documentation Transformers)
   url: https://huggingface.co/docs/transformers/chat_templating

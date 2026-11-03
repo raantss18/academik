@@ -93,6 +93,7 @@
       {#if info.l.st === 'locked'} · {fr ? 'se débloque à 50 % au niveau précédent' : 'unlocks at 50% on the previous level'}{/if}
       {#if info.l.st === 'soon'}{ui('soon')}{/if}
     </p>
+    {#if info.L?.objectifs?.length}<div class="goals"><strong>{ui('goals_title')}</strong><ul>{#each info.L.objectifs as o}<li>{@html md(i18n.t(o))}</li>{/each}</ul></div>{/if}
     {#if info.monument}<p class="mon"><span aria-hidden="true">🏛️</span> {info.monument}</p>{/if}
     {#if info.L}<div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(i18n.t(info.L.ia))}{#if info.place}<br /><span class="muted">{info.place.blurb}</span>{/if}</div>{/if}
     <div class="row">
@@ -121,6 +122,7 @@
   h2 { margin: 4px 0 6px; font-size: 1.35rem; } h2 :global(p) { margin: 0; }
   .meta { margin: 0 0 10px; color: var(--c-text-muted); } .stars { color: #e0a800; letter-spacing: 2px; } .off { opacity: .25; }
   .mon { margin: 0 0 8px; font-weight: 700; color: var(--c-text); }
+  .goals { margin: 0 0 10px; font-size: .95rem; } .goals ul { margin: 4px 0 0; padding-left: 1.2em; } .goals li { margin: 1px 0; }
   .ia { background: var(--c-surface-2); border-radius: 16px; padding: 10px 14px; margin: 10px 0 14px; font-size: .95rem; } .ia :global(p) { display: inline; margin: 0; }
   .muted { color: var(--c-text-muted); } .row { display: flex; gap: 10px; } .row .btn { flex: 1; }
 </style>

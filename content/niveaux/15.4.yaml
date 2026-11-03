@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana enchaîne réflexion, action et observation, avec des garde-fous pour ne pas tourner en rond.
   en: Kintana chains thinking, action and observation, with safeguards so she does not go in circles.
+objectifs:
+  - { fr: 'écrire la boucle réfléchir, agir, observer', en: 'write the think, act, observe loop' }
+  - { fr: 'borner les étapes et le budget', en: 'bound steps and budget' }
+  - { fr: 'détecter les répétitions', en: 'detect repetitions' }
 sources:
 - titre: Hugging Face — Agents Course
   url: https://huggingface.co/learn/agents-course
@@ -106,8 +110,8 @@ cartes:
   note:
     kind: exercise
     poids: 1
-  fr: 'À toi. **Écris `boucle(modele, registre, question, max_etapes)`** : l’`historique` commence par `[{"role": "user", "contenu": question}]`. Jusqu’à `max_etapes` fois : `action = modele(historique)` ; si `"reponse"` est dans `action`, renvoie `{"statut": "ok", "reponse": ..., "etapes": etape + 1}` ; sinon exécute avec `executer`, ajoute l’action (rôle `"assistant"`) et l’observation (rôle `"outil"`) à l’historique. Après la boucle, renvoie `{"statut": "limite", "reponse": None, "etapes": max_etapes}`. `executer` est fournie.'
-  en: 'Your turn. **Write `boucle(modele, registre, question, max_etapes)`**: the `historique` starts with `[{"role": "user", "contenu": question}]`. Up to `max_etapes` times: `action = modele(historique)`; if `"reponse"` is in `action`, return `{"statut": "ok", "reponse": ..., "etapes": etape + 1}`; otherwise execute with `executer`, add the action (role `"assistant"`) and the observation (role `"outil"`) to the history. After the loop, return `{"statut": "limite", "reponse": None, "etapes": max_etapes}`. `executer` is provided.'
+  fr: "À toi. **Écris `boucle(modele, registre, question, max_etapes)`**. `executer` est fournie.\n1. Commence l’`historique` par `[{\"role\": \"user\", \"contenu\": question}]`.\n2. Jusqu’à `max_etapes` fois, calcule `action = modele(historique)`.\n3. Si `\"reponse\"` est dans `action`, renvoie `{\"statut\": \"ok\", \"reponse\": ..., \"etapes\": etape + 1}`.\n4. Sinon, exécute avec `executer`, puis ajoute l’action (rôle `\"assistant\"`) et l’observation (rôle `\"outil\"`) à l’historique.\n5. Après la boucle, renvoie `{\"statut\": \"limite\", \"reponse\": None, \"etapes\": max_etapes}`."
+  en: "Your turn. **Write `boucle(modele, registre, question, max_etapes)`**. `executer` is provided.\n1. Start the `historique` with `[{\"role\": \"user\", \"contenu\": question}]`.\n2. Up to `max_etapes` times, compute `action = modele(historique)`.\n3. If `\"reponse\"` is in `action`, return `{\"statut\": \"ok\", \"reponse\": ..., \"etapes\": etape + 1}`.\n4. Otherwise, execute with `executer`, then add the action (role `\"assistant\"`) and the observation (role `\"outil\"`) to the history.\n5. After the loop, return `{\"statut\": \"limite\", \"reponse\": None, \"etapes\": max_etapes}`."
   depart: |
     def executer(appel, registre):
         nom = appel.get("outil")

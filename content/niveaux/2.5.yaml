@@ -4,6 +4,10 @@ module: 2
 duree_min: 16
 titre: { fr: 'Listes et dictionnaires', en: 'Lists and dictionaries' }
 ia: { fr: 'Kintana range plusieurs valeurs ensemble : une liste de notes, un dictionnaire de mots comptés.', en: 'Kintana keeps several values together: a list of marks, a dictionary of counted words.' }
+objectifs:
+  - { fr: 'construire et parcourir une liste', en: 'build and traverse a list' }
+  - { fr: 'éviter le piège de l''alias', en: 'avoid the alias trap' }
+  - { fr: 'lire et mettre à jour un dictionnaire', en: 'read and update a dictionary' }
 sources:
   - { titre: 'Python — Tutoriel, les listes', url: 'https://docs.python.org/3/tutorial/introduction.html#lists', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'Python — Tutoriel, les dictionnaires', url: 'https://docs.python.org/3/tutorial/datastructures.html#dictionaries', licence: 'PSF License (documentation officielle, citée)' }
@@ -13,7 +17,7 @@ cartes:
     type: tentative
     note: { kind: quiz, poids: 1 }
     fr: |
-      Que **affiche** ce programme ?
+      Qu’**affiche** ce programme ?
 
       ```python
       notes = [12, 8, 15]
@@ -56,7 +60,7 @@ cartes:
       - { code: 'notes = [12, 8]', fr: 'On crée une liste de deux notes.', en: 'We create a list of two marks.' }
       - { code: 'notes.append(15)', fr: '`append` ajoute une valeur **à la fin** : la liste devient `[12, 8, 15]`.', en: '`append` adds a value **at the end**: the list becomes `[12, 8, 15]`.' }
       - { code: 'total = 0', fr: 'On prépare un accumulateur, comme au niveau 2.3.', en: 'We prepare an accumulator, as in level 2.3.' }
-      - { code: 'for n in notes:\n    total = total + n', fr: 'La boucle donne directement chaque valeur : 12, 8, puis 15. Pas besoin de `range`.', en: 'The loop gives each value directly: 12, 8, then 15. No need for `range`.' }
+      - { code: "for n in notes:\n    total = total + n", fr: 'La boucle donne directement chaque valeur : 12, 8, puis 15. Pas besoin de `range`.', en: 'The loop gives each value directly: 12, 8, then 15. No need for `range`.' }
       - { code: 'print(total / len(notes))', fr: 'On divise par le nombre de notes : $35/3\approx11{,}67$.', en: 'We divide by the number of marks: $35/3\approx11.67$.' }
     verif: |-
       notes = [12, 8]

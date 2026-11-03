@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana mesure ce qu’un prix rapporte, et ce qu’il peut faire perdre.
   en: Kintana measures what a price earns, and what it can lose.
+objectifs:
+  - { fr: 'calculer des rendements simples et log', en: 'compute simple and log returns' }
+  - { fr: 'annualiser une volatilité', en: 'annualise a volatility' }
+  - { fr: 'mesurer un drawdown et une VaR', en: 'measure a drawdown and a VaR' }
 sources:
 - titre: MIT OpenCourseWare — 15.401 Finance Theory I
   url: https://ocw.mit.edu/courses/15-401-finance-theory-i-fall-2008/

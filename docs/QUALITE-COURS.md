@@ -44,3 +44,34 @@ Méthode de réécriture d'une carte obscure : (1) quelle est **la** phrase à r
 - Fait : 1, 7, 8, 10 (moteur prêt, pas encore sur l'écran), 11. Partiel : 4 (étapes révélées, sans surbrillance), 9.
 - **À faire** : 2 (KaTeX + coloration), 3 (figures), 5 (encadrés), 6 (Pyodide, shell simulé), surbrillance du 4, révisions à l'écran (10).
 - Les niveaux livrés par Codex doivent déjà utiliser `$…$` et les types d'encadrés dès qu'ils sont disponibles.
+
+## La barre des références (R1–R8, demande d'Antsa du 3 nov. 2026)
+
+> « Analyse bien Linux Journey, TryHackMe et OpenClassrooms, crée des critères pour les contenus, compare et corrige. »
+> Pages **ouvertes et lues le 3 nov. 2026** : Linux Journey, leçon « stdout (Standard Out) » (le site redirige maintenant vers labex.io) ;
+> TryHackMe, salle « Linux Fundamentals (Pt1) » ; OpenClassrooms, cours « Apprenez les bases du langage Python » et son chapitre
+> « Répétez des tâches facilement à l’aide de boucles ». On reprend des **principes de présentation**, jamais leur contenu.
+
+### Ce que font les trois références (observé)
+| | Linux Journey | TryHackMe | OpenClassrooms |
+| --- | --- | --- | --- |
+| En-tête | rubrique · numéro de leçon, titre, **une phrase d'accroche** | description d'une phrase, **difficulté**, **durée (15 min)** | **objectifs** (3), prérequis, niveau, **durée (6 h)** |
+| Découpage | 4 sections courtes, une idée chacune (≈ 500 mots) | tâches avec un titre + un sous-titre qui donne l'enjeu | chapitres à titre d'action, intertitres impératifs |
+| Code | blocs avec l'invite `$` **et la sortie** | **tableau commande → rôle** | code suivi de « ce code affichera… » |
+| Pratique | **une question après chaque section** (3 choix) | « You'll need to… » : **étapes numérotées**, puis questions et un flag à trouver | « À vous de jouer » en fin de chapitre, quiz en fin de partie |
+| Fin | « Lesson complete » : **4 points retenus**, leçon suivante | tâche suivante | **« En résumé »** (5 points), chapitre suivant |
+
+### Les critères academik qui en découlent
+| # | Critère | Mesure | Avant (3 nov.) | Après |
+| --- | --- | --- | --- | --- |
+| R1 | **Objectifs annoncés** : 2 à 4 objectifs par niveau, chacun un verbe d'action (≤ 12 mots), tirés du contenu réel du niveau | 🤖 build + E45 | 0 / 148 | 148 / 148 (3 chacun), affichés sur la fiche du niveau et à l'ouverture |
+| R2 | **Récapitulatif de fin** : l'écran de fin coche les objectifs (« Tu sais maintenant ») ou les liste à retravailler | 🤖 E45 | non | oui |
+| R3 | **L'enjeu d'abord** : le niveau s'ouvre sur une situation à tenter avant toute théorie | 🤖 E45 | 148 / 148 | inchangé |
+| R4 | **Le code montre sa sortie** : sous un exemple Python, la sortie affichée est celle de l'exécution réelle (jamais écrite à la main) ; tout exemple Python se compile ; le shell est marqué `lang: bash` | 🤖 E45 + `scripts/sorties.mjs` | 103 étapes sur 596 disaient leur sortie en mots ; **59 codes avaient un `\n` littéral** (deux instructions collées sur une ligne), 2 chaînes CSV à double barre oblique (8.1), 3 exemples shell colorés comme du Python (1.1) | 157 exemples sur 165 montrent leur sortie exécutée ; 0 erreur de syntaxe ; les 6 restants dépendent d'une carte précédente et n'affichent rien plutôt qu'une sortie inventée |
+| R5 | **Une question tôt et souvent** : au plus 5 cartes d'explication d'affilée (E30) | 🤖 E30 | conforme | inchangé |
+| R6 | **Consignes en étapes** : une consigne d'exercice fait au plus 60 mots hors code ; au-delà, ses actions sont numérotées (`1.`, `2.`…) | 🤖 E45 | 3 consignes de 65 à 68 mots | 0 (14.5, 15.4, 15.5 réécrites en étapes, tests et solutions inchangés) |
+| R7 | **Durée honnête et courte** : `duree_min` = estimation (E25), au plus 25 min | 🤖 E45 | max 23 min | inchangé |
+| R8 | **Suite immédiate** : la fin d'un niveau réussi propose « Niveau suivant » | 🤖 E45 | retour à la carte seulement | bouton « Niveau suivant · x.y » |
+
+Ce qui reste à la relecture humaine (pas mesurable automatiquement) : que chaque intertitre et chaque objectif soit compris d'un
+élève de seconde ; que les tableaux « commande → rôle » existent dans chaque niveau du module 1 (déjà le cas : figure `tableau`).

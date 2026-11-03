@@ -8,6 +8,10 @@ ia:
   fr: "Kintana sait maintenant afficher un message et le personnaliser avec un
     prénom."
   en: "Kintana can now display a message and personalise it with a first name."
+objectifs:
+  - { fr: 'ranger une valeur dans une variable', en: 'store a value in a variable' }
+  - { fr: 'afficher un résultat avec `print`', en: 'show a result with `print`' }
+  - { fr: 'suivre une variable qui change', en: 'follow a variable that changes' }
 sources:
   - titre: Python — Identifiants et mots réservés
     url: https://docs.python.org/3/reference/lexical_analysis.html#identifiers

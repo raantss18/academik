@@ -4,6 +4,10 @@ module: 8
 duree_min: 16
 titre: { fr: 'Entraîner et tester', en: 'Training and testing' }
 ia: { fr: 'Kintana met de côté des données qu’elle ne regarde pas pendant qu’elle apprend, pour mesurer honnêtement ce qu’elle sait.', en: 'Kintana sets aside data she does not look at while she learns, to honestly measure what she knows.' }
+objectifs:
+  - { fr: 'séparer entraînement et test', en: 'split training and test' }
+  - { fr: 'mélanger avec une graine', en: 'shuffle with a seed' }
+  - { fr: 'comparer à une référence naïve', en: 'compare with a naive baseline' }
 sources:
   - { titre: 'scikit-learn — Cross-validation: evaluating estimator performance', url: 'https://scikit-learn.org/stable/modules/cross_validation.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
   - { titre: 'scikit-learn — Common pitfalls and recommended practices', url: 'https://scikit-learn.org/stable/common_pitfalls.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
@@ -80,7 +84,7 @@ cartes:
     lang: python
     etapes:
       - { code: 'import random', fr: 'Le module `random` mélange au hasard.', en: 'The `random` module shuffles at random.' }
-      - { code: 'donnees = list(range(10))\nrandom.Random(42).shuffle(donnees)', fr: 'Le nombre 42 est la **graine** : avec la même graine, on obtient toujours le même mélange. C’est ce qui rend l’expérience reproductible.', en: 'The number 42 is the **seed**: with the same seed, you always get the same shuffle. This makes the experiment reproducible.' }
+      - { code: "donnees = list(range(10))\nrandom.Random(42).shuffle(donnees)", fr: 'Le nombre 42 est la **graine** : avec la même graine, on obtient toujours le même mélange. C’est ce qui rend l’expérience reproductible.', en: 'The number 42 is the **seed**: with the same seed, you always get the same shuffle. This makes the experiment reproducible.' }
       - { code: 'train, test = donnees[:8], donnees[8:]', fr: 'On coupe ensuite comme avant.', en: 'We then cut as before.' }
       - { code: 'print(len(train), len(test), sorted(train + test) == list(range(10)))', fr: 'On affiche `8 2 True` : rien n’a été perdu, rien n’est en double.', en: 'We display `8 2 True`: nothing was lost, nothing is duplicated.' }
     verif: |-

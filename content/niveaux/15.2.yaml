@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana n’agit que dans les limites qu’on lui fixe, et se méfie des textes qu’elle lit.
   en: Kintana acts only within the limits set for her, and distrusts the texts she reads.
+objectifs:
+  - { fr: 'appliquer le moindre privilège', en: 'apply least privilege' }
+  - { fr: 'cloisonner les fichiers en normalisant les chemins', en: 'confine files by normalising paths' }
+  - { fr: 'traiter les données lues comme non fiables', en: 'treat data read as untrusted' }
 sources:
 - titre: OWASP — Top 10 for LLM Applications (injection de prompt, agence excessive)
   url: https://genai.owasp.org/llm-top-10/

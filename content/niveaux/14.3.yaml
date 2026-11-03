@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana retrouve un passage par son sens, même si aucun mot de la question n’y figure.
   en: Kintana finds a passage by its meaning, even when no word of the question appears in it.
+objectifs:
+  - { fr: 'représenter un texte par un embedding', en: 'represent a text as an embedding' }
+  - { fr: 'chercher par similarité cosinus', en: 'search by cosine similarity' }
+  - { fr: 'voir les limites de la recherche par le sens', en: 'see the limits of search by meaning' }
 sources:
 - titre: Karpukhin et al. — Dense Passage Retrieval for Open-Domain Question Answering
   url: https://arxiv.org/abs/2004.04906

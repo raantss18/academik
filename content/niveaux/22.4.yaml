@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana lit la courbure de sa perte et choisit un pas de descente qui ne diverge pas.
   en: Kintana reads the curvature of her loss and picks a descent step that does not diverge.
+objectifs:
+  - { fr: 'calculer une Hessienne', en: 'compute a Hessian' }
+  - { fr: 'tester la convexité en dimension 2', en: 'test convexity in dimension 2' }
+  - { fr: 'relier courbure et pas de descente', en: 'link curvature and descent step' }
 sources:
 - titre: Boyd, Vandenberghe — Convex Optimization, chapitres 3 et 9 (référence uniquement)
   url: https://web.stanford.edu/~boyd/cvxbook/

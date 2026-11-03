@@ -4,6 +4,10 @@ module: 3
 duree_min: 16
 titre: { fr: 'Plus courts chemins', en: 'Shortest paths' }
 ia: { fr: 'Kintana trouve le chemin le moins coûteux entre deux documents, quand chaque lien a un poids.', en: 'Kintana finds the cheapest path between two documents, when each link has a weight.' }
+objectifs:
+  - { fr: 'calculer le coût d''un chemin pondéré', en: 'compute the cost of a weighted path' }
+  - { fr: 'dérouler l''algorithme de Dijkstra', en: 'run Dijkstra''s algorithm' }
+  - { fr: 'reconstruire le chemin le plus court', en: 'rebuild the shortest path' }
 sources:
   - { titre: 'Python — module heapq', url: 'https://docs.python.org/3/library/heapq.html', licence: 'PSF License (documentation officielle, citée)' }
   - { titre: 'Python — Tutoriel, dictionnaires', url: 'https://docs.python.org/3/tutorial/datastructures.html#dictionaries', licence: 'PSF License (documentation officielle, citée)' }
@@ -51,10 +55,10 @@ cartes:
     titre: { fr: 'Dijkstra sur un petit graphe', en: 'Dijkstra on a small graph' }
     lang: python
     etapes:
-      - { code: 'import heapq\ng = {"A": {"B": 4, "C": 1}, "C": {"B": 2, "D": 7}, "B": {"D": 1}, "D": {}}', fr: 'Un graphe : `g["A"]` donne les voisins de A avec le poids de chaque lien.', en: 'A graph: `g["A"]` gives A’s neighbours with the weight of each link.' }
-      - { code: 'dist = {"A": 0}\ntas = [(0, "A")]', fr: 'Distance de A à lui-même : 0. Le tas contient des couples (distance, sommet).', en: 'Distance from A to itself: 0. The heap holds (distance, vertex) pairs.' }
-      - { code: 'while tas:\n    d, u = heapq.heappop(tas)\n    if d > dist[u]:\n        continue', fr: 'On sort le plus proche. Si une meilleure distance a été trouvée depuis, cette entrée est périmée : on l’ignore.', en: 'We take the nearest. If a better distance has been found since, this entry is stale: we skip it.' }
-      - { code: '    for v, w in g[u].items():\n        if d + w < dist.get(v, 10**9):\n            dist[v] = d + w\n            heapq.heappush(tas, (d + w, v))', fr: 'Pour chaque voisin, on regarde si passer par `u` est moins cher ; si oui, on met à jour et on pousse.', en: 'For each neighbour, we check whether going through `u` is cheaper; if so, we update and push.' }
+      - { code: "import heapq\ng = {\"A\": {\"B\": 4, \"C\": 1}, \"C\": {\"B\": 2, \"D\": 7}, \"B\": {\"D\": 1}, \"D\": {}}", fr: 'Un graphe : `g["A"]` donne les voisins de A avec le poids de chaque lien.', en: 'A graph: `g["A"]` gives A’s neighbours with the weight of each link.' }
+      - { code: "dist = {\"A\": 0}\ntas = [(0, \"A\")]", fr: 'Distance de A à lui-même : 0. Le tas contient des couples (distance, sommet).', en: 'Distance from A to itself: 0. The heap holds (distance, vertex) pairs.' }
+      - { code: "while tas:\n    d, u = heapq.heappop(tas)\n    if d > dist[u]:\n        continue", fr: 'On sort le plus proche. Si une meilleure distance a été trouvée depuis, cette entrée est périmée : on l’ignore.', en: 'We take the nearest. If a better distance has been found since, this entry is stale: we skip it.' }
+      - { code: "    for v, w in g[u].items():\n        if d + w < dist.get(v, 10**9):\n            dist[v] = d + w\n            heapq.heappush(tas, (d + w, v))", fr: 'Pour chaque voisin, on regarde si passer par `u` est moins cher ; si oui, on met à jour et on pousse.', en: 'For each neighbour, we check whether going through `u` is cheaper; if so, we update and push.' }
       - { code: 'print(sorted(dist.items()))', fr: "Distances depuis A : B = 3 (via C), C = 1, D = 4. On affiche `[('A', 0), ('B', 3), ('C', 1), ('D', 4)]`.", en: "Distances from A: B = 3 (via C), C = 1, D = 4. We display `[('A', 0), ('B', 3), ('C', 1), ('D', 4)]`." }
     verif: |-
       import heapq

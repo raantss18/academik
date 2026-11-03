@@ -3,6 +3,10 @@ module: 4
 duree_min: 9
 titre: { fr: 'Systèmes linéaires', en: 'Linear systems' }
 ia: { fr: 'Kintana retrouve des poids à partir de scores et détecte des contraintes incompatibles.', en: 'Kintana recovers weights from scores and detects incompatible constraints.' }
+objectifs:
+  - { fr: 'résoudre un système par élimination', en: 'solve a system by elimination' }
+  - { fr: 'vérifier une solution dans chaque équation', en: 'check a solution in every equation' }
+  - { fr: 'reconnaître zéro, une ou une infinité de solutions', en: 'recognise zero, one or infinitely many solutions' }
 sources:
   - { titre: 'Gilbert Strang — MIT 18.06, élimination et solutions de Ax=b', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
 cartes:

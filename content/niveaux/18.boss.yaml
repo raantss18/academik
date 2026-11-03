@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana accélère ses fonctions de mille fois sans changer leurs résultats.
   en: Kintana speeds up her functions a thousandfold without changing their results.
+objectifs:
+  - { fr: 'choisir un meilleur algorithme d''abord', en: 'choose a better algorithm first' }
+  - { fr: 'garder la version lente comme oracle', en: 'keep the slow version as an oracle' }
+  - { fr: 'mesurer avant et après', en: 'measure before and after' }
 sources:
 - titre: 'Python — documentation : Time complexity'
   url: https://wiki.python.org/moin/TimeComplexity

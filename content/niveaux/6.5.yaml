@@ -7,6 +7,10 @@ titre:
 ia:
   fr: "Kintana mesure à quel point elle hésite sur le mot suivant (entropie)."
   en: "Kintana measures how much she hesitates about the next word (entropy)."
+objectifs:
+  - { fr: 'mesurer la surprise en bits', en: 'measure surprise in bits' }
+  - { fr: 'calculer une entropie', en: 'compute an entropy' }
+  - { fr: 'préciser la base du logarithme', en: 'state the base of the logarithm' }
 sources:
   - titre: Zhang, Lipton, Li et Smola — Dive into Deep Learning, Information Theory
     url: https://en.d2l.ai/chapter_appendix-mathematics-for-deep-learning/information-theory.html

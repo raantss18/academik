@@ -4,6 +4,10 @@ module: 9
 duree_min: 19
 titre: { fr: 'Arbres de décision', en: 'Decision trees' }
 ia: { fr: 'Kintana décide en posant une suite de questions simples, et apprend elle-même quelles questions poser.', en: 'Kintana decides by asking a series of simple questions, and learns for herself which questions to ask.' }
+objectifs:
+  - { fr: 'mesurer un mélange par le Gini', en: 'measure impurity with Gini' }
+  - { fr: 'choisir la meilleure coupure', en: 'choose the best split' }
+  - { fr: 'construire un arbre de profondeur bornée', en: 'build a tree of bounded depth' }
 sources:
   - { titre: 'scikit-learn — Decision Trees', url: 'https://scikit-learn.org/stable/modules/tree.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
   - { titre: 'Stanford CS229 — Machine Learning (arbres de décision)', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
@@ -81,10 +85,10 @@ cartes:
     titre: { fr: 'Évaluer une coupure', en: 'Evaluating a split' }
     lang: python
     etapes:
-      - { code: 'def gini(e):\n    if not e:\n        return 0\n    p = sum(e) / len(e)\n    return 1 - p * p - (1 - p) ** 2', fr: 'L’impureté de Gini d’une liste de 0 et de 1.', en: 'The Gini impurity of a list of 0s and 1s.' }
-      - { code: 'xs = [1, 2, 3, 4, 5, 6]\nys = [0, 0, 0, 1, 1, 1]\ns = 2.5', fr: 'Les données du niveau 9.3, et la coupure candidate $x\leq2{,}5$.', en: 'The data from level 9.3, and the candidate split $x\leq2.5$.' }
-      - { code: 'gauche = [y for x, y in zip(xs, ys) if x <= s]\ndroite = [y for x, y in zip(xs, ys) if x > s]', fr: 'Les étiquettes à gauche (`0, 0`) et à droite (`0, 1, 1, 1`).', en: 'The labels on the left (`0, 0`) and on the right (`0, 1, 1, 1`).' }
-      - { code: 'score = (len(gauche) * gini(gauche) + len(droite) * gini(droite)) / len(ys)\nprint(round(score, 3))', fr: 'Gauche : Gini 0 ; droite : 0,375 sur 4 exemples. Score pondéré : $4\times0{,}375/6=0{,}25$.', en: 'Left: Gini 0; right: 0.375 over 4 examples. Weighted score: $4\times0.375/6=0.25$.' }
+      - { code: "def gini(e):\n    if not e:\n        return 0\n    p = sum(e) / len(e)\n    return 1 - p * p - (1 - p) ** 2", fr: 'L’impureté de Gini d’une liste de 0 et de 1.', en: 'The Gini impurity of a list of 0s and 1s.' }
+      - { code: "xs = [1, 2, 3, 4, 5, 6]\nys = [0, 0, 0, 1, 1, 1]\ns = 2.5", fr: 'Les données du niveau 9.3, et la coupure candidate $x\leq2{,}5$.', en: 'The data from level 9.3, and the candidate split $x\leq2.5$.' }
+      - { code: "gauche = [y for x, y in zip(xs, ys) if x <= s]\ndroite = [y for x, y in zip(xs, ys) if x > s]", fr: 'Les étiquettes à gauche (`0, 0`) et à droite (`0, 1, 1, 1`).', en: 'The labels on the left (`0, 0`) and on the right (`0, 1, 1, 1`).' }
+      - { code: "score = (len(gauche) * gini(gauche) + len(droite) * gini(droite)) / len(ys)\nprint(round(score, 3))", fr: 'Gauche : Gini 0 ; droite : 0,375 sur 4 exemples. Score pondéré : $4\times0{,}375/6=0{,}25$.', en: 'Left: Gini 0; right: 0.375 over 4 examples. Weighted score: $4\times0.375/6=0.25$.' }
     verif: |-
       def gini(e):
           if not e:

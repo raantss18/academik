@@ -3,6 +3,10 @@ module: 4
 duree_min: 10
 titre: { fr: 'Valeurs propres et SVD', en: 'Eigenvalues and SVD' }
 ia: { fr: 'Kintana découvre comment réduire les dimensions de ses vecteurs, au prix d’une perte d’information.', en: 'Kintana discovers how to reduce vector dimensions at the cost of losing information.' }
+objectifs:
+  - { fr: 'tester une direction propre', en: 'test an eigenvector' }
+  - { fr: 'lire une valeur propre', en: 'read an eigenvalue' }
+  - { fr: 'comprendre la compression par SVD', en: 'understand compression by SVD' }
 sources:
   - { titre: 'Gilbert Strang — MIT 18.06, valeurs propres et SVD', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
   - { titre: 'NumPy — définition de la SVD (consultation uniquement)', url: 'https://numpy.org/doc/stable/reference/generated/numpy.linalg.svd.html', licence: 'BSD-3-Clause' }

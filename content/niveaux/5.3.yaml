@@ -3,6 +3,10 @@ module: 5
 duree_min: 9
 titre: { fr: 'Gradient et dérivées partielles', en: 'Gradient and partial derivatives' }
 ia: { fr: 'Kintana mesure la sensibilité de son erreur à plusieurs paramètres.', en: 'Kintana measures how sensitive its error is to several parameters.' }
+objectifs:
+  - { fr: 'calculer une dérivée partielle', en: 'compute a partial derivative' }
+  - { fr: 'former le gradient', en: 'form the gradient' }
+  - { fr: 'trouver une direction de baisse', en: 'find a descent direction' }
 sources:
   - { titre: 'MIT OCW — 18.02SC, Partial Derivatives', url: 'https://ocw.mit.edu/courses/18-02sc-multivariable-calculus-fall-2010/pages/2.-partial-derivatives/', licence: 'CC BY-NC-SA 4.0 ; éléments tiers exclus' }
 cartes:

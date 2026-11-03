@@ -3,6 +3,10 @@ module: 3
 duree_min: 12
 titre: { fr: 'Complexité', en: 'Complexity' }
 ia: { fr: 'Kintana estime comment le coût de recherche grandit avec ses documents.', en: 'Kintana estimates how search cost grows with its documents.' }
+objectifs:
+  - { fr: 'compter les opérations d''un algorithme', en: 'count the operations of an algorithm' }
+  - { fr: 'comparer des croissances comme n et n²', en: 'compare growth rates like n and n²' }
+  - { fr: 'anticiper le coût d''une recherche', en: 'anticipate the cost of a search' }
 sources:
   - { titre: 'Pat Morin — Open Data Structures, Mathematical Background', url: 'https://opendatastructures.org/ods-python/1_3_Mathematical_Background.html', licence: 'CC BY 2.5 CA ; explications et exercices originaux' }
 cartes:

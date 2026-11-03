@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana retrouve les passages qui contiennent les mots rares de ta question.
   en: Kintana finds the passages that contain the rare words of your question.
+objectifs:
+  - { fr: 'calculer un idf', en: 'compute an idf' }
+  - { fr: 'classer des passages avec BM25', en: 'rank passages with BM25' }
+  - { fr: 'tokeniser requête et passages de la même façon', en: 'tokenise query and passages the same way' }
 sources:
 - titre: 'Robertson, Zaragoza — The Probabilistic Relevance Framework: BM25 and Beyond'
   url: https://doi.org/10.1561/1500000019

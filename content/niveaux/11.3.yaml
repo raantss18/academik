@@ -4,6 +4,10 @@ module: 11
 duree_min: 16
 titre: { fr: 'Rétropropagation', en: 'Backpropagation' }
 ia: { fr: 'Kintana calcule d’un seul coup l’influence de chaque réglage sur l’erreur, en parcourant le graphe à l’envers.', en: 'Kintana computes in one go the influence of each setting on the error, by walking the graph backwards.' }
+objectifs:
+  - { fr: 'propager les pentes de la sortie vers l''entrée', en: 'propagate slopes from output to input' }
+  - { fr: 'additionner les pentes d''un nœud partagé', en: 'add up the slopes of a shared node' }
+  - { fr: 'vérifier par différence finie', en: 'check with a finite difference' }
 sources:
   - { titre: 'Goodfellow, Bengio, Courville — Deep Learning, section 6.5 (rétropropagation)', url: 'https://www.deeplearningbook.org/contents/mlp.html', licence: 'Lecture en ligne ; texte non repris' }
   - { titre: 'A. Karpathy — Neural Networks: Zero to Hero (micrograd)', url: 'https://karpathy.ai/zero-to-hero.html', licence: 'Cours en ligne ; contenu cité, code non repris' }
@@ -41,8 +45,8 @@ cartes:
     titre: { fr: 'Vérifier avec une mesure', en: 'Checking with a measurement' }
     lang: python
     etapes:
-      - { code: 'f = lambda a, b, c: a * b + c\neps = 1e-6', fr: 'La formule, et un tout petit pas.', en: 'The formula, and a tiny step.' }
-      - { code: 'da = (f(2 + eps, 3, 4) - f(2 - eps, 3, 4)) / (2 * eps)\ndb = (f(2, 3 + eps, 4) - f(2, 3 - eps, 4)) / (2 * eps)', fr: 'On mesure la pente par différence centrée (niveau 5.7), pour $a$ puis pour $b$.', en: 'We measure the slope by central difference (level 5.7), for $a$ then for $b$.' }
+      - { code: "f = lambda a, b, c: a * b + c\neps = 1e-6", fr: 'La formule, et un tout petit pas.', en: 'The formula, and a tiny step.' }
+      - { code: "da = (f(2 + eps, 3, 4) - f(2 - eps, 3, 4)) / (2 * eps)\ndb = (f(2, 3 + eps, 4) - f(2, 3 - eps, 4)) / (2 * eps)", fr: 'On mesure la pente par différence centrée (niveau 5.7), pour $a$ puis pour $b$.', en: 'We measure the slope by central difference (level 5.7), for $a$ then for $b$.' }
       - { code: 'print(round(da, 3), round(db, 3))', fr: 'On affiche `3.0 2.0` : exactement ce que la rétropropagation donne, $b$ et $a$.', en: 'We display `3.0 2.0`: exactly what backpropagation gives, $b$ and $a$.' }
     verif: |-
       f = lambda a, b, c: a * b + c

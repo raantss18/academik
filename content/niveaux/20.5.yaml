@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana met en service une version par étapes, mesure son équité et dit honnêtement ses limites.
   en: Kintana puts a version into service in stages, measures its fairness and honestly states its limits.
+objectifs:
+  - { fr: 'déployer par paliers avec retour arrière', en: 'deploy in stages with rollback' }
+  - { fr: 'mesurer l''équité par groupe', en: 'measure fairness by group' }
+  - { fr: 'minimiser les données personnelles', en: 'minimise personal data' }
 sources:
 - titre: Mitchell et al. — Model Cards for Model Reporting (2019)
   url: https://arxiv.org/abs/1810.03993

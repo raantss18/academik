@@ -3,6 +3,10 @@ module: 4
 duree_min: 10
 titre: { fr: 'Matrices', en: 'Matrices' }
 ia: { fr: 'Kintana range les textes en lignes et calcule plusieurs scores en une opération matricielle.', en: 'Kintana stores texts as rows and computes several scores in one matrix operation.' }
+objectifs:
+  - { fr: 'lire les dimensions d''une matrice', en: 'read the dimensions of a matrix' }
+  - { fr: 'multiplier ligne par colonne', en: 'multiply row by column' }
+  - { fr: 'respecter l''ordre des transformations', en: 'respect the order of transformations' }
 sources:
   - { titre: 'Gilbert Strang — MIT 18.06, multiplication matricielle', url: 'https://ocw.mit.edu/courses/18-06-linear-algebra-spring-2010/', licence: 'CC BY-NC-SA 4.0 ; manuel et éléments tiers exclus' }
 cartes:

@@ -4,6 +4,10 @@ module: 9
 duree_min: 20
 titre: { fr: 'Mesurer une classification', en: 'Measuring a classification' }
 ia: { fr: 'Kintana mesure honnêtement ses réponses : combien de bonnes, combien de fausses alertes, combien d’oublis.', en: 'Kintana honestly measures her answers: how many right, how many false alarms, how many misses.' }
+objectifs:
+  - { fr: 'remplir une matrice de confusion', en: 'fill a confusion matrix' }
+  - { fr: 'calculer précision, rappel et F1', en: 'compute precision, recall and F1' }
+  - { fr: 'choisir un seuil selon le coût des erreurs', en: 'choose a threshold by the cost of errors' }
 sources:
   - { titre: 'scikit-learn — Metrics and scoring', url: 'https://scikit-learn.org/stable/modules/model_evaluation.html', licence: 'BSD-3-Clause (documentation officielle, citée)' }
   - { titre: 'Stanford CS229 — Machine Learning', url: 'https://cs229.stanford.edu/', licence: 'Cours public ; notes citées, texte non repris' }
@@ -35,9 +39,9 @@ cartes:
     titre: { fr: 'Remplir la matrice', en: 'Filling the matrix' }
     lang: python
     etapes:
-      - { code: 'vrais   = [1, 1, 1, 0, 0, 0, 0, 0]\npredits = [1, 1, 0, 1, 0, 0, 0, 0]', fr: 'Huit messages : `1` signifie « spam ». Le modèle se trompe deux fois.', en: 'Eight messages: `1` means “spam”. The model is wrong twice.' }
-      - { code: 'vp = sum(1 for v, p in zip(vrais, predits) if v == 1 and p == 1)\nfn = sum(1 for v, p in zip(vrais, predits) if v == 1 and p == 0)', fr: 'On compte les spams trouvés (VP) puis ceux oubliés (FN).', en: 'We count the spams found (TP) then those missed (FN).' }
-      - { code: 'fp = sum(1 for v, p in zip(vrais, predits) if v == 0 and p == 1)\nvn = sum(1 for v, p in zip(vrais, predits) if v == 0 and p == 0)', fr: 'Puis les fausses alertes (FP) et les messages normaux bien écartés (VN).', en: 'Then the false alarms (FP) and the normal messages correctly dismissed (TN).' }
+      - { code: "vrais   = [1, 1, 1, 0, 0, 0, 0, 0]\npredits = [1, 1, 0, 1, 0, 0, 0, 0]", fr: 'Huit messages : `1` signifie « spam ». Le modèle se trompe deux fois.', en: 'Eight messages: `1` means “spam”. The model is wrong twice.' }
+      - { code: "vp = sum(1 for v, p in zip(vrais, predits) if v == 1 and p == 1)\nfn = sum(1 for v, p in zip(vrais, predits) if v == 1 and p == 0)", fr: 'On compte les spams trouvés (VP) puis ceux oubliés (FN).', en: 'We count the spams found (TP) then those missed (FN).' }
+      - { code: "fp = sum(1 for v, p in zip(vrais, predits) if v == 0 and p == 1)\nvn = sum(1 for v, p in zip(vrais, predits) if v == 0 and p == 0)", fr: 'Puis les fausses alertes (FP) et les messages normaux bien écartés (VN).', en: 'Then the false alarms (FP) and the normal messages correctly dismissed (TN).' }
       - { code: 'print(vp, fn, fp, vn)', fr: 'On affiche `2 1 1 4` : deux spams trouvés, un oublié, une fausse alerte, quatre messages normaux bien classés.', en: 'We display `2 1 1 4`: two spams found, one missed, one false alarm, four normal messages correctly classified.' }
     verif: |-
       vrais   = [1, 1, 1, 0, 0, 0, 0, 0]

@@ -8,6 +8,10 @@ titre:
 ia:
   fr: Kintana fixe tout ce qui varie pour qu’un résultat puisse être refait par un autre.
   en: Kintana fixes everything that varies so that a result can be redone by someone else.
+objectifs:
+  - { fr: 'fixer une graine locale', en: 'fix a local seed' }
+  - { fr: 'épingler les dépendances', en: 'pin the dependencies' }
+  - { fr: 'calculer l''empreinte d''une configuration', en: 'compute the fingerprint of a configuration' }
 sources:
 - titre: Pineau et al. — Improving Reproducibility in Machine Learning Research (NeurIPS 2019)
   url: https://arxiv.org/abs/2003.12206
