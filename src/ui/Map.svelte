@@ -9,7 +9,9 @@
   import { unlockedLevels, nextLevel } from '../engine/unlock';
   import { resume } from '../lib/resume';
   import City from './City.svelte';
-  import { buildDistricts } from '../lib/city/index';
+  import { buildDistricts, MODULE_COLORS, banniere } from '../lib/city/index';
+  /** Bannière d'un module : fond assombri à 82 % et texte blanc, ou couleur d'origine et texte sombre si le blanc n'atteint pas 4,5:1 (AA, E50). */
+  const coul = (id: number) => banniere(MODULE_COLORS[id % MODULE_COLORS.length]);
   import { dueCards } from '../lib/review';
 
   let { onplay, onrules, onreview }: { onplay: (id: string) => void; onrules: () => void; onreview: () => void } = $props();
@@ -65,14 +67,15 @@
 <div class="wrap list">
 
   {#each ready as m}
+    {@const b = coul(m.id)}
     <section class="mod">
-      <h2>{m.id} · {i18n.t(m.titre)}</h2>
+      <h2 class="banniere" style="--c:{b.fond};--i:{b.encre}">{m.id} · {i18n.t(m.titre)}</h2>
       <ul>
         {#each m.niveaux as n}
           {@const has = !!content.levels[n.id]} {@const isOpen = open.has(n.id)} {@const s = scores[n.id]}
           <li>
             <button class="lv" class:cur={n.id === current} disabled={!has || !isOpen} onclick={() => onplay(n.id)}>
-              <span class="id">{n.boss ? '👑' : n.id}</span>
+              <span class="id medaillon" class:fer={!has || !isOpen} class:or={s >= 0.5}>{n.boss ? '👑' : n.id}</span>
               <span class="ti">{i18n.t(has ? content.levels[n.id].titre : (n.titre as { fr: string }))}</span>
               <span class="st">
                 {#if !has}{ui('soon')}{:else if !isOpen}🔒{:else if s > 0}<span class="stars">{'★'.repeat(stars(s))}<span class="off">{'★'.repeat(3 - stars(s))}</span></span>{:else}{ui('play')}{/if}
@@ -112,7 +115,7 @@
   .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }
   .hud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
   /* Téléphone : l'en-tête tient sur une ligne ; les mots « jours » et « XP » restent dans l'étiquette lue par les lecteurs d'écran. */
-  @media (max-width: 440px) { .hud { flex-wrap: nowrap; gap: 6px; } .ruban { margin: 0 10px; padding: 0 12px; gap: 8px; } .lbl { display: none; } .chip { padding: 0 10px; white-space: nowrap; flex-shrink: 0; } }
+  @media (max-width: 440px) { .hud { flex-wrap: nowrap; gap: 6px; } .ruban { margin: 0 10px; padding: 0 12px; gap: 8px; } .hud :global(.menu .logo) { padding: 0 8px 0 4px; font-size: 1.02rem; gap: 6px; } .lbl { display: none; } .chip { padding: 0 10px; white-space: nowrap; flex-shrink: 0; } }
   .ruban { position: relative; z-index: 0; display: inline-flex; align-items: center; gap: 10px; height: 36px; padding: 0 16px; margin: 0 12px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
     background: linear-gradient(#ffe08a, #e8b24a 55%, #c98a1f); color: #3a2205; font-weight: 900; font-size: .95rem; text-shadow: 0 1px 0 rgb(255 255 255 / .45);
     box-shadow: 0 2px 0 #8a5a12, 0 6px 14px rgb(0 0 0 / .35), inset 0 1px 0 rgb(255 255 255 / .6); }
@@ -121,7 +124,14 @@
   .ruban .sep { width: 1px; height: 18px; background: rgb(58 34 5 / .35); }
   .chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; font-size: .9rem; }
   .go { width: 100%; margin: 6px 0; } .review { width: 100%; margin: 6px 0; border: 2px solid var(--c-accent); background: var(--c-accent-soft); } .small { font-size: .85rem; }
-  .mod { margin: 18px 0; } .mod h2 { font-size: 1.05rem; margin: 0 0 8px; } ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .mod { margin: 22px 0; } .mod h2 { font-size: 1.05rem; margin: 0 0 8px; }
+  /* Bannière de module et médaillons (refonte immersive) : le même langage que la carte. */
+  .banniere { position: relative; display: inline-block; margin: 0 0 10px 12px !important; padding: 5px 16px; border-radius: 3px; background: var(--c); color: var(--i); font-weight: 800; box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 60%, #000), 0 4px 10px rgb(0 0 0 / .2); }
+  .banniere::before, .banniere::after { content: ''; position: absolute; top: 6px; width: 14px; height: 100%; background: color-mix(in srgb, var(--c) 62%, #000); z-index: -1; }
+  .banniere::before { left: -11px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 40% 50%); } .banniere::after { right: -11px; clip-path: polygon(0 0, 100% 0, 60% 50%, 100% 100%, 0 100%); }
+  .mod { position: relative; z-index: 0; }
+  .medaillon { display: inline-grid; place-items: center; width: 38px; height: 38px; min-width: 38px !important; border-radius: 50%; font-size: .78rem; color: #fff !important; background: radial-gradient(circle at 50% 35%, #4a4f6e, #262a42); border: 2.5px solid #d8b66a; box-shadow: inset 0 1px 0 rgb(255 255 255 / .2); }
+  .medaillon.or { border-color: #f0cf7c; background: radial-gradient(circle at 50% 35%, #5a4a22, #2b2208); } .medaillon.fer { border-color: #8a90a8; color: #c9cde0 !important; } ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
   .lv { width: 100%; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 14px; border-radius: 16px; border: 1px solid var(--c-border); background: var(--c-surface); text-align: left; cursor: pointer; }
   .lv:disabled { opacity: .55; cursor: default; } .lv.cur { border: 2px solid var(--c-primary); background: var(--c-primary-soft); }
   .id { font-weight: 800; min-width: 2.6em; color: var(--c-text-muted); } .ti { flex: 1; font-weight: 600; } .st { font-size: .85rem; color: var(--c-text-muted); } .off { opacity: .25; }

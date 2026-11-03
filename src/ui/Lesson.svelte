@@ -138,7 +138,7 @@
     </nav>
 
     {#if idx === 0 && !level.review && level.objectifs?.length}
-      <section class="goals" aria-label={ui('goals_title')}><strong>{ui('goals_title')}</strong>
+      <section class="goals briefing" aria-label={ui('goals_title')}><p class="onglet" aria-hidden="true">{i18n.lang === 'fr' ? 'Briefing de mission' : 'Mission briefing'}</p><strong>{ui('goals_title')}</strong>
         <ul>{#each level.objectifs as o}<li>{@html md(t(o))}</li>{/each}</ul></section>
     {/if}
     <article class="card" aria-live="polite" use:typeset={[idx, step, !!result, showHint, i18n.lang]}>
@@ -308,4 +308,9 @@
   .rapport .stars { color: #d49a12; font-size: 1.6rem; letter-spacing: 4px; text-shadow: 0 1px 0 #8a5a12; } .rapport .stars .off { color: #b9a274; opacity: .5; }
   .rapport .foot { flex-wrap: wrap; } .rapport .foot .btn { flex: 1 1 140px; }
   .rapport .foot .btn:not(.primary) { background: rgb(255 255 255 / .6); color: #2b2418; border: 1px solid #cdb98c; }
+
+  /* Briefing de mission (début de leçon) : le même papier que le dossier et le rapport. */
+  .briefing { position: relative; margin-top: 16px; padding-top: 20px; color: #2b2418; border: 1px solid #cdb98c; border-radius: 8px; background: linear-gradient(160deg, #f6eed8, #e9dcba); box-shadow: 0 6px 16px rgb(0 0 0 / .22); }
+  .briefing .onglet { position: absolute; top: -11px; left: 14px; margin: 0; padding: 3px 12px; border-radius: 5px; background: linear-gradient(#f2b543, #d9902a); color: #3a2205; font-weight: 900; font-size: .72rem; letter-spacing: .8px; text-transform: uppercase; }
+  .briefing :global(code) { background: rgb(80 60 30 / .1); color: #3b2c14; }
 </style>

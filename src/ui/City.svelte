@@ -50,7 +50,7 @@
     const svg = box?.querySelector<SVGElement>('svg'); if (!live || !box || !svg) return;
     const { nz, px, py, ox, oy } = live, f = nz / z; live = null; clearTimeout(wheelTimer);
     svg.style.transform = ''; svg.style.transformOrigin = ''; svg.style.willChange = '';
-    z = nz; svg.style.width = `${nz * 100}%`; svg.style.minWidth = `${900 * nz}px`;
+    z = nz; svg.style.width = `${nz * 100}%`; svg.style.minWidth = `${BASE * nz}px`;
     box.scrollLeft = ox * f - px; box.scrollTop = oy * f - py;
   }
   const zoomTo = (nz: number, fx?: number, fy?: number) => { preview(nz, fx, fy); commit(); };
@@ -72,6 +72,8 @@
   // ~17 000 formes du SVG à chaque image, même sans personne devant l'écran. Elles tournent pendant qu'on touche la carte, puis se figent
   // après REPOS ms sans geste (l'image reste la même, seule l'animation s'arrête) ; un geste, un défilement ou une touche les relance.
   const REPOS = 8000;
+  /** Largeur de base de la carte (px) : 1 500 px ≈ 78 % de la taille réelle. À 900 px, les repères faisaient 15 px, la zone tactile 28 px et le texte des bannières 6 px (critique de design, E50). */
+  const BASE = 1500;
   let still = $state(false), repos = 0;
   function reveil() {
     clearTimeout(repos);
@@ -147,7 +149,7 @@
 
 <style>
   .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / .22) transparent; background: radial-gradient(120% 50% at 50% 0%, #3b2d5c, #18214a 45%, #0b1026 100%); }
-  .city :global(svg) { display: block; min-width: 900px; width: 100%; height: auto; }
+  .city :global(svg) { display: block; min-width: 1500px; width: 100%; height: auto; }   /* = BASE (E50) */
   .zoom { position: fixed; right: calc(var(--sar) + 12px); top: 50%; z-index: 6; display: grid; gap: 6px; transform: translateY(-50%); }
   .zoom button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .22); background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); color: #f2f4ff; font-size: 1.4rem; line-height: 1; cursor: pointer; } .zoom button:disabled { opacity: .35; }
   .msg { color: #cfd3ec; text-align: center; padding: 40px 16px; }

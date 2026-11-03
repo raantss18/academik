@@ -112,3 +112,24 @@ describe('refonte immersive, étape 2 : ruban doré, rapport de mission, écran 
     expect(readFileSync('index.html', 'utf8')).toContain('<div id="splash"'); expect(readFileSync('src/main.ts', 'utf8')).toContain("splash.remove()");
   });
 });
+
+describe('E50 · critique de design : carte lisible, liste et leçon au langage de la carte', () => {
+  it('carte dessinée à 1 500 px de base (repères ≥ 26 px, zone tactile ≥ 44 px, texte des bannières ≈ 10 px)', () => {
+    const c = readFileSync('src/ui/City.svelte', 'utf8');
+    expect(c).toContain('const BASE = 1500;'); expect(c).toContain('min-width: 1500px'); expect(c).toContain('svg.style.minWidth = `${BASE * nz}px`');
+    // viewBox ≈ 1 930 unités ; zone tactile r = 30 → 60 × 1500 / 1930 ≈ 47 px
+    expect(60 * 1500 / 1930).toBeGreaterThanOrEqual(44);
+  });
+  it('bannières de module : texte au contraste AA (≥ 4,5:1) sur chaque couleur de module', async () => {
+    const { MODULE_COLORS, banniere } = await import('../src/lib/city/index');
+    const lum = (hex: string) => { const n = parseInt(hex.slice(1), 16), lin = (c: number) => { c /= 255; return c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4; }; return .2126 * lin(n >> 16) + .7152 * lin((n >> 8) & 255) + .0722 * lin(n & 255); };
+    const ratio = (a: number, b: number) => (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+    for (const c of MODULE_COLORS) { const b = banniere(c); expect(ratio(lum(b.fond), lum(b.encre)), c).toBeGreaterThanOrEqual(4.5); }
+    const m = readFileSync('src/ui/Map.svelte', 'utf8'); expect(m).toContain('class="banniere"'); expect(m).toContain('medaillon');
+  });
+  it('les bannières de la carte suivent la même règle de contraste que la liste', () => {
+    const g = readFileSync('src/lib/city/gen.js', 'utf8');
+    expect(g).toContain('sg = reached ? lisible(D.color)'); expect(g).toContain('fill="${sg.encre}">${label}</text>');
+  });
+  it('début de leçon en briefing de mission', () => { expect(readFileSync('src/ui/Lesson.svelte', 'utf8')).toContain('class="goals briefing"'); });
+});

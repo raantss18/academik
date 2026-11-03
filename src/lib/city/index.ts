@@ -33,6 +33,16 @@ export function difficulte(module: number, boss: boolean, fr: boolean): string {
   return noms[Math.min(3, palier + (boss ? 1 : 0))];
 }
 
+/** Couleurs lisibles d'une bannière de module (texte au contraste AA ≥ 4,5:1, E50). */
+export function banniere(hex: string): { fond: string; encre: string } {
+  const n = parseInt(hex.slice(1), 16), rgb = [n >> 16, (n >> 8) & 255, n & 255];
+  const lin = (c: number) => { c /= 255; return c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4; };
+  const lum = (v: number[]) => .2126 * lin(v[0]) + .7152 * lin(v[1]) + .0722 * lin(v[2]);
+  const sombre = rgb.map(v => Math.round(v * .82)), ratio = (a: number, b: number) => (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+  if (ratio(lum(sombre), 1) >= 4.5) return { fond: '#' + sombre.map(v => v.toString(16).padStart(2, '0')).join(''), encre: '#ffffff' };
+  return { fond: hex, encre: '#1d1608' };
+}
+
 export interface CityInput {
   modules: CursusModule[]; levels: Record<string, Level>; scores: Record<string, number>;
   open: ReadonlySet<string>; current: string | null | undefined; t: (x: { fr: string; en?: string }) => string; fr: boolean;
