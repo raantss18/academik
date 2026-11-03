@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 38,
-  "version": "0.3.35",
+  "build": 39,
+  "version": "0.3.36",
   "notes": {
-   "fr": "La carte devient un monde fantastique : de grandes îles flottantes sur des montagnes renversées, reliées par des ponts suspendus ou de pierre, avec des pics, des cascades et des îlots déserts. Sur chaque île, un chemin passe par chaque niveau, et la partie parcourue brille en or. Chaque niveau s'ouvre comme un dossier de mission et se termine par un rapport ; en haut, ta carte de joueur et celle de Kintana encadrent un ruban doré. L'application économise aussi la batterie et la mémoire.",
-   "en": "The map becomes a fantasy world: large floating islands on upside-down mountains, linked by rope or stone bridges, with peaks, waterfalls and uninhabited islets. On each island, a path runs through every level, and the part you have travelled glows gold. Each level opens as a mission file and ends with a report; at the top, your player card and Kintana's frame a golden ribbon. The app also saves battery and memory."
+   "fr": "L'accueil devient plus fluide et ne clignote plus : la carte n'est dessinée qu'une fois, et le retour sur l'accueil est immédiat. Les îles prennent du relief : un haut plateau en falaise coiffé de pics, une rivière qui en descend, traverse la ville sous des ponts et tombe en cascade du bord de l'île ; chaque îlot a son plateau ou son pic.",
+   "en": "The home screen is smoother and no longer flickers: the map is drawn only once, and returning home is instant. Islands gain relief: a cliff-edged highland topped with peaks, and a river that flows down from it, runs under bridges through the town and falls as a waterfall from the island's edge; every islet has its own highland or peak."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.35/academik-0.3.35.apk",
-    "sha256": "599d426d9247cc9948997cc1e8fc1de816bd6534b245d8ad7f1d5b4919e2031b",
-    "bytes": 11553050
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.36/academik-0.3.36.apk",
+    "sha256": "4d91da4b7f278040364cead7e368678530303c2a72b35077fb8c5d4ab43947a5",
+    "bytes": 11555246
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.35/academik-0.3.35-x86_64.AppImage",
-    "sha256": "766abe89142f41190167c8cf4df41808bb556c2793441eadc780884103975dce",
-    "bytes": 115993080
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.36/academik-0.3.36-x86_64.AppImage",
+    "sha256": "2ee57ffc17fc09f3780d7319e398df2bccba3db4a1ee724d15e9b1d8a1a96a9e",
+    "bytes": 115997176
    }
   }
  },
  "history": [
+  {
+   "build": 38,
+   "version": "0.3.35",
+   "notes": {
+    "fr": "La carte devient un monde fantastique : de grandes îles flottantes sur des montagnes renversées, reliées par des ponts suspendus ou de pierre, avec des pics, des cascades et des îlots déserts. Sur chaque île, un chemin passe par chaque niveau, et la partie parcourue brille en or. Chaque niveau s'ouvre comme un dossier de mission et se termine par un rapport ; en haut, ta carte de joueur et celle de Kintana encadrent un ruban doré. L'application économise aussi la batterie et la mémoire.",
+    "en": "The map becomes a fantasy world: large floating islands on upside-down mountains, linked by rope or stone bridges, with peaks, waterfalls and uninhabited islets. On each island, a path runs through every level, and the part you have travelled glows gold. Each level opens as a mission file and ends with a report; at the top, your player card and Kintana's frame a golden ribbon. The app also saves battery and memory."
+   }
+  },
   {
    "build": 37,
    "version": "0.3.34",
@@ -252,14 +260,6 @@
    "notes": {
     "fr": "Les mises à jour de l'application se téléchargent et s'installent maintenant toutes seules, dans l'app, sans passer par GitHub. Les réponses ont toutes la même présentation.",
     "en": "App updates now download and install by themselves, inside the app, without going through GitHub. All answers now look the same."
-   }
-  },
-  {
-   "build": 6,
-   "version": "0.3.3",
-   "notes": {
-    "fr": "La nouvelle version de l'application est maintenant annoncée même après avoir fermé et rouvert l'app, avec les nouveautés des versions que tu as sautées. Les niveaux des modules 4 et 5 arrivent tout seuls.",
-    "en": "The new app version is now announced even after closing and reopening the app, with what's new in the versions you skipped. Levels for modules 4 and 5 arrive by themselves."
    }
   }
  ]
