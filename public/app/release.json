@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 39,
-  "version": "0.3.36",
+  "build": 40,
+  "version": "0.3.37",
   "notes": {
-   "fr": "L'accueil devient plus fluide et ne clignote plus : la carte n'est dessinée qu'une fois, et le retour sur l'accueil est immédiat. Les îles prennent du relief : un haut plateau en falaise coiffé de pics, une rivière qui en descend, traverse la ville sous des ponts et tombe en cascade du bord de l'île ; chaque îlot a son plateau ou son pic.",
-   "en": "The home screen is smoother and no longer flickers: the map is drawn only once, and returning home is instant. Islands gain relief: a cliff-edged highland topped with peaks, and a river that flows down from it, runs under bridges through the town and falls as a waterfall from the island's edge; every islet has its own highland or peak."
+   "fr": "Le paysage de l'accueil réapparaît : depuis la mise à jour précédente, l'application l'empêchait de s'afficher. L'écran de démarrage est aussi plus sobre, avec le logo seul.",
+   "en": "The home-screen landscape is back: since the previous update, the app was blocking it from showing. The start screen is also simpler, with just the logo."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.36/academik-0.3.36.apk",
-    "sha256": "4d91da4b7f278040364cead7e368678530303c2a72b35077fb8c5d4ab43947a5",
-    "bytes": 11555246
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.37/academik-0.3.37.apk",
+    "sha256": "ee32161242413bb8661324cfc539a150b1b57d6d87afe66383d649af8a008104",
+    "bytes": 11555198
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.36/academik-0.3.36-x86_64.AppImage",
-    "sha256": "2ee57ffc17fc09f3780d7319e398df2bccba3db4a1ee724d15e9b1d8a1a96a9e",
-    "bytes": 115997176
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.37/academik-0.3.37-x86_64.AppImage",
+    "sha256": "af32251cb39901cab4aa4f35a7e006e8b93a5e8ca1bfec2fbc393036ed49c692",
+    "bytes": 116001272
    }
   }
  },
  "history": [
+  {
+   "build": 39,
+   "version": "0.3.36",
+   "notes": {
+    "fr": "L'accueil devient plus fluide et ne clignote plus : la carte n'est dessinée qu'une fois, et le retour sur l'accueil est immédiat. Les îles prennent du relief : un haut plateau en falaise coiffé de pics, une rivière qui en descend, traverse la ville sous des ponts et tombe en cascade du bord de l'île ; chaque îlot a son plateau ou son pic.",
+    "en": "The home screen is smoother and no longer flickers: the map is drawn only once, and returning home is instant. Islands gain relief: a cliff-edged highland topped with peaks, and a river that flows down from it, runs under bridges through the town and falls as a waterfall from the island's edge; every islet has its own highland or peak."
+   }
+  },
   {
    "build": 38,
    "version": "0.3.35",
@@ -252,14 +260,6 @@
    "notes": {
     "fr": "Les cours deviennent plus clairs : des schémas, des tableaux et des exemples concrets accompagnent la théorie, et chaque notation est expliquée avant d'être utilisée. Le niveau « Démontrer » est le premier à en profiter.",
     "en": "Lessons get clearer: diagrams, tables and concrete examples now go with the theory, and every notation is explained before it is used. The “Proving” level is the first to benefit."
-   }
-  },
-  {
-   "build": 7,
-   "version": "0.3.4",
-   "notes": {
-    "fr": "Les mises à jour de l'application se téléchargent et s'installent maintenant toutes seules, dans l'app, sans passer par GitHub. Les réponses ont toutes la même présentation.",
-    "en": "App updates now download and install by themselves, inside the app, without going through GitHub. All answers now look the same."
    }
   }
  ]
