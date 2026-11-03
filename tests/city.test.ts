@@ -150,8 +150,8 @@ describe('E51 · refonte d’après les images de référence d’Antsa', () => 
     expect(m).toContain('<LogoMenu {onrules} carte={joueur} />'); expect(m).toContain('class="manche"'); expect(m).toContain('class="kintana"');
     expect(m).toContain("scores[id] >= 0.5).length"); expect(m).toContain('.reduce((s, e) => s + e.xp, 0)');
   });
-  it('grands titres jaunes cernés (1re et 2e réf.) ; liens lisibles en sombre', () => {
-    expect(readFileSync('index.html', 'utf8')).toContain('class="cap"'); expect(readFileSync('src/ui/Lesson.svelte', 'utf8')).toContain('class="legende"');
+  it('grands titres jaunes cernés (2e réf.) ; liens lisibles en sombre ; E56 : pas de slogan « Construis ton IA » au démarrage', () => {
+    const html = readFileSync('index.html', 'utf8'); expect(html).not.toContain('class="cap"'); expect(html).not.toMatch(/ton IA|your AI/i); expect(readFileSync('src/ui/Lesson.svelte', 'utf8')).toContain('class="legende"');
     expect(readFileSync('src/app.css', 'utf8')).toContain('a { color: var(--c-link);');
   });
 });

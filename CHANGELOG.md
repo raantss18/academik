@@ -2,6 +2,10 @@
 
 ## [Non publié]
 
+### Corrigé
+- Le paysage de l'accueil réapparaît dans l'APK et l'AppImage (la CSP bloquait l'image du décor depuis la 0.3.36) (E56).
+- L'écran de démarrage n'affiche plus le slogan « Construis ton IA » (E56).
+
 ## [0.3.36] — 2026-11-03
 
 ### Message fr
