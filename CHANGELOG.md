@@ -2,6 +2,15 @@
 
 ## [Non publié]
 
+## [0.3.35] — 2026-11-03
+
+### Message fr
+La carte devient un monde fantastique : de grandes îles flottantes sur des montagnes renversées, reliées par des ponts suspendus ou de pierre, avec des pics, des cascades et des îlots déserts. Sur chaque île, un chemin passe par chaque niveau, et la partie parcourue brille en or. Chaque niveau s'ouvre comme un dossier de mission et se termine par un rapport ; en haut, ta carte de joueur et celle de Kintana encadrent un ruban doré. L'application économise aussi la batterie et la mémoire.
+
+### Message en
+The map becomes a fantasy world: large floating islands on upside-down mountains, linked by rope or stone bridges, with peaks, waterfalls and uninhabited islets. On each island, a path runs through every level, and the part you have travelled glows gold. Each level opens as a mission file and ends with a report; at the top, your player card and Kintana's frame a golden ribbon. The app also saves battery and memory.
+
+### Détails
 - Carte (E54) : pics rocheux et collines sur les îles, îlots déserts avec cascades autour des quartiers.
 
 - Carte (E53) : îles plus grandes sur des montagnes renversées, ponts suspendus ou de pierre, et sur chaque île un chemin qui passe par chaque niveau, la partie parcourue brillant en or.

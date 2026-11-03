@@ -185,3 +185,8 @@
 
 - **Fait** : E47 (signalé par Antsa) reproduit avec la vraie AppImage 0.3.29, corrigé (vérifications séparées, réponse claire, ancien téléchargement abandonné, contenu en parallèle) ; 859 tests.
 - **Limite honnête** : le correctif agit à partir de la 0.3.34 ; une app déjà installée en 0.3.29–0.3.33 garde l'ancien comportement (annonce après le téléchargement du contenu, environ une minute réseau ouvert, app ouverte) ou se met à jour par le site.
+
+### Refonte immersive et ressources (2026-11-03, 0.3.35)
+
+- **Fait** : ressources (E48 ville figée au repos, fond WebGL robuste ; E49 Python libéré, ville mémorisée) ; refonte d'après les images d'Antsa (dossier et rapport de mission, ruban doré, en-tête en duel, carte fantastique : îles flottantes, ponts, relief, îlots, chemin des leçons, légendes) ; critique de design (E50 : carte lisible au doigt, contraste AA) ; 888 tests.
+- **Non vérifié** : vrai téléphone (carte ≈ 27 000 éléments : fluidité du défilement), lecteur d'écran, vrais élèves.
