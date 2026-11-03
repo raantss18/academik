@@ -196,3 +196,9 @@
 - **Fait** : la carte devient une image SVG fixe (sans animation) + un calque léger pour les repères, enseignes et légendes (≈ 2 000 formes dans la page au lieu de ≈ 28 000, 1 animation au lieu de 368) ; générateur et image gardés entre deux visites ; hauts plateaux en falaise avec pics, rivière qui en descend, traverse la ville (ponts) et tombe en cascade ; modelé des îles et îlots.
 - **Vérifié** : navigateur 375 px et bureau ; retour sur l'accueil 26 ms (avant ≈ 220 ms et « … ») ; repères cliquables ; zoom aligné (image et calque) ; `npm run verify`.
 - **Non vérifié** : vrai téléphone (fluidité du défilement attendue bien meilleure, à confirmer).
+
+### Paysage rétabli dans les apps, démarrage sans slogan (2026-11-03, E56, 0.3.37)
+
+- **Fait** : la CSP de l'APK, de l'AppImage et du site autorise `img-src blob:` (le décor E55 était bloqué dans les apps) ; slogan « Construis ton IA » retiré de l'écran de démarrage.
+- **Vérifié** : version construite avec sa CSP (image chargée, aucune erreur) ; AppImage construite (paysage visible) ; `npm run verify` (893 tests).
+- **Non vérifié** : APK sur un vrai téléphone.

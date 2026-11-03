@@ -2,7 +2,15 @@
 
 ## [Non publié]
 
-### Corrigé
+## [0.3.37] — 2026-11-03
+
+### Message fr
+Le paysage de l'accueil réapparaît : depuis la mise à jour précédente, l'application l'empêchait de s'afficher. L'écran de démarrage est aussi plus sobre, avec le logo seul.
+
+### Message en
+The home-screen landscape is back: since the previous update, the app was blocking it from showing. The start screen is also simpler, with just the logo.
+
+### Détails
 - Le paysage de l'accueil réapparaît dans l'APK et l'AppImage (la CSP bloquait l'image du décor depuis la 0.3.36) (E56).
 - L'écran de démarrage n'affiche plus le slogan « Construis ton IA » (E56).
 
