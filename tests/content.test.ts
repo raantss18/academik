@@ -127,3 +127,35 @@ describe('R4 · sorties des exemples : exécutées, jamais inventées', () => {
     expect(s[3]).toEqual([undefined]);
   });
 });
+
+// E46 : l'audit (scripts/audit-contenu.mjs) n'était lancé qu'à la main ; ces contrôles tournent maintenant à chaque CI.
+describe('E46 · formules, options et indices contrôlés à chaque CI', () => {
+  it('chaque formule $…$ et $$…$$ (cartes, figures, objectifs) se compile avec KaTeX', async () => {
+    const katex = (await import('katex')).default, bad: string[] = [];
+    const walk = (v: unknown, p: string, id: string): void => {
+      if (typeof v === 'string') {
+        if (/\/(code|verif|depart|tests|solutionCode|solution|url)$/.test(p)) return;
+        for (const m of v.replace(/`[^`]*`/g, '').matchAll(/\$\$([^$]+?)\$\$|\$(?!\s)([^$\n]+?)(?<!\s)\$/g)) {
+          try { katex.renderToString(m[1] ?? m[2], { throwOnError: true, displayMode: !!m[1] }); } catch (e) { bad.push(`${id}${p} : ${String(e).slice(0, 80)}`); }
+        }
+      } else if (Array.isArray(v)) v.forEach((x, i) => walk(x, `${p}/${i}`, id));
+      else if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) walk(x, `${p}/${k}`, id);
+    };
+    for (const { L } of levels) walk(L, '', L.id);
+    expect(bad).toEqual([]);
+  });
+  it('options de QCM toutes différentes, et aucun indice ne donne la bonne réponse mot pour mot', () => {
+    const norm = (s: string) => s.toLowerCase().replace(/[\s`*$.,;:!?«»“”"']+/g, ' ').trim();
+    const has = (h: string, a: string) => new RegExp(`(^| )${a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}( |$)`).test(h);
+    const bad: string[] = [];
+    for (const { L } of levels) for (const c of L.cartes) {
+      if (c.choix) {
+        const fr = c.choix.map((x: { fr: string }) => x.fr); if (new Set(fr).size !== fr.length) bad.push(`${L.id} ${c.id} : options en double`);
+        const ok = c.choix.find((x: { juste?: boolean }) => x.juste), h = c.indice ? norm(c.indice.fr) : '';
+        if (ok && h && norm(ok.fr).length >= 3 && has(h, norm(ok.fr)) && !c.choix.some((x: { fr: string; juste?: boolean }) => !x.juste && norm(x.fr).length >= 2 && has(h, norm(x.fr)))) bad.push(`${L.id} ${c.id} : l'indice donne la réponse`);
+      }
+      if (c.type === 'saisie' && c.indice) for (const r of c.reponses.map(String)) if (r.length >= 2 && new RegExp(`(?<![\\w.,])${r.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w.,])`).test(c.indice.fr)) bad.push(`${L.id} ${c.id} : l'indice contient « ${r} »`);
+    }
+    expect(bad).toEqual([]);
+  });
+});
