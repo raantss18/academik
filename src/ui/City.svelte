@@ -11,7 +11,8 @@
   import { i18n, ui } from '../lib/i18n.svelte';
   import { md } from '../lib/md';
   import { content } from '../lib/content.svelte';
-  import { THEMES_EN, MONUMENTS, monumentEtat, type CityDistrict } from '../lib/city/index';
+  import { THEMES_EN, MONUMENTS, monumentEtat, difficulte, type CityDistrict } from '../lib/city/index';
+  import { scoredItems } from '../lib/level';
 
   let { districts, current, onplay }: { districts: CityDistrict[]; current: string | null | undefined; onplay: (id: string) => void } = $props();
 
@@ -88,7 +89,10 @@
     const d = districts.find(x => x.levels.some(l => l.id === sel))!, l = d.levels.find(x => x.id === sel)!, L = content.levels[sel];
     const place = fr ? gen?.themeInfo(d.theme) : THEMES_EN[d.theme % THEMES_EN.length];
     const mon = gen ? MONUMENTS[gen.monumentKind(d.theme, d.levels.indexOf(l), !!l.boss)] : null;
-    return { d, l, L, place, monument: mon ? monumentEtat(mon, l.score, fr) : null };
+    // Dossier de mission : la récompense est celle que le jeu donne vraiment (10 XP par carte notée réussie du premier coup).
+    const xp = L ? scoredItems(L).length * 10 : 0, defi2 = !!L?.cartes.some(c => c.defi === 2);
+    const tampon = l.st === 'done' ? (fr ? 'Réussi' : 'Cleared') : l.st === 'locked' ? (fr ? 'Verrouillé' : 'Locked') : l.st === 'soon' ? (fr ? 'Bientôt' : 'Soon') : l.st === 'started' ? (fr ? 'En cours' : 'In progress') : (fr ? 'Nouveau' : 'New');
+    return { d, l, L, place, monument: mon ? monumentEtat(mon, l.score, fr) : null, xp, defi2, tampon, niveau: difficulte(d.n, !!l.boss, fr) };
   });
 </script>
 
@@ -105,19 +109,35 @@
 
 {#if info}
   <div class="scrim" onclick={() => (sel = null)} role="presentation"></div>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-t" tabindex="-1" onkeydown={key}>
+  <div class="sheet dossier" role="dialog" aria-modal="true" aria-labelledby="sheet-t" tabindex="-1" onkeydown={key}>
     <div class="grip"></div>
-    <p class="kicker" style="color:{info.d.color}">{info.d.label}{info.place ? ` — ${info.place.place}` : ''}</p>
-    <h2 id="sheet-t">{@html md(info.L ? i18n.t(info.L.titre) : info.l.aria)}</h2>
-    <p class="meta">
-      {#if info.L}{info.L.duree_min} min · {info.L.cartes.length} {fr ? 'cartes' : 'cards'}{/if}
-      {#if info.l.st === 'done' && !info.l.boss} · <span class="stars">{'★'.repeat(info.l.stars)}<span class="off">{'★'.repeat(3 - info.l.stars)}</span></span>{/if}
-      {#if info.l.st === 'locked'} · {fr ? 'se débloque à 50 % au niveau précédent' : 'unlocks at 50% on the previous level'}{/if}
-      {#if info.l.st === 'soon'}{ui('soon')}{/if}
-    </p>
-    {#if info.L?.objectifs?.length}<div class="goals"><strong>{ui('goals_title')}</strong><ul>{#each info.L.objectifs as o}<li>{@html md(i18n.t(o))}</li>{/each}</ul></div>{/if}
-    {#if info.monument}<p class="mon"><span aria-hidden="true">🏛️</span> {info.monument}</p>{/if}
-    {#if info.L}<div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(i18n.t(info.L.ia))}{#if info.place}<br /><span class="muted">{info.place.blurb}</span>{/if}</div>{/if}
+    <!-- Dossier de mission (refonte immersive) : papier, onglet, « photo » du niveau, fiche signalétique et tampon d'état. -->
+    <div class="papier">
+      <span class="trombone" aria-hidden="true"></span>
+      <p class="onglet">{fr ? 'Dossier de mission' : 'Mission file'}</p>
+      <div class="fiche">
+        <div class="col" aria-hidden="true">
+          <div class="photo" style="--c:{info.d.color}"><span>{info.l.boss ? '👑' : info.l.id}</span></div>
+          <span class="tampon st-{info.l.st}">{info.tampon}{#if info.l.st === 'done' && !info.l.boss}<br />{'★'.repeat(info.l.stars)}{/if}</span>
+        </div>
+        <dl>
+          <div><dt>{fr ? 'Quartier' : 'District'}</dt><dd style="color:color-mix(in srgb, {info.d.color} 65%, #1a1208)">{info.d.label}</dd></div>
+          {#if info.place}<div><dt>{fr ? 'Lieu' : 'Place'}</dt><dd>{info.place.place}</dd></div>{/if}
+          {#if info.L}<div><dt>{fr ? 'Durée' : 'Time'}</dt><dd>{info.L.duree_min} min · {info.L.cartes.length} {fr ? 'cartes' : 'cards'}</dd></div>{/if}
+          <div><dt>{fr ? 'Difficulté' : 'Difficulty'}</dt><dd>{info.niveau}</dd></div>
+          {#if info.xp}<div><dt>{fr ? 'Récompense' : 'Reward'}</dt><dd class="xp">{fr ? `jusqu’à ${info.xp} XP` : `up to ${info.xp} XP`}{info.defi2 ? (fr ? ' + défi ★★' : ' + ★★ challenge') : ''}</dd></div>{/if}
+        </dl>
+      </div>
+      <h2 id="sheet-t">{@html md(info.L ? i18n.t(info.L.titre) : info.l.aria)}</h2>
+      <p class="meta">
+        {#if info.l.st === 'locked'}{fr ? 'Se débloque à 50 % au niveau précédent.' : 'Unlocks at 50% on the previous level.'}{/if}
+        {#if info.l.st === 'soon'}{ui('soon')}{/if}
+        {#if info.l.st === 'started'}{fr ? `Progression : ${Math.round(info.l.score * 100)} %` : `Progress: ${Math.round(info.l.score * 100)}%`}{/if}
+      </p>
+      {#if info.L?.objectifs?.length}<div class="goals"><strong>{fr ? 'Objectifs de mission' : 'Mission goals'}</strong><ul>{#each info.L.objectifs as o}<li>{@html md(i18n.t(o))}</li>{/each}</ul></div>{/if}
+      {#if info.monument}<p class="mon"><span aria-hidden="true">🏛️</span> {info.monument}</p>{/if}
+      {#if info.L}<div class="ia"><strong>{ui('your_ai')}</strong> — {@html md(i18n.t(info.L.ia))}{#if info.place}<br /><span class="muted">{info.place.blurb}</span>{/if}</div>{/if}
+    </div>
     <div class="row">
       <button class="btn" onclick={() => (sel = null)}>{fr ? 'Fermer' : 'Close'}</button>
       <button class="btn primary" bind:this={play} disabled={info.l.st === 'locked' || info.l.st === 'soon'} onclick={() => { const id = sel!; sel = null; onplay(id); }}>{info.l.st === 'done' ? ui('replay') : ui('play')}</button>
@@ -148,4 +168,23 @@
   .goals { margin: 0 0 10px; font-size: .95rem; } .goals ul { margin: 4px 0 0; padding-left: 1.2em; } .goals li { margin: 1px 0; }
   .ia { background: var(--c-surface-2); border-radius: 16px; padding: 10px 14px; margin: 10px 0 14px; font-size: .95rem; } .ia :global(p) { display: inline; margin: 0; }
   .muted { color: var(--c-text-muted); } .row { display: flex; gap: 10px; } .row .btn { flex: 1; }
+  /* ---- Dossier de mission : papier ivoire, encre sombre, lisible en clair comme en sombre ---- */
+  .dossier { max-height: 88vh; overflow: auto; }
+  .papier { position: relative; margin: 4px 0 12px; padding: 30px 16px 12px; border-radius: 6px; color: #2b2418;
+    background: repeating-linear-gradient(0deg, transparent 0 27px, rgb(120 96 60 / .07) 27px 28px), linear-gradient(160deg, #f6eed8, #e9dcba);
+    box-shadow: 0 1px 0 rgb(255 255 255 / .6) inset, 0 6px 18px rgb(0 0 0 / .28); border: 1px solid #cdb98c; }
+  .papier :global(code) { background: rgb(80 60 30 / .1); color: #3b2c14; }
+  .trombone { position: absolute; top: -10px; left: 22px; width: 14px; height: 36px; border: 2.5px solid #9aa3ad; border-radius: 8px; border-bottom-color: transparent; transform: rotate(-8deg); }
+  .onglet { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); margin: 0; padding: 4px 16px; border-radius: 6px; background: linear-gradient(#f2b543, #d9902a); color: #3a2205; font-weight: 900; font-size: .78rem; letter-spacing: .8px; text-transform: uppercase; box-shadow: 0 2px 6px rgb(0 0 0 / .3); white-space: nowrap; }
+  .col { flex: none; display: grid; justify-items: center; gap: 0; }
+  .tampon { position: relative; margin-top: -14px; transform: rotate(-9deg); text-align: center; line-height: 1.15; font-size: .74rem !important; border: 3px solid currentColor; border-radius: 6px; padding: 2px 8px; font-weight: 900; font-size: .82rem; letter-spacing: 1px; text-transform: uppercase; opacity: .82; color: #2f7d3a; background: rgb(255 255 255 / .25); }
+  .tampon.st-locked, .tampon.st-soon { color: #b3261e; } .tampon.st-started { color: #b26a00; } .tampon.st-open { color: #2b5ea8; }
+  .fiche { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 8px; }
+  .photo { flex: none; width: 64px; height: 76px; border: 4px solid #fff; box-shadow: 0 2px 6px rgb(0 0 0 / .3); transform: rotate(-3deg); display: grid; place-items: center;
+    background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--c) 70%, #fff), var(--c)); color: #fff; font-weight: 900; font-size: 1.05rem; text-shadow: 0 1px 2px rgb(0 0 0 / .4); }
+  dl { margin: 0; display: grid; gap: 2px; font-size: .84rem; flex: 1; min-width: 0; } dl div { display: grid; grid-template-columns: 86px 1fr; gap: 6px; } dt { color: #6b5a3c; font-weight: 600; } dd { margin: 0; font-weight: 800; color: #2b2418; } dd.xp { color: #9c5a00; }
+  .papier h2 { margin: 6px 0 2px; font-size: 1.25rem; color: #1f1a12; } .papier .meta { color: #5d4e33; margin: 0 0 6px; min-height: 0; }
+  .papier .goals { border-top: 1px dashed #b9a274; padding-top: 6px; } .papier .mon { color: #2b2418; }
+  .papier .ia { background: rgb(255 255 255 / .45); border: 1px solid #d8c69a; } .papier .muted { color: #6b5a3c; }
+
 </style>

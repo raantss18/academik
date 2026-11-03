@@ -737,6 +737,7 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   for (const rd of [...roads].reverse()) {
     const pl = rd.pts.map(q => P([q[0], q[1], z])).join(' ');
     if (rd.end) roadSvg += polyZ(blob(rd.end[0], rd.end[1], .45, .45, z, R, 12, .1), C(mix(th.road, '#ffffff', .15)));
+    if (rd === roads[0] && reached) roadSvg += `<polyline points="${pl}" fill="none" stroke="${th.roadHi}" stroke-opacity=".16" stroke-width="${rd.w + 16}" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pl}" fill="none" stroke="${th.roadHi}" stroke-opacity=".22" stroke-width="${rd.w + 8}" stroke-linejoin="round" stroke-linecap="round"/>`;   // chemin lumineux (refonte immersive)
     roadSvg += `<polyline points="${pl}" fill="none" stroke="${C(shade(th.road, .55))}" stroke-width="${rd.w + 4}" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pl}" fill="none" stroke="${C(th.road)}" stroke-width="${rd.w}" stroke-linejoin="round" stroke-linecap="round"/>`
       + (rd === roads[0] ? `<polyline points="${pl}" fill="none" stroke="${C(th.roadHi)}" stroke-width="${th.dash ? 1.8 : 1}" ${th.dash ? 'stroke-dasharray="6 7"' : 'stroke-dasharray="1 5" opacity=".7"'} stroke-linecap="round"/>` : '');
   }
@@ -747,8 +748,9 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   const label = D.label, tw = 34 + 7.2 * label.length, bd = reached ? D.color : '#2a2f45', signSpots = [];
   for (const t of [.06, .02, .12, .2, .3]) for (const side of [1, -1]) for (const dist of [1, 1.9, 2.8]) { const q = M.at(t), [ga, gb] = iso(q[0] + q[3] * side * dist, q[1] - q[2] * side * dist, 0); signSpots.push([ga, gb]); }
   const signAt = (ga, gb) => `<g transform="translate(${fx(ga)},${fx(gb)})"><line x1="-6" y1="0" x2="-6" y2="-46" stroke="#4a3b2c" stroke-width="3"/><line x1="${fx(tw - 6)}" y1="0" x2="${fx(tw - 6)}" y2="-46" stroke="#4a3b2c" stroke-width="3"/>`
-    + `<rect x="-12" y="-62" width="${fx(tw + 12)}" height="28" rx="9" fill="${bd}" stroke="rgb(255 255 255 / .35)" stroke-width="1.5"/><text x="${fx(tw / 2 - 3)}" y="-43" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="13" fill="#fff">${label}</text>`
-    + (reached ? `<circle cx="-10" cy="-62" r="2.6" fill="#ffe7a3"/><circle cx="${fx(tw - 4)}" cy="-62" r="2.6" fill="#ffe7a3"/>` : '') + `</g>`;
+    + `<path d="M-12 -62H-2V-34H-12L-6 -48Z" fill="${shade(bd, .6)}"/><path d="M${fx(tw)} -62H${fx(tw - 10)}V-34H${fx(tw)}L${fx(tw - 6)} -48Z" fill="${shade(bd, .6)}"/>`
+    + `<rect x="-4" y="-64" width="${fx(tw - 4)}" height="28" rx="3" fill="${bd}" stroke="${reached ? '#e6c77a' : 'rgb(255 255 255 / .3)'}" stroke-width="1.5"/><path d="M-4 -59H${fx(tw - 8)}" stroke="rgb(255 255 255 / .22)" stroke-width="1"/><text x="${fx((tw - 12) / 2)}" y="-45" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="13" fill="#fff">${label}</text>`
+    + (reached ? `<circle cx="-1" cy="-64" r="2.6" fill="#ffe7a3"/><circle cx="${fx(tw - 9)}" cy="-64" r="2.6" fill="#ffe7a3"/>` : '') + `</g>`;
   const sign = { spots: signSpots, tw, at: signAt };
   items.sort((a, b) => a.k - b.k);
   return { pad: ground, road: roadSvg, shadows: shadows.join(''), items, sign };
@@ -832,7 +834,11 @@ export function renderCity(districts, opts = {}) {
       const fill = p.st === 'done' ? col : p.st === 'started' ? '#2c3358' : p.st === 'open' ? '#3a4266' : '#30354a', arc = 2 * Math.PI * (r + 4);
       g += `<path d="M0 ${r + 9}L-5 ${r + 1}L5 ${r + 1}Z" fill="${fill}" opacity=".9"/>`;
       if (p.st === 'started') g += `<circle r="${r + 4}" fill="none" stroke="rgb(255 255 255 / .18)" stroke-width="3"/><circle r="${r + 4}" fill="none" stroke="${col}" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="${fx(arc * p.score)} ${fx(arc)}" transform="rotate(-90)"/>`;
-      g += `<circle r="${r}" fill="${fill}" stroke="${p.st === 'open' ? col : 'rgb(255 255 255 / .6)'}" stroke-width="2.5"${p.st === 'soon' ? ' stroke-dasharray="4 3"' : ''}/>`;
+      // Médaillon (refonte immersive) : anneau sombre cerclé d'or ou de fer, disque intérieur de la couleur de l'état, reflet en haut.
+      const ring = dim ? '#6d7389' : p.st === 'done' ? '#f0cf7c' : '#d8b66a';
+      g += `<circle r="${r + 2.5}" fill="#1c1508" stroke="${ring}" stroke-width="2.2"${p.st === 'soon' ? ' stroke-dasharray="4 3"' : ''}/>`
+        + `<circle r="${r - 1}" fill="${fill}" stroke="${p.st === 'open' ? col : 'rgb(255 255 255 / .28)'}" stroke-width="${p.st === 'open' ? 2 : 1}"/>`
+        + `<path d="M${-(r - 4)} -3A${r - 4} ${r - 4} 0 0 1 ${r - 4} -3" fill="none" stroke="rgb(255 255 255 / .18)" stroke-width="2" stroke-linecap="round"/>`;
       if (p.st === 'locked') g += `<path d="M-4 -1v-3a4 4 0 0 1 8 0v3" fill="none" stroke="#8a90a8" stroke-width="2"/><rect x="-6" y="-1" width="12" height="9" rx="2" fill="#8a90a8"/>`;
       else if (p.isBoss) g += `<path d="M-8 4 l-2 -10 l6 5 l4 -8 l4 8 l6 -5 l-2 10z" fill="${dim ? '#8a90a8' : '#fff'}"/>`;
       else g += `<text y="5" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="${L.short.length > 3 ? 11 : 13}" fill="${dim ? '#8a90a8' : '#fff'}">${esc(L.short)}</text>`;

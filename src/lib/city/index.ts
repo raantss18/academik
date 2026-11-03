@@ -26,6 +26,13 @@ export function monumentEtat(nom: { fr: string; en: string }, score: number, fr:
   return fr ? `Monument : ${nom.fr} · ${full ? 'allumage complet' : `allumage ${p} %`}` : `Landmark: ${nom.en} · ${full ? 'fully lit' : `${p}% lit`}`;
 }
 
+/** Difficulté affichée dans le dossier de mission : par tranche du parcours (règle fixe, documentée dans DESIGN-IMMERSION), un cran de plus pour un boss. */
+export function difficulte(module: number, boss: boolean, fr: boolean): string {
+  const noms = fr ? ['Découverte', 'Intermédiaire', 'Avancé', 'Expert'] : ['Discovery', 'Intermediate', 'Advanced', 'Expert'];
+  const palier = module <= 3 ? 0 : module <= 9 ? 1 : module <= 17 ? 2 : 3;
+  return noms[Math.min(3, palier + (boss ? 1 : 0))];
+}
+
 export interface CityInput {
   modules: CursusModule[]; levels: Record<string, Level>; scores: Record<string, number>;
   open: ReadonlySet<string>; current: string | null | undefined; t: (x: { fr: string; en?: string }) => string; fr: boolean;

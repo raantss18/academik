@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Refonte immersive, étape 1 : la fiche d'un niveau devient un dossier de mission (photo, difficulté, récompense, tampon) ; repères en médaillons dorés, enseignes en bannières, chemin lumineux dans les quartiers atteints.
+
 - Ressources (E49) : Python libère sa mémoire après 3 min sans usage ; la ville n'est plus recalculée à chaque retour sur l'accueil ; logo lisible sur la carte.
 
 - Ressources et visuel (E48) : la ville se fige au repos (économie de batterie), fond de leçon plus léger, plus jamais de fond blanc après un changement de thème ou une rotation, en-tête compact sur téléphone, saisie du terminal visible.

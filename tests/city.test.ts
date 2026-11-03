@@ -85,3 +85,16 @@ describe('E42 · rien ne se chevauche sur la carte, et chaque niveau a son monum
     expect(readFileSync('src/ui/City.svelte', 'utf8')).toContain('monumentEtat'); expect(readFileSync('src/ui/Lesson.svelte', 'utf8')).toContain('monumentEtat');
   });
 });
+
+describe('refonte immersive : dossier de mission', () => {
+  it('difficulté par tranche du parcours, un cran de plus pour un boss', async () => {
+    const { difficulte } = await import('../src/lib/city/index');
+    expect([0, 3, 4, 9, 10, 17, 18, 23].map(m => difficulte(m, false, true))).toEqual(['Découverte', 'Découverte', 'Intermédiaire', 'Intermédiaire', 'Avancé', 'Avancé', 'Expert', 'Expert']);
+    expect(difficulte(3, true, true)).toBe('Intermédiaire'); expect(difficulte(23, true, false)).toBe('Expert');
+  });
+  it('la récompense affichée est celle du jeu (10 XP par carte notée) ; repères en médaillons, enseignes en bannières', () => {
+    const c = readFileSync('src/ui/City.svelte', 'utf8'), g = readFileSync('src/lib/city/gen.js', 'utf8');
+    expect(c).toContain('scoredItems(L).length * 10'); expect(c).toContain('class="sheet dossier"');
+    expect(g).toContain('// Médaillon (refonte immersive)'); expect(g).toContain('chemin lumineux (refonte immersive)');
+  });
+});
