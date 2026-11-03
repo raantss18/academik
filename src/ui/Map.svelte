@@ -40,9 +40,9 @@
 <div class={view === 'city' ? 'hudlayer' : 'wrap top'}>
   <header class="hud">
     <LogoMenu {onrules} />
-    <span class="chip" title="{progress.streak} {ui('streak')}" aria-label="{progress.streak} {ui('streak')}">🔥 {progress.streak}{view === 'list' ? ` ${progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}` : ''}</span>
-    <span class="chip" title="{progress.xp} {ui('xp')}" aria-label="{progress.xp} {ui('xp')}">⭐ {progress.xp}{view === 'list' ? ` ${ui('xp')}` : ''}</span>
-    <button class="chip view" onclick={toggle} aria-pressed={view === 'list'} aria-label={view === 'city' ? (fr ? 'Vue liste' : 'List view') : (fr ? 'Vue ville' : 'City view')}>{view === 'city' ? '☰' : (fr ? '🏙 Ville' : '🏙 City')}</button>
+    <span class="chip" title="{progress.streak} {ui('streak')}" aria-label="{progress.streak} {ui('streak')}">🔥 {progress.streak}{#if view === 'list'}<span class="lbl">&nbsp;{progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>{/if}</span>
+    <span class="chip" title="{progress.xp} {ui('xp')}" aria-label="{progress.xp} {ui('xp')}">⭐ {progress.xp}{#if view === 'list'}<span class="lbl">&nbsp;{ui('xp')}</span>{/if}</span>
+    <button class="chip view" onclick={toggle} aria-pressed={view === 'list'} aria-label={view === 'city' ? (fr ? 'Vue liste' : 'List view') : (fr ? 'Vue ville' : 'City view')}>{#if view === 'city'}☰{:else}🏙<span class="lbl">&nbsp;{fr ? 'Ville' : 'City'}</span>{/if}</button>
   </header>
   <UpdateBanner compact={view === 'city'} />
   {#if view === 'list'}
@@ -105,6 +105,8 @@
   .view { margin-left: auto; cursor: pointer; font: inherit; font-weight: 600; font-size: .9rem; color: var(--c-text); }
   .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }
   .hud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+  /* Téléphone : l'en-tête tient sur une ligne ; les mots « jours » et « XP » restent dans l'étiquette lue par les lecteurs d'écran. */
+  @media (max-width: 440px) { .hud { flex-wrap: nowrap; gap: 6px; } .lbl { display: none; } .chip { padding: 0 10px; white-space: nowrap; flex-shrink: 0; } }
   .chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; font-size: .9rem; }
   .go { width: 100%; margin: 6px 0; } .review { width: 100%; margin: 6px 0; border: 2px solid var(--c-accent); background: var(--c-accent-soft); } .small { font-size: .85rem; }
   .mod { margin: 18px 0; } .mod h2 { font-size: 1.05rem; margin: 0 0 8px; } ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }

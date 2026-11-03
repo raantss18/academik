@@ -27,11 +27,16 @@
   onMount(() => {
     const mq = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : null, onMq = () => (prefersDark = !!mq?.matches);
     mq?.addEventListener?.('change', onMq);
-    return () => mq?.removeEventListener?.('change', onMq);
+    const cv = canvas;
+    return () => { mq?.removeEventListener?.('change', onMq); cv?.getContext('webgl')?.getExtension('WEBGL_lose_context')?.loseContext(); };   // libère la mémoire graphique en quittant la leçon
   });
 
+  // Contexte WebGL perdu (le système reprend la mémoire graphique d'une app en arrière-plan, pilote réinitialisé…) : le canvas devenait
+  // blanc avec l'icône d'image cassée. On le cache (le dégradé CSS reste) et on relance le programme quand le contexte revient (E48).
+  let perdu = $state(false), relance = $state(0);
   $effect(() => {
     const cv = canvas; if (!cv) return;
+    void relance;
     const gl = cv.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' }); if (!gl) return; // repli : le dégradé CSS
     const sh = (type: number, src: string) => { const o = gl.createShader(type)!; gl.shaderSource(o, src); gl.compileShader(o); return o; };
     const prog = gl.createProgram()!;
@@ -49,29 +54,36 @@
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
     const lp = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(lp); gl.vertexAttribPointer(lp, 2, gl.FLOAT, false, 0, 0);
     const U = (k: string) => gl.getUniformLocation(prog, k);
-    let scale = 0.4, tt = 0, last = performance.now(), raf = 0, saisie = false, lent = 0, frames = 0, arret = matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-    const resize = () => { cv.width = Math.max(1, Math.round(innerWidth * scale)); cv.height = Math.max(1, Math.round(innerHeight * scale)); gl.viewport(0, 0, cv.width, cv.height); };
+    let scale = 0.4, tt = 0, last = performance.now(), dernier = 0, avant = performance.now(), raf = 0, saisie = false, lent = 0, frames = 0, arret = matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    // Redimensionner efface le canvas : on redessine aussitôt, sinon une rotation laissait un fond vide quand l'animation est figée (moins d'animations, appareil lent) (E48).
+    const resize = () => { cv.width = Math.max(1, Math.round(innerWidth * scale)); cv.height = Math.max(1, Math.round(innerHeight * scale)); gl.viewport(0, 0, cv.width, cv.height); if (!gl.isContextLost()) draw(); };
     const draw = () => {
       gl.uniform2f(U('r'), cv.width, cv.height); gl.uniform1f(U('t'), tt); gl.uniform1f(U('d'), nuit ? 0 : 1);
       gl.uniform3fv(U('a'), rgb(pal.haut)); gl.uniform3fv(U('b'), rgb(pal.bas)); gl.uniform3fv(U('c'), rgb(pal.lueur)); gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
     const loop = (now: number) => {
       const dt = now - last; last = now;
-      if (!document.hidden && !saisie && !arret) {
-        tt += dt / 1000; draw(); frames++;
+      // 20 images/s suffisent : la brume avance de quelques pixels par seconde ; 60 images/s triplaient le travail du GPU pour rien (E48).
+      if (document.hidden || saisie || arret) avant = now;   // en pause : le temps de l'animation ne saute pas à la reprise
+      else if (now - dernier >= 50) {
+        dernier = now;
+        tt += (now - avant) / 1000; avant = now; draw(); frames++;
         if (frames > 30 && dt > 34 && ++lent > 20) { if (scale > 0.25) { scale = 0.25; resize(); lent = 0; } else { arret = true; } } // appareil lent : on réduit puis on fige
       }
       raf = requestAnimationFrame(loop);
     };
     const focus = (e: Event) => { const el = e.target as HTMLElement; saisie = e.type === 'focusin' && /^(INPUT|TEXTAREA)$/.test(el.tagName); };
     resize(); draw(); addEventListener('resize', resize); addEventListener('focusin', focus); addEventListener('focusout', focus);
+    const lost = (e: Event) => { e.preventDefault(); cancelAnimationFrame(raf); perdu = true; };
+    const restored = () => { perdu = false; relance++; };
+    cv.addEventListener('webglcontextlost', lost); cv.addEventListener('webglcontextrestored', restored);
     raf = requestAnimationFrame(loop);
-    return () => { cancelAnimationFrame(raf); removeEventListener('resize', resize); removeEventListener('focusin', focus); removeEventListener('focusout', focus); gl.getExtension('WEBGL_lose_context')?.loseContext(); };
+    return () => { cv.removeEventListener('webglcontextlost', lost); cv.removeEventListener('webglcontextrestored', restored); cancelAnimationFrame(raf); removeEventListener('resize', resize); removeEventListener('focusin', focus); removeEventListener('focusout', focus); };   // pas de loseContext() ici : l'effet se relance à chaque changement de palette (thème) et retrouverait un contexte perdu (E48)
   });
 </script>
 
 <div class="amb" style="--haut:{pal.haut};--bas:{pal.bas};--tour:{tour};--eteint:{eteint};--allume:{nuit ? '#ffd36b' : '#e0a21a'};--halo:{nuit ? '#ffcf80' : '#e8b44a'}" aria-hidden="true">
-  <canvas bind:this={canvas}></canvas>
+  <canvas bind:this={canvas} class:perdu></canvas>
   {#if eclat > 0}{#key eclat}<span class="luciole" style="top:{18 + (eclat * 23) % 40}%"></span>{/key}{/if}
   {#if fete}<div class="fete"></div>{/if}
   <svg class="ville" viewBox="0 0 300 120" preserveAspectRatio="xMidYMax slice">
@@ -84,7 +96,7 @@
 
 <style>
   .amb { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, var(--haut), var(--bas)); }
-  canvas { width: 100%; height: 100%; display: block; }
+  canvas { width: 100%; height: 100%; display: block; } canvas.perdu { visibility: hidden; }
   .ville { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: min(24vh, 190px); }
   .fen { fill: var(--eteint); transition: fill .6s, filter .6s; } .fen.on { fill: var(--allume); filter: drop-shadow(0 0 1.6px var(--halo)); }
   /* Récompenses rares et discrètes : une luciole traverse l'écran après trois bonnes réponses d'affilée ; la fin d'un boss réussi allume tout le quartier. */

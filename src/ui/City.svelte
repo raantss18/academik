@@ -56,6 +56,17 @@
   const wheel = (e: WheelEvent) => { if (!e.ctrlKey) return; e.preventDefault(); const p = { x: e.clientX - box!.getBoundingClientRect().left, y: e.clientY - box!.getBoundingClientRect().top }; preview((live?.nz ?? z) * Math.exp(-e.deltaY / 300), p.x, p.y); clearTimeout(wheelTimer); wheelTimer = window.setTimeout(commit, 140); };
   $effect(() => { const b = box; if (!b) return; b.addEventListener('wheel', wheel, { passive: false }); return () => b.removeEventListener('wheel', wheel); });
 
+  // Économie d'énergie (E48) : les ~280 animations de la ville (fenêtres, fumées, voitures) forçaient le navigateur à repeindre les
+  // ~17 000 formes du SVG à chaque image, même sans personne devant l'écran. Elles tournent pendant qu'on touche la carte, puis se figent
+  // après REPOS ms sans geste (l'image reste la même, seule l'animation s'arrête) ; un geste, un défilement ou une touche les relance.
+  const REPOS = 8000;
+  let still = $state(false), repos = 0;
+  function reveil() {
+    clearTimeout(repos);
+    if (still) { still = false; box?.querySelector<SVGSVGElement>('svg')?.unpauseAnimations?.(); }
+    repos = window.setTimeout(() => { still = true; box?.querySelector<SVGSVGElement>('svg')?.pauseAnimations?.(); }, REPOS);
+  }
+  $effect(() => { if (!out || !box) return; void tick().then(reveil); return () => clearTimeout(repos); });
   const pick = (e: Event) => { const p = (e.target as Element).closest<SVGElement>('.pin'); if (p?.dataset.id) { sel = p.dataset.id; void tick().then(() => play?.focus()); } };
   const key = (e: KeyboardEvent) => { if ((e.key === 'Enter' || e.key === ' ') && (e.target as Element).closest('.pin')) { e.preventDefault(); pick(e); } if (e.key === 'Escape') sel = null; };
   /** Bouton retour : ferme d'abord la fiche du niveau (false = rien à fermer). */
@@ -70,7 +81,7 @@
   });
 </script>
 
-<div class="city" bind:this={box} onclick={pick} onkeydown={key} onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={up} role="presentation">
+<div class="city" class:still bind:this={box} onclick={pick} onkeydown={(e) => { reveil(); key(e); }} onpointerdown={(e) => { reveil(); down(e); }} onpointermove={move} onpointerup={up} onpointercancel={up} onscroll={reveil} onwheel={reveil} role="presentation">
   {#if out}{@html out.svg}{:else if failed}<p class="msg">{fr ? 'La carte n’a pas pu se charger : utilise la vue liste.' : 'The map could not load: use the list view.'}</p>{:else}<p class="msg">…</p>{/if}
 </div>
 
@@ -109,6 +120,7 @@
   .zoom { position: fixed; right: calc(var(--sar) + 12px); top: 50%; z-index: 6; display: grid; gap: 6px; transform: translateY(-50%); }
   .zoom button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .22); background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); color: #f2f4ff; font-size: 1.4rem; line-height: 1; cursor: pointer; } .zoom button:disabled { opacity: .35; }
   .msg { color: #cfd3ec; text-align: center; padding: 40px 16px; }
+  .city.still :global(*) { animation-play-state: paused !important; }
   .city :global(.pin) { cursor: pointer; } .city :global(.pin:focus) { outline: none; } .city :global(.pin:focus-visible .hit) { stroke: #fff; stroke-width: 3; }
   .city :global(.pulse) { animation: pulse 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
   .city :global(.drop) { animation: bounce 1.6s ease-in-out infinite; } .city :global(.twinkle) { animation: twinkle 3s ease-in-out infinite; } .city :global(.smoke) { animation: smoke 4s ease-out infinite; }

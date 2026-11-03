@@ -395,3 +395,21 @@ describe('E47 · l’annonce d’une nouvelle version ne dépend pas du contenu'
     expect(rules).not.toContain('Tout est à jour'); expect(rules).toContain('appStatusText('); expect(menu).toContain('appStatusText(');
   });
 });
+
+describe('E48 · ressources et visuel : rien ne tourne pour rien, le fond ne devient jamais blanc', () => {
+  const city = read('src/ui/City.svelte'), amb = read('src/ui/Ambiance.svelte'), map = read('src/ui/Map.svelte');
+  it('ville : les ~280 animations se figent au repos et repartent au premier geste', () => {
+    expect(city).toContain('pauseAnimations'); expect(city).toContain('unpauseAnimations'); expect(city).toMatch(/\.city\.still :global\(\*\) \{ animation-play-state: paused !important; \}/);
+    expect(city).toMatch(/onpointerdown=\{\(e\) => \{ reveil\(\);/);
+  });
+  it('fond de leçon : 20 images/s, contexte WebGL perdu géré, jamais détruit lors d’un changement de thème, redessiné au redimensionnement', () => {
+    expect(amb).toContain('now - dernier >= 50'); expect(amb).toContain("'webglcontextlost'"); expect(amb).toContain("'webglcontextrestored'");
+    const effet = amb.slice(amb.indexOf('$effect(() => {'), amb.indexOf('</script>'));
+    expect(effet).not.toMatch(/\.loseContext\(\)/);
+    expect(amb).toMatch(/const resize = \(\) => \{[^\n]*draw\(\); \};/);
+  });
+  it('téléphone : l’en-tête de la liste tient sur une ligne ; terminal avec une aide de saisie ; barre de boutons sans rectangle sous les cartes courtes', () => {
+    expect(map).toMatch(/@media \(max-width: 440px\) \{.*\.lbl \{ display: none; \}/);
+    expect(lesson).toContain("placeholder={ui('type_cmd')}"); expect(lesson).toContain('use:colle'); expect(lesson).toContain('.foot:global(.stuck)');
+  });
+});
