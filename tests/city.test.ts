@@ -98,3 +98,17 @@ describe('refonte immersive : dossier de mission', () => {
     expect(g).toContain('// Médaillon (refonte immersive)'); expect(g).toContain('chemin lumineux (refonte immersive)');
   });
 });
+
+describe('refonte immersive, étape 2 : ruban doré, rapport de mission, écran de chargement', () => {
+  it('points et série sur un ruban doré, chacun lisible par les lecteurs d’écran', () => {
+    const m = readFileSync('src/ui/Map.svelte', 'utf8');
+    expect(m).toContain('<div class="ruban" role="group"'); expect(m).toMatch(/aria-label="\{progress\.xp\} \{ui\('xp'\)\}"/); expect(m).toMatch(/aria-label="\{progress\.streak\} \{ui\('streak'\)\}"/);
+  });
+  it('fin de leçon en rapport de mission (pas pour les révisions), boutons lisibles sur le papier', () => {
+    const l = readFileSync('src/ui/Lesson.svelte', 'utf8');
+    expect(l).toContain('class:rapport={!level.review}'); expect(l).toContain('.rapport .foot .btn:not(.primary) { background: rgb(255 255 255 / .6); color: #2b2418;');
+  });
+  it('écran de chargement dans index.html, retiré au démarrage', () => {
+    expect(readFileSync('index.html', 'utf8')).toContain('<div id="splash"'); expect(readFileSync('src/main.ts', 'utf8')).toContain("splash.remove()");
+  });
+});

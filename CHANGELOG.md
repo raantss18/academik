@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Refonte immersive, étape 2 : ruban doré pour les points et la série, rapport de mission en fin de leçon, écran de chargement aux couleurs de la carte.
+
 - Refonte immersive, étape 1 : la fiche d'un niveau devient un dossier de mission (photo, difficulté, récompense, tampon) ; repères en médaillons dorés, enseignes en bannières, chemin lumineux dans les quartiers atteints.
 
 - Ressources (E49) : Python libère sa mémoire après 3 min sans usage ; la ville n'est plus recalculée à chaque retour sur l'accueil ; logo lisible sur la carte.

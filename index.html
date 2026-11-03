@@ -7,8 +7,19 @@
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
 <title>academik</title>
+<style>
+  /* Écran de chargement (refonte immersive) : la nuit de la carte, le logo et un ruban doré, le temps que l'app démarre. Retiré par main.ts. */
+  #splash { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: radial-gradient(120% 60% at 50% 0%, #3b2d5c, #18214a 45%, #0b1026 100%); transition: opacity .4s; }
+  #splash .m { text-align: center; color: #f2f4ff; font: 800 1.7rem system-ui, sans-serif; letter-spacing: .3px; }
+  #splash .m img { display: block; margin: 0 auto 10px; filter: drop-shadow(0 6px 18px rgb(255 77 61 / .35)); }
+  #splash .m b { color: #ff4d3d; }
+  #splash .r { width: 120px; height: 6px; margin: 18px auto 0; border-radius: 3px; background: linear-gradient(90deg, #c98a1f, #ffe08a, #c98a1f); background-size: 200% 100%; animation: academik-r 1.4s linear infinite; }
+  @keyframes academik-r { to { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) { #splash .r { animation: none; } }
+</style>
 </head>
 <body>
+<div id="splash" aria-hidden="true"><div class="m"><img src="./icon.svg" width="72" height="72" alt="">acad<b>e</b>mik<div class="r"></div></div></div>
 <div id="app"></div>
 <script type="module" src="/src/main.ts"></script>
 </body>

@@ -40,8 +40,12 @@
 <div class={view === 'city' ? 'hudlayer' : 'wrap top'}>
   <header class="hud">
     <LogoMenu {onrules} />
-    <span class="chip" title="{progress.streak} {ui('streak')}" aria-label="{progress.streak} {ui('streak')}">🔥 {progress.streak}{#if view === 'list'}<span class="lbl">&nbsp;{progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>{/if}</span>
-    <span class="chip" title="{progress.xp} {ui('xp')}" aria-label="{progress.xp} {ui('xp')}">⭐ {progress.xp}{#if view === 'list'}<span class="lbl">&nbsp;{ui('xp')}</span>{/if}</span>
+    <!-- Bandeau doré (refonte immersive, d'après la 1re référence) : points et série réunis sur un ruban à queues. -->
+    <div class="ruban" role="group" aria-label={fr ? 'Ta progression' : 'Your progress'}>
+      <span title="{progress.xp} {ui('xp')}" aria-label="{progress.xp} {ui('xp')}">⭐ {progress.xp}{#if view === 'list'}<span class="lbl">&nbsp;{ui('xp')}</span>{/if}</span>
+      <span class="sep" aria-hidden="true"></span>
+      <span title="{progress.streak} {ui('streak')}" aria-label="{progress.streak} {ui('streak')}">🔥 {progress.streak}{#if view === 'list'}<span class="lbl">&nbsp;{progress.streak === 1 ? (fr ? 'jour' : 'day') : ui('streak')}</span>{/if}</span>
+    </div>
     <button class="chip view" onclick={toggle} aria-pressed={view === 'list'} aria-label={view === 'city' ? (fr ? 'Vue liste' : 'List view') : (fr ? 'Vue ville' : 'City view')}>{#if view === 'city'}☰{:else}🏙<span class="lbl">&nbsp;{fr ? 'Ville' : 'City'}</span>{/if}</button>
   </header>
   <UpdateBanner compact={view === 'city'} />
@@ -108,7 +112,13 @@
   .soonlist { display: flex; flex-wrap: wrap; gap: 8px; } .soonlist li { padding: 8px 14px; border-radius: 999px; border: 1px dashed var(--c-border); color: var(--c-text-muted); font-weight: 600; }
   .hud { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
   /* Téléphone : l'en-tête tient sur une ligne ; les mots « jours » et « XP » restent dans l'étiquette lue par les lecteurs d'écran. */
-  @media (max-width: 440px) { .hud { flex-wrap: nowrap; gap: 6px; } .lbl { display: none; } .chip { padding: 0 10px; white-space: nowrap; flex-shrink: 0; } }
+  @media (max-width: 440px) { .hud { flex-wrap: nowrap; gap: 6px; } .ruban { margin: 0 10px; padding: 0 12px; gap: 8px; } .lbl { display: none; } .chip { padding: 0 10px; white-space: nowrap; flex-shrink: 0; } }
+  .ruban { position: relative; z-index: 0; display: inline-flex; align-items: center; gap: 10px; height: 36px; padding: 0 16px; margin: 0 12px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+    background: linear-gradient(#ffe08a, #e8b24a 55%, #c98a1f); color: #3a2205; font-weight: 900; font-size: .95rem; text-shadow: 0 1px 0 rgb(255 255 255 / .45);
+    box-shadow: 0 2px 0 #8a5a12, 0 6px 14px rgb(0 0 0 / .35), inset 0 1px 0 rgb(255 255 255 / .6); }
+  .ruban::before, .ruban::after { content: ''; position: absolute; top: 7px; width: 16px; height: 30px; background: linear-gradient(#c98a1f, #94600f); z-index: -1; }
+  .ruban::before { left: -12px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 38% 50%); } .ruban::after { right: -12px; clip-path: polygon(0 0, 100% 0, 62% 50%, 100% 100%, 0 100%); }
+  .ruban .sep { width: 1px; height: 18px; background: rgb(58 34 5 / .35); }
   .chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--c-border); background: var(--c-surface); font-weight: 600; font-size: .9rem; }
   .go { width: 100%; margin: 6px 0; } .review { width: 100%; margin: 6px 0; border: 2px solid var(--c-accent); background: var(--c-accent-soft); } .small { font-size: .85rem; }
   .mod { margin: 18px 0; } .mod h2 { font-size: 1.05rem; margin: 0 0 8px; } ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
