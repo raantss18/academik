@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Ressources (E49) : Python libère sa mémoire après 3 min sans usage ; la ville n'est plus recalculée à chaque retour sur l'accueil ; logo lisible sur la carte.
+
 - Ressources et visuel (E48) : la ville se fige au repos (économie de batterie), fond de leçon plus léger, plus jamais de fond blanc après un changement de thème ou une rotation, en-tête compact sur téléphone, saisie du terminal visible.
 
 ## [0.3.34] — 2026-11-03
