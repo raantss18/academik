@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 37,
-  "version": "0.3.34",
+  "build": 38,
+  "version": "0.3.35",
   "notes": {
-   "fr": "Les nouvelles versions de l'application s'annoncent tout de suite, sans attendre la fin du téléchargement des cours. « Vérifier les mises à jour » te dit clairement si tu as la dernière version, si le serveur est injoignable, ou quelle version est disponible. Les cours se téléchargent aussi plus vite.",
-   "en": "New app versions are announced right away, without waiting for the lessons to finish downloading. “Check for updates” now tells you clearly whether you have the latest version, whether the server is unreachable, or which version is available. Lessons also download faster."
+   "fr": "La carte devient un monde fantastique : de grandes îles flottantes sur des montagnes renversées, reliées par des ponts suspendus ou de pierre, avec des pics, des cascades et des îlots déserts. Sur chaque île, un chemin passe par chaque niveau, et la partie parcourue brille en or. Chaque niveau s'ouvre comme un dossier de mission et se termine par un rapport ; en haut, ta carte de joueur et celle de Kintana encadrent un ruban doré. L'application économise aussi la batterie et la mémoire.",
+   "en": "The map becomes a fantasy world: large floating islands on upside-down mountains, linked by rope or stone bridges, with peaks, waterfalls and uninhabited islets. On each island, a path runs through every level, and the part you have travelled glows gold. Each level opens as a mission file and ends with a report; at the top, your player card and Kintana's frame a golden ribbon. The app also saves battery and memory."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.34/academik-0.3.34.apk",
-    "sha256": "a1db4410fa50383cf4d5e506431b3249ca7f4f9038afd01a5f3f7d8548669ff3",
-    "bytes": 11542646
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.35/academik-0.3.35.apk",
+    "sha256": "599d426d9247cc9948997cc1e8fc1de816bd6534b245d8ad7f1d5b4919e2031b",
+    "bytes": 11553050
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.34/academik-0.3.34-x86_64.AppImage",
-    "sha256": "832936e7c88b1c3c28fd3b0ad16ab60b25fb37597c569af480329988283cd2da",
-    "bytes": 115984888
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.35/academik-0.3.35-x86_64.AppImage",
+    "sha256": "766abe89142f41190167c8cf4df41808bb556c2793441eadc780884103975dce",
+    "bytes": 115993080
    }
   }
  },
  "history": [
+  {
+   "build": 37,
+   "version": "0.3.34",
+   "notes": {
+    "fr": "Les nouvelles versions de l'application s'annoncent tout de suite, sans attendre la fin du téléchargement des cours. « Vérifier les mises à jour » te dit clairement si tu as la dernière version, si le serveur est injoignable, ou quelle version est disponible. Les cours se téléchargent aussi plus vite.",
+    "en": "New app versions are announced right away, without waiting for the lessons to finish downloading. “Check for updates” now tells you clearly whether you have the latest version, whether the server is unreachable, or which version is available. Lessons also download faster."
+   }
+  },
   {
    "build": 36,
    "version": "0.3.33",
@@ -252,14 +260,6 @@
    "notes": {
     "fr": "La nouvelle version de l'application est maintenant annoncée même après avoir fermé et rouvert l'app, avec les nouveautés des versions que tu as sautées. Les niveaux des modules 4 et 5 arrivent tout seuls.",
     "en": "The new app version is now announced even after closing and reopening the app, with what's new in the versions you skipped. Levels for modules 4 and 5 arrive by themselves."
-   }
-  },
-  {
-   "build": 5,
-   "version": "0.3.2",
-   "notes": {
-    "fr": "Tu reprends maintenant une leçon là où tu l'avais laissée, et « Continuer » te mène au niveau suivant dès que tu as 50 %. Le bouton ← et le bouton retour du téléphone te ramènent à la carte d'avant ; le logo te ramène à l'accueil. Si tu te trompes, la réponse n'est plus montrée.",
-    "en": "You now resume a lesson where you left it, and “Continue” takes you to the next level once you reach 50%. The ← button and the phone's back button take you to the previous card; the logo takes you home. If you get it wrong, the answer is no longer shown."
    }
   }
  ]
