@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 34,
-  "version": "0.3.31",
+  "build": 35,
+  "version": "0.3.32",
   "notes": {
-   "fr": "Nouveaux défis ★★ facultatifs dans 13 niveaux (Syracuse, zéros de n!, anagrammes, permutations, notation polonaise inverse, déterminant, méthode de Simpson…) : ils ne comptent pas dans le score et tu peux les passer. Sur les QCM, tu peux dire si tu es sûr·e avant de vérifier. Le menu du logo affiche « Ma semaine », calculée sur ton appareil.",
-   "en": "New optional ★★ challenges in 13 levels (Collatz, zeros of n!, anagrams, permutations, reverse Polish notation, determinant, Simpson's rule…): they don't count towards the score and you can skip them. On multiple-choice questions, you can say whether you are sure before checking. The logo menu shows “My week”, computed on your device."
+   "fr": "Chaque niveau annonce maintenant ce que tu vas apprendre, et l'écran de fin le coche. Sous les exemples Python, tu vois ce que le programme affiche vraiment. Les longues consignes sont découpées en étapes, et un bouton t'emmène au niveau suivant. Une soixantaine d'exemples de code mal affichés et quelques fautes ont été corrigés.",
+   "en": "Each level now announces what you will learn, and the end screen ticks it off. Under Python examples, you see what the program really prints. Long instructions are split into steps, and a button takes you to the next level. About sixty badly displayed code examples and a few typos were fixed."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.31/academik-0.3.31.apk",
-    "sha256": "93ce79e6ddb56df054da32c9ba9c1e7b74279471cff102e1ba4ec7783447264d",
-    "bytes": 11506914
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.32/academik-0.3.32.apk",
+    "sha256": "1b4cda71bb0d122bce0feb1934d204565581d926509398f3c5ce0dbec323e431",
+    "bytes": 11529766
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.31/academik-0.3.31-x86_64.AppImage",
-    "sha256": "9634938f6e13208f9926c47a121d29352872e91f3e1fc8ab30b015bcd0f1b0cc",
-    "bytes": 115956216
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.32/academik-0.3.32-x86_64.AppImage",
+    "sha256": "a5d2fcb0c322cacb574844b82a7a0a68674a9bf6a43dddfc553027b79be2355e",
+    "bytes": 115980792
    }
   }
  },
  "history": [
+  {
+   "build": 34,
+   "version": "0.3.31",
+   "notes": {
+    "fr": "Nouveaux défis ★★ facultatifs dans 13 niveaux (Syracuse, zéros de n!, anagrammes, permutations, notation polonaise inverse, déterminant, méthode de Simpson…) : ils ne comptent pas dans le score et tu peux les passer. Sur les QCM, tu peux dire si tu es sûr·e avant de vérifier. Le menu du logo affiche « Ma semaine », calculée sur ton appareil.",
+    "en": "New optional ★★ challenges in 13 levels (Collatz, zeros of n!, anagrams, permutations, reverse Polish notation, determinant, Simpson's rule…): they don't count towards the score and you can skip them. On multiple-choice questions, you can say whether you are sure before checking. The logo menu shows “My week”, computed on your device."
+   }
+  },
   {
    "build": 33,
    "version": "0.3.30",
@@ -252,14 +260,6 @@
    "notes": {
     "fr": "Les cours sont plus clairs : formules bien écrites, code en couleurs, encadrés « À retenir » et « Piège », exemples qui montrent la ligne expliquée. Un nouveau module arrive : Raisonner (logique, preuves, récurrence, congruences).",
     "en": "Courses are clearer: properly typeset formulas, coloured code, “Key takeaway” and “Pitfall” boxes, examples that highlight the line being explained. A new module arrives: Reasoning (logic, proofs, induction, congruences)."
-   }
-  },
-  {
-   "build": 2,
-   "version": "0.2.0",
-   "notes": {
-    "fr": "Les niveaux se mettent maintenant à jour tout seuls, sans réinstaller l'app. Tu es prévenu quand une nouvelle version de l'application est disponible, avec ce qu'elle apporte.",
-    "en": "Levels now update by themselves, with no need to reinstall the app. You are told when a new version of the app is available, with what it brings."
    }
   }
  ]
