@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-02",
+  "updated": "2026-11-03",
   "phase": 2,
   "done": [
     "cadrage",
@@ -26,7 +26,8 @@
     "module 10 séries temporelles ; budget de premier chargement tenu ; version 0.3.19",
     "immersion : zoom GPU, fond par quartier, chemin et silhouette ; version 0.3.21",
     "modules 11 à 20, boss final (21) et bonus Recherche (22) et Enquêtes (23) ; versions 0.3.22 à 0.3.35",
-    "vérification des sources, des chiffres et du contenu ; CSP ; audit accessibilité ; réponses tolérantes"
+    "vérification des sources, des chiffres et du contenu ; CSP ; audit accessibilité ; réponses tolérantes",
+    "E55 : accueil sans clignotement (décor en image fixe + calque), plateaux, rivières, ponts, cascades"
   ],
   "in_progress": [
     "module R (bonus recherche) à concevoir",

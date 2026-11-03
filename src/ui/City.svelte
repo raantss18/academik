@@ -1,7 +1,10 @@
 <script module lang="ts">
   // E49 : la ville coûte ~300 ms à générer (SVG de 2 Mo, ~17 000 formes) et était refaite à chaque retour sur l'accueil. On garde la
   // dernière, et on ne régénère que si la progression, la langue ou les réglages ont changé.
-  let memo: { key: string; out: { svg: string; width: number } } | null = null;
+  // E55 : le décor est une image (adresse blob gardée ici) ; le générateur aussi est gardé, pour que le retour sur l'accueil soit immédiat
+  // (avant, la carte passait par « … » le temps de recharger le module, puis le navigateur reconstruisait ses 28 000 formes : l'accueil clignotait).
+  let memo: { key: string; out: { decor: string; over: string; width: number; height: number }; url: string } | null = null;
+  let genMod: typeof import('../lib/city/gen.js') | null = null;
 </script>
 
 <script lang="ts">
@@ -17,15 +20,19 @@
   let { districts, current, onplay }: { districts: CityDistrict[]; current: string | null | undefined; onplay: (id: string) => void } = $props();
 
   type Gen = typeof import('../lib/city/gen.js');
-  let gen = $state<Gen | null>(null), failed = $state(false), box: HTMLElement | undefined = $state(), sel = $state<string | null>(null), play: HTMLButtonElement | undefined = $state();
-  onMount(() => { import('../lib/city/gen.js').then(m => (gen = m), () => (failed = true)); });
+  let gen = $state<Gen | null>(genMod), failed = $state(false), box: HTMLElement | undefined = $state(), carte: HTMLElement | undefined = $state(), sel = $state<string | null>(null), play: HTMLButtonElement | undefined = $state();
+  onMount(() => { if (!gen) import('../lib/city/gen.js').then(m => (gen = genMod = m), () => (failed = true)); });
   const fr = $derived(i18n.lang === 'fr');
   const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   const out = $derived.by(() => {
     if (!gen) return null;
     const opts = { reduce, brand: 'academik', top: fr ? 'Le Rova — Recherche' : 'The Rova — Research' }, key = JSON.stringify([districts, opts]);
-    if (memo?.key !== key) memo = { key, out: gen.renderCity(districts, opts) };
-    return memo.out;
+    if (memo?.key !== key) {
+      const o = gen.renderCity(districts, opts), url = URL.createObjectURL(new Blob([o.decor], { type: 'image/svg+xml' }));
+      if (memo) URL.revokeObjectURL(memo.url);
+      memo = { key, out: { decor: o.decor, over: o.over, width: o.width, height: o.height }, url };
+    }
+    return memo;
   });
 
   // Au premier affichage, on centre la ville sur le niveau à jouer.
@@ -40,17 +47,17 @@
   // la taille réelle n'est modifiée qu'une fois, à la fin du geste (`commit`), ce qui re-rasterise net. Garde-fou E32.
   let live: { nz: number; px: number; py: number; ox: number; oy: number } | null = null, wheelTimer = 0;
   function preview(nz: number, fx?: number, fy?: number) {
-    const svg = box?.querySelector<SVGElement>('svg'); if (!box || !svg) return;
+    const el = carte; if (!box || !el) return;
     nz = Math.min(MAXZ, Math.max(1, nz)); const r = box.getBoundingClientRect();
     const px = fx ?? r.width / 2, py = fy ?? r.height / 2, ox = box.scrollLeft + px, oy = box.scrollTop + py;
-    svg.style.willChange = 'transform'; svg.style.transformOrigin = `${ox}px ${oy}px`; svg.style.transform = `scale(${nz / z})`;
+    el.style.willChange = 'transform'; el.style.transformOrigin = `${ox}px ${oy}px`; el.style.transform = `scale(${nz / z})`;
     live = { nz, px, py, ox, oy };
   }
   function commit() {
-    const svg = box?.querySelector<SVGElement>('svg'); if (!live || !box || !svg) return;
+    const el = carte; if (!live || !box || !el) return;
     const { nz, px, py, ox, oy } = live, f = nz / z; live = null; clearTimeout(wheelTimer);
-    svg.style.transform = ''; svg.style.transformOrigin = ''; svg.style.willChange = '';
-    z = nz; svg.style.width = `${nz * 100}%`; svg.style.minWidth = `${BASE * nz}px`;
+    el.style.transform = ''; el.style.transformOrigin = ''; el.style.willChange = '';
+    z = nz; el.style.width = `${nz * 100}%`; el.style.minWidth = `${BASE * nz}px`;
     box.scrollLeft = ox * f - px; box.scrollTop = oy * f - py;
   }
   const zoomTo = (nz: number, fx?: number, fy?: number) => { preview(nz, fx, fy); commit(); };
@@ -77,8 +84,8 @@
   let still = $state(false), repos = 0;
   function reveil() {
     clearTimeout(repos);
-    if (still) { still = false; box?.querySelector<SVGSVGElement>('svg')?.unpauseAnimations?.(); }
-    repos = window.setTimeout(() => { still = true; box?.querySelector<SVGSVGElement>('svg')?.pauseAnimations?.(); }, REPOS);
+    if (still) { still = false; box?.querySelector<SVGSVGElement>('svg.over')?.unpauseAnimations?.(); }
+    repos = window.setTimeout(() => { still = true; box?.querySelector<SVGSVGElement>('svg.over')?.pauseAnimations?.(); }, REPOS);
   }
   $effect(() => { if (!out || !box) return; void tick().then(reveil); return () => clearTimeout(repos); });
   const pick = (e: Event) => { const p = (e.target as Element).closest<SVGElement>('.pin'); if (p?.dataset.id) { sel = p.dataset.id; void tick().then(() => play?.focus()); } };
@@ -99,7 +106,7 @@
 </script>
 
 <div class="city" class:still bind:this={box} onclick={pick} onkeydown={(e) => { reveil(); key(e); }} onpointerdown={(e) => { reveil(); down(e); }} onpointermove={move} onpointerup={up} onpointercancel={up} onscroll={reveil} onwheel={reveil} role="presentation">
-  {#if out}{@html out.svg}{:else if failed}<p class="msg">{fr ? 'La carte n’a pas pu se charger : utilise la vue liste.' : 'The map could not load: use the list view.'}</p>{:else}<p class="msg">…</p>{/if}
+  {#if out}<div class="carte" bind:this={carte} style="aspect-ratio:{out.out.width} / {out.out.height}"><img src={out.url} alt="" draggable="false" decoding="async" />{@html out.out.over}</div>{:else if failed}<p class="msg">{fr ? 'La carte n’a pas pu se charger : utilise la vue liste.' : 'The map could not load: use the list view.'}</p>{:else}<p class="msg">…</p>{/if}
 </div>
 
 {#if out}
@@ -149,7 +156,9 @@
 
 <style>
   .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / .22) transparent; background: radial-gradient(120% 50% at 50% 0%, #1f2f36, #0d171b 45%, #05090b 100%); }   /* nuit noire et bleutée de la carte fantastique */
-  .city :global(svg) { display: block; min-width: 2300px; width: 100%; height: auto; }   /* = BASE (E50, E53) */
+  .carte { position: relative; min-width: 2300px; width: 100%; }   /* = BASE (E50, E53) */
+  .carte img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; user-select: none; -webkit-user-select: none; }
+  .carte :global(svg.over) { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; } .carte :global(.pin) { pointer-events: auto; }
   .zoom { position: fixed; right: calc(var(--sar) + 12px); top: 50%; z-index: 6; display: grid; gap: 6px; transform: translateY(-50%); }
   .zoom button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .22); background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); color: #f2f4ff; font-size: 1.4rem; line-height: 1; cursor: pointer; } .zoom button:disabled { opacity: .35; }
   .msg { color: #cfd3ec; text-align: center; padding: 40px 16px; }

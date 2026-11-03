@@ -2,6 +2,8 @@
 // Fonction pure : données de progression → texte SVG. Chaque quartier a son identité (thème), son tracé et ses bâtiments ;
 // un bâtiment repère par niveau, qui s'allume avec les étoiles. Le même tirage (SEED) donne toujours la même ville.
 let DATA = [], REDUCE = false;
+/** Police du décor : une image SVG ne voit ni les variables CSS ni les polices de la page (repli système, mêmes métriques à peu près). */
+const FONT = "'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 // Identité de chaque quartier : matériaux, rues, végétation, repères. Rien n'est partagé d'un quartier à l'autre.
 const WARM = ['#ffd36b', '#ffcf80', '#ffe9a8', '#ffb86b'];
 const THEMES = [
@@ -504,7 +506,7 @@ function drawCrystal(c) {
 function drawWindmill(c) {
   const R = c.R, sc = c.sc || 1, h = 44 * sc, r0 = .34 * sc; let s = '';
   for (let k = 0; k < 3; k++) s += cyl(c.x, c.y, r0 * (1 - k * .13), c.z + k * h / 3, h / 3, C('#efe6d2'), k === 2 ? { cap: 'cone', ch: 14 * sc, capCol: C('#a8322a') } : {});
-  const [hx, hy] = iso(c.x, c.y, c.z + h * .92), blade = `<g transform="translate(${fx(hx + 5)},${fx(hy + 3)})"><g>${REDUCE ? '' : '<animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14s" repeatCount="indefinite"/>'}`
+  const [hx, hy] = iso(c.x, c.y, c.z + h * .92), blade = `<g transform="translate(${fx(hx + 5)},${fx(hy + 3)})"><g>`
     + [0, 90, 180, 270].map(a => `<g transform="rotate(${a})"><rect x="-1.6" y="-34" width="3.2" height="34" fill="#d9d2c0" stroke="#8a8068" stroke-width=".5"/><rect x="1.6" y="-33" width="7" height="16" fill="#efe6d2" opacity=".85"/></g>`).join('') + `<circle r="3" fill="#6a5a3a"/></g></g>`;
   return { s: s + blade, top: c.z + h + 20 };
 }
@@ -681,6 +683,36 @@ function falaise(g, th, R, d) {
   s += `<polyline points="${front.map(pt).join(' ')}" fill="none" stroke="${lueur}" stroke-opacity=".55" stroke-width="5" stroke-linejoin="round"/><polyline points="${front.map(q => pt([q[0], q[1] + 8])).join(' ')}" fill="none" stroke="${lueur}" stroke-opacity=".18" stroke-width="12" stroke-linejoin="round"/>`;
   return s;
 }
+/** Point dans un polygone (monde). */
+function dansPoly(poly, q) { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const a = poly[i], b = poly[j]; if ((a[1] > q[1]) !== (b[1] > q[1]) && q[0] < (b[0] - a[0]) * (q[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; }
+/** Croisement de deux segments (monde), ou null. */
+function croise(p, p2, q, q2) { const r = [p2[0] - p[0], p2[1] - p[1]], s = [q2[0] - q[0], q2[1] - q[1]], d = r[0] * s[1] - r[1] * s[0]; if (Math.abs(d) < 1e-9) return null;
+  const t = ((q[0] - p[0]) * s[1] - (q[1] - p[1]) * s[0]) / d, u = ((q[0] - p[0]) * r[1] - (q[1] - p[1]) * r[0]) / d; return t >= 0 && t <= 1 && u >= 0 && u <= 1 ? [p[0] + t * r[0], p[1] + t * r[1]] : null; }
+/** Haut plateau : un bloc de roche extrudé (murs tournés vers nous, éclairés de la gauche, avec une strate), dessus herbeux. */
+function mesa(bl, h, th) {
+  const n = bl.length, pt = q => q.map(fx).join(','), cx = bl.reduce((t, q) => t + q[0], 0) / n, cy = bl.reduce((t, q) => t + q[1], 0) / n;
+  const [sa, sb] = iso(cx, cy, 0); let s = `<ellipse cx="${fx(sa - 10)}" cy="${fx(sb + 8)}" rx="${fx(Math.max(...bl.map(q => Math.hypot(q[0] - cx, q[1] - cy))) * 40)}" ry="${fx(Math.max(...bl.map(q => Math.hypot(q[0] - cx, q[1] - cy))) * 20)}" fill="rgb(0 0 0 / .22)"/>`;
+  const murs = bl.map((p, i) => { const q = bl[(i + 1) % n], dx = q[0] - p[0], dy = q[1] - p[1], l = Math.hypot(dx, dy) || 1, nx = dy / l, ny = -dx / l; return { p, q, m: p[0] + p[1] + q[0] + q[1], vu: nx + ny > 0, k: .82 - .3 * (nx - ny) / Math.SQRT2 }; }).filter(f => f.vu).sort((a, b) => a.m - b.m);
+  for (const f of murs) { const col = C(shade(th.cliff, Math.max(.45, Math.min(1.15, f.k))));
+    s += `<polygon points="${pt(iso(f.p[0], f.p[1], 0))} ${pt(iso(f.q[0], f.q[1], 0))} ${pt(iso(f.q[0], f.q[1], h))} ${pt(iso(f.p[0], f.p[1], h))}" fill="${col}" stroke="${col}" stroke-width=".6"/>`
+      + `<line x1="${fx(iso(f.p[0], f.p[1], h * .45)[0])}" y1="${fx(iso(f.p[0], f.p[1], h * .45)[1])}" x2="${fx(iso(f.q[0], f.q[1], h * .45)[0])}" y2="${fx(iso(f.q[0], f.q[1], h * .45)[1])}" stroke="rgb(0 0 0 / .22)" stroke-width="1.6"/>`; }
+  const dessus = bl.map(q => iso(q[0], q[1], h));
+  return s + `<polygon points="${dessus.map(pt).join(' ')}" fill="${C(mix(th.lip, th.top, .3))}" stroke="${C(shade(th.lip, 1.2))}" stroke-width="1.4" stroke-linejoin="round"/><polygon points="${dessus.map(pt).join(' ')}" fill="url(#dome)"/>`;
+}
+/** Rivière (points écran) : berge, eau, reflet ; elle s'élargit vers l'aval. */
+function eau(pts, col, k = 1) {
+  const pt = q => q.map(fx).join(','), n = pts.length; let s = '';
+  for (const [a, b, w] of [[0, .4, .65], [.4, .75, .85], [.75, 1, 1]]) { const tr = pts.slice(Math.floor(a * (n - 1)), Math.ceil(b * (n - 1)) + 1).map(pt).join(' '), W = w * k;
+    s += `<polyline points="${tr}" fill="none" stroke="${C('#5a4a30')}" stroke-width="${fx(17 * W)}" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${tr}" fill="none" stroke="${C(col)}" stroke-width="${fx(11 * W)}" stroke-linejoin="round" stroke-linecap="round"/>`
+      + `<polyline points="${tr}" fill="none" stroke="#9fe6ff" stroke-opacity=".55" stroke-width="${fx(2.2 * W)}" stroke-dasharray="7 9" stroke-linecap="round"/>`; }
+  return s;
+}
+/** Chute d'eau qui part d'un point écran et descend de H pixels, avec sa brume. */
+function cascade(m, H, w) {
+  const d = `M${fx(m[0])} ${fx(m[1])}q${fx(w * .4)} ${fx(H * .45)} ${fx(-w * .25)} ${fx(H)}`;
+  return `<path d="${d}" fill="none" stroke="#3ad6ff" stroke-opacity=".16" stroke-width="${fx(w * 2.6)}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#7fd8ff" stroke-width="${fx(w)}" stroke-linecap="round" opacity=".85"/>`
+    + `<path d="${d}" fill="none" stroke="#e8fbff" stroke-width="${fx(w * .3)}" stroke-dasharray="5 7" stroke-linecap="round"/><ellipse cx="${fx(m[0] - w * .25)}" cy="${fx(m[1] + H)}" rx="${fx(w * 2)}" ry="${fx(w * .7)}" fill="#c8f4ff" opacity=".35"/>`;
+}
 const polyZ = (pts, fill, extra = '') => `<polygon points="${pts.map(P).join(' ')}" fill="${fill}"${extra}/>`;
 
 // =====================================================================================================
@@ -734,6 +766,7 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   // ---- terrain du quartier : plusieurs couches de contour qui s'estompent vers l'extérieur, puis des taches de sol
   // Île flottante (refonte d'après la carte fantastique) : une masse rocheuse en pointe pend sous l'île, éclairée d'un liseré violet ou orangé.
   ground += falaise(g, th, R, d) + polyZ(outline(g, 1.07), C(mix(th.lip, th.top, .5)), ' opacity=".9"') + polyZ(outline(g, 1), C(th.top));
+  ground += polyZ(outline(g, 1), 'url(#dome)');   // modelé : bombé éclairé en haut à gauche, assombri vers les bords
   ground += `<polyline points="${outline(g, 1, 44).concat([outline(g, 1, 44)[0]]).map(P).join(' ')}" fill="none" stroke="rgb(0 0 0 / .18)" stroke-width="2" stroke-linejoin="round"/>`;
   for (let i = 0; i < 16; i++) { const rx = rr(R, .5, 1.6), ry = rr(R, .5, 1.6), [x, y] = pt(); if (inb(x, y, .3)) ground += polyZ(blob(x, y, rx, ry, z, R, 14), C(pick(R, th.patches)), ' opacity=".55"'); }
 
@@ -752,14 +785,51 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   const fits = (x, y, w, dd, ang, rc = .5, gap = .85) => {
     const cs = corners(x, y, w, dd, ang); for (const q of cs) if (!inb(q[0], q[1], .25)) return false;
     const r = Math.hypot(w, dd) / 2 * gap; for (const o of obs) if (Math.hypot(o.x - x, o.y - y) < r + o.r) return false;
-    for (const q of cs) if (presRoute(q[0], q[1], rc)) return false;
-    return !presRoute(x, y, rc);
+    for (const q of cs) if (presRoute(q[0], q[1], rc) || presRiv(q[0], q[1], .25)) return false;
+    return !presRoute(x, y, rc) && !presRiv(x, y, .25);
   };
+  // ---- relief et eau (demande d'Antsa : « des reliefs, des rivières ») : un haut plateau en falaise au fond de l'île, coiffé de pics,
+  // d'où une rivière descend en cascade, traverse la ville (un pont à chaque rue croisée) et tombe du bord de l'île.
+  const rsegs = [], presRiv = (x, y, rc) => { for (const s of rsegs) { if (x < s.x0 - rc || x > s.x1 + rc || y < s.y0 - rc || y > s.y1 + rc) continue; if (segD(x, y, s.a, s.b) - s.hw < rc) return true; } return false; };
+  let plateau = null;
+  for (let tr = 0; tr < 24 && !plateau; tr++) {
+    const t = Math.PI * 1.25 + rr(R, -1.1, 1.1), k = rr(R, .45, .6), x = g.cx + Math.cos(t) * g.r(t) * k, y = g.cy + Math.sin(t) * g.r(t) * k, rx = g.base * rr(R, .27, .35), ry = rx * rr(R, .75, .95);
+    const bl = blob(x, y, rx, ry, 0, R, 14, .14);
+    if (presRoute(x, y, Math.min(rx, ry)) || bl.some(q => !inb(q[0], q[1], .4) || presRoute(q[0], q[1], .45))) continue;
+    plateau = { x, y, rx, ry, bl, h: rr(R, 34, 52) };
+  }
+  const aE = Math.atan2(g.E[1] - g.cy, g.E[0] - g.cx), aX = Math.atan2(g.X[1] - g.cy, g.X[0] - g.cx), ecart = (a, b) => Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b)));
+  let tm = null; for (let tr = 0; tr < 30 && tm === null; tr++) { const t = Math.PI / 4 + rr(R, -1.15, 1.15); if (ecart(t, aE) > .6 && ecart(t, aX) > .6) tm = t; }
+  let riviere = null;
+  if (tm !== null) {
+    const S = plateau ? [plateau.x + rr(R, -.2, .2) * plateau.rx, plateau.y + rr(R, -.2, .2) * plateau.ry] : [g.cx + Math.cos(tm + Math.PI) * g.r(tm + Math.PI) * .6, g.cy + Math.sin(tm + Math.PI) * g.r(tm + Math.PI) * .6];
+    const Mo = [g.cx + Math.cos(tm) * g.r(tm), g.cy + Math.sin(tm) * g.r(tm)];
+    const pts = spline(wiggle(S, Mo, R, g.base * .22, 2), 8).map((q, i, a) => { let [x, y] = q; for (let k = 0; k < 8 && i < a.length - 3 && !inside(g, x, y, .5); k++) { x = g.cx + (x - g.cx) * .92; y = g.cy + (y - g.cy) * .92; } return [x, y]; });
+    pts[pts.length - 1] = Mo;
+    const i0 = plateau ? Math.max(1, pts.findIndex(q => !dansPoly(plateau.bl, q))) : 0;
+    riviere = { pts, i0, S, Mo };
+    for (let i = Math.max(1, i0); i < pts.length; i++) { const a = pts[i - 1], b = pts[i]; rsegs.push({ a, b, hw: .3, x0: Math.min(a[0], b[0]) - .3, x1: Math.max(a[0], b[0]) + .3, y0: Math.min(a[1], b[1]) - .3, y1: Math.max(a[1], b[1]) + .3 }); }
+  }
+  if (plateau) obs.push({ x: plateau.x, y: plateau.y, r: Math.max(plateau.rx, plateau.ry) * 1.08 });
+  if (riviere) {
+    const { pts, i0 } = riviere, bas = pts.slice(Math.max(0, i0 - 1)), eauC = th.lake ?? '#2c6a8f';
+    ground += eau(bas.map(q => iso(q[0], q[1], 0)), eauC);
+    const m = iso(riviere.Mo[0], riviere.Mo[1], 0), H = rr(R, 150, 230);
+    ground += cascade(m, H, 9);   // la rivière tombe du bord de l'île, le long de la falaise
+  }
+  if (plateau) {
+    const { x, y, h } = plateau; let s = mesa(plateau.bl, h, th);
+    if (riviere && riviere.i0 > 0) { const haut = riviere.pts.slice(0, riviere.i0 + 1).map(q => iso(q[0], q[1], h)); s += eau(haut, th.lake ?? '#2c6a8f', .7) + cascade(haut[haut.length - 1], h, 5); }
+    const parts = [];
+    for (let k = 0; k < 2; k++) { const a = R() * 6.28, px = x + Math.cos(a) * plateau.rx * .4, py = y + Math.sin(a) * plateau.ry * .4; if (riviere && riviere.pts.slice(0, riviere.i0).some(q => Math.hypot(q[0] - px, q[1] - py) < .7)) continue; parts.push({ k: px + py, s: drawPeak(px, py, h, R, th, rr(R, 1.1, 1.6), rr(R, .9, 1.3)) }); }
+    for (let k = 0; k < 4; k++) { const a = R() * 6.28, px = x + Math.cos(a) * plateau.rx * .7, py = y + Math.sin(a) * plateau.ry * .7; if (dansPoly(plateau.bl, [px, py])) parts.push({ k: px + py, s: tree('conifer', px, py, h, R, th) }); }
+    items.push({ k: x + y + Math.max(plateau.rx, plateau.ry) * .3, s: s + parts.sort((a, b) => a.k - b.k).map(q => q.s).join('') });
+  }
   const addShadow = (c, topAbs) => { const hh = Math.max(0, topAbs - c.z), k = Math.min(2.2, hh / ZP * .9), cs = corners(c.x, c.y, c.w, c.d, c.ang); shadows.push(polyZ(hull(cs.concat(cs.map(q => [q[0] - k, q[1] - k * .35]))).map(q => [q[0], q[1], z]), 'rgb(0 0 0 / .27)')); };
 
   // ---- étang
   if (th.lake) for (let tr = 0; tr < 40; tr++) { const rx = rr(R, .9, 1.5), ry = rr(R, .8, 1.3), [x, y] = pt(1);
-    if (inb(x, y, Math.max(rx, ry) + .3) && roadInfo(x, y).d > Math.max(rx, ry) + .45 && obs.every(o => Math.hypot(o.x - x, o.y - y) > o.r + Math.max(rx, ry))) {
+    if (inb(x, y, Math.max(rx, ry) + .3) && roadInfo(x, y).d > Math.max(rx, ry) + .45 && !presRiv(x, y, Math.max(rx, ry) + .2) && obs.every(o => Math.hypot(o.x - x, o.y - y) > o.r + Math.max(rx, ry))) {
       const bl = blob(x, y, rx, ry, z, R, 18, .14); ground += polyZ(bl.map(q => [x + (q[0] - x) * 1.12, y + (q[1] - y) * 1.12, z]), C('#8a7a5a')) + polyZ(bl, C(th.lake)) + polyZ(bl.map(q => [x + (q[0] - x) * .6, y + (q[1] - y) * .6, z]), C(mix(th.lake, '#9fd0ff', .25)), ' opacity=".6"');
       if (reached) for (let k = 0; k < 4; k++) { const [a, b] = iso(x + rr(R, -rx * .5, rx * .5), y + rr(R, -ry * .5, ry * .5), z); ground += `<ellipse class="twinkle" style="animation-delay:${fx(R() * 3)}s" cx="${fx(a)}" cy="${fx(b)}" rx="${fx(rr(R, 3, 7))}" ry="1" fill="#f4ecd2" opacity=".6"/>`; }
       obs.push({ x, y, r: Math.max(rx, ry) * 1.05 }); break; } }
@@ -817,13 +887,13 @@ function buildDistrict(d, SEED, pinsOut, lay) {
   // ---- arbres, par bosquets
   const seeds = []; for (let i = 0, a = 0; i < th.nTrees && a < th.nTrees * 12; a++) {
     const cl2 = seeds.length && R() < .55 ? seeds[Math.floor(R() * seeds.length)] : null, [x0, y0] = pt(.3), x = cl2 ? cl2[0] + rr(R, -.8, .8) : x0, y = cl2 ? cl2[1] + rr(R, -.8, .8) : y0;
-    if (!inb(x, y, .2) || roadInfo(x, y).d < .42 || obs.some(o => Math.hypot(o.x - x, o.y - y) < o.r * .95 + .12)) continue;
+    if (!inb(x, y, .2) || roadInfo(x, y).d < .42 || presRiv(x, y, .15) || obs.some(o => Math.hypot(o.x - x, o.y - y) < o.r * .95 + .12)) continue;
     seeds.push([x, y]); items.push({ k: x + y, s: tree(wpick(R, th.trees), x, y, z, R, th) }); i++;
   }
   // ---- détails des rues : lampadaires (allumés selon l'avancement), étals, voitures, caisses, passants
   for (const kind in th.props) for (let i = 0; i < th.props[kind]; i++) {
     const rd = roads[Math.floor(R() * roads.length)], p = measure(rd.pts).at(rr(R, .05, .95)), side = R() < .5 ? 1 : -1, off = rd.hw + (kind === 'lamp' ? .12 : rr(R, .12, .4)), x = p[0] - p[3] * side * off, y = p[1] + p[2] * side * off, ang = Math.atan2(p[3], p[2]);
-    if (!inb(x, y, .25) || obs.some(o => Math.hypot(o.x - x, o.y - y) < o.r * .9 + .15)) continue;
+    if (!inb(x, y, .25) || presRiv(x, y, .1) || obs.some(o => Math.hypot(o.x - x, o.y - y) < o.r * .9 + .15)) continue;
     const [a, b] = iso(x, y, z), on = reached && R() < .25 + .75 * D.progress;
     if (kind === 'lamp') items.push({ k: x + y + .8, s: `<line x1="${fx(a)}" y1="${fx(b)}" x2="${fx(a)}" y2="${fx(b - 17)}" stroke="#555b6e" stroke-width="1.5"/>` + (on ? `<circle cx="${fx(a)}" cy="${fx(b - 18)}" r="11" fill="url(#halo)"/>` : '') + `<circle cx="${fx(a)}" cy="${fx(b - 18)}" r="2.4" fill="${on ? '#ffe7a3' : '#3d4256'}"/>` });
     else if (kind === 'stall') { const c = { x, y, ang, w: .5, d: .34, z, R, th }; items.push({ k: x + y, s: drawStall(c).s }); }
@@ -840,8 +910,13 @@ function buildDistrict(d, SEED, pinsOut, lay) {
     roadSvg += `<polyline points="${pl}" fill="none" stroke="${C(shade(th.road, .55))}" stroke-width="${rd.w + 4}" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pl}" fill="none" stroke="${C(th.road)}" stroke-width="${rd.w}" stroke-linejoin="round" stroke-linecap="round"/>`
       + (rd === roads[0] ? `<polyline points="${pl}" fill="none" stroke="${C(th.roadHi)}" stroke-width="${th.dash ? 1.8 : 1}" ${th.dash ? 'stroke-dasharray="6 7"' : 'stroke-dasharray="1 5" opacity=".7"'} stroke-linecap="round"/>` : '');
   }
-  if (reached && !REDUCE) for (let k = 0; k < 2; k++) { const dir = k ? main.slice().reverse() : main, path = 'M' + dir.map(q => P([q[0], q[1], z])).join('L'), col = pick(R, ['#c0392b', '#2e86c1', '#e8e8e8', '#d4ac0d']);
-    roadSvg += `<g><rect x="-5" y="-6" width="10" height="5" rx="2" fill="${col}"/><rect x="-2.5" y="-9" width="5" height="3.4" rx="1.4" fill="${shade(col, .8)}"/><circle cx="5" cy="-4" r="1.3" fill="#fff6c0"/><animateMotion dur="${40 + k * 12}s" begin="-${fx(R() * 30)}s" repeatCount="indefinite" rotate="auto" path="${path}"/></g>`; }
+  if (riviere) for (const rd of roads) for (let i = 1; i < rd.pts.length; i++) for (const sg of rsegs) {
+    const I = croise(rd.pts[i - 1], rd.pts[i], sg.a, sg.b); if (!I) continue;
+    const u = unit(rd.pts[i - 1], rd.pts[i]), nx = -u[1], ny = u[0], o = rd.hw + .1;
+    for (const sd of [1, -1]) { const a = iso(I[0] + nx * o * sd - u[0] * .55, I[1] + ny * o * sd - u[1] * .55, 0), b = iso(I[0] + nx * o * sd + u[0] * .55, I[1] + ny * o * sd + u[1] * .55, 0);
+      roadSvg += `<line x1="${fx(a[0])}" y1="${fx(a[1])}" x2="${fx(b[0])}" y2="${fx(b[1])}" stroke="#4a3b2c" stroke-width="5" stroke-linecap="round"/><line x1="${fx(a[0])}" y1="${fx(a[1] - 2)}" x2="${fx(b[0])}" y2="${fx(b[1] - 2)}" stroke="#d8c9a8" stroke-width="2.4" stroke-linecap="round"/>`; }
+  }
+  // (E55) plus de voitures animées : le décor est une image fixe, dessinée une fois.
 
   // ---- enseigne du quartier : plusieurs emplacements possibles le long de la route d'entrée ; renderCity garde celui qui ne chevauche aucune épingle
   const label = D.label, tw = 34 + 7.2 * label.length, sg = reached ? lisible(D.color) : { fond: '#2a2f45', encre: '#ffffff' }, bd = sg.fond, signSpots = [];
@@ -920,8 +995,10 @@ export function renderCity(districts, opts = {}) {
     ilots.push({ d, g: { cx: wx, cy: wy, base: rad, r: t => rad * (1 + .16 * Math.sin(2 * t + p1) + .09 * Math.sin(3 * t + p2)) }, cascade: RI() < .45, box: bx }); break; }
   let decor = ''; cur.reached = true;
   for (const I of ilots) { const th = THEMES[DATA[I.d].theme % THEMES.length], R3 = rng(SEED * 31 + I.d * 97 + Math.round(I.g.cx * 10)), z = 0;
-    decor += '<g class="ilot">' + falaise(I.g, th, R3, I.d + 1) + polyZ(outline(I.g, 1.07), C(mix(th.lip, th.top, .5))) + polyZ(outline(I.g, 1), C(shade(th.lip, .9)));
-    const parts = []; if (R3() < .6) parts.push({ k: I.g.cx + I.g.cy, s: drawPeak(I.g.cx + rr(R3, -.3, .3), I.g.cy + rr(R3, -.3, .3), z, R3, th, I.g.base * .8, I.g.base * .7) });
+    decor += '<g class="ilot">' + falaise(I.g, th, R3, I.d + 1) + polyZ(outline(I.g, 1.07), C(mix(th.lip, th.top, .5))) + polyZ(outline(I.g, 1), C(shade(th.lip, .9))) + polyZ(outline(I.g, 1), 'url(#dome)');
+    const parts = []; if (R3() < .5) { const h = rr(R3, 16, 26), bl = blob(I.g.cx - I.g.base * .1, I.g.cy - I.g.base * .1, I.g.base * .42, I.g.base * .36, 0, R3, 12, .14);
+      parts.push({ k: I.g.cx + I.g.cy - 1, s: mesa(bl, h, th) + drawPeak(I.g.cx - I.g.base * .1, I.g.cy - I.g.base * .1, h, R3, th, I.g.base * .45, I.g.base * .4) }); }
+    else parts.push({ k: I.g.cx + I.g.cy, s: drawPeak(I.g.cx + rr(R3, -.3, .3), I.g.cy + rr(R3, -.3, .3), z, R3, th, I.g.base * .8, I.g.base * .7) });
     for (let t = 0; t < 2 + Math.floor(R3() * 3); t++) { const a = R3() * 6.28, r = I.g.base * rr(R3, .25, .7), x = I.g.cx + Math.cos(a) * r, y = I.g.cy + Math.sin(a) * r; parts.push({ k: x + y, s: tree(wpick(R3, th.trees), x, y, z, R3, th) }); }
     decor += parts.sort((a, b) => a.k - b.k).map(q => q.s).join('');
     if (I.cascade) { const e = iso(I.g.cx + I.g.base * .7, I.g.cy + I.g.base * .7, 0); decor += `<path d="M${fx(e[0])} ${fx(e[1])}q4 60 -2 150" fill="none" stroke="#3ad6ff" stroke-opacity=".18" stroke-width="16" stroke-linecap="round"/><path d="M${fx(e[0])} ${fx(e[1])}q4 60 -2 150" fill="none" stroke="#9ff0ff" stroke-opacity=".85" stroke-width="3.4" stroke-linecap="round"/><ellipse cx="${fx(e[0] - 2)}" cy="${fx(e[1] + 152)}" rx="14" ry="5" fill="#9ff0ff" opacity=".25"/>`; }
@@ -1004,10 +1081,13 @@ export function renderCity(districts, opts = {}) {
     }
     pinSvg += g + '</g>';
   });
-  const svg = `<svg viewBox="${fx(minX)} ${fx(minY)} ${fx(VW)} ${fx(VH)}" xmlns="http://www.w3.org/2000/svg" role="group">`
-    + `<defs><radialGradient id="halo"><stop offset="0" stop-color="#ffe7a3" stop-opacity=".55"/><stop offset="1" stop-color="#ffe7a3" stop-opacity="0"/></radialGradient>`
-    + `<linearGradient id="ombre" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".05"/><stop offset=".55" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#05070b" stop-opacity=".92"/></linearGradient><filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${sky}${body}${signs}${brandSvg}${pinSvg}</svg>`;
-  return { svg, width: VW, boxes: { signs: signBoxes, pins: pins.map(pinBox) } };
+  // E55 : le décor (≈ 28 000 formes) devient une image fixe que le navigateur dessine une fois ; seuls les repères, enseignes et légendes
+  // (≈ 3 000 formes, avec texte dans la police de l'app) restent dans la page, dans un calque léger posé exactement par-dessus.
+  const vb = `${fx(minX)} ${fx(minY)} ${fx(VW)} ${fx(VH)}`, defs = `<defs><radialGradient id="halo"><stop offset="0" stop-color="#ffe7a3" stop-opacity=".55"/><stop offset="1" stop-color="#ffe7a3" stop-opacity="0"/></radialGradient>`
+    + `<radialGradient id="dome" cx=".36" cy=".3" r=".78"><stop offset="0" stop-color="#fff" stop-opacity=".13"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".3"/></radialGradient><linearGradient id="ombre" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".05"/><stop offset=".55" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#05070b" stop-opacity=".92"/></linearGradient><filter id="glow" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  const image = `<svg viewBox="${vb}" width="${fx(VW)}" height="${fx(VH)}" xmlns="http://www.w3.org/2000/svg">${defs}${sky}${body}</svg>`.replace(/var\(--font\)/g, FONT);
+  const over = `<svg class="over" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" role="group">${signs}${brandSvg}${pinSvg}</svg>`;
+  return { decor: image, over, get svg() { return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" role="group">${defs}${sky}${body}${signs}${brandSvg}${pinSvg}</svg>`; }, width: VW, height: VH, boxes: { signs: signBoxes, pins: pins.map(pinBox) } };
 }
 /** Thèmes disponibles (place = nom du quartier, blurb = ambiance), pour la fiche d'un niveau. */
 export const themeInfo = n => { const t = THEMES[n % THEMES.length]; return { place: t.place, blurb: t.blurb }; };
