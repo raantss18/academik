@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 35,
-  "version": "0.3.32",
+  "build": 36,
+  "version": "0.3.33",
   "notes": {
-   "fr": "Chaque niveau annonce maintenant ce que tu vas apprendre, et l'écran de fin le coche. Sous les exemples Python, tu vois ce que le programme affiche vraiment. Les longues consignes sont découpées en étapes, et un bouton t'emmène au niveau suivant. Une soixantaine d'exemples de code mal affichés et quelques fautes ont été corrigés.",
-   "en": "Each level now announces what you will learn, and the end screen ticks it off. Under Python examples, you see what the program really prints. Long instructions are split into steps, and a button takes you to the next level. About sixty badly displayed code examples and a few typos were fixed."
+   "fr": "Treize nouveaux défis ★★ facultatifs, du traitement des séries au calcul sécurisé : désaisonnaliser une série, retrouver un cycle caché, minimiser avec Adam, analogies entre mots, quantification par blocs, Diffie-Hellman jouet… Il y en a maintenant 26. Un fil d'Ariane en haut de chaque leçon te dit où tu es.",
+   "en": "Thirteen new optional ★★ challenges, from time series to secure computing: deseasonalise a series, find a hidden cycle, minimise with Adam, word analogies, block quantisation, toy Diffie-Hellman… There are now 26 of them. A breadcrumb at the top of each lesson tells you where you are."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.32/academik-0.3.32.apk",
-    "sha256": "1b4cda71bb0d122bce0feb1934d204565581d926509398f3c5ce0dbec323e431",
-    "bytes": 11529766
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.33/academik-0.3.33.apk",
+    "sha256": "762c1990d941db81d2145c1f8599a6d8b333fd68178e2a0aca3a919cd77fd42f",
+    "bytes": 11541978
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.32/academik-0.3.32-x86_64.AppImage",
-    "sha256": "a5d2fcb0c322cacb574844b82a7a0a68674a9bf6a43dddfc553027b79be2355e",
-    "bytes": 115980792
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.33/academik-0.3.33-x86_64.AppImage",
+    "sha256": "92a9ad71df5bcaa50fbecc5d8552e0dcdecfcd2760e122bd4c0b71dfd2fb4a1b",
+    "bytes": 115988984
    }
   }
  },
  "history": [
+  {
+   "build": 35,
+   "version": "0.3.32",
+   "notes": {
+    "fr": "Chaque niveau annonce maintenant ce que tu vas apprendre, et l'écran de fin le coche. Sous les exemples Python, tu vois ce que le programme affiche vraiment. Les longues consignes sont découpées en étapes, et un bouton t'emmène au niveau suivant. Une soixantaine d'exemples de code mal affichés et quelques fautes ont été corrigés.",
+    "en": "Each level now announces what you will learn, and the end screen ticks it off. Under Python examples, you see what the program really prints. Long instructions are split into steps, and a button takes you to the next level. About sixty badly displayed code examples and a few typos were fixed."
+   }
+  },
   {
    "build": 34,
    "version": "0.3.31",
@@ -252,14 +260,6 @@
    "notes": {
     "fr": "Les boutons du haut ne sont plus cachés par la barre d'état du téléphone. Les réglages, la langue, le thème, la synchronisation et les mises à jour sont dans le logo academik. Nouvelle icône : le « e » rouge.",
     "en": "The buttons at the top are no longer hidden by the phone's status bar. Settings, language, theme, sync and updates are in the academik logo. New icon: the red “e”."
-   }
-  },
-  {
-   "build": 3,
-   "version": "0.3.0",
-   "notes": {
-    "fr": "Les cours sont plus clairs : formules bien écrites, code en couleurs, encadrés « À retenir » et « Piège », exemples qui montrent la ligne expliquée. Un nouveau module arrive : Raisonner (logique, preuves, récurrence, congruences).",
-    "en": "Courses are clearer: properly typeset formulas, coloured code, “Key takeaway” and “Pitfall” boxes, examples that highlight the line being explained. A new module arrives: Reasoning (logic, proofs, induction, congruences)."
    }
   }
  ]
