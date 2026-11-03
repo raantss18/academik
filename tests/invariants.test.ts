@@ -385,4 +385,5 @@ describe('E45 · barre des références : objectifs, sorties exécutées, consig
   });
   it('R7 : durée annoncée honnête et courte (25 min au plus)', () => { expect(niveaux.filter(n => n.duree_min > 25).map(n => n.id)).toEqual([]); });
   it('R8 : la fin d’un niveau réussi propose le niveau suivant', () => { expect(app).toContain('nextLevel={nextOf(view.id)}'); expect(lesson).toContain("ui('next_level')"); });
+  it('R9 : un fil d’Ariane module › niveau › carte est toujours visible en leçon', () => { expect(lesson).toMatch(/<nav class="crumb" aria-label=\{ui\('crumb'\)\}>/); expect(lesson).toContain('crumbModule'); });
 });
