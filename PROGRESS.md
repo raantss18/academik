@@ -180,3 +180,8 @@
 
 - **Fait** : 13 défis ★★ de plus (26, modules 2 à 20) ; fil d'Ariane en leçon (R9) ; audit KaTeX / options / indices dans les tests (E46) ; AppImage 0.3.32 testée sur EndeavourOS (démarrage, hors ligne).
 - **Vérifié à l'écran** : défi ★★ de 2.2 résolu avec Python dans le navigateur, badge de fin, fil d'Ariane à 375 px. **Non vérifié** : leçon avec Python dans l'AppImage, Linux Mint, lecteur d'écran, vrais élèves.
+
+### Correctif des annonces de mise à jour (2026-11-03, 0.3.34)
+
+- **Fait** : E47 (signalé par Antsa) reproduit avec la vraie AppImage 0.3.29, corrigé (vérifications séparées, réponse claire, ancien téléchargement abandonné, contenu en parallèle) ; 859 tests.
+- **Limite honnête** : le correctif agit à partir de la 0.3.34 ; une app déjà installée en 0.3.29–0.3.33 garde l'ancien comportement (annonce après le téléchargement du contenu, environ une minute réseau ouvert, app ouverte) ou se met à jour par le site.
