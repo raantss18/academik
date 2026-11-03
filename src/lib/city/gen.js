@@ -745,17 +745,23 @@ function buildDistrict(d, SEED, pinsOut, lay) {
     roadSvg += `<g><rect x="-5" y="-6" width="10" height="5" rx="2" fill="${col}"/><rect x="-2.5" y="-9" width="5" height="3.4" rx="1.4" fill="${shade(col, .8)}"/><circle cx="5" cy="-4" r="1.3" fill="#fff6c0"/><animateMotion dur="${40 + k * 12}s" begin="-${fx(R() * 30)}s" repeatCount="indefinite" rotate="auto" path="${path}"/></g>`; }
 
   // ---- enseigne du quartier : plusieurs emplacements possibles le long de la route d'entrée ; renderCity garde celui qui ne chevauche aucune épingle
-  const label = D.label, tw = 34 + 7.2 * label.length, bd = reached ? D.color : '#2a2f45', signSpots = [];
+  const label = D.label, tw = 34 + 7.2 * label.length, sg = reached ? lisible(D.color) : { fond: '#2a2f45', encre: '#ffffff' }, bd = sg.fond, signSpots = [];
   for (const t of [.06, .02, .12, .2, .3]) for (const side of [1, -1]) for (const dist of [1, 1.9, 2.8]) { const q = M.at(t), [ga, gb] = iso(q[0] + q[3] * side * dist, q[1] - q[2] * side * dist, 0); signSpots.push([ga, gb]); }
   const signAt = (ga, gb) => `<g transform="translate(${fx(ga)},${fx(gb)})"><line x1="-6" y1="0" x2="-6" y2="-46" stroke="#4a3b2c" stroke-width="3"/><line x1="${fx(tw - 6)}" y1="0" x2="${fx(tw - 6)}" y2="-46" stroke="#4a3b2c" stroke-width="3"/>`
     + `<path d="M-12 -62H-2V-34H-12L-6 -48Z" fill="${shade(bd, .6)}"/><path d="M${fx(tw)} -62H${fx(tw - 10)}V-34H${fx(tw)}L${fx(tw - 6)} -48Z" fill="${shade(bd, .6)}"/>`
-    + `<rect x="-4" y="-64" width="${fx(tw - 4)}" height="28" rx="3" fill="${bd}" stroke="${reached ? '#e6c77a' : 'rgb(255 255 255 / .3)'}" stroke-width="1.5"/><path d="M-4 -59H${fx(tw - 8)}" stroke="rgb(255 255 255 / .22)" stroke-width="1"/><text x="${fx((tw - 12) / 2)}" y="-45" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="13" fill="#fff">${label}</text>`
+    + `<rect x="-4" y="-64" width="${fx(tw - 4)}" height="28" rx="3" fill="${bd}" stroke="${reached ? '#e6c77a' : 'rgb(255 255 255 / .3)'}" stroke-width="1.5"/><path d="M-4 -59H${fx(tw - 8)}" stroke="rgb(255 255 255 / .22)" stroke-width="1"/><text x="${fx((tw - 12) / 2)}" y="-45" text-anchor="middle" font-family="var(--font)" font-weight="800" font-size="13" fill="${sg.encre}">${label}</text>`
     + (reached ? `<circle cx="-1" cy="-64" r="2.6" fill="#ffe7a3"/><circle cx="${fx(tw - 9)}" cy="-64" r="2.6" fill="#ffe7a3"/>` : '') + `</g>`;
   const sign = { spots: signSpots, tw, at: signAt };
   items.sort((a, b) => a.k - b.k);
   return { pad: ground, road: roadSvg, shadows: shadows.join(''), items, sign };
 }
 
+/** Même règle que `banniere` (index.ts, E50) : fond assombri à 82 % et texte blanc, sinon couleur d'origine et texte sombre (AA ≥ 4,5:1). */
+function lisible(hex) {
+  const n = parseInt(hex.slice(1), 16), rgb = [n >> 16, (n >> 8) & 255, n & 255], lin = c => { c /= 255; return c <= .04045 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4; };
+  const lum = v => .2126 * lin(v[0]) + .7152 * lin(v[1]) + .0722 * lin(v[2]), sombre = rgb.map(v => Math.round(v * .82));
+  return (1.05) / (lum(sombre) + .05) >= 4.5 ? { fond: '#' + sombre.map(v => v.toString(16).padStart(2, '0')).join(''), encre: '#ffffff' } : { fond: hex, encre: '#1d1608' };
+}
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const wpoly = pts => pts.map(q => q.map(fx).join(',')).join(' ');
 

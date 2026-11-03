@@ -2,6 +2,8 @@
 
 ## [Non publié]
 
+- Critique de design (E50) : carte lisible au doigt (repères plus grands, texte des bannières lisible), bannières au contraste AA, liste en bannières et médaillons, briefing de mission au début des leçons.
+
 - Refonte immersive, étape 2 : ruban doré pour les points et la série, rapport de mission en fin de leçon, écran de chargement aux couleurs de la carte.
 
 - Refonte immersive, étape 1 : la fiche d'un niveau devient un dossier de mission (photo, difficulté, récompense, tampon) ; repères en médaillons dorés, enseignes en bannières, chemin lumineux dans les quartiers atteints.
