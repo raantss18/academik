@@ -186,3 +186,15 @@ describe('E53 · îles plus grandes, chemin des leçons, ponts fantastiques, rel
     expect(g).toContain('const base = rr(R, 6.0, 6.9)'); expect(g).toContain('Montagne renversée'); expect(g).toContain('for (const k of [.18, .38, .6])');
   });
 });
+
+describe('E54 · relief sur les îles et îlots déserts pour le décor', () => {
+  const d = buildDistricts(input({ scores: { '0.1': 1 }, open: new Set(['0.1', '0.2']), current: '0.2' }));
+  const out = renderCity(d, { reduce: true }), g = readFileSync('src/lib/city/gen.js', 'utf8');
+  it('pics rocheux et collines sur les îles', () => { expect(g).toContain('function drawPeak'); expect(g).toContain('function colline'); expect(g).toContain('relief de l’île'.replace('’', "'")); });
+  it('des îlots déserts, sans aucun repère de niveau', () => {
+    const ilots = out.svg.split('<g class="ilot">').slice(1).map(x => x.slice(0, x.indexOf('</g>')));
+    expect(ilots.length).toBeGreaterThanOrEqual(Math.ceil(d.length / 2));
+    for (const i of ilots) expect(i).not.toContain('class="pin"');
+    expect((out.svg.match(/class="pin"/g) ?? []).length).toBe(d.reduce((s, x) => s + x.levels.length, 0));
+  });
+});
