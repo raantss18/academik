@@ -2,6 +2,9 @@
 
 ## [Non publié]
 
+### Corrigé
+- La carte se parcourt à la souris en la tirant, sur le site et dans l'AppImage (seule la molette marchait) (E57).
+
 ## [0.3.37] — 2026-11-03
 
 ### Message fr

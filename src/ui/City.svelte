@@ -63,12 +63,24 @@
   const zoomTo = (nz: number, fx?: number, fy?: number) => { preview(nz, fx, fy); commit(); };
   const rel = (e: PointerEvent) => { const r = box!.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
   const dist = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
-  function down(e: PointerEvent) { pts.set(e.pointerId, rel(e)); if (pts.size === 2) { d0 = dist(); z0 = z; } }
+  // Souris (E57) : un conteneur qui défile ne se glisse pas à la souris (seule la molette marchait) ; on fait défiler la carte en la
+  // tirant. Au-delà de 4 px, c'est un glisser : le clic qui suit n'ouvre pas de niveau.
+  let drag: { x: number; y: number; sl: number; st: number; moved: boolean } | null = null, dragged = false;
+  function down(e: PointerEvent) {
+    pts.set(e.pointerId, rel(e)); if (pts.size === 2) { d0 = dist(); z0 = z; }
+    if (e.pointerType === 'mouse' && e.button === 0 && box) { drag = { x: e.clientX, y: e.clientY, sl: box.scrollLeft, st: box.scrollTop, moved: false }; dragged = false; }
+  }
   function move(e: PointerEvent) {
+    if (drag && box) {
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 4) { drag.moved = true; box.setPointerCapture(e.pointerId); box.classList.add('grabbing'); }
+      if (drag.moved) { box.scrollLeft = drag.sl - dx; box.scrollTop = drag.st - dy; }
+    }
     if (!pts.has(e.pointerId)) return; pts.set(e.pointerId, rel(e));
     if (pts.size === 2 && d0 > 0) { const [a, b] = [...pts.values()]; preview(z0 * dist() / d0, (a.x + b.x) / 2, (a.y + b.y) / 2); }
   }
   function up(e: PointerEvent) {
+    if (drag) { dragged = drag.moved; drag = null; box?.classList.remove('grabbing'); }
     const wasOne = pts.size === 1; pts.delete(e.pointerId); if (live && pts.size < 2) commit();
     if (wasOne && e.pointerType === 'touch' && !(e.target as Element).closest('.pin')) { const n = Date.now(); if (n - lastTap < 320) { const p = rel(e); zoomTo(z > 1.5 ? 1 : 2.2, p.x, p.y); lastTap = 0; } else lastTap = n; }
   }
@@ -88,7 +100,7 @@
     repos = window.setTimeout(() => { still = true; box?.querySelector<SVGSVGElement>('svg.over')?.pauseAnimations?.(); }, REPOS);
   }
   $effect(() => { if (!out || !box) return; void tick().then(reveil); return () => clearTimeout(repos); });
-  const pick = (e: Event) => { const p = (e.target as Element).closest<SVGElement>('.pin'); if (p?.dataset.id) { sel = p.dataset.id; void tick().then(() => play?.focus()); } };
+  const pick = (e: Event) => { if (dragged) { dragged = false; return; } const p = (e.target as Element).closest<SVGElement>('.pin'); if (p?.dataset.id) { sel = p.dataset.id; void tick().then(() => play?.focus()); } };
   const key = (e: KeyboardEvent) => { if ((e.key === 'Enter' || e.key === ' ') && (e.target as Element).closest('.pin')) { e.preventDefault(); pick(e); } if (e.key === 'Escape') sel = null; };
   /** Bouton retour : ferme d'abord la fiche du niveau (false = rien à fermer). */
   export function close(): boolean { if (!sel) return false; sel = null; return true; }
@@ -157,6 +169,7 @@
 <style>
   .city { position: fixed; inset: 0; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / .22) transparent; background: radial-gradient(120% 50% at 50% 0%, #1f2f36, #0d171b 45%, #05090b 100%); }   /* nuit noire et bleutée de la carte fantastique */
   .carte { position: relative; min-width: 2300px; width: 100%; }   /* = BASE (E50, E53) */
+  @media (pointer: fine) { .city { cursor: grab; } .city:global(.grabbing) { cursor: grabbing; user-select: none; } }
   .carte img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; user-select: none; -webkit-user-select: none; }
   .carte :global(svg.over) { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; } .carte :global(.pin) { pointer-events: auto; }
   .zoom { position: fixed; right: calc(var(--sar) + 12px); top: 50%; z-index: 6; display: grid; gap: 6px; transform: translateY(-50%); }
