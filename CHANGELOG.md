@@ -2,8 +2,17 @@
 
 ## [Non publié]
 
-### Corrigé
-- La carte se parcourt à la souris en la tirant, sur le site et dans l'AppImage (seule la molette marchait) (E57).
+## [0.3.38] — 2026-11-05
+
+### Message fr
+Tu peux maintenant parcourir la carte à la souris en la tirant, sur le site comme dans l'application Linux : le curseur devient une main, et un simple clic sur un niveau ouvre toujours sa fiche.
+
+### Message en
+You can now move around the map with the mouse by dragging it, on the website and in the Linux app: the cursor becomes a hand, and a simple click on a level still opens its card.
+
+### Détails
+- La carte se parcourt à la souris en la tirant, sur le site et dans l'AppImage (seule la molette marchait) (E57) ; un glisser n'ouvre pas de niveau.
+- Le test de vitesse de la carte prend le meilleur de 3 mesures (il échouait au hasard en CI).
 
 ## [0.3.37] — 2026-11-03
 
