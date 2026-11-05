@@ -202,3 +202,9 @@
 - **Fait** : la CSP de l'APK, de l'AppImage et du site autorise `img-src blob:` (le décor E55 était bloqué dans les apps) ; slogan « Construis ton IA » retiré de l'écran de démarrage.
 - **Vérifié** : version construite avec sa CSP (image chargée, aucune erreur) ; AppImage construite (paysage visible) ; `npm run verify` (893 tests).
 - **Non vérifié** : APK sur un vrai téléphone.
+
+### Carte parcourue à la souris (2026-11-05, E57, 0.3.38)
+
+- **Fait** : glisser à la souris (bouton gauche) fait défiler la carte, curseur main ; un glisser n'ouvre pas de niveau ; test de vitesse de la carte stable en CI.
+- **Vérifié** : version construite, vraie souris (glisser 180 × 220 px = défilement identique, clic court = fiche, glisser depuis un repère = pas de fiche) ; `npm run verify`.
+- **Non vérifié** : AppImage 0.3.38 à la souris, APK sur un vrai téléphone.
