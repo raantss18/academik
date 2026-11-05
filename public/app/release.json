@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 40,
-  "version": "0.3.37",
+  "build": 41,
+  "version": "0.3.38",
   "notes": {
-   "fr": "Le paysage de l'accueil réapparaît : depuis la mise à jour précédente, l'application l'empêchait de s'afficher. L'écran de démarrage est aussi plus sobre, avec le logo seul.",
-   "en": "The home-screen landscape is back: since the previous update, the app was blocking it from showing. The start screen is also simpler, with just the logo."
+   "fr": "Tu peux maintenant parcourir la carte à la souris en la tirant, sur le site comme dans l'application Linux : le curseur devient une main, et un simple clic sur un niveau ouvre toujours sa fiche.",
+   "en": "You can now move around the map with the mouse by dragging it, on the website and in the Linux app: the cursor becomes a hand, and a simple click on a level still opens its card."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.37/academik-0.3.37.apk",
-    "sha256": "ee32161242413bb8661324cfc539a150b1b57d6d87afe66383d649af8a008104",
-    "bytes": 11555198
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.38/academik-0.3.38.apk",
+    "sha256": "65b417dce96f50ec8e16d1c08a9d71acab1a5111f0aa9a0010e8e37d501dd057",
+    "bytes": 11555418
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.37/academik-0.3.37-x86_64.AppImage",
-    "sha256": "af32251cb39901cab4aa4f35a7e006e8b93a5e8ca1bfec2fbc393036ed49c692",
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.38/academik-0.3.38-x86_64.AppImage",
+    "sha256": "b4bf27be2e4e92f86334cc323678f66e37c5959ccbbaaa388e1fab291afe836c",
     "bytes": 116001272
    }
   }
  },
  "history": [
+  {
+   "build": 40,
+   "version": "0.3.37",
+   "notes": {
+    "fr": "Le paysage de l'accueil réapparaît : depuis la mise à jour précédente, l'application l'empêchait de s'afficher. L'écran de démarrage est aussi plus sobre, avec le logo seul.",
+    "en": "The home-screen landscape is back: since the previous update, the app was blocking it from showing. The start screen is also simpler, with just the logo."
+   }
+  },
   {
    "build": 39,
    "version": "0.3.36",
@@ -252,14 +260,6 @@
    "notes": {
     "fr": "L'accueil devient une ville qui s'allume : chaque quartier est un module, chaque bâtiment un niveau, et il s'éclaire à mesure que tu gagnes des étoiles. Touche un bâtiment pour jouer. La liste reste disponible d'un geste.",
     "en": "Home is now a city that lights up: each district is a module, each building a level, and it brightens as you earn stars. Tap a building to play. The list is still one tap away."
-   }
-  },
-  {
-   "build": 8,
-   "version": "0.3.5",
-   "notes": {
-    "fr": "Les cours deviennent plus clairs : des schémas, des tableaux et des exemples concrets accompagnent la théorie, et chaque notation est expliquée avant d'être utilisée. Le niveau « Démontrer » est le premier à en profiter.",
-    "en": "Lessons get clearer: diagrams, tables and concrete examples now go with the theory, and every notation is explained before it is used. The “Proving” level is the first to benefit."
    }
   }
  ]
