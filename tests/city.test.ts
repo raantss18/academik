@@ -242,4 +242,15 @@ describe('E57 : la carte se parcourt à la souris', () => {
     expect(c).toContain('.city { cursor: grab; }');
   });
 });
+describe('E58 : mini-carte d\'ensemble', () => {
+  it('le monde entier tient dans un coin : même image que le décor, cadre de la vue, niveau à jouer, clic et glisser pour y aller', () => {
+    const c = readFileSync('src/ui/City.svelte', 'utf8');
+    expect(c).toContain('class="mini"'); expect(c).toContain('<img src={out.url} alt="" draggable="false" decoding="async" />');   // aucune génération en plus
+    expect(c).toContain('class="view"'); expect(c).toContain('class="here"');
+    expect(c).toContain('b.scrollLeft = (e.clientX - r.left) / r.width * b.scrollWidth - b.clientWidth / 2');
+    expect(c).toContain('onscroll={() => { reveil(); sync(); }}'); expect(c).toContain('sync();\n  }');   // le cadre suit le défilement et le zoom
+    expect(c).toContain('height: clamp(120px, 42vh, 340px)');   // dimensionnée par la hauteur : le monde est ≈ 6 fois plus haut que large
+    expect(c).toContain('aria-hidden="true"');
+  });
+});
 });

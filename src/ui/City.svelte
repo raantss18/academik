@@ -37,7 +37,27 @@
 
   // Au premier affichage, on centre la ville sur le niveau à jouer.
   let centered = false;
-  $effect(() => { if (out && box && !centered) { centered = true; void tick().then(() => box?.querySelector<SVGElement>(`.pin[data-id="${current}"]`)?.scrollIntoView({ block: 'center', inline: 'center' })); } });
+  $effect(() => { if (out && box && !centered) { centered = true; void tick().then(() => { const pin = box?.querySelector<SVGElement>(`.pin[data-id="${current}"]`); pin?.scrollIntoView({ block: 'center', inline: 'center' }); locate(pin); sync(); }); } });
+
+  // Mini-carte d'ensemble (E58) : le monde entier tient dans un coin, avec le cadre de ce qu'on voit et le niveau à jouer ; on y clique
+  // ou on y glisse pour s'y rendre. Même image que le décor (aucune génération en plus), tout en fractions de la carte : le zoom ne les change pas.
+  let mini: HTMLElement | undefined = $state(), vp = $state({ x: 0, y: 0, w: 1, h: 1 }), here = $state<{ x: number; y: number } | null>(null), syncing = false, grab = false;
+  function locate(pin?: Element | null) {
+    const r = carte?.getBoundingClientRect(), p = pin?.getBoundingClientRect(); if (!r || !p || !r.width) return;
+    here = { x: (p.left + p.width / 2 - r.left) / r.width, y: (p.top + p.height / 2 - r.top) / r.height };
+  }
+  function sync() {
+    if (syncing) return; syncing = true;
+    requestAnimationFrame(() => { syncing = false; const b = box; if (!b || !b.scrollWidth || !b.scrollHeight) return;
+      vp = { x: b.scrollLeft / b.scrollWidth, y: b.scrollTop / b.scrollHeight, w: Math.min(1, b.clientWidth / b.scrollWidth), h: Math.min(1, b.clientHeight / b.scrollHeight) }; });
+  }
+  function aller(e: PointerEvent) {
+    const b = box, r = mini?.getBoundingClientRect(); if (!b || !r) return;
+    b.scrollLeft = (e.clientX - r.left) / r.width * b.scrollWidth - b.clientWidth / 2; b.scrollTop = (e.clientY - r.top) / r.height * b.scrollHeight - b.clientHeight / 2;
+  }
+  const miniDown = (e: PointerEvent) => { grab = true; mini?.setPointerCapture(e.pointerId); aller(e); reveil(); };
+  const miniMove = (e: PointerEvent) => { if (grab) aller(e); };
+  const miniUp = () => { grab = false; };
 
   // Zoom : pincement à deux doigts, Ctrl + molette, double toucher et boutons ＋/−. Le point sous les doigts reste en place.
   let z = $state(1);
@@ -58,7 +78,7 @@
     const { nz, px, py, ox, oy } = live, f = nz / z; live = null; clearTimeout(wheelTimer);
     el.style.transform = ''; el.style.transformOrigin = ''; el.style.willChange = '';
     z = nz; el.style.width = `${nz * 100}%`; el.style.minWidth = `${BASE * nz}px`;
-    box.scrollLeft = ox * f - px; box.scrollTop = oy * f - py;
+    box.scrollLeft = ox * f - px; box.scrollTop = oy * f - py; sync();
   }
   const zoomTo = (nz: number, fx?: number, fy?: number) => { preview(nz, fx, fy); commit(); };
   const rel = (e: PointerEvent) => { const r = box!.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
@@ -117,11 +137,18 @@
   });
 </script>
 
-<div class="city" class:still bind:this={box} onclick={pick} onkeydown={(e) => { reveil(); key(e); }} onpointerdown={(e) => { reveil(); down(e); }} onpointermove={move} onpointerup={up} onpointercancel={up} onscroll={reveil} onwheel={reveil} role="presentation">
+<div class="city" class:still bind:this={box} onclick={pick} onkeydown={(e) => { reveil(); key(e); }} onpointerdown={(e) => { reveil(); down(e); }} onpointermove={move} onpointerup={up} onpointercancel={up} onscroll={() => { reveil(); sync(); }} onwheel={reveil} role="presentation">
   {#if out}<div class="carte" bind:this={carte} style="aspect-ratio:{out.out.width} / {out.out.height}"><img src={out.url} alt="" draggable="false" decoding="async" />{@html out.out.over}</div>{:else if failed}<p class="msg">{fr ? 'La carte n’a pas pu se charger : utilise la vue liste.' : 'The map could not load: use the list view.'}</p>{:else}<p class="msg">…</p>{/if}
 </div>
 
+<svelte:window onresize={sync} />
+
 {#if out}
+  <div class="mini" bind:this={mini} aria-hidden="true" style="aspect-ratio:{out.out.width} / {out.out.height}" onpointerdown={miniDown} onpointermove={miniMove} onpointerup={miniUp} onpointercancel={miniUp}>
+    <img src={out.url} alt="" draggable="false" decoding="async" />
+    {#if here}<i class="here" style="left:{here.x * 100}%;top:{here.y * 100}%"></i>{/if}
+    <b class="view" style="left:{vp.x * 100}%;top:{vp.y * 100}%;width:{vp.w * 100}%;height:{vp.h * 100}%"></b>
+  </div>
   <div class="zoom" role="group" aria-label={fr ? 'Zoom' : 'Zoom'}>
     <button onclick={() => zoomTo(z * 1.5)} aria-label={fr ? 'Zoomer' : 'Zoom in'} disabled={z >= MAXZ}>＋</button>
     <button onclick={() => zoomTo(z / 1.5)} aria-label={fr ? 'Dézoomer' : 'Zoom out'} disabled={z <= 1}>−</button>
@@ -172,6 +199,11 @@
   @media (pointer: fine) { .city { cursor: grab; } .city:global(.grabbing) { cursor: grabbing; user-select: none; } }
   .carte img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; user-select: none; -webkit-user-select: none; }
   .carte :global(svg.over) { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; } .carte :global(.pin) { pointer-events: auto; }
+  .mini { position: fixed; left: calc(var(--sal) + 12px); bottom: calc(var(--sab) + 14px); z-index: 6; height: clamp(120px, 42vh, 340px); max-width: 38vw; overflow: hidden; border-radius: 10px; border: 1px solid rgb(255 255 255 / .28); background: #05090b; box-shadow: 0 6px 18px rgb(0 0 0 / .45); cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; }
+  @media (max-width: 600px) { .mini { height: clamp(110px, 27vh, 230px); opacity: .92; } }
+  .mini img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+  .mini .view { position: absolute; box-sizing: border-box; border: 2px solid #ffd84a; border-radius: 3px; box-shadow: 0 0 0 999px rgb(0 0 0 / .38); pointer-events: none; }
+  .mini .here { position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: #ff4d3d; border: 1.5px solid #fff; pointer-events: none; z-index: 1; }
   .zoom { position: fixed; right: calc(var(--sar) + 12px); top: 50%; z-index: 6; display: grid; gap: 6px; transform: translateY(-50%); }
   .zoom button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgb(255 255 255 / .22); background: rgb(10 14 36 / .62); backdrop-filter: blur(8px); color: #f2f4ff; font-size: 1.4rem; line-height: 1; cursor: pointer; } .zoom button:disabled { opacity: .35; }
   .msg { color: #cfd3ec; text-align: center; padding: 40px 16px; }
