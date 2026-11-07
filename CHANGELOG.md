@@ -2,8 +2,16 @@
 
 ## [Non publié]
 
-### Ajouté
-- Mini-carte d'ensemble en bas à gauche de l'accueil : le monde entier, la zone visible et le niveau à jouer ; un clic ou un glisser dessus emmène n'importe où (E58).
+## [0.3.39] — 2026-11-07
+
+### Message fr
+Une mini-carte apparaît en bas à gauche de l'accueil : elle montre le monde entier, la zone que tu vois et le niveau à jouer. Un clic ou un glisser dessus t'emmène n'importe où, sans avoir à faire défiler toute la carte.
+
+### Message en
+A mini-map now appears at the bottom left of the home screen: it shows the whole world, the area you are looking at and the level to play. Click or drag on it to go anywhere, without scrolling the whole map.
+
+### Détails
+- Mini-carte d'ensemble : même image que le décor (aucune génération en plus), cadre de la vue, point du niveau à jouer ; elle suit le défilement et le zoom (E58).
 
 ## [0.3.38] — 2026-11-05
 

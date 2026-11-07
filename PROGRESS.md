@@ -208,3 +208,9 @@
 - **Fait** : glisser à la souris (bouton gauche) fait défiler la carte, curseur main ; un glisser n'ouvre pas de niveau ; test de vitesse de la carte stable en CI.
 - **Vérifié** : version construite, vraie souris (glisser 180 × 220 px = défilement identique, clic court = fiche, glisser depuis un repère = pas de fiche) ; `npm run verify`.
 - **Non vérifié** : AppImage 0.3.38 à la souris, APK sur un vrai téléphone.
+
+### Mini-carte d'ensemble (2026-11-07, E58, 0.3.39)
+
+- **Fait** : mini-carte en bas à gauche de l'accueil (monde entier, cadre de la vue, niveau à jouer ; clic ou glisser pour y aller), plus petite sur téléphone.
+- **Vérifié** : version construite avec une vraie souris (clic au milieu = défilement exact, glisser, cadre qui suit le zoom), 375 px et bureau ; `npm run verify` (895 tests).
+- **Non vérifié** : AppImage et APK sur un vrai téléphone.
