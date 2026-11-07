@@ -2,6 +2,9 @@
 
 ## [Non publié]
 
+### Ajouté
+- Mini-carte d'ensemble en bas à gauche de l'accueil : le monde entier, la zone visible et le niveau à jouer ; un clic ou un glisser dessus emmène n'importe où (E58).
+
 ## [0.3.38] — 2026-11-05
 
 ### Message fr
