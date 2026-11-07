@@ -2,26 +2,34 @@
  "format": 1,
  "minBuild": 1,
  "latest": {
-  "build": 41,
-  "version": "0.3.38",
+  "build": 42,
+  "version": "0.3.39",
   "notes": {
-   "fr": "Tu peux maintenant parcourir la carte à la souris en la tirant, sur le site comme dans l'application Linux : le curseur devient une main, et un simple clic sur un niveau ouvre toujours sa fiche.",
-   "en": "You can now move around the map with the mouse by dragging it, on the website and in the Linux app: the cursor becomes a hand, and a simple click on a level still opens its card."
+   "fr": "Une mini-carte apparaît en bas à gauche de l'accueil : elle montre le monde entier, la zone que tu vois et le niveau à jouer. Un clic ou un glisser dessus t'emmène n'importe où, sans avoir à faire défiler toute la carte.",
+   "en": "A mini-map now appears at the bottom left of the home screen: it shows the whole world, the area you are looking at and the level to play. Click or drag on it to go anywhere, without scrolling the whole map."
   },
   "assets": {
    "android": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.38/academik-0.3.38.apk",
-    "sha256": "65b417dce96f50ec8e16d1c08a9d71acab1a5111f0aa9a0010e8e37d501dd057",
-    "bytes": 11555418
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.39/academik-0.3.39.apk",
+    "sha256": "fb242d54841d98c5e2f12bb95094cbadbf706a798103d415c4d2797b8ed59347",
+    "bytes": 11556126
    },
    "linux": {
-    "url": "https://github.com/raantss18/academik/releases/download/v0.3.38/academik-0.3.38-x86_64.AppImage",
-    "sha256": "b4bf27be2e4e92f86334cc323678f66e37c5959ccbbaaa388e1fab291afe836c",
+    "url": "https://github.com/raantss18/academik/releases/download/v0.3.39/academik-0.3.39-x86_64.AppImage",
+    "sha256": "a4d7cd63c82a275d0c56edd0039045b87a86ef6feb84637e4822e7e036876eff",
     "bytes": 116001272
    }
   }
  },
  "history": [
+  {
+   "build": 41,
+   "version": "0.3.38",
+   "notes": {
+    "fr": "Tu peux maintenant parcourir la carte à la souris en la tirant, sur le site comme dans l'application Linux : le curseur devient une main, et un simple clic sur un niveau ouvre toujours sa fiche.",
+    "en": "You can now move around the map with the mouse by dragging it, on the website and in the Linux app: the cursor becomes a hand, and a simple click on a level still opens its card."
+   }
+  },
   {
    "build": 40,
    "version": "0.3.37",
@@ -252,14 +260,6 @@
    "notes": {
     "fr": "Les révisions arrivent : chaque jour, l'app te repose les questions que tu risques d'oublier, au meilleur moment pour t'en souvenir. Le bouton apparaît sur l'accueil dès qu'il y en a.",
     "en": "Reviews are here: each day the app asks again the questions you are about to forget, at the best moment to remember them. The button appears on the home screen whenever there are some."
-   }
-  },
-  {
-   "build": 9,
-   "version": "0.3.6",
-   "notes": {
-    "fr": "L'accueil devient une ville qui s'allume : chaque quartier est un module, chaque bâtiment un niveau, et il s'éclaire à mesure que tu gagnes des étoiles. Touche un bâtiment pour jouer. La liste reste disponible d'un geste.",
-    "en": "Home is now a city that lights up: each district is a module, each building a level, and it brightens as you earn stars. Tap a building to play. The list is still one tap away."
    }
   }
  ]
